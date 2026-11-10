@@ -1,0 +1,76 @@
+{
+ "_note": "Fictional sample data shaped like vAMSYS Operations API responses. Not real pilots, flights or statistics.",
+ "stats_all_time": {"data": {"period": {"from": "2000-01-01T00:00:00Z", "to": "2026-11-10T12:00:00Z"}, "pireps": {"accepted": 1284, "rejected": 12, "invalidated": 3, "manual": 20, "total": 1319, "averageLandingRate": -164, "averageLandingG": 1.18}, "flightTime": {"seconds": 9468000, "formatted": "2630:00"}, "points": {"regular": 0, "bonus": 0, "total": 0}, "transport": {"passengers": 7421, "cargo": 38210, "fuelUsed": 0, "distanceFlown": 812400}, "generatedAt": "2026-11-10T12:00:00Z"}},
+ "stats_30_days": {"data": {"period": {"from": "2026-10-11T12:00:00Z", "to": "2026-11-10T12:00:00Z"}, "pireps": {"accepted": 96, "rejected": 1, "invalidated": 0, "manual": 2, "total": 99, "averageLandingRate": -151, "averageLandingG": 1.15}, "flightTime": {"seconds": 712800, "formatted": "198:00"}, "points": {"regular": 0, "bonus": 0, "total": 0}, "transport": {"passengers": 544, "cargo": 2900, "fuelUsed": 0, "distanceFlown": 61200}, "generatedAt": "2026-11-10T12:00:00Z"}},
+ "airports": [
+  {"id": 1, "name": "Indianapolis International", "icao": "KIND", "iata": "IND", "base": true, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 39.7173, "longitude": -86.2944},
+  {"id": 2, "name": "Indianapolis Executive", "icao": "KTYQ", "iata": null, "base": true, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 40.0306, "longitude": -86.2514},
+  {"id": 3, "name": "Bowman Field", "icao": "KLOU", "iata": "LOU", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 38.228, "longitude": -85.6637},
+  {"id": 4, "name": "Teterboro", "icao": "KTEB", "iata": "TEB", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 40.8501, "longitude": -74.0608},
+  {"id": 5, "name": "Palm Beach International", "icao": "KPBI", "iata": "PBI", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 26.6832, "longitude": -80.0956},
+  {"id": 6, "name": "Aspen/Pitkin County", "icao": "KASE", "iata": "ASE", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 39.2232, "longitude": -106.8688},
+  {"id": 7, "name": "Dallas Love Field", "icao": "KDAL", "iata": "DAL", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 32.8471, "longitude": -96.8518},
+  {"id": 8, "name": "Nashville International", "icao": "KBNA", "iata": "BNA", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 36.1245, "longitude": -86.6782},
+  {"id": 9, "name": "Chicago Midway", "icao": "KMDW", "iata": "MDW", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 41.7868, "longitude": -87.7522},
+  {"id": 10, "name": "Scottsdale", "icao": "KSDL", "iata": "SCF", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 33.6229, "longitude": -111.9105},
+  {"id": 11, "name": "Cincinnati/Northern Kentucky", "icao": "KCVG", "iata": "CVG", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 39.0488, "longitude": -84.6678},
+  {"id": 12, "name": "Key West International", "icao": "KEYW", "iata": "EYW", "base": false, "country": {"id": 1, "iso2": "US", "name": "United States"}, "latitude": 24.5561, "longitude": -81.7596}
+ ],
+ "hubs": [
+  {"id": 1, "name": "Indianapolis", "order": 1, "default": true, "pilots_count": 38, "airport_ids": [1, 2]},
+  {"id": 2, "name": "Louisville", "order": 2, "default": false, "pilots_count": 11, "airport_ids": [3]}
+ ],
+ "fleet": [
+  {"id": 10, "name": "Pilatus PC-12 NGX", "code": "PC12", "type": "pax", "max_pax": 8, "max_cargo": 1200, "hide_in_phoenix": false, "weight_unit": "lbs", "image_url": null},
+  {"id": 11, "name": "Cessna Citation CJ4", "code": "C25C", "type": "pax", "max_pax": 9, "max_cargo": 1000, "hide_in_phoenix": false, "weight_unit": "lbs", "image_url": null},
+  {"id": 12, "name": "Cessna Citation Longitude", "code": "C700", "type": "pax", "max_pax": 12, "max_cargo": 1500, "hide_in_phoenix": false, "weight_unit": "lbs", "image_url": null},
+  {"id": 13, "name": "Bombardier Challenger 650", "code": "CL60", "type": "pax", "max_pax": 12, "max_cargo": 2000, "hide_in_phoenix": false, "weight_unit": "lbs", "image_url": null},
+  {"id": 14, "name": "Beechcraft King Air 350", "code": "B350", "type": "pax-cargo", "max_pax": 9, "max_cargo": 1500, "hide_in_phoenix": false, "weight_unit": "lbs", "image_url": null},
+  {"id": 99, "name": "Training (hidden)", "code": "TRN1", "type": "pax", "hide_in_phoenix": true}
+ ],
+ "aircraft_by_fleet": {
+  "10": [{"registration": "N412CX"}, {"registration": "N413CX"}, {"registration": "N414CX"}],
+  "11": [{"registration": "N520CX"}, {"registration": "N521CX"}, {"registration": "N522CX"}, {"registration": "N523CX", "hide_in_phoenix": true}],
+  "12": [{"registration": "N700CX"}, {"registration": "N701CX"}],
+  "13": [{"registration": "N650CX"}],
+  "14": [{"registration": "N350CX"}, {"registration": "N351CX"}]
+ },
+ "routes": [
+  {"id": 1, "departure_id": 2, "arrival_id": 4, "callsign": "CXC101", "flight_number": "101", "flight_length": "01:55:00", "flight_distance": 556, "hidden": false, "fleet_ids": [11, 12], "service_days": ["Mon", "Wed", "Fri"], "departure_time": "07:30", "internal_remarks": "never published"},
+  {"id": 2, "departure_id": 4, "arrival_id": 2, "callsign": "CXC102", "flight_number": "102", "flight_length": "02:10:00", "flight_distance": 556, "hidden": false, "fleet_ids": [11, 12], "service_days": ["Mon", "Wed", "Fri"], "departure_time": "17:00"},
+  {"id": 3, "departure_id": 2, "arrival_id": 5, "callsign": "CXC210", "flight_number": "210", "flight_length": "02:20:00", "flight_distance": 862, "hidden": false, "fleet_ids": [12, 13], "service_days": ["Thu", "Sun"]},
+  {"id": 4, "departure_id": 2, "arrival_id": 6, "callsign": "CXC305", "flight_number": "305", "flight_length": "02:45:00", "flight_distance": 940, "hidden": false, "fleet_ids": [13], "service_days": ["Fri"]},
+  {"id": 5, "departure_id": 1, "arrival_id": 7, "callsign": "CXC410", "flight_number": "410", "flight_length": "02:05:00", "flight_distance": 662, "hidden": false, "fleet_ids": [11]},
+  {"id": 6, "departure_id": 3, "arrival_id": 8, "callsign": "CXC512", "flight_number": "512", "flight_length": "00:50:00", "flight_distance": 140, "hidden": false, "fleet_ids": [10, 14]},
+  {"id": 7, "departure_id": 2, "arrival_id": 9, "callsign": "CXC620", "flight_number": "620", "flight_length": "00:55:00", "flight_distance": 150, "hidden": false, "fleet_ids": [10, 14]},
+  {"id": 8, "departure_id": 2, "arrival_id": 3, "callsign": "CXC700", "flight_number": "700", "flight_length": "00:45:00", "flight_distance": 103, "hidden": false, "fleet_ids": [10]},
+  {"id": 9, "departure_id": 1, "arrival_id": 10, "callsign": "CXC815", "flight_number": "815", "flight_length": "03:40:00", "flight_distance": 1290, "hidden": false, "fleet_ids": [12, 13]},
+  {"id": 10, "departure_id": 3, "arrival_id": 11, "callsign": "CXC902", "flight_number": "902", "flight_length": "00:40:00", "flight_distance": 82, "hidden": false, "fleet_ids": [10, 14]},
+  {"id": 11, "departure_id": 5, "arrival_id": 12, "callsign": "CXC930", "flight_number": "930", "flight_length": "00:55:00", "flight_distance": 190, "hidden": false, "fleet_ids": [10, 11]},
+  {"id": 12, "departure_id": 2, "arrival_id": 12, "callsign": "CXC999", "flight_number": "999", "flight_length": "03:00:00", "flight_distance": 950, "hidden": true, "fleet_ids": [13]}
+ ],
+ "ranks": [
+  {"id": 1, "level": 1, "name": "Second Officer", "abbreviation": "SO", "description": "<p>Welcome aboard. Fly the PC-12 and King Air.</p>", "honorary_rank": false, "hours": 0, "points": 0, "bonus": 0, "pireps": 0, "regular_pilots_count": 14},
+  {"id": 2, "level": 2, "name": "First Officer", "abbreviation": "FO", "description": "Citation CJ4 unlocked.", "honorary_rank": false, "hours": 25, "points": 0, "bonus": 0, "pireps": 10, "regular_pilots_count": 17},
+  {"id": 3, "level": 3, "name": "Captain", "abbreviation": "CPT", "description": "Citation Longitude unlocked.", "honorary_rank": false, "hours": 100, "points": 0, "bonus": 0, "pireps": 40, "regular_pilots_count": 12},
+  {"id": 4, "level": 4, "name": "Senior Captain", "abbreviation": "SCPT", "description": "Full fleet, including the Challenger 650.", "honorary_rank": false, "hours": 250, "points": 0, "bonus": 0, "pireps": 100, "regular_pilots_count": 6},
+  {"id": 5, "level": 99, "name": "Founder", "abbreviation": "FDR", "description": null, "honorary_rank": true, "hours": 0, "points": 0, "bonus": 0, "pireps": 0, "regular_pilots_count": 0}
+ ],
+ "events": [
+  {"id": 1, "type": "event", "subtype": "group-flight", "name": "Thanksgiving Shuttle: Indy to Palm Beach", "description": "<p>Fly <strong>CXC210</strong> with the group. Bonus points for a smooth landing.</p>", "tags": ["group flight"], "start": "2026-11-26T18:00:00Z", "end": "2026-11-26T22:00:00Z", "registration_required": true, "registration_count": 9, "points": 50},
+  {"id": 2, "type": "event", "subtype": "tour", "name": "Winter Ski Charters", "description": "Five legs into Aspen, Vail and Jackson Hole during December.", "tags": ["tour"], "start": "2026-12-01T00:00:00Z", "end": "2026-12-31T23:59:00Z", "registration_required": false, "registration_count": null, "points": 200},
+  {"id": 3, "type": "event", "subtype": "group-flight", "name": "Past event (filtered out)", "start": "2026-10-01T18:00:00Z", "end": "2026-10-01T20:00:00Z"}
+ ],
+ "flight_map": {"data": [
+  {"bookingId": 1, "phase": 5, "pilot": {"username": "sample.pilot1", "rank": {"name": "Captain", "abbreviation": "CPT"}, "airline": "CXC"}, "booking": {"callsign": "CXC101", "flightNumber": "101", "altitude": 41000, "network": "VATSIM", "type": "scheduled"}, "aircraft": {"name": "Cessna Citation CJ4", "type": "C25C", "code": "C25C", "registration": "N520CX"}, "departureAirport": {"name": "Indianapolis Executive", "identifier": "KTYQ", "icao": "KTYQ", "iata": null, "lat": 40.0306, "lon": -86.2514, "country": {"name": "United States", "code": "US"}}, "arrivalAirport": {"name": "Teterboro", "identifier": "KTEB", "icao": "KTEB", "iata": "TEB", "lat": 40.8501, "lon": -74.0608, "country": {"name": "United States", "code": "US"}}, "progress": {"routeDistance": 556, "distanceRemaining": 210, "currentPhase": "Cruise", "groundSpeed": 438, "magneticHeading": 88, "altitude": 41000, "latitude": 40.62, "longitude": -78.6, "estimatedArrivalTime": "2026-11-10T19:12:00Z"}},
+  {"bookingId": 2, "phase": 3, "pilot": {"username": "sample.pilot2", "rank": {"name": "First Officer", "abbreviation": "FO"}, "airline": "CXC"}, "booking": {"callsign": "CXC512", "flightNumber": "512", "altitude": 24000, "network": null, "type": "scheduled"}, "aircraft": {"name": "Pilatus PC-12 NGX", "type": "PC12", "code": "PC12", "registration": "N412CX"}, "departureAirport": {"name": "Bowman Field", "identifier": "KLOU", "icao": "KLOU", "iata": "LOU", "lat": 38.228, "lon": -85.6637, "country": {"name": "United States", "code": "US"}}, "arrivalAirport": {"name": "Nashville International", "identifier": "KBNA", "icao": "KBNA", "iata": "BNA", "lat": 36.1245, "lon": -86.6782, "country": {"name": "United States", "code": "US"}}, "progress": {"routeDistance": 140, "distanceRemaining": 96, "currentPhase": "Climb", "groundSpeed": 245, "magneticHeading": 205, "altitude": 17400, "latitude": 37.6, "longitude": -85.95, "estimatedArrivalTime": "2026-11-10T18:41:00Z"}},
+  {"bookingId": 3, "phase": 6, "pilot": {"username": "sample.pilot3", "rank": {"name": "Senior Captain", "abbreviation": "SCPT"}, "airline": "CXC"}, "booking": {"callsign": "CXC815", "flightNumber": "815", "altitude": 45000, "network": "VATSIM", "type": "charter"}, "aircraft": {"name": "Bombardier Challenger 650", "type": "CL60", "code": "CL60", "registration": "N650CX"}, "departureAirport": {"name": "Indianapolis International", "identifier": "KIND", "icao": "KIND", "iata": "IND", "lat": 39.7173, "lon": -86.2944, "country": {"name": "United States", "code": "US"}}, "arrivalAirport": {"name": "Scottsdale", "identifier": "KSDL", "icao": "KSDL", "iata": "SCF", "lat": 33.6229, "lon": -111.9105, "country": {"name": "United States", "code": "US"}}, "progress": {"routeDistance": 1290, "distanceRemaining": 180, "currentPhase": "Descent", "groundSpeed": 410, "magneticHeading": 248, "altitude": 22000, "latitude": 34.3, "longitude": -108.6, "estimatedArrivalTime": "2026-11-10T18:58:00Z"}}
+ ]},
+ "pireps": [
+  {"id": 501, "pilot_id": 7, "status": "accepted", "callsign": "CXC102", "flight_number": "102", "departure_airport_id": 4, "arrival_airport_id": 2, "fleet_id": 12, "landing_rate": -142, "flight_length": 7620, "landing_time": "2026-11-10T15:44:00Z", "internal_note": "never published"},
+  {"id": 500, "pilot_id": 3, "status": "accepted", "callsign": "CXC700", "flight_number": "700", "departure_airport_id": 2, "arrival_airport_id": 3, "fleet_id": 10, "landing_rate": -188, "flight_length": 2640, "landing_time": "2026-11-10T13:05:00Z"},
+  {"id": 499, "pilot_id": 9, "status": "rejected", "callsign": "CXC410", "flight_number": "410", "departure_airport_id": 1, "arrival_airport_id": 7, "fleet_id": 11, "landing_rate": -610, "flight_length": 7400, "landing_time": "2026-11-09T22:10:00Z"},
+  {"id": 498, "pilot_id": 2, "status": "accepted", "callsign": "CXC930", "flight_number": "930", "departure_airport_id": 5, "arrival_airport_id": 12, "fleet_id": 11, "landing_rate": -97, "flight_length": 3300, "landing_time": "2026-11-09T20:31:00Z"},
+  {"id": 497, "pilot_id": 5, "status": "accepted", "callsign": "CXC305", "flight_number": "305", "departure_airport_id": 2, "arrival_airport_id": 6, "fleet_id": 13, "landing_rate": -175, "flight_length": 9960, "landing_time": "2026-11-09T18:02:00Z"}
+ ]
+}

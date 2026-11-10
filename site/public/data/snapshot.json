@@ -1,0 +1,614 @@
+{
+ "schema": "crossroads-public/1",
+ "source": "sample",
+ "generated_at": "2026-11-10T19:09:17Z",
+ "unavailable": [],
+ "airline": {
+  "name": "Crossroad Executive & Charter",
+  "short_name": "Crossroad",
+  "tagline": "Executive and charter flying from the Crossroads of America.",
+  "join_url": null,
+  "pilot_login_url": null,
+  "discord_url": null,
+  "contact_email": null
+ },
+ "stats": {
+  "all_time": {
+   "from": "2000-01-01T00:00:00Z",
+   "to": "2026-11-10T12:00:00Z",
+   "flights": 1284,
+   "flight_hours": 2630,
+   "passengers": 7421,
+   "cargo": 38210,
+   "distance": 812400,
+   "average_landing_rate": -164
+  },
+  "last_30_days": {
+   "from": "2026-10-11T12:00:00Z",
+   "to": "2026-11-10T12:00:00Z",
+   "flights": 96,
+   "flight_hours": 198,
+   "passengers": 544,
+   "cargo": 2900,
+   "distance": 61200,
+   "average_landing_rate": -151
+  }
+ },
+ "live": [
+  {
+   "callsign": "CXC101",
+   "flight_number": "101",
+   "from": "KTYQ",
+   "to": "KTEB",
+   "phase": "Cruise",
+   "aircraft": "C25C",
+   "aircraft_name": "Cessna Citation CJ4",
+   "registration": "N520CX",
+   "pilot": null,
+   "rank": "CPT",
+   "network": "VATSIM",
+   "lat": 40.62,
+   "lon": -78.6,
+   "altitude_ft": 41000,
+   "groundspeed_kt": 438,
+   "heading": 88,
+   "route_nm": 556,
+   "remaining_nm": 210,
+   "eta": "2026-11-10T19:12:00Z"
+  },
+  {
+   "callsign": "CXC512",
+   "flight_number": "512",
+   "from": "KLOU",
+   "to": "KBNA",
+   "phase": "Climb",
+   "aircraft": "PC12",
+   "aircraft_name": "Pilatus PC-12 NGX",
+   "registration": "N412CX",
+   "pilot": null,
+   "rank": "FO",
+   "network": null,
+   "lat": 37.6,
+   "lon": -85.95,
+   "altitude_ft": 17400,
+   "groundspeed_kt": 245,
+   "heading": 205,
+   "route_nm": 140,
+   "remaining_nm": 96,
+   "eta": "2026-11-10T18:41:00Z"
+  },
+  {
+   "callsign": "CXC815",
+   "flight_number": "815",
+   "from": "KIND",
+   "to": "KSDL",
+   "phase": "Descent",
+   "aircraft": "CL60",
+   "aircraft_name": "Bombardier Challenger 650",
+   "registration": "N650CX",
+   "pilot": null,
+   "rank": "SCPT",
+   "network": "VATSIM",
+   "lat": 34.3,
+   "lon": -108.6,
+   "altitude_ft": 22000,
+   "groundspeed_kt": 410,
+   "heading": 248,
+   "route_nm": 1290,
+   "remaining_nm": 180,
+   "eta": "2026-11-10T18:58:00Z"
+  }
+ ],
+ "fleet": [
+  {
+   "code": "C25C",
+   "name": "Cessna Citation CJ4",
+   "type": "pax",
+   "max_pax": 9,
+   "max_cargo": 1000,
+   "weight_unit": "lbs",
+   "aircraft_count": 3,
+   "registrations": [
+    "N520CX",
+    "N521CX",
+    "N522CX"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "PC12",
+   "name": "Pilatus PC-12 NGX",
+   "type": "pax",
+   "max_pax": 8,
+   "max_cargo": 1200,
+   "weight_unit": "lbs",
+   "aircraft_count": 3,
+   "registrations": [
+    "N412CX",
+    "N413CX",
+    "N414CX"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "B350",
+   "name": "Beechcraft King Air 350",
+   "type": "pax-cargo",
+   "max_pax": 9,
+   "max_cargo": 1500,
+   "weight_unit": "lbs",
+   "aircraft_count": 2,
+   "registrations": [
+    "N350CX",
+    "N351CX"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "C700",
+   "name": "Cessna Citation Longitude",
+   "type": "pax",
+   "max_pax": 12,
+   "max_cargo": 1500,
+   "weight_unit": "lbs",
+   "aircraft_count": 2,
+   "registrations": [
+    "N700CX",
+    "N701CX"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "CL60",
+   "name": "Bombardier Challenger 650",
+   "type": "pax",
+   "max_pax": 12,
+   "max_cargo": 2000,
+   "weight_unit": "lbs",
+   "aircraft_count": 1,
+   "registrations": [
+    "N650CX"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  }
+ ],
+ "routes": [
+  {
+   "flight_number": "410",
+   "callsign": "CXC410",
+   "from": "KIND",
+   "to": "KDAL",
+   "distance_nm": 662,
+   "duration_min": 125,
+   "departure_time": null,
+   "types": [
+    "C25C"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "815",
+   "callsign": "CXC815",
+   "from": "KIND",
+   "to": "KSDL",
+   "distance_nm": 1290,
+   "duration_min": 220,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "CL60"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "512",
+   "callsign": "CXC512",
+   "from": "KLOU",
+   "to": "KBNA",
+   "distance_nm": 140,
+   "duration_min": 50,
+   "departure_time": null,
+   "types": [
+    "B350",
+    "PC12"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "902",
+   "callsign": "CXC902",
+   "from": "KLOU",
+   "to": "KCVG",
+   "distance_nm": 82,
+   "duration_min": 40,
+   "departure_time": null,
+   "types": [
+    "B350",
+    "PC12"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "930",
+   "callsign": "CXC930",
+   "from": "KPBI",
+   "to": "KEYW",
+   "distance_nm": 190,
+   "duration_min": 55,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "PC12"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "102",
+   "callsign": "CXC102",
+   "from": "KTEB",
+   "to": "KTYQ",
+   "distance_nm": 556,
+   "duration_min": 130,
+   "departure_time": "17:00",
+   "types": [
+    "C25C",
+    "C700"
+   ],
+   "days": [
+    "Mon",
+    "Wed",
+    "Fri"
+   ]
+  },
+  {
+   "flight_number": "305",
+   "callsign": "CXC305",
+   "from": "KTYQ",
+   "to": "KASE",
+   "distance_nm": 940,
+   "duration_min": 165,
+   "departure_time": null,
+   "types": [
+    "CL60"
+   ],
+   "days": [
+    "Fri"
+   ]
+  },
+  {
+   "flight_number": "700",
+   "callsign": "CXC700",
+   "from": "KTYQ",
+   "to": "KLOU",
+   "distance_nm": 103,
+   "duration_min": 45,
+   "departure_time": null,
+   "types": [
+    "PC12"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "620",
+   "callsign": "CXC620",
+   "from": "KTYQ",
+   "to": "KMDW",
+   "distance_nm": 150,
+   "duration_min": 55,
+   "departure_time": null,
+   "types": [
+    "B350",
+    "PC12"
+   ],
+   "days": []
+  },
+  {
+   "flight_number": "210",
+   "callsign": "CXC210",
+   "from": "KTYQ",
+   "to": "KPBI",
+   "distance_nm": 862,
+   "duration_min": 140,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "CL60"
+   ],
+   "days": [
+    "Thu",
+    "Sun"
+   ]
+  },
+  {
+   "flight_number": "101",
+   "callsign": "CXC101",
+   "from": "KTYQ",
+   "to": "KTEB",
+   "distance_nm": 556,
+   "duration_min": 115,
+   "departure_time": "07:30",
+   "types": [
+    "C25C",
+    "C700"
+   ],
+   "days": [
+    "Mon",
+    "Wed",
+    "Fri"
+   ]
+  }
+ ],
+ "hubs": [
+  {
+   "name": "Indianapolis",
+   "default": true,
+   "pilots": 38,
+   "airports": [
+    "KIND",
+    "KTYQ"
+   ]
+  },
+  {
+   "name": "Louisville",
+   "default": false,
+   "pilots": 11,
+   "airports": [
+    "KLOU"
+   ]
+  }
+ ],
+ "ranks": [
+  {
+   "level": 1,
+   "name": "Second Officer",
+   "abbreviation": "SO",
+   "honorary": false,
+   "hours": 0,
+   "flights": 0,
+   "points": 0,
+   "description": "Welcome aboard. Fly the PC-12 and King Air.",
+   "image": null,
+   "pilots": 14
+  },
+  {
+   "level": 2,
+   "name": "First Officer",
+   "abbreviation": "FO",
+   "honorary": false,
+   "hours": 25,
+   "flights": 10,
+   "points": 0,
+   "description": "Citation CJ4 unlocked.",
+   "image": null,
+   "pilots": 17
+  },
+  {
+   "level": 3,
+   "name": "Captain",
+   "abbreviation": "CPT",
+   "honorary": false,
+   "hours": 100,
+   "flights": 40,
+   "points": 0,
+   "description": "Citation Longitude unlocked.",
+   "image": null,
+   "pilots": 12
+  },
+  {
+   "level": 4,
+   "name": "Senior Captain",
+   "abbreviation": "SCPT",
+   "honorary": false,
+   "hours": 250,
+   "flights": 100,
+   "points": 0,
+   "description": "Full fleet, including the Challenger 650.",
+   "image": null,
+   "pilots": 6
+  },
+  {
+   "level": 99,
+   "name": "Founder",
+   "abbreviation": "FDR",
+   "honorary": true,
+   "hours": 0,
+   "flights": 0,
+   "points": 0,
+   "description": null,
+   "image": null,
+   "pilots": 0
+  }
+ ],
+ "events": [
+  {
+   "name": "Thanksgiving Shuttle: Indy to Palm Beach",
+   "kind": "group-flight",
+   "description": "Fly CXC210 with the group. Bonus points for a smooth landing.",
+   "start": "2026-11-26T18:00:00Z",
+   "end": "2026-11-26T22:00:00Z",
+   "image": null,
+   "tags": [
+    "group flight"
+   ],
+   "registration_required": true,
+   "registrations": 9,
+   "points": 50
+  },
+  {
+   "name": "Winter Ski Charters",
+   "kind": "tour",
+   "description": "Five legs into Aspen, Vail and Jackson Hole during December.",
+   "start": "2026-12-01T00:00:00Z",
+   "end": "2026-12-31T23:59:00Z",
+   "image": null,
+   "tags": [
+    "tour"
+   ],
+   "registration_required": false,
+   "registrations": null,
+   "points": 200
+  }
+ ],
+ "recent_flights": [
+  {
+   "callsign": "CXC102",
+   "flight_number": "102",
+   "from": "KTEB",
+   "to": "KTYQ",
+   "aircraft": "C700",
+   "landing_rate": -142,
+   "duration_min": 127,
+   "landed": "2026-11-10T15:44:00Z"
+  },
+  {
+   "callsign": "CXC700",
+   "flight_number": "700",
+   "from": "KTYQ",
+   "to": "KLOU",
+   "aircraft": "PC12",
+   "landing_rate": -188,
+   "duration_min": 44,
+   "landed": "2026-11-10T13:05:00Z"
+  },
+  {
+   "callsign": "CXC930",
+   "flight_number": "930",
+   "from": "KPBI",
+   "to": "KEYW",
+   "aircraft": "C25C",
+   "landing_rate": -97,
+   "duration_min": 55,
+   "landed": "2026-11-09T20:31:00Z"
+  },
+  {
+   "callsign": "CXC305",
+   "flight_number": "305",
+   "from": "KTYQ",
+   "to": "KASE",
+   "aircraft": "CL60",
+   "landing_rate": -175,
+   "duration_min": 166,
+   "landed": "2026-11-09T18:02:00Z"
+  }
+ ],
+ "airports": {
+  "KASE": {
+   "icao": "KASE",
+   "iata": "ASE",
+   "name": "Aspen/Pitkin County",
+   "country": "United States",
+   "lat": 39.2232,
+   "lon": -106.8688,
+   "base": false
+  },
+  "KBNA": {
+   "icao": "KBNA",
+   "iata": "BNA",
+   "name": "Nashville International",
+   "country": "United States",
+   "lat": 36.1245,
+   "lon": -86.6782,
+   "base": false
+  },
+  "KCVG": {
+   "icao": "KCVG",
+   "iata": "CVG",
+   "name": "Cincinnati/Northern Kentucky",
+   "country": "United States",
+   "lat": 39.0488,
+   "lon": -84.6678,
+   "base": false
+  },
+  "KDAL": {
+   "icao": "KDAL",
+   "iata": "DAL",
+   "name": "Dallas Love Field",
+   "country": "United States",
+   "lat": 32.8471,
+   "lon": -96.8518,
+   "base": false
+  },
+  "KEYW": {
+   "icao": "KEYW",
+   "iata": "EYW",
+   "name": "Key West International",
+   "country": "United States",
+   "lat": 24.5561,
+   "lon": -81.7596,
+   "base": false
+  },
+  "KIND": {
+   "icao": "KIND",
+   "iata": "IND",
+   "name": "Indianapolis International",
+   "country": "United States",
+   "lat": 39.7173,
+   "lon": -86.2944,
+   "base": true
+  },
+  "KLOU": {
+   "icao": "KLOU",
+   "iata": "LOU",
+   "name": "Bowman Field",
+   "country": "United States",
+   "lat": 38.228,
+   "lon": -85.6637,
+   "base": false
+  },
+  "KMDW": {
+   "icao": "KMDW",
+   "iata": "MDW",
+   "name": "Chicago Midway",
+   "country": "United States",
+   "lat": 41.7868,
+   "lon": -87.7522,
+   "base": false
+  },
+  "KPBI": {
+   "icao": "KPBI",
+   "iata": "PBI",
+   "name": "Palm Beach International",
+   "country": "United States",
+   "lat": 26.6832,
+   "lon": -80.0956,
+   "base": false
+  },
+  "KSDL": {
+   "icao": "KSDL",
+   "iata": "SCF",
+   "name": "Scottsdale",
+   "country": "United States",
+   "lat": 33.6229,
+   "lon": -111.9105,
+   "base": false
+  },
+  "KTEB": {
+   "icao": "KTEB",
+   "iata": "TEB",
+   "name": "Teterboro",
+   "country": "United States",
+   "lat": 40.8501,
+   "lon": -74.0608,
+   "base": false
+  },
+  "KTYQ": {
+   "icao": "KTYQ",
+   "iata": null,
+   "name": "Indianapolis Executive",
+   "country": "United States",
+   "lat": 40.0306,
+   "lon": -86.2514,
+   "base": true
+  }
+ }
+}

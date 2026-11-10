@@ -1,0 +1,79 @@
+name: Sync vAMSYS and deploy site
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"   # GitHub may delay scheduled runs; the site flags data older than 45 min
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test sync
+        working-directory: sync
+        run: python -B -m unittest discover -s tests -t .
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install and test site
+        working-directory: site
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
+
+      # Credentials live only in repository secrets and only this step sees them. If the secrets
+      # are missing the build ships the fictional sample (with its on-page banner). If vAMSYS fails,
+      # the job fails and the previously deployed site stays live.
+      - name: Pull vAMSYS snapshot
+        working-directory: sync
+        env:
+          VAMSYS_CLIENT_ID: ${{ secrets.VAMSYS_CLIENT_ID }}
+          VAMSYS_CLIENT_SECRET: ${{ secrets.VAMSYS_CLIENT_SECRET }}
+        run: |
+          if [ -n "$VAMSYS_CLIENT_ID" ] && [ -n "$VAMSYS_CLIENT_SECRET" ]; then
+            python -B -m crossroads_sync --config ../site.config.json --output ../site/public/data/snapshot.json
+          else
+            echo "::warning::VAMSYS_CLIENT_ID/SECRET not set; deploying sample data"
+            python -B -m crossroads_sync --sample --config ../site.config.json --output ../site/public/data/snapshot.json
+          fi
+
+      - name: Build site
+        working-directory: site
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
