@@ -2,12 +2,53 @@
 
 Entered into Orwell on 2026-11-10.
 
-- **Airports (15):** KIND, KTYQ (bases), KTEB, KHPN, KASE, KAPF, KSDL, KLAS, KDAL, KMDW, KBNA, KEYW,
-  KMCO, KBOS, KLAX. vAMSYS's airport lookup rejected KPBI and PBI (Palm Beach), so it was skipped.
-- **Hub:** Indianapolis (KIND + KTYQ), default for new pilots.
-- **Fleets (fleet ID → type):** 32199 C510, 32200 C25C, 32201 LJ35, 32202 C700, 32203 E175,
-  32204 E190, 32205 GLF6, 32206 GA7C, 32207 B752. One aircraft each: N510CR, N525CR, N35CR,
-  N700CR, N175CR, N190CR, N650CR, N707CR, N757CR.
-- **Routes (28):** `routes-import.csv`, imported through Operations → Data → Imports → Routes.
-- **Ranks:** Cadet (0 h, vAMSYS default), First Officer 10 h / 5 PIREPs, Captain 25 / 15,
-  Senior Captain 75 / 40, Charter Captain 150 / 80, Chief Pilot 300 / 150. Icons in `../brand/png/ranks`.
+## Operating rule
+
+- **KTYQ (Indianapolis Executive):** aircraft up to Citation X size: Mustang, CJ4, Learjet 35A.
+- **KIND (Indianapolis International):** everything bigger: Longitude, G650, G700, E-Jets, 757,
+  A220, A340 and the freighters.
+- One vAMSYS hub, "Indianapolis", contains both airports and is the default for new pilots.
+
+## Divisions and fleets (fleet ID → type, aircraft)
+
+| Division | Fleet | ID | Aircraft |
+| --- | --- | --- | --- |
+| Executive (KTYQ) | Cessna Citation Mustang (C510) | 32199 | N510CR |
+| Executive (KTYQ) | Cessna Citation CJ4 (C25C) | 32200 | N525CR |
+| Executive (KTYQ) | Learjet 35A (LJ35) | 32201 | N35CR |
+| Executive (KIND) | Cessna Citation Longitude (C700) | 32202 | N700CR |
+| Executive (KIND) | Gulfstream G650 (GLF6) | 32205 | N650CR |
+| Executive (KIND) | Gulfstream G700 (GA7C) | 32206 | N707CR |
+| Executive charter (KIND) | Airbus A220-300 Executive (BCS3), 48 seats | 32209 | N223CR |
+| Executive charter (KIND) | Airbus A340-600 Executive (A346), 100 seats | 32208 | N346CR |
+| Group/sports charter (KIND) | Embraer E175 (E175) | 32203 | N175CR |
+| Group/sports charter (KIND) | Embraer E190 (E190) | 32204 | N190CR |
+| Group/sports charter (KIND) | Boeing 757-200 (B752) | 32207 | N757CR |
+| Cargo charter (KIND) | McDonnell Douglas MD-11F (MD11), 91,000 kg | 32210 | N611CR |
+| Cargo charter (KIND) | Airbus A300-600F (A306), 48,000 kg | 32211 | N306CR |
+
+## Airports (23)
+
+KIND, KTYQ (bases); KTEB, KHPN, KASE, KAPF, KSDL, KLAS, KDAL, KMDW, KBNA, KEYW, KMCO, KBOS, KLAX;
+EGGW, LFPB, MMSD, TNCM (long-range executive); KMIA, KONT, PANC, EDDP (cargo).
+vAMSYS's airport lookup rejected KPBI and PBI (Palm Beach), so it was skipped.
+
+## Routes (56)
+
+Imported through Operations → Data → Imports → Routes. Files are applied in order:
+
+1. `routes-import.csv`: the original 28 routes.
+2. `routes-update-2.csv`: updates those 28 by ID (route IDs 14214036–14214063) to follow the
+   KTYQ/KIND rule, and adds 28 more:
+   - CRX101–120: KTYQ small-jet executive
+   - CRX201–204: KIND group charters (E-Jets, 757, A220)
+   - CRX301–304: KIND sports charters (E190, 757, A220, A340)
+   - CRX401–412: KIND big-jet executive
+   - CRX501–508: KIND long-range executive (London Luton, Le Bourget, Los Cabos, St Maarten)
+   - CRX601–608: KIND cargo charters, type `cargo` (Miami, Ontario, Anchorage, Leipzig)
+
+## Ranks
+
+Cadet (0 h, vAMSYS default), First Officer 10 h / 5 PIREPs, Captain 25 / 15, Senior Captain 75 / 40,
+Charter Captain 150 / 80, Chief Pilot 300 / 150. Icons in `../brand/png/ranks`. vAMSYS ranks don't
+restrict aircraft; the route-to-fleet assignments above do that.
