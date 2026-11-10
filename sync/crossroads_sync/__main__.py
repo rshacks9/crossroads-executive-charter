@@ -24,9 +24,12 @@ SAMPLE_RAW = Path(__file__).with_name("sample_raw.json")
 PREVIEW_RAW = Path(__file__).with_name("preview_raw.json")
 
 
-def write_atomic(path: Path, document: dict[str, Any]) -> None:
+def write_atomic(path: Path, document: dict[str, Any], *, compact: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    payload = json.dumps(document, ensure_ascii=False, indent=1, sort_keys=False) + "\n"
+    if compact:
+        payload = json.dumps(document, ensure_ascii=False, separators=(",", ":")) + "\n"
+    else:
+        payload = json.dumps(document, ensure_ascii=False, indent=1, sort_keys=False) + "\n"
     handle, temp_name = tempfile.mkstemp(prefix=".snapshot-", suffix=".tmp", dir=path.parent)
     try:
         with os.fdopen(handle, "w", encoding="utf-8", newline="\n") as stream:
@@ -82,6 +85,13 @@ def main(argv: list[str] | None = None) -> int:
         snapshot = build_snapshot(raw, site, now=now, source="vamsys", unavailable=unavailable)
 
     write_atomic(args.output, snapshot)
+
+    # Crew Tools briefings (live weather, runway winds, fuel, approach cards) go in a separate file
+    # next to the snapshot so the main snapshot stays small. Sample mode stays fully offline.
+    crew_status = "skipped"
+    if not args.sample:
+        crew_status = write_crew(snapshot, args.output.with_name("crew.json"), now)
+
     print(
         "status=ok source={source} live={live} fleet={fleet} routes={routes} hubs={hubs} "
         "events={events} recent={recent} unavailable={unavailable}".format(
@@ -94,8 +104,26 @@ def main(argv: list[str] | None = None) -> int:
             recent=len(snapshot["recent_flights"]),
             unavailable=",".join(snapshot["unavailable"]) or "none",
         )
+        + f" crew={crew_status}"
     )
     return 0
+
+
+def write_crew(snapshot: dict[str, Any], path: Path, now: datetime) -> str:
+    from .crew import build_crew, fetch_weather
+
+    weather = None
+    status = "ok"
+    if os.environ.get("CROSSROADS_NO_WEATHER") != "1":
+        try:
+            weather = fetch_weather(snapshot["airports"].keys())
+        except Exception as error:  # network/API problems must never block a deploy
+            print(f"warning: weather unavailable ({type(error).__name__})", file=sys.stderr)
+            status = "no-weather"
+    else:
+        status = "no-weather"
+    write_atomic(path, build_crew(snapshot, now=now, weather_raw=weather), compact=True)
+    return status
 
 
 if __name__ == "__main__":

@@ -17,7 +17,27 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 | `sync/crossroads_sync/` | Builds the snapshot. `snapshot.py` is the allowlist; `fetch.py` makes the GET calls |
 | `sync/vamsys/` | Kimi's read-only vAMSYS client, vendored unchanged from `../va-website/infrastructure/vamsys` |
 | `site/` | Vite + React + TypeScript static site; Leaflet map on OpenStreetMap tiles |
+| `sync/crossroads_sync/crew.py` | Builds `crew.json` for the Crew Tools page (see below) |
+| `sync/kimi_tools/` | Kimi's Jumpseat calculation modules (weather, fuel, performance, approach), vendored unchanged |
 | `.github/workflows/sync-deploy.yml` | Test → pull vAMSYS → build → deploy to GitHub Pages, on a schedule |
+
+## Crew Tools (`#/crew`)
+
+A ready-made briefing for every route and aircraft type, rebuilt by the same 20-minute job:
+
+- **Weather**: live METAR and TAF from aviationweather.gov for every airport in the network, parsed
+  with Kimi's `weather.parse_metar`, plus flight category.
+- **Runway winds**: head/tail/crosswind for every runway end (`weather.calculate_crosswind`), using
+  OurAirports runway data (public domain, `sync/tools/build_runways.py` rebuilds `runways.json`).
+  The preferred runway is the one with the best headwind and least tailwind/crosswind.
+- **Fuel estimate**: phase-by-phase fuel from Kimi's `fuel_core.calculate_trip` with the planning
+  profiles in `fuel_profiles.json`. These are estimates; pilots dispatch with SimBrief.
+- **Approach card**: 3° glide path gates at 10/5/3/1 nm, Vapp and descent rate from Kimi's
+  `approach.build_briefing`.
+
+If the weather service is down the job still deploys (`crew=no-weather` in the log) and the page
+shows briefings without weather. Set `CROSSROADS_NO_WEATHER=1` to skip the fetch. For flight
+simulation only.
 
 ## Run it locally
 

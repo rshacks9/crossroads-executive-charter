@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Snapshot } from "./data";
 import { isStale, loadSnapshot, relativeAge } from "./data";
+import { CrewPage } from "./crew";
 import { EventsPage, FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
 
 export const ROUTES = [
@@ -8,6 +9,7 @@ export const ROUTES = [
   { path: "live", label: "Live flights" },
   { path: "fleet", label: "Fleet" },
   { path: "routes", label: "Routes" },
+  { path: "crew", label: "Crew Tools" },
   { path: "events", label: "Events" },
   { path: "pilots", label: "Fly with us" },
 ] as const;
@@ -148,6 +150,8 @@ export function App() {
           <RoutesPage snapshot={snapshot} />
         ) : path === "pilots" ? (
           <PilotsPage snapshot={snapshot} />
+        ) : path === "crew" ? (
+          <CrewPage snapshot={snapshot} />
         ) : path === "events" ? (
           <EventsPage snapshot={snapshot} />
         ) : (

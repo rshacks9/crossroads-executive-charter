@@ -299,4 +299,65 @@ main:focus { outline: none; }
 .sim-aircraft span { font: 600 11px var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
 .tag--cargo { margin-left: 8px; background: #fbe7dc; color: var(--signal-ink); }
 
+/* ------------------------------------------------------------- crew tools */
+.crew__pick { margin-bottom: 20px; }
+.crew__pick label { max-width: 380px; flex-basis: 300px; }
+.crew__print { align-self: end; }
+.briefing { background: var(--panel); border: 1px solid var(--line); border-top: 5px solid var(--signal); border-radius: var(--radius); padding: clamp(16px, 3vw, 28px); display: grid; gap: 24px; }
+.briefing__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: end; }
+.briefing__head h2 { font-size: clamp(36px, 5vw, 52px); }
+.briefing__facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; }
+.briefing__facts dt, .wx-facts dt { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-2); }
+.briefing__facts dd, .wx-facts dd { margin: 0; font-weight: 600; }
+.briefing__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .briefing__grid { grid-template-columns: 1fr; } }
+.briefing > *, .briefing__grid > *, .wx-panel > * { min-width: 0; }
+.briefing h3 { font-size: 26px; margin-bottom: 10px; }
+.briefing__foot { border-top: 1px solid var(--mist); padding-top: 16px; display: grid; gap: 12px; }
+.fineprint { font-size: 13px; color: var(--text-2); margin-top: 8px; }
+.fuel-table tr.sum td, .fuel-table tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
+.fuel-table tr.total td { background: var(--warn-bg); }
+.wx-panel { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 12px; background: var(--paper); }
+.wx-panel__head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.wx-panel__name { font: 400 16px var(--body); color: var(--text-2); }
+.metar { display: block; font: 500 13px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; background: var(--ink); color: var(--on-ink); padding: 10px 12px; border-radius: var(--radius); white-space: pre-wrap; word-break: break-word; }
+.wx-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin: 0; }
+.rwy-table tr.is-preferred td { background: var(--warn-bg); }
+.rwy-table .tag { margin-left: 8px; }
+td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
+.taf summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.cat { font: 700 12px/1 var(--body); letter-spacing: .06em; padding: 6px 8px; border-radius: 4px; white-space: nowrap; text-transform: uppercase; }
+.cat--vfr { background: #dff1e6; color: #1d6b41; }
+.cat--mvfr { background: #dde9f7; color: #1f4f8a; }
+.cat--ifr { background: #f8dcd9; color: #a3271b; }
+.cat--lifr { background: #f0dcf3; color: #7a2a8a; }
+.cat--none { background: var(--mist); color: var(--text-2); }
+.approach { display: grid; gap: 10px; }
+.approach__head h3 { margin-bottom: 2px; }
+.wx-board { margin-top: 40px; }
+.wx-board h2 { font-size: 34px; margin-bottom: 14px; }
+.wx-tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.wx-tile { background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--line); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; font-size: 14px; }
+.wx-tile strong { font: 700 20px var(--display); letter-spacing: .04em; }
+.wx-tile .cat { justify-self: start; }
+.wx-tile--vfr { border-left-color: #2f8a57; }
+.wx-tile--mvfr { border-left-color: #2a6fb7; }
+.wx-tile--ifr { border-left-color: #c0392b; }
+.wx-tile--lifr { border-left-color: #8e44ad; }
+.crew__credit { margin-top: 24px; }
+
+@media print {
+  .masthead, .notice, .footer, .crew__pick, .crew__intro, .wx-board, .crew__credit, .briefing__foot .hero__actions { display: none !important; }
+  body { background: #fff; font-size: 12px; }
+  .page { padding: 0; }
+  .briefing { border: 0; padding: 0; }
+  .metar { background: #fff; color: #000; border: 1px solid #999; }
+}
+
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+
+/* crew tables: tighten on phones and scroll inside the card rather than the page */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 480px) {
+  .briefing .table--compact td, .briefing .table--compact th { padding: 8px 6px; font-size: 14px; }
+}

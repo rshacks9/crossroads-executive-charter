@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/livemap.tsx","./src/data.test.ts","./src/data.ts","./src/main.tsx","./src/pages.tsx","./vite.config.ts"],"version":"5.9.3"}
+{"root":["./src/app.tsx","./src/livemap.tsx","./src/crew.tsx","./src/data.test.ts","./src/data.ts","./src/main.tsx","./src/pages.tsx","./vite.config.ts"],"version":"5.9.3"}

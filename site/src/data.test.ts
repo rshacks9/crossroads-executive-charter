@@ -15,7 +15,15 @@ import {
   primaryDivision,
   progressPercent,
   relativeAge,
+  componentText,
+  isCrew,
+  kgToLb,
+  loadCrew,
+  windText,
+  type Crew,
+  type FuelPlan,
   type Route,
+  type WindComponents,
   type Snapshot,
 } from "./data";
 
@@ -113,5 +121,44 @@ describe("geometry and hash routing", () => {
   it("reads query parameters from the hash", () => {
     expect(hashParam("division", "#/routes?division=Cargo%20Charter")).toBe("Cargo Charter");
     expect(hashParam("division", "#/routes")).toBe("");
+  });
+});
+
+describe("crew briefings", () => {
+  // crew.json is written by the sync job next to snapshot.json (Kimi's Jumpseat modules + live weather).
+  const crew: unknown = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+
+  it("accepts the committed crew.json and covers every route and fleet type", () => {
+    expect(isCrew(crew)).toBe(true);
+    const c = crew as Crew;
+    for (const route of snapshot.routes) {
+      if (!route.callsign) continue;
+      expect(c.plans[route.callsign], route.callsign).toBeTruthy();
+      for (const plan of Object.values(c.plans[route.callsign] as Record<string, FuelPlan>)) {
+        const phases = Object.values(plan.phases).reduce((sum, p) => sum + p.fuel_kg, 0);
+        expect(Math.abs(phases - plan.trip_kg)).toBeLessThanOrEqual(2);
+        expect(plan.total_kg).toBeGreaterThan(plan.trip_kg);
+      }
+    }
+    for (const icao of Object.keys(snapshot.airports)) expect(c.airports[icao], icao).toBeTruthy();
+  });
+
+  it("rejects other shapes and surfaces HTTP failures", async () => {
+    expect(isCrew(null)).toBe(false);
+    expect(isCrew({ generated_at: "x" })).toBe(false);
+    const missing = (async () => new Response("", { status: 404 })) as typeof fetch;
+    await expect(loadCrew(missing)).rejects.toThrow("404");
+  });
+
+  it("formats wind and runway components for pilots", () => {
+    expect(kgToLb(1000)).toBe(2205);
+    expect(windText(undefined)).toBe("—");
+    expect(windText({ direction_deg: 0, speed_kt: 0, variable: false })).toBe("Calm");
+    expect(windText({ direction_deg: 50, speed_kt: 12.4, gust_kt: 22, variable: false })).toBe("050° 12 kt gusting 22");
+    expect(windText({ direction_deg: null, speed_kt: 4, variable: true })).toBe("VRB 4 kt");
+    expect(componentText({ headwind_kt: 9, tailwind_kt: 0, crosswind_kt: 3, crosswind_from: "left" } as WindComponents))
+      .toBe("9 kt head, 3 kt cross from left");
+    expect(componentText({ headwind_kt: -5, tailwind_kt: 5, crosswind_kt: 0, crosswind_from: null } as unknown as WindComponents))
+      .toBe("5 kt tail, no crosswind");
   });
 });

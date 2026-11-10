@@ -322,3 +322,108 @@ export function filterRoutes(routes: Route[], query: string, type: string, divis
       .some((field) => field !== null && field.toUpperCase().includes(q));
   });
 }
+
+// ------------------------------------------------------------------ crew tools (crew.json)
+// Produced by sync/crossroads_sync/crew.py using Kimi's Jumpseat modules.
+
+export interface WindComponents {
+  headwind_kt: number;
+  tailwind_kt: number;
+  crosswind_kt: number;
+  crosswind_from: string;
+  gust_headwind_kt?: number;
+  gust_crosswind_kt?: number;
+}
+
+export interface CrewRunway {
+  id: string;
+  reciprocal: string | null;
+  heading_true_deg: number | null;
+  length_ft: number | null;
+  width_ft: number | null;
+  surface: string | null;
+  elevation_ft: number | null;
+  wind: WindComponents | null;
+}
+
+export interface CrewMetar {
+  raw: string;
+  station?: string;
+  wind?: { direction_deg: number | null; speed_kt: number; gust_kt?: number; variable: boolean };
+  visibility?: { value: number; unit: string };
+  temperature_c?: number;
+  dewpoint_c?: number;
+  altimeter?: { value: number; unit: string };
+  observed_at?: string;
+  age_s?: number;
+  stale?: boolean;
+}
+
+export interface CrewAirport {
+  flight_category: "VFR" | "MVFR" | "IFR" | "LIFR" | null;
+  clouds: { cover: string; base_ft: number | null }[];
+  metar: CrewMetar | null;
+  taf: string | null;
+  runways: CrewRunway[];
+  preferred_runway: string | null;
+}
+
+export interface FuelPlan {
+  phases: Record<string, { minutes: number; fuel_kg: number }>;
+  trip_kg: number;
+  contingency_kg: number;
+  reserve_minutes: number;
+  reserve_kg: number;
+  total_kg: number;
+}
+
+export interface ApproachCard {
+  runway: { identifier?: string; orientation?: { heading_true_deg?: number }; threshold_elevation_ft?: number; length_ft?: number; glide_path_deg?: number };
+  wind?: { wind_direction_true_deg: number; wind_speed_kt: number; components: WindComponents };
+  aircraft: { approach_speed_kt?: number; threshold_crossing_height_ft?: number };
+  target_gates: { distance_to_threshold_nm: number; target_speed_kt?: number; height_above_threshold_ft?: number; altitude_ft_msl?: number }[];
+}
+
+export interface Crew {
+  generated_at: string;
+  weather_source: string | null;
+  airports: Record<string, CrewAirport>;
+  plans: Record<string, Record<string, FuelPlan>>;
+  approaches: Record<string, Record<string, ApproachCard>>;
+  notes: Record<string, string>;
+}
+
+export function isCrew(value: unknown): value is Crew {
+  if (!value || typeof value !== "object") return false;
+  const v = value as Record<string, unknown>;
+  return typeof v.generated_at === "string" && typeof v.airports === "object" && v.airports !== null
+    && typeof v.plans === "object" && v.plans !== null && typeof v.approaches === "object" && v.approaches !== null;
+}
+
+export async function loadCrew(fetcher: typeof fetch = fetch): Promise<Crew> {
+  const response = await fetcher(`./data/crew.json?t=${Math.floor(Date.now() / 60000)}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`crew briefing request failed (${response.status})`);
+  const body: unknown = await response.json();
+  if (!isCrew(body)) throw new Error("crew briefing has an unexpected shape");
+  return body;
+}
+
+export const KG_TO_LB = 2.20462262;
+
+export function kgToLb(kg: number): number {
+  return Math.round(kg * KG_TO_LB);
+}
+
+export function windText(wind: CrewMetar["wind"] | undefined): string {
+  if (!wind) return "—";
+  if (wind.speed_kt === 0) return "Calm";
+  const dir = wind.variable || wind.direction_deg == null ? "VRB" : String(Math.round(wind.direction_deg)).padStart(3, "0") + "°";
+  return `${dir} ${Math.round(wind.speed_kt)} kt${wind.gust_kt ? ` gusting ${Math.round(wind.gust_kt)}` : ""}`;
+}
+
+export function componentText(c: WindComponents | null | undefined): string {
+  if (!c) return "—";
+  const along = c.tailwind_kt > 0 ? `${c.tailwind_kt} kt tail` : `${Math.max(0, c.headwind_kt)} kt head`;
+  const across = c.crosswind_kt > 0 ? `${c.crosswind_kt} kt cross from ${c.crosswind_from}` : "no crosswind";
+  return `${along}, ${across}`;
+}

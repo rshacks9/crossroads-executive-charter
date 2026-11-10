@@ -1,0 +1,24 @@
+{
+ "_note": "Planning estimates in Kimi's fuel_planner profile format (schema_version 1). Typical published fuel flows rounded for quick planning. Always dispatch with SimBrief for the real figure.",
+ "defaults": {
+  "phase_minutes": {"taxi": 15, "climb": 20, "descent": 25},
+  "approach_speed_kt": null
+ },
+ "profiles": {
+  "C510": {"cruise": 300, "climb": 420, "descent": 150, "taxi": 60, "holding": 260, "reserve_minutes": 45, "vref_kt": 95},
+  "C25C": {"cruise": 500, "climb": 700, "descent": 220, "taxi": 80, "holding": 420, "reserve_minutes": 45, "vref_kt": 115},
+  "LJ35": {"cruise": 720, "climb": 1000, "descent": 300, "taxi": 110, "holding": 600, "reserve_minutes": 45, "vref_kt": 125},
+  "C700": {"cruise": 820, "climb": 1150, "descent": 330, "taxi": 120, "holding": 690, "reserve_minutes": 45, "vref_kt": 115},
+  "GLF6": {"cruise": 1900, "climb": 2700, "descent": 750, "taxi": 250, "holding": 1600, "reserve_minutes": 45, "vref_kt": 125},
+  "GA7C": {"cruise": 2050, "climb": 2900, "descent": 800, "taxi": 260, "holding": 1700, "reserve_minutes": 45, "vref_kt": 125},
+  "BCS3": {"cruise": 2200, "climb": 3300, "descent": 850, "taxi": 300, "holding": 1900, "reserve_minutes": 45, "vref_kt": 130},
+  "E175": {"cruise": 1750, "climb": 2600, "descent": 700, "taxi": 250, "holding": 1500, "reserve_minutes": 45, "vref_kt": 125},
+  "E190": {"cruise": 2100, "climb": 3100, "descent": 820, "taxi": 280, "holding": 1800, "reserve_minutes": 45, "vref_kt": 130},
+  "B752": {"cruise": 3300, "climb": 5000, "descent": 1300, "taxi": 400, "holding": 2900, "reserve_minutes": 45, "vref_kt": 135},
+  "A346": {"cruise": 7500, "climb": 11000, "descent": 2900, "taxi": 800, "holding": 6500, "reserve_minutes": 45, "vref_kt": 145},
+  "A388": {"cruise": 11500, "climb": 17000, "descent": 4500, "taxi": 1200, "holding": 10000, "reserve_minutes": 45, "vref_kt": 140},
+  "A306": {"cruise": 5500, "climb": 8200, "descent": 2100, "taxi": 650, "holding": 4800, "reserve_minutes": 45, "vref_kt": 140},
+  "MD11": {"cruise": 8000, "climb": 12000, "descent": 3100, "taxi": 900, "holding": 7000, "reserve_minutes": 45, "vref_kt": 155},
+  "B77L": {"cruise": 7600, "climb": 11500, "descent": 3000, "taxi": 850, "holding": 6600, "reserve_minutes": 45, "vref_kt": 150}
+ }
+}
