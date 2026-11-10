@@ -1,4 +1,4 @@
-# Crossroad Executive & Charter: public website
+# Crossroads Executive & Charter: public website
 
 The public face of the airline: home page with live stats, a live flight map, fleet, route network,
 pilot ranks and hubs, and events. Its data comes from vAMSYS, so the site updates itself as pilots

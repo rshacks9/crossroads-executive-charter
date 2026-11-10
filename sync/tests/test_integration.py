@@ -93,7 +93,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_full_pipeline(self):
         raw, unavailable = fetch_raw(self.client, now=NOW)
-        snapshot = build_snapshot(raw, {"name": "Crossroad Executive & Charter"}, now=NOW, source="vamsys", unavailable=unavailable)
+        snapshot = build_snapshot(raw, {"name": "Crossroads Executive & Charter"}, now=NOW, source="vamsys", unavailable=unavailable)
 
         self.assertEqual(unavailable, ["flight_map"])
         self.assertEqual(snapshot["live"], [])

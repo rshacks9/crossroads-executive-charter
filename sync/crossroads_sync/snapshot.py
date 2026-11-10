@@ -404,8 +404,8 @@ def _recent(raw_pireps: list[dict[str, Any]], airports: _Airports, fleet_codes: 
 
 def site_settings(site: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "name": text(site.get("name"), 80) or "Crossroad Executive & Charter",
-        "short_name": text(site.get("short_name"), 30) or "Crossroad",
+        "name": text(site.get("name"), 80) or "Crossroads Executive & Charter",
+        "short_name": text(site.get("short_name"), 30) or "Crossroads",
         "tagline": text(site.get("tagline"), 160),
         "join_url": https_url(site.get("join_url")),
         "pilot_login_url": https_url(site.get("pilot_login_url")),

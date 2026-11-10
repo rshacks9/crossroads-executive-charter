@@ -1,11 +1,11 @@
 {
  "schema": "crossroads-public/1",
  "source": "sample",
- "generated_at": "2026-11-10T20:03:04Z",
+ "generated_at": "2026-11-10T20:17:10Z",
  "unavailable": [],
  "airline": {
-  "name": "Crossroad Executive & Charter",
-  "short_name": "Crossroad",
+  "name": "Crossroads Executive & Charter",
+  "short_name": "Crossroads",
   "tagline": "Executive and charter flying from the Crossroads of America.",
   "join_url": null,
   "pilot_login_url": "https://vamsys.io/login",

@@ -169,7 +169,7 @@ export function HomePage({ snapshot }: PageProps) {
           ) : (
             <div className="empty">
               <h3>Quiet skies</h3>
-              <p>No Crossroad flights are airborne at the moment. Check back soon, or see where we fly.</p>
+              <p>No Crossroads flights are airborne at the moment. Check back soon, or see where we fly.</p>
               <a className="text-link" href="#/routes">Browse routes →</a>
             </div>
           )}
@@ -384,7 +384,7 @@ export function PilotsPage({ snapshot }: PageProps) {
   const ladder = snapshot.ranks.filter((r) => !r.honorary);
   return (
     <section className="page">
-      <h1 className="page-title">Fly for Crossroad</h1>
+      <h1 className="page-title">Fly for Crossroads</h1>
       <p className="lede">Pilots fly our schedule from home in their simulator, log flights automatically, and work up the rank ladder.</p>
 
       <ol className="steps">

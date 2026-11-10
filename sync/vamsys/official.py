@@ -18,7 +18,7 @@ GET_ENDPOINTS = {
     "pireps": "/pireps",
 }
 
-# These prevent a safe, complete built-in mapping to the Crossroad canonical schema.
+# These prevent a safe, complete built-in mapping to the Crossroads canonical schema.
 UNMAPPED_CANONICAL_SEMANTICS = (
     "No Operations GET exposes the airline profile name and ICAO/IATA codes.",
     "RouteData has fleet_ids, not one canonical aircraft_id; airport IDs require AirportData joins.",

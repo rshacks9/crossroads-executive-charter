@@ -11,7 +11,7 @@ from crossroads_sync.snapshot import build_snapshot, minutes_from_hms, plain_tex
 
 SAMPLE = json.loads((Path(__file__).parents[1] / "crossroads_sync" / "sample_raw.json").read_text(encoding="utf-8"))
 NOW = datetime(2026, 11, 10, 18, 0, tzinfo=timezone.utc)
-SITE = {"name": "Crossroad Executive & Charter", "join_url": "https://example.test/join"}
+SITE = {"name": "Crossroads Executive & Charter", "join_url": "https://example.test/join"}
 
 
 def build(raw=None, site=None, **kwargs):

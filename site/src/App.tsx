@@ -54,7 +54,7 @@ export function App() {
 
   useEffect(() => {
     const label = ROUTES.find((r) => r.path === path)?.label ?? "Home";
-    const name = snapshot?.airline.name ?? "Crossroad Executive & Charter";
+    const name = snapshot?.airline.name ?? "Crossroads Executive & Charter";
     document.title = path ? `${label} · ${name}` : name;
   }, [path, snapshot]);
 
@@ -65,10 +65,10 @@ export function App() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="masthead">
         <div className="masthead__inner">
-          <a className="wordmark" href="#/" aria-label={`${airline?.name ?? "Crossroad Executive & Charter"} home`}>
+          <a className="wordmark" href="#/" aria-label={`${airline?.name ?? "Crossroads Executive & Charter"} home`}>
             <span className="wordmark__mark" aria-hidden="true" />
             <span className="wordmark__text">
-              <strong>Crossroad</strong>
+              <strong>Crossroads</strong>
               <small>Executive &amp; Charter</small>
             </span>
           </a>
@@ -134,7 +134,7 @@ export function App() {
       <footer className="footer">
         <div className="footer__inner">
           <div>
-            <strong>{airline?.name ?? "Crossroad Executive & Charter"}</strong>
+            <strong>{airline?.name ?? "Crossroads Executive & Charter"}</strong>
             <p>A virtual airline for flight simulation. Not affiliated with any real-world airline or operator.</p>
           </div>
           <ul className="footer__links">
