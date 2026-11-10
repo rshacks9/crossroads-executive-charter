@@ -427,9 +427,22 @@ def _divisions(value: Any) -> list[dict[str, Any]]:
     return divisions
 
 
+def _sim_aircraft(value: Any) -> dict[str, str]:
+    """Which simulator aircraft each fleet type is flown in, keyed by ICAO type code."""
+    if not isinstance(value, dict):
+        return {}
+    result = {}
+    for key, label in list(value.items())[:40]:
+        type_code, name = code(key), text(label, 80)
+        if type_code and name:
+            result[type_code] = name
+    return result
+
+
 def site_settings(site: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "divisions": _divisions(site.get("divisions")),
+        "sim_aircraft": _sim_aircraft(site.get("sim_aircraft")),
         "name": text(site.get("name"), 80) or "Crossroads Executive & Charter",
         "short_name": text(site.get("short_name"), 30) or "Crossroads",
         "tagline": text(site.get("tagline"), 160),

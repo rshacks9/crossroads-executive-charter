@@ -25,7 +25,7 @@ class PreviewTests(unittest.TestCase):
 
     def test_preview_mirrors_the_vamsys_setup(self):
         self.assertEqual(len(self.snapshot["routes"]), 56)
-        self.assertEqual(len(self.snapshot["fleet"]), 13)
+        self.assertEqual(len(self.snapshot["fleet"]), 15)
         self.assertEqual(len(self.snapshot["airports"]), 23)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
@@ -41,7 +41,7 @@ class PreviewTests(unittest.TestCase):
     def test_cargo_routes_flagged_and_freighters_only(self):
         cargo = [r for r in self.snapshot["routes"] if r["kind"] == "cargo"]
         self.assertEqual(len(cargo), 8)
-        self.assertTrue(all(set(r["types"]) <= {"MD11", "A306"} for r in cargo))
+        self.assertTrue(all(set(r["types"]) <= {"MD11", "A306", "B77L"} for r in cargo))
 
     def test_divisions_cover_every_fleet_exactly_once(self):
         divisions = self.snapshot["airline"]["divisions"]
@@ -53,6 +53,19 @@ class PreviewTests(unittest.TestCase):
         site = {**SITE, "divisions": [{"name": ""}, {"name": "X", "fleets": ["bad code!", "C510"], "base": "nope!"}, "junk"]}
         divisions = build_snapshot(PREVIEW, site, now=NOW, source="preview")["airline"]["divisions"]
         self.assertEqual(divisions, [{"name": "X", "summary": None, "base": None, "fleets": ["C510"]}])
+
+
+class SimAircraftTests(unittest.TestCase):
+    def test_every_fleet_names_its_msfs_aircraft(self):
+        snapshot = build_snapshot(PREVIEW, SITE, now=NOW, source="preview")
+        sim = snapshot["airline"]["sim_aircraft"]
+        self.assertEqual(sorted(sim), sorted(f["code"] for f in snapshot["fleet"]))
+        self.assertEqual(sim["B77L"], "PMDG 777F")
+
+    def test_bad_sim_entries_dropped(self):
+        site = {**SITE, "sim_aircraft": {"not a code!": "x", "C510": "", "LJ35": "Learjet"}}
+        sim = build_snapshot(PREVIEW, site, now=NOW, source="preview")["airline"]["sim_aircraft"]
+        self.assertEqual(sim, {"LJ35": "Learjet"})
 
 
 if __name__ == "__main__":

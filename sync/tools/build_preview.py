@@ -16,7 +16,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-ROUTES_CSV = [ROOT.parent / "vamsys-data" / "routes-import.csv", ROOT.parent / "vamsys-data" / "routes-update-2.csv"]
+DATA = ROOT.parent / "vamsys-data"
+# Applied in order, exactly as they were imported into vAMSYS. Rows without an ID create a route; vAMSYS
+# numbered those sequentially from the first ID listed here.
+ROUTES_CSV = [
+    (DATA / "routes-import.csv", 14214036),
+    (DATA / "routes-update-2.csv", 14214095),
+    (DATA / "routes-update-3.csv", None),
+]
 OUT = ROOT / "crossroads_sync" / "preview_raw.json"
 
 AIRPORTS = [  # icao, iata, name, country, lat, lon, base
@@ -59,6 +66,8 @@ FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cru
     (32209, "BCS3", "Airbus A220-300 Executive", "pax", 48, None, "kg", ["N223CR"], 450),
     (32210, "MD11", "McDonnell Douglas MD-11F", "cargo", None, 91000, "kg", ["N611CR"], 480),
     (32211, "A306", "Airbus A300-600F", "cargo", None, 48000, "kg", ["N306CR"], 450),
+    (32213, "A388", "Airbus A380-800 Executive", "pax", 150, None, "kg", ["N380CR"], 490),
+    (32214, "B77L", "Boeing 777F", "cargo", None, 102000, "kg", ["N777CR"], 490),
 ]
 
 RANKS = [  # level, name, abbr, hours, pireps, honorary
@@ -79,20 +88,21 @@ def great_circle_nm(a: tuple[float, float], b: tuple[float, float]) -> int:
 
 def final_routes() -> list[dict[str, str]]:
     """Apply the import files in order, the way vAMSYS did (rows with an ID update; others create)."""
-    by_key: dict[str, dict[str, str]] = {}
-    created = 0
-    first_id = 14214036
-    for path in ROUTES_CSV:
+    by_id: dict[str, dict[str, str]] = {}
+    for path, first_new_id in ROUTES_CSV:
+        next_id = first_new_id
         with path.open(encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
                 if row["ID"]:
-                    by_key[row["ID"]] = row
-                elif path == ROUTES_CSV[0]:
-                    by_key[str(first_id + created)] = row
-                    created += 1
+                    if row["ID"] not in by_id:
+                        raise SystemExit(f"{path.name}: update for unknown route {row['ID']}")
+                    by_id[row["ID"]] = row
                 else:
-                    by_key[f"new-{len(by_key)}"] = row
-    return list(by_key.values())
+                    if next_id is None:
+                        raise SystemExit(f"{path.name}: creates routes but has no starting ID")
+                    by_id[str(next_id)] = row
+                    next_id += 1
+    return list(by_id.values())
 
 
 def main() -> None:

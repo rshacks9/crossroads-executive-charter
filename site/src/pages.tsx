@@ -181,7 +181,7 @@ export function HomePage({ snapshot }: PageProps) {
   const facts = networkFacts(snapshot);
   const all = stats.all_time;
   const month = stats.last_30_days;
-  const heaviest = fleet.find((f) => f.code === "MD11") ?? fleet.find((f) => f.type === "cargo");
+  const heaviest = fleet.find((f) => f.code === "A388") ?? fleet.find((f) => f.code === "MD11") ?? fleet.find((f) => f.type === "cargo");
   const smallest = fleet.find((f) => f.code === "C510") ?? fleet[0];
 
   return (
@@ -193,7 +193,7 @@ export function HomePage({ snapshot }: PageProps) {
           {airline.tagline ? <p className="hero__lede">{airline.tagline}</p> : null}
           <p className="hero__pitch">
             {smallest && heaviest
-              ? `From the ${smallest.name.replace(/^Cessna /, "")} to the ${heaviest.name.replace(/^McDonnell Douglas /, "")}: ${facts.aircraftTypes} aircraft types, ${facts.routes} routes and one career path.`
+              ? `From the ${smallest.name.replace(/^Cessna /, "")} to the ${heaviest.name.replace(/^(McDonnell Douglas|Airbus) /, "").replace(/-800 Executive$/, "")}: ${facts.aircraftTypes} aircraft types, ${facts.routes} routes and one career path.`
               : `${facts.aircraftTypes} aircraft types, ${facts.routes} routes and one career path.`}
           </p>
           <div className="hero__actions">
@@ -433,6 +433,9 @@ export function FleetPage({ snapshot }: PageProps) {
                 <div className="fleet-card__body">
                   <p className="eyebrow">{type.code}{type.type ? ` · ${KIND[type.type] ?? type.type}` : ""}</p>
                   <h3>{type.name}</h3>
+                  {snapshot.airline.sim_aircraft?.[type.code] ? (
+                    <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{snapshot.airline.sim_aircraft[type.code]}</p>
+                  ) : null}
                   <dl className="specs">
                     <div><dt>In fleet</dt><dd>{type.aircraft_count}</dd></div>
                     {type.type === "cargo" || type.type === "cargo-containers"

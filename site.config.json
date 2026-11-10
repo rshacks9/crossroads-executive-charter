@@ -17,8 +17,8 @@
   {
    "name": "Global Executive",
    "base": "KIND",
-   "summary": "The Longitude, both Gulfstreams and VIP-configured Airbus jets, flying coast to coast and across the Atlantic to London Luton and Paris Le Bourget.",
-   "fleets": ["C700", "GLF6", "GA7C", "BCS3", "A346"]
+   "summary": "The Longitude, both Gulfstreams and VIP-configured Airbus jets up to the A380, flying coast to coast and across the Atlantic to London Luton and Paris Le Bourget.",
+   "fleets": ["C700", "GLF6", "GA7C", "BCS3", "A346", "A388"]
   },
   {
    "name": "Group & Sports Charter",
@@ -29,8 +29,25 @@
   {
    "name": "Cargo Charter",
    "base": "KIND",
-   "summary": "MD-11F and A300-600F freighters on ad-hoc runs to Miami, Ontario, Anchorage and Leipzig.",
-   "fleets": ["MD11", "A306"]
+   "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Ontario, Anchorage and Leipzig.",
+   "fleets": ["A306", "MD11", "B77L"]
   }
- ]
+ ],
+ "sim_aircraft": {
+  "C510": "Cockspur Citation Mustang (add-on)",
+  "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
+  "LJ35": "Flysimware Learjet 35A (add-on)",
+  "C700": "Cessna Citation Longitude (MSFS 2024 default)",
+  "GLF6": "Gulfstream G650 (community mod)",
+  "GA7C": "Gulfstream G700 (community mod)",
+  "BCS3": "Synaptic Simulations A220 (add-on)",
+  "A346": "Aerosoft A340-600 Professional (add-on)",
+  "A388": "iniBuilds A380",
+  "E175": "FlightSim Studio E175 (add-on)",
+  "E190": "FlightSim Studio E190 (add-on)",
+  "B752": "Bluebird Simulations 757-200 (add-on)",
+  "A306": "iniBuilds A300-600 (add-on)",
+  "MD11": "TFDi Design MD-11F (add-on)",
+  "B77L": "PMDG 777F"
+ }
 }

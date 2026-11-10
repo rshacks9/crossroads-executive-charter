@@ -9,6 +9,8 @@ export interface Division {
 
 export interface Airline {
   divisions: Division[];
+  /** Simulator aircraft each fleet type is flown in, keyed by ICAO type code. */
+  sim_aircraft?: Record<string, string>;
   name: string;
   short_name: string;
   tagline: string | null;

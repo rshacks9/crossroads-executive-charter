@@ -30,7 +30,7 @@ h1{font-weight:700;font-size:118px;line-height:.9;margin:0;letter-spacing:2px}
 .tag{position:absolute;right:80px;bottom:78px;font-weight:600;font-size:30px;letter-spacing:3px;color:#a9b6bc}
 </style><div class="card"><div class="route2"></div><div class="route"></div>
 <div class="row">${mark}<div><h1>CROSSROADS</h1><div class="sub">EXECUTIVE &amp; CHARTER</div></div></div>
-<div class="facts"><div><b>13</b>aircraft types</div><div><b>56</b>routes</div><div><b>4</b>divisions</div></div>
+<div class="facts"><div><b>15</b>aircraft types</div><div><b>56</b>routes</div><div><b>4</b>divisions</div></div>
 <div class="tag">VIRTUAL AIRLINE · INDIANAPOLIS</div></div>`
 
 const browser = await chromium.launch({ executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' })

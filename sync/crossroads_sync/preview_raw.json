@@ -434,6 +434,28 @@
    "weight_unit": "kg",
    "hide_in_phoenix": false,
    "image_url": null
+  },
+  {
+   "id": 32213,
+   "code": "A388",
+   "name": "Airbus A380-800 Executive",
+   "type": "pax",
+   "max_pax": 150,
+   "max_cargo": null,
+   "weight_unit": "kg",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32214,
+   "code": "B77L",
+   "name": "Boeing 777F",
+   "type": "cargo",
+   "max_pax": null,
+   "max_cargo": 102000,
+   "weight_unit": "kg",
+   "hide_in_phoenix": false,
+   "image_url": null
   }
  ],
  "aircraft_by_fleet": {
@@ -500,6 +522,16 @@
   "32211": [
    {
     "registration": "N306CR"
+   }
+  ],
+  "32213": [
+   {
+    "registration": "N380CR"
+   }
+  ],
+  "32214": [
+   {
+    "registration": "N777CR"
    }
   ]
  },
@@ -1116,7 +1148,8 @@
    "fleet_ids": [
     32207,
     32209,
-    32208
+    32208,
+    32213
    ],
    "tag": [
     "sports-charter"
@@ -1136,7 +1169,8 @@
    "fleet_ids": [
     32207,
     32209,
-    32208
+    32208,
+    32213
    ],
    "tag": [
     "sports-charter"
@@ -1362,7 +1396,8 @@
     32205,
     32206,
     32209,
-    32208
+    32208,
+    32213
    ],
    "tag": [
     "executive"
@@ -1384,7 +1419,8 @@
     32205,
     32206,
     32209,
-    32208
+    32208,
+    32213
    ],
    "tag": [
     "executive"
@@ -1446,7 +1482,8 @@
    "fleet_ids": [
     32205,
     32206,
-    32208
+    32208,
+    32213
    ],
    "tag": [
     "executive",
@@ -1467,7 +1504,8 @@
    "fleet_ids": [
     32205,
     32206,
-    32208
+    32208,
+    32213
    ],
    "tag": [
     "executive",
@@ -1579,7 +1617,8 @@
    "flight_length": "02:24:00",
    "fleet_ids": [
     32210,
-    32211
+    32211,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1598,7 +1637,8 @@
    "flight_length": "02:24:00",
    "fleet_ids": [
     32210,
-    32211
+    32211,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1617,7 +1657,8 @@
    "flight_length": "03:49:00",
    "fleet_ids": [
     32210,
-    32211
+    32211,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1636,7 +1677,8 @@
    "flight_length": "03:49:00",
    "fleet_ids": [
     32210,
-    32211
+    32211,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1654,7 +1696,8 @@
    "flight_distance": 2618,
    "flight_length": "05:52:00",
    "fleet_ids": [
-    32210
+    32210,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1672,7 +1715,8 @@
    "flight_distance": 2618,
    "flight_length": "05:52:00",
    "fleet_ids": [
-    32210
+    32210,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1690,7 +1734,8 @@
    "flight_distance": 3881,
    "flight_length": "08:30:00",
    "fleet_ids": [
-    32210
+    32210,
+    32214
    ],
    "tag": [
     "cargo-charter"
@@ -1708,7 +1753,8 @@
    "flight_distance": 3881,
    "flight_length": "08:30:00",
    "fleet_ids": [
-    32210
+    32210,
+    32214
    ],
    "tag": [
     "cargo-charter"

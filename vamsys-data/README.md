@@ -6,7 +6,7 @@ Entered into Orwell on 2026-11-10.
 
 - **KTYQ (Indianapolis Executive):** aircraft up to Citation X size: Mustang, CJ4, Learjet 35A.
 - **KIND (Indianapolis International):** everything bigger: Longitude, G650, G700, E-Jets, 757,
-  A220, A340 and the freighters.
+  A220, A340, A380 and the freighters.
 - One vAMSYS hub, "Indianapolis", contains both airports and is the default for new pilots.
 
 ## Divisions and fleets (fleet ID → type, aircraft)
@@ -21,11 +21,13 @@ Entered into Orwell on 2026-11-10.
 | Executive (KIND) | Gulfstream G700 (GA7C) | 32206 | N707CR |
 | Executive charter (KIND) | Airbus A220-300 Executive (BCS3), 48 seats | 32209 | N223CR |
 | Executive charter (KIND) | Airbus A340-600 Executive (A346), 100 seats | 32208 | N346CR |
+| Executive charter (KIND) | Airbus A380-800 Executive (A388), 150 seats | 32213 | N380CR |
 | Group/sports charter (KIND) | Embraer E175 (E175) | 32203 | N175CR |
 | Group/sports charter (KIND) | Embraer E190 (E190) | 32204 | N190CR |
 | Group/sports charter (KIND) | Boeing 757-200 (B752) | 32207 | N757CR |
 | Cargo charter (KIND) | McDonnell Douglas MD-11F (MD11), 91,000 kg | 32210 | N611CR |
 | Cargo charter (KIND) | Airbus A300-600F (A306), 48,000 kg | 32211 | N306CR |
+| Cargo charter (KIND) | Boeing 777F (B77L), 102,000 kg | 32214 | N777CR |
 
 ## Airports (23)
 
@@ -46,9 +48,16 @@ Imported through Operations → Data → Imports → Routes. Files are applied i
    - CRX401–412: KIND big-jet executive
    - CRX501–508: KIND long-range executive (London Luton, Le Bourget, Los Cabos, St Maarten)
    - CRX601–608: KIND cargo charters, type `cargo` (Miami, Ontario, Anchorage, Leipzig)
+3. `routes-update-3.csv`: adds the A380 to CRX303/304 (LAX), 411/412 (LAS) and 503/504 (Le Bourget),
+   and the 777F to all eight cargo routes. Routes created by update 2 have IDs 14214095–14214122.
 
 ## Ranks
 
 Cadet (0 h, vAMSYS default), First Officer 10 h / 5 PIREPs, Captain 25 / 15, Senior Captain 75 / 40,
 Charter Captain 150 / 80, Chief Pilot 300 / 150. Icons in `../brand/png/ranks`. vAMSYS ranks don't
 restrict aircraft; the route-to-fleet assignments above do that.
+
+## Pilot portal content
+
+- Custom page **Pilot Handbook** (Documents category, page 3114): bases, divisions, flight-number
+  blocks, callsign, how a flight works, ranks.

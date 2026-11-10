@@ -295,6 +295,8 @@ main:focus { outline: none; }
 .faq details[open] summary::after { content: "–"; }
 .faq details p { padding: 0 0 16px; color: var(--text-2); }
 
+.sim-aircraft { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-left: 3px solid var(--signal); background: var(--paper); border-radius: 0 var(--radius) var(--radius) 0; font-weight: 600; }
+.sim-aircraft span { font: 600 11px var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
 .tag--cargo { margin-left: 8px; background: #fbe7dc; color: var(--signal-ink); }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }

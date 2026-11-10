@@ -1,7 +1,7 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-10T21:39:24Z",
+ "generated_at": "2026-11-10T22:05:26Z",
  "unavailable": [],
  "airline": {
   "divisions": [
@@ -17,14 +17,15 @@
    },
    {
     "name": "Global Executive",
-    "summary": "The Longitude, both Gulfstreams and VIP-configured Airbus jets, flying coast to coast and across the Atlantic to London Luton and Paris Le Bourget.",
+    "summary": "The Longitude, both Gulfstreams and VIP-configured Airbus jets up to the A380, flying coast to coast and across the Atlantic to London Luton and Paris Le Bourget.",
     "base": "KIND",
     "fleets": [
      "C700",
      "GLF6",
      "GA7C",
      "BCS3",
-     "A346"
+     "A346",
+     "A388"
     ]
    },
    {
@@ -39,14 +40,32 @@
    },
    {
     "name": "Cargo Charter",
-    "summary": "MD-11F and A300-600F freighters on ad-hoc runs to Miami, Ontario, Anchorage and Leipzig.",
+    "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Ontario, Anchorage and Leipzig.",
     "base": "KIND",
     "fleets": [
+     "A306",
      "MD11",
-     "A306"
+     "B77L"
     ]
    }
   ],
+  "sim_aircraft": {
+   "C510": "Cockspur Citation Mustang (add-on)",
+   "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
+   "LJ35": "Flysimware Learjet 35A (add-on)",
+   "C700": "Cessna Citation Longitude (MSFS 2024 default)",
+   "GLF6": "Gulfstream G650 (community mod)",
+   "GA7C": "Gulfstream G700 (community mod)",
+   "BCS3": "Synaptic Simulations A220 (add-on)",
+   "A346": "Aerosoft A340-600 Professional (add-on)",
+   "A388": "iniBuilds A380",
+   "E175": "FlightSim Studio E175 (add-on)",
+   "E190": "FlightSim Studio E190 (add-on)",
+   "B752": "Bluebird Simulations 757-200 (add-on)",
+   "A306": "iniBuilds A300-600 (add-on)",
+   "MD11": "TFDi Design MD-11F (add-on)",
+   "B77L": "PMDG 777F"
+  },
   "name": "Crossroads Executive & Charter",
   "short_name": "Crossroads",
   "tagline": "Executive and charter flying from the Crossroads of America.",
@@ -107,6 +126,21 @@
    "image_link": null
   },
   {
+   "code": "A388",
+   "name": "Airbus A380-800 Executive",
+   "type": "pax",
+   "max_pax": 150,
+   "max_cargo": null,
+   "weight_unit": "kg",
+   "aircraft_count": 1,
+   "registrations": [
+    "N380CR"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
    "code": "B752",
    "name": "Boeing 757-200",
    "type": "pax",
@@ -116,6 +150,21 @@
    "aircraft_count": 1,
    "registrations": [
     "N757CR"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "B77L",
+   "name": "Boeing 777F",
+   "type": "cargo",
+   "max_pax": null,
+   "max_cargo": 102000,
+   "weight_unit": "kg",
+   "aircraft_count": 1,
+   "registrations": [
+    "N777CR"
    ],
    "image": null,
    "image_attribution": null,
@@ -271,6 +320,7 @@
    "duration_min": 510,
    "departure_time": null,
    "types": [
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -501,6 +551,7 @@
    "duration_min": 510,
    "departure_time": null,
    "types": [
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -637,6 +688,7 @@
    "departure_time": null,
    "types": [
     "A346",
+    "A388",
     "BCS3",
     "C700",
     "GA7C",
@@ -658,6 +710,7 @@
    "departure_time": null,
    "types": [
     "A346",
+    "A388",
     "B752",
     "BCS3"
    ],
@@ -697,6 +750,7 @@
    "departure_time": null,
    "types": [
     "A306",
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -715,6 +769,7 @@
    "departure_time": null,
    "types": [
     "A306",
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -773,6 +828,7 @@
    "departure_time": null,
    "types": [
     "A346",
+    "A388",
     "GA7C",
     "GLF6"
    ],
@@ -813,6 +869,7 @@
    "duration_min": 352,
    "departure_time": null,
    "types": [
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -873,6 +930,7 @@
    "departure_time": null,
    "types": [
     "A346",
+    "A388",
     "BCS3",
     "C700",
     "GA7C",
@@ -912,6 +970,7 @@
    "departure_time": null,
    "types": [
     "A346",
+    "A388",
     "B752",
     "BCS3"
    ],
@@ -971,6 +1030,7 @@
    "departure_time": null,
    "types": [
     "A306",
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -989,6 +1049,7 @@
    "departure_time": null,
    "types": [
     "A306",
+    "B77L",
     "MD11"
    ],
    "days": []
@@ -1274,6 +1335,7 @@
    "departure_time": null,
    "types": [
     "A346",
+    "A388",
     "GA7C",
     "GLF6"
    ],
@@ -1314,6 +1376,7 @@
    "duration_min": 352,
    "departure_time": null,
    "types": [
+    "B77L",
     "MD11"
    ],
    "days": []
