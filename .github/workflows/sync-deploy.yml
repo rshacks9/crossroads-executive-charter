@@ -44,8 +44,8 @@ jobs:
           npm test
 
       # Credentials live only in repository secrets and only this step sees them. If the secrets
-      # are missing the build ships the fictional sample (with its on-page banner). If vAMSYS fails,
-      # the job fails and the previously deployed site stays live.
+      # are missing the build ships the "preview": the real schedule mirrored from vAMSYS, with no
+      # live flights or statistics. If vAMSYS fails, the job fails and the previous site stays live.
       - name: Pull vAMSYS snapshot
         working-directory: sync
         env:
@@ -55,8 +55,8 @@ jobs:
           if [ -n "$VAMSYS_CLIENT_ID" ] && [ -n "$VAMSYS_CLIENT_SECRET" ]; then
             python -B -m crossroads_sync --config ../site.config.json --output ../site/public/data/snapshot.json
           else
-            echo "::warning::VAMSYS_CLIENT_ID/SECRET not set; deploying sample data"
-            python -B -m crossroads_sync --sample --config ../site.config.json --output ../site/public/data/snapshot.json
+            echo "::notice::VAMSYS_CLIENT_ID/SECRET not set; deploying the schedule preview"
+            python -B -m crossroads_sync --preview --config ../site.config.json --output ../site/public/data/snapshot.json
           fi
 
       - name: Build site

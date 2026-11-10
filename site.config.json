@@ -6,5 +6,31 @@
  "pilot_login_url": "https://vamsys.io/login",
  "discord_url": null,
  "contact_email": null,
- "show_pilot_names": false
+ "show_pilot_names": false,
+ "divisions": [
+  {
+   "name": "Executive",
+   "base": "KTYQ",
+   "summary": "Light jets out of Indianapolis Executive. Quick hops to Teterboro, Chicago and Nashville, and longer legs to Aspen, Scottsdale and Key West.",
+   "fleets": ["C510", "C25C", "LJ35"]
+  },
+  {
+   "name": "Global Executive",
+   "base": "KIND",
+   "summary": "The Longitude, both Gulfstreams and VIP-configured Airbus jets, flying coast to coast and across the Atlantic to London Luton and Paris Le Bourget.",
+   "fleets": ["C700", "GLF6", "GA7C", "BCS3", "A346"]
+  },
+  {
+   "name": "Group & Sports Charter",
+   "base": "KIND",
+   "summary": "Teams, tours and getaways in the E-Jets and the 757, from Indianapolis to Orlando, Las Vegas, Boston and Los Angeles.",
+   "fleets": ["E175", "E190", "B752"]
+  },
+  {
+   "name": "Cargo Charter",
+   "base": "KIND",
+   "summary": "MD-11F and A300-600F freighters on ad-hoc runs to Miami, Ontario, Anchorage and Leipzig.",
+   "fleets": ["MD11", "A306"]
+  }
+ ]
 }

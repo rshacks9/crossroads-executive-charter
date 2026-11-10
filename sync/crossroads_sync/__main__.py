@@ -21,6 +21,7 @@ from typing import Any
 from .snapshot import build_snapshot
 
 SAMPLE_RAW = Path(__file__).with_name("sample_raw.json")
+PREVIEW_RAW = Path(__file__).with_name("preview_raw.json")
 
 
 def write_atomic(path: Path, document: dict[str, Any]) -> None:
@@ -58,14 +59,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="crossroads_sync")
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument("--sample", action="store_true", help="use bundled fictional data, no network")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--sample", action="store_true", help="use bundled fictional test data, no network")
+    mode.add_argument("--preview", action="store_true", help="use the real schedule mirror (preview_raw.json), no network")
     args = parser.parse_args(argv)
 
     site = json.loads(args.config.read_text(encoding="utf-8"))
     now = datetime.now(timezone.utc)
-    if args.sample:
-        raw = json.loads(SAMPLE_RAW.read_text(encoding="utf-8"))
-        snapshot = build_snapshot(raw, site, now=now, source="sample")
+    if args.sample or args.preview:
+        source_file, source = (SAMPLE_RAW, "sample") if args.sample else (PREVIEW_RAW, "preview")
+        raw = json.loads(source_file.read_text(encoding="utf-8"))
+        snapshot = build_snapshot(raw, site, now=now, source=source)
     else:
         from vamsys.client import VamsysError
 

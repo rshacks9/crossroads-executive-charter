@@ -1,15 +1,21 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
-import type { Airport, LiveFlight } from "./data";
-import { formatFeet } from "./data";
+import type { Airport, Division, LiveFlight, Route } from "./data";
+import { formatFeet, greatCircle, primaryDivision } from "./data";
+
+export const DIVISION_COLORS = ["#e8703a", "#2a6f97", "#2f7a55", "#7b4fa0", "#b0812a", "#55646c"];
 
 interface Props {
   flights: LiveFlight[];
   airports: Record<string, Airport>;
   bases: string[];
+  /** When given, the scheduled network is drawn underneath any live flights. */
+  routes?: Route[];
+  divisions?: Division[];
   height?: number;
   onSelect?: (index: number) => void;
+  label?: string;
 }
 
 const PLANE =
@@ -19,7 +25,9 @@ function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
 }
 
-export function LiveMap({ flights, airports, bases, height = 440, onSelect }: Props) {
+const has = (a: Airport | undefined): a is Airport & { lat: number; lon: number } => a?.lat != null && a.lon != null;
+
+export function LiveMap({ flights, airports, bases, routes = [], divisions = [], height = 440, onSelect, label }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const layer = useRef<L.LayerGroup | null>(null);
@@ -27,12 +35,7 @@ export function LiveMap({ flights, airports, bases, height = 440, onSelect }: Pr
 
   useEffect(() => {
     if (!container.current || map.current) return;
-    const instance = L.map(container.current, {
-      zoomControl: true,
-      scrollWheelZoom: false,
-      worldCopyJump: true,
-      attributionControl: true,
-    }).setView([39.7, -86.3], 4);
+    const instance = L.map(container.current, { zoomControl: true, scrollWheelZoom: false, worldCopyJump: true }).setView([39.7, -86.3], 4);
     // OpenStreetMap's standard tiles: free, no key, attribution required. A busy site should move to
     // a hosted tile provider (see README) to stay within the OSM tile usage policy.
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -45,7 +48,7 @@ export function LiveMap({ flights, airports, bases, height = 440, onSelect }: Pr
     // Leaflet measures its container once; re-measure when layout settles or the viewport changes.
     const observer = new ResizeObserver(() => {
       instance.invalidateSize();
-      if (bounds.current) instance.fitBounds(bounds.current, { padding: [36, 36], maxZoom: 7 });
+      if (bounds.current) instance.fitBounds(bounds.current, { padding: [28, 28], maxZoom: 7 });
     });
     observer.observe(container.current);
     return () => {
@@ -62,12 +65,35 @@ export function LiveMap({ flights, airports, bases, height = 440, onSelect }: Pr
     if (!instance || !group) return;
     group.clearLayers();
     const points: L.LatLngExpression[] = [];
+    const served = new Set<string>();
+
+    // Scheduled network: one arc per airport pair, coloured by the route's main division.
+    const drawn = new Set<string>();
+    for (const route of routes) {
+      const key = [route.from, route.to].sort().join("-");
+      if (drawn.has(key)) continue;
+      drawn.add(key);
+      const a = airports[route.from];
+      const b = airports[route.to];
+      if (!has(a) || !has(b)) continue;
+      const color = DIVISION_COLORS[Math.max(0, primaryDivision(route, divisions)) % DIVISION_COLORS.length];
+      L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon]), { color, weight: 2, opacity: 0.75, dashArray: route.kind === "cargo" ? "6 6" : undefined, interactive: false }).addTo(group);
+      served.add(route.from).add(route.to);
+    }
+    for (const icao of served) {
+      const airport = airports[icao];
+      if (!has(airport) || bases.includes(icao)) continue;
+      L.circleMarker([airport.lat, airport.lon], { radius: 4, color: "#1b2328", weight: 1.5, fillColor: "#ffffff", fillOpacity: 1 })
+        .bindTooltip(`${escapeHtml(icao)} · ${escapeHtml(airport.name)}`, { direction: "top" })
+        .addTo(group);
+      points.push([airport.lat, airport.lon]);
+    }
 
     for (const icao of bases) {
       const airport = airports[icao];
-      if (airport?.lat == null || airport.lon == null) continue;
-      L.circleMarker([airport.lat, airport.lon], { radius: 6, color: "#1b2328", weight: 2, fillColor: "#e8703a", fillOpacity: 1 })
-        .bindTooltip(`${escapeHtml(icao)} · base`, { direction: "top" })
+      if (!has(airport)) continue;
+      L.circleMarker([airport.lat, airport.lon], { radius: 7, color: "#1b2328", weight: 2, fillColor: "#e8703a", fillOpacity: 1 })
+        .bindTooltip(`${escapeHtml(icao)} · ${escapeHtml(airport.name)} (base)`, { direction: "top" })
         .addTo(group);
       points.push([airport.lat, airport.lon]);
     }
@@ -75,35 +101,23 @@ export function LiveMap({ flights, airports, bases, height = 440, onSelect }: Pr
     flights.forEach((flight, index) => {
       const from = airports[flight.from];
       const to = airports[flight.to];
-      const hasFrom = from?.lat != null && from.lon != null;
-      const hasTo = to?.lat != null && to.lon != null;
       const here = flight.lat != null && flight.lon != null ? ([flight.lat, flight.lon] as [number, number]) : null;
-      if (hasFrom && here) {
-        L.polyline([[from!.lat!, from!.lon!], here], { color: "#e8703a", weight: 2.5 }).addTo(group);
+      if (has(from) && here) L.polyline([[from.lat, from.lon], here], { color: "#e8703a", weight: 3 }).addTo(group);
+      if (has(to) && (here || has(from))) {
+        L.polyline([here ?? [from!.lat!, from!.lon!], [to.lat, to.lon]], { color: "#1b2328", weight: 1.5, dashArray: "4 6", opacity: 0.6 }).addTo(group);
       }
-      if (hasTo && (here || hasFrom)) {
-        L.polyline([here ?? [from!.lat!, from!.lon!], [to!.lat!, to!.lon!]], { color: "#1b2328", weight: 1.5, dashArray: "4 6", opacity: 0.55 }).addTo(group);
-      }
-      for (const airport of [hasFrom ? from : null, hasTo ? to : null]) {
-        if (!airport) continue;
-        L.circleMarker([airport.lat!, airport.lon!], { radius: 3.5, color: "#1b2328", weight: 1.5, fillColor: "#ffffff", fillOpacity: 1 })
+      for (const airport of [from, to]) {
+        if (!has(airport)) continue;
+        L.circleMarker([airport.lat, airport.lon], { radius: 3.5, color: "#1b2328", weight: 1.5, fillColor: "#ffffff", fillOpacity: 1 })
           .bindTooltip(escapeHtml(airport.icao), { direction: "top" })
           .addTo(group);
-        points.push([airport.lat!, airport.lon!]);
+        points.push([airport.lat, airport.lon]);
       }
       if (here) {
-        const icon = L.divIcon({
-          className: "plane-icon",
-          html: `<span style="transform:rotate(${flight.heading ?? 0}deg)">${PLANE}</span>`,
-          iconSize: [26, 26],
-          iconAnchor: [13, 13],
-        });
-        const label = escapeHtml(flight.callsign ?? flight.flight_number ?? "Flight");
+        const icon = L.divIcon({ className: "plane-icon", html: `<span style="transform:rotate(${flight.heading ?? 0}deg)">${PLANE}</span>`, iconSize: [26, 26], iconAnchor: [13, 13] });
+        const name = escapeHtml(flight.callsign ?? flight.flight_number ?? "Flight");
         L.marker(here, { icon, keyboard: true, title: `${flight.callsign ?? "Flight"} ${flight.from} to ${flight.to}` })
-          .bindTooltip(
-            `<strong>${label}</strong><br>${escapeHtml(flight.from)} → ${escapeHtml(flight.to)}<br>${escapeHtml(flight.aircraft ?? "")} · ${escapeHtml(formatFeet(flight.altitude_ft))}`,
-            { direction: "top", offset: [0, -10] },
-          )
+          .bindTooltip(`<strong>${name}</strong><br>${escapeHtml(flight.from)} → ${escapeHtml(flight.to)}<br>${escapeHtml(flight.aircraft ?? "")} · ${escapeHtml(formatFeet(flight.altitude_ft))}`, { direction: "top", offset: [0, -10] })
           .on("click", () => onSelect?.(index))
           .addTo(group);
         points.push(here);
@@ -111,9 +125,9 @@ export function LiveMap({ flights, airports, bases, height = 440, onSelect }: Pr
     });
 
     bounds.current = points.length > 1 ? L.latLngBounds(points) : null;
-    if (bounds.current) instance.fitBounds(bounds.current, { padding: [36, 36], maxZoom: 7 });
+    if (bounds.current) instance.fitBounds(bounds.current, { padding: [28, 28], maxZoom: 7 });
     else if (points.length === 1) instance.setView(points[0]!, 6);
-  }, [flights, airports, bases, onSelect]);
+  }, [flights, airports, bases, routes, divisions, onSelect]);
 
-  return <div ref={container} className="live-map" style={{ height }} role="region" aria-label="Map of flights in progress" />;
+  return <div ref={container} className="live-map" style={{ height }} role="region" aria-label={label ?? "Map of flights and routes"} />;
 }

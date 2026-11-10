@@ -27,6 +27,8 @@ _TAG = re.compile(r"<[^>]*>")
 _SPACE = re.compile(r"\s+")
 _CODE = re.compile(r"^[A-Z0-9]{2,8}$")
 _HMS = re.compile(r"^(\d{1,3}):([0-5]\d)(?::([0-5]\d))?$")
+ROUTE_KINDS = ("scheduled", "cargo", "charter", "training", "vfr", "repositioning", "jumpseat")
+SOURCES = ("vamsys", "preview", "sample")
 
 
 # --------------------------------------------------------------------------- scalar helpers
@@ -245,8 +247,12 @@ def _routes(raw_routes: list[dict[str, Any]], airports: _Airports, fleet_codes: 
             {fleet_codes[fid] for fid in (integer(v) for v in (item.get("fleet_ids") or [])) if fid in fleet_codes}
         )
         days = [text(str(day), 12) for day in (item.get("service_days") or []) if isinstance(day, (str, int)) and not isinstance(day, bool)]
+        raw_tags = item.get("tag") if isinstance(item.get("tag"), list) else []
+        kind = item.get("type") if item.get("type") in ROUTE_KINDS else "scheduled"
         routes.append(
             {
+                "kind": kind,
+                "tags": [t for t in (text(tag, 30) for tag in raw_tags if isinstance(tag, str)) if t][:6],
                 "flight_number": text(item.get("flight_number"), 12),
                 "callsign": text(item.get("callsign"), 12),
                 "from": origin,
@@ -402,8 +408,28 @@ def _recent(raw_pireps: list[dict[str, Any]], airports: _Airports, fleet_codes: 
     return recent[:MAX_RECENT]
 
 
+def _divisions(value: Any) -> list[dict[str, Any]]:
+    """Operating divisions from site.config.json; fleets are matched to them by ICAO type code."""
+    divisions = []
+    for item in _dicts(value)[:8]:
+        name = text(item.get("name"), 40)
+        if not name:
+            continue
+        fleets = [c for c in (code(v) for v in (item.get("fleets") or [])) if c]
+        divisions.append(
+            {
+                "name": name,
+                "summary": text(item.get("summary"), 240),
+                "base": code(item.get("base")),
+                "fleets": fleets,
+            }
+        )
+    return divisions
+
+
 def site_settings(site: Mapping[str, Any]) -> dict[str, Any]:
     return {
+        "divisions": _divisions(site.get("divisions")),
         "name": text(site.get("name"), 80) or "Crossroads Executive & Charter",
         "short_name": text(site.get("short_name"), 30) or "Crossroads",
         "tagline": text(site.get("tagline"), 160),
@@ -422,8 +448,8 @@ def build_snapshot(
     source: str,
     unavailable: Iterable[str] = (),
 ) -> dict[str, Any]:
-    if source not in ("vamsys", "sample"):
-        raise ValueError("source must be 'vamsys' or 'sample'")
+    if source not in SOURCES:
+        raise ValueError(f"source must be one of {SOURCES}")
     airports = _Airports(_dicts(raw.get("airports")))
     fleet, fleet_codes = _fleet(_dicts(raw.get("fleet")), raw.get("aircraft_by_fleet") or {})
     routes = _routes(_dicts(raw.get("routes")), airports, fleet_codes)

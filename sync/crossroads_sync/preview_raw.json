@@ -1,0 +1,1727 @@
+{
+ "_note": "Real CRX7489 schedule mirrored from vAMSYS for the pre-launch site. No live or statistical data.",
+ "airports": [
+  {
+   "id": 1,
+   "icao": "KIND",
+   "iata": "IND",
+   "name": "Indianapolis International",
+   "base": true,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 39.7173,
+   "longitude": -86.2944
+  },
+  {
+   "id": 2,
+   "icao": "KTYQ",
+   "iata": null,
+   "name": "Indianapolis Executive",
+   "base": true,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 40.0306,
+   "longitude": -86.2514
+  },
+  {
+   "id": 3,
+   "icao": "KTEB",
+   "iata": "TEB",
+   "name": "Teterboro",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 40.8501,
+   "longitude": -74.0608
+  },
+  {
+   "id": 4,
+   "icao": "KHPN",
+   "iata": "HPN",
+   "name": "Westchester County (White Plains)",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 41.067,
+   "longitude": -73.7076
+  },
+  {
+   "id": 5,
+   "icao": "KASE",
+   "iata": "ASE",
+   "name": "Aspen/Pitkin County",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 39.2232,
+   "longitude": -106.8688
+  },
+  {
+   "id": 6,
+   "icao": "KAPF",
+   "iata": "APF",
+   "name": "Naples Municipal",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 26.1526,
+   "longitude": -81.7753
+  },
+  {
+   "id": 7,
+   "icao": "KSDL",
+   "iata": "SCF",
+   "name": "Scottsdale",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 33.6229,
+   "longitude": -111.9105
+  },
+  {
+   "id": 8,
+   "icao": "KLAS",
+   "iata": "LAS",
+   "name": "Las Vegas Harry Reid International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 36.084,
+   "longitude": -115.1537
+  },
+  {
+   "id": 9,
+   "icao": "KDAL",
+   "iata": "DAL",
+   "name": "Dallas Love Field",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 32.8471,
+   "longitude": -96.8518
+  },
+  {
+   "id": 10,
+   "icao": "KMDW",
+   "iata": "MDW",
+   "name": "Chicago Midway",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 41.7868,
+   "longitude": -87.7522
+  },
+  {
+   "id": 11,
+   "icao": "KBNA",
+   "iata": "BNA",
+   "name": "Nashville International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 36.1245,
+   "longitude": -86.6782
+  },
+  {
+   "id": 12,
+   "icao": "KEYW",
+   "iata": "EYW",
+   "name": "Key West International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 24.5561,
+   "longitude": -81.7596
+  },
+  {
+   "id": 13,
+   "icao": "KMCO",
+   "iata": "MCO",
+   "name": "Orlando International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 28.4294,
+   "longitude": -81.309
+  },
+  {
+   "id": 14,
+   "icao": "KBOS",
+   "iata": "BOS",
+   "name": "Boston Logan International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 42.3656,
+   "longitude": -71.0096
+  },
+  {
+   "id": 15,
+   "icao": "KLAX",
+   "iata": "LAX",
+   "name": "Los Angeles International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 33.9416,
+   "longitude": -118.4085
+  },
+  {
+   "id": 16,
+   "icao": "EGGW",
+   "iata": "LTN",
+   "name": "London Luton",
+   "base": false,
+   "country": {
+    "name": "United Kingdom"
+   },
+   "latitude": 51.8747,
+   "longitude": -0.3683
+  },
+  {
+   "id": 17,
+   "icao": "LFPB",
+   "iata": "LBG",
+   "name": "Paris Le Bourget",
+   "base": false,
+   "country": {
+    "name": "France"
+   },
+   "latitude": 48.9694,
+   "longitude": 2.4414
+  },
+  {
+   "id": 18,
+   "icao": "MMSD",
+   "iata": "SJD",
+   "name": "Los Cabos International",
+   "base": false,
+   "country": {
+    "name": "Mexico"
+   },
+   "latitude": 23.1518,
+   "longitude": -109.7215
+  },
+  {
+   "id": 19,
+   "icao": "TNCM",
+   "iata": "SXM",
+   "name": "Princess Juliana (St Maarten)",
+   "base": false,
+   "country": {
+    "name": "Sint Maarten"
+   },
+   "latitude": 18.041,
+   "longitude": -63.1089
+  },
+  {
+   "id": 20,
+   "icao": "KMIA",
+   "iata": "MIA",
+   "name": "Miami International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 25.7959,
+   "longitude": -80.287
+  },
+  {
+   "id": 21,
+   "icao": "KONT",
+   "iata": "ONT",
+   "name": "Ontario International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 34.056,
+   "longitude": -117.6012
+  },
+  {
+   "id": 22,
+   "icao": "PANC",
+   "iata": "ANC",
+   "name": "Ted Stevens Anchorage International",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 61.1743,
+   "longitude": -149.9962
+  },
+  {
+   "id": 23,
+   "icao": "EDDP",
+   "iata": "LEJ",
+   "name": "Leipzig/Halle",
+   "base": false,
+   "country": {
+    "name": "Germany"
+   },
+   "latitude": 51.4239,
+   "longitude": 12.2364
+  }
+ ],
+ "hubs": [
+  {
+   "id": 8697,
+   "name": "Indianapolis",
+   "order": 1,
+   "default": true,
+   "pilots_count": null,
+   "airport_ids": [
+    2,
+    1
+   ]
+  }
+ ],
+ "fleet": [
+  {
+   "id": 32199,
+   "code": "C510",
+   "name": "Cessna Citation Mustang",
+   "type": "pax",
+   "max_pax": 4,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32200,
+   "code": "C25C",
+   "name": "Cessna Citation CJ4",
+   "type": "pax",
+   "max_pax": 9,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32201,
+   "code": "LJ35",
+   "name": "Learjet 35A",
+   "type": "pax",
+   "max_pax": 8,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32202,
+   "code": "C700",
+   "name": "Cessna Citation Longitude",
+   "type": "pax",
+   "max_pax": 12,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32203,
+   "code": "E175",
+   "name": "Embraer E175",
+   "type": "pax",
+   "max_pax": 76,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32204,
+   "code": "E190",
+   "name": "Embraer E190",
+   "type": "pax",
+   "max_pax": 100,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32205,
+   "code": "GLF6",
+   "name": "Gulfstream G650",
+   "type": "pax",
+   "max_pax": 16,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32206,
+   "code": "GA7C",
+   "name": "Gulfstream G700",
+   "type": "pax",
+   "max_pax": 19,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32207,
+   "code": "B752",
+   "name": "Boeing 757-200",
+   "type": "pax",
+   "max_pax": 180,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32208,
+   "code": "A346",
+   "name": "Airbus A340-600 Executive",
+   "type": "pax",
+   "max_pax": 100,
+   "max_cargo": null,
+   "weight_unit": "kg",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32209,
+   "code": "BCS3",
+   "name": "Airbus A220-300 Executive",
+   "type": "pax",
+   "max_pax": 48,
+   "max_cargo": null,
+   "weight_unit": "kg",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32210,
+   "code": "MD11",
+   "name": "McDonnell Douglas MD-11F",
+   "type": "cargo",
+   "max_pax": null,
+   "max_cargo": 91000,
+   "weight_unit": "kg",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32211,
+   "code": "A306",
+   "name": "Airbus A300-600F",
+   "type": "cargo",
+   "max_pax": null,
+   "max_cargo": 48000,
+   "weight_unit": "kg",
+   "hide_in_phoenix": false,
+   "image_url": null
+  }
+ ],
+ "aircraft_by_fleet": {
+  "32199": [
+   {
+    "registration": "N510CR"
+   }
+  ],
+  "32200": [
+   {
+    "registration": "N525CR"
+   }
+  ],
+  "32201": [
+   {
+    "registration": "N35CR"
+   }
+  ],
+  "32202": [
+   {
+    "registration": "N700CR"
+   }
+  ],
+  "32203": [
+   {
+    "registration": "N175CR"
+   }
+  ],
+  "32204": [
+   {
+    "registration": "N190CR"
+   }
+  ],
+  "32205": [
+   {
+    "registration": "N650CR"
+   }
+  ],
+  "32206": [
+   {
+    "registration": "N707CR"
+   }
+  ],
+  "32207": [
+   {
+    "registration": "N757CR"
+   }
+  ],
+  "32208": [
+   {
+    "registration": "N346CR"
+   }
+  ],
+  "32209": [
+   {
+    "registration": "N223CR"
+   }
+  ],
+  "32210": [
+   {
+    "registration": "N611CR"
+   }
+  ],
+  "32211": [
+   {
+    "registration": "N306CR"
+   }
+  ]
+ },
+ "ranks": [
+  {
+   "id": 1,
+   "level": 1,
+   "name": "Cadet",
+   "abbreviation": "Cdt",
+   "honorary_rank": false,
+   "hours": 0,
+   "pireps": 0,
+   "points": 0,
+   "regular_pilots_count": null,
+   "description": null
+  },
+  {
+   "id": 2,
+   "level": 2,
+   "name": "First Officer",
+   "abbreviation": "FO",
+   "honorary_rank": false,
+   "hours": 10,
+   "pireps": 5,
+   "points": 0,
+   "regular_pilots_count": null,
+   "description": null
+  },
+  {
+   "id": 3,
+   "level": 3,
+   "name": "Captain",
+   "abbreviation": "CPT",
+   "honorary_rank": false,
+   "hours": 25,
+   "pireps": 15,
+   "points": 0,
+   "regular_pilots_count": null,
+   "description": null
+  },
+  {
+   "id": 4,
+   "level": 4,
+   "name": "Senior Captain",
+   "abbreviation": "SCPT",
+   "honorary_rank": false,
+   "hours": 75,
+   "pireps": 40,
+   "points": 0,
+   "regular_pilots_count": null,
+   "description": null
+  },
+  {
+   "id": 5,
+   "level": 5,
+   "name": "Charter Captain",
+   "abbreviation": "CCPT",
+   "honorary_rank": false,
+   "hours": 150,
+   "pireps": 80,
+   "points": 0,
+   "regular_pilots_count": null,
+   "description": null
+  },
+  {
+   "id": 6,
+   "level": 6,
+   "name": "Chief Pilot",
+   "abbreviation": "CP",
+   "honorary_rank": false,
+   "hours": 300,
+   "pireps": 150,
+   "points": 0,
+   "regular_pilots_count": null,
+   "description": null
+  }
+ ],
+ "routes": [
+  {
+   "id": 1,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 3,
+   "callsign": "CRX101",
+   "flight_number": "CX101",
+   "flight_distance": 559,
+   "flight_length": "02:04:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 2,
+   "type": "scheduled",
+   "departure_id": 3,
+   "arrival_id": 2,
+   "callsign": "CRX102",
+   "flight_number": "CX102",
+   "flight_distance": 559,
+   "flight_length": "02:04:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 3,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 4,
+   "callsign": "CRX103",
+   "flight_number": "CX103",
+   "flight_distance": 575,
+   "flight_length": "02:06:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 4,
+   "type": "scheduled",
+   "departure_id": 4,
+   "arrival_id": 2,
+   "callsign": "CRX104",
+   "flight_number": "CX104",
+   "flight_distance": 575,
+   "flight_length": "02:06:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 5,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 6,
+   "callsign": "CRX105",
+   "flight_number": "CX105",
+   "flight_distance": 863,
+   "flight_length": "02:57:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 6,
+   "type": "scheduled",
+   "departure_id": 6,
+   "arrival_id": 2,
+   "callsign": "CRX106",
+   "flight_number": "CX106",
+   "flight_distance": 863,
+   "flight_length": "02:57:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 7,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 5,
+   "callsign": "CRX107",
+   "flight_number": "CX107",
+   "flight_distance": 953,
+   "flight_length": "02:38:00",
+   "fleet_ids": [
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive",
+    "ski"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 8,
+   "type": "scheduled",
+   "departure_id": 5,
+   "arrival_id": 2,
+   "callsign": "CRX108",
+   "flight_number": "CX108",
+   "flight_distance": 953,
+   "flight_length": "02:38:00",
+   "fleet_ids": [
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive",
+    "ski"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 9,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 7,
+   "callsign": "CRX109",
+   "flight_number": "CX109",
+   "flight_distance": 1287,
+   "flight_length": "03:25:00",
+   "fleet_ids": [
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 10,
+   "type": "scheduled",
+   "departure_id": 7,
+   "arrival_id": 2,
+   "callsign": "CRX110",
+   "flight_number": "CX110",
+   "flight_distance": 1287,
+   "flight_length": "03:25:00",
+   "fleet_ids": [
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 11,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 8,
+   "callsign": "CRX111",
+   "flight_number": "CX111",
+   "flight_distance": 1381,
+   "flight_length": "03:38:00",
+   "fleet_ids": [
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 12,
+   "type": "scheduled",
+   "departure_id": 8,
+   "arrival_id": 2,
+   "callsign": "CRX112",
+   "flight_number": "CX112",
+   "flight_distance": 1381,
+   "flight_length": "03:38:00",
+   "fleet_ids": [
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 13,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 9,
+   "callsign": "CRX113",
+   "flight_number": "CX113",
+   "flight_distance": 669,
+   "flight_length": "02:23:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 14,
+   "type": "scheduled",
+   "departure_id": 9,
+   "arrival_id": 2,
+   "callsign": "CRX114",
+   "flight_number": "CX114",
+   "flight_distance": 669,
+   "flight_length": "02:23:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 15,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 10,
+   "callsign": "CRX115",
+   "flight_number": "CX115",
+   "flight_distance": 126,
+   "flight_length": "00:47:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive",
+    "short-hop"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 16,
+   "type": "scheduled",
+   "departure_id": 10,
+   "arrival_id": 2,
+   "callsign": "CRX116",
+   "flight_number": "CX116",
+   "flight_distance": 126,
+   "flight_length": "00:47:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive",
+    "short-hop"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 17,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 11,
+   "callsign": "CRX117",
+   "flight_number": "CX117",
+   "flight_distance": 235,
+   "flight_length": "01:06:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive",
+    "short-hop"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 18,
+   "type": "scheduled",
+   "departure_id": 11,
+   "arrival_id": 2,
+   "callsign": "CRX118",
+   "flight_number": "CX118",
+   "flight_distance": 235,
+   "flight_length": "01:06:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive",
+    "short-hop"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 19,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 12,
+   "callsign": "CRX119",
+   "flight_number": "CX119",
+   "flight_distance": 956,
+   "flight_length": "03:14:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 20,
+   "type": "scheduled",
+   "departure_id": 12,
+   "arrival_id": 2,
+   "callsign": "CRX120",
+   "flight_number": "CX120",
+   "flight_distance": 956,
+   "flight_length": "03:14:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 21,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 13,
+   "callsign": "CRX201",
+   "flight_number": "CX201",
+   "flight_distance": 721,
+   "flight_length": "02:01:00",
+   "fleet_ids": [
+    32203,
+    32204,
+    32207,
+    32209
+   ],
+   "tag": [
+    "group-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 22,
+   "type": "scheduled",
+   "departure_id": 13,
+   "arrival_id": 1,
+   "callsign": "CRX202",
+   "flight_number": "CX202",
+   "flight_distance": 721,
+   "flight_length": "02:01:00",
+   "fleet_ids": [
+    32203,
+    32204,
+    32207,
+    32209
+   ],
+   "tag": [
+    "group-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 23,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 8,
+   "callsign": "CRX203",
+   "flight_number": "CX203",
+   "flight_distance": 1378,
+   "flight_length": "03:29:00",
+   "fleet_ids": [
+    32203,
+    32204,
+    32207,
+    32209
+   ],
+   "tag": [
+    "group-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 24,
+   "type": "scheduled",
+   "departure_id": 8,
+   "arrival_id": 1,
+   "callsign": "CRX204",
+   "flight_number": "CX204",
+   "flight_distance": 1378,
+   "flight_length": "03:29:00",
+   "fleet_ids": [
+    32203,
+    32204,
+    32207,
+    32209
+   ],
+   "tag": [
+    "group-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 25,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 14,
+   "callsign": "CRX301",
+   "flight_number": "CX301",
+   "flight_distance": 709,
+   "flight_length": "02:00:00",
+   "fleet_ids": [
+    32204,
+    32207,
+    32209,
+    32208
+   ],
+   "tag": [
+    "sports-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 26,
+   "type": "scheduled",
+   "departure_id": 14,
+   "arrival_id": 1,
+   "callsign": "CRX302",
+   "flight_number": "CX302",
+   "flight_distance": 709,
+   "flight_length": "02:00:00",
+   "fleet_ids": [
+    32204,
+    32207,
+    32209,
+    32208
+   ],
+   "tag": [
+    "sports-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 27,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 15,
+   "callsign": "CRX303",
+   "flight_number": "CX303",
+   "flight_distance": 1573,
+   "flight_length": "03:55:00",
+   "fleet_ids": [
+    32207,
+    32209,
+    32208
+   ],
+   "tag": [
+    "sports-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 28,
+   "type": "scheduled",
+   "departure_id": 15,
+   "arrival_id": 1,
+   "callsign": "CRX304",
+   "flight_number": "CX304",
+   "flight_distance": 1573,
+   "flight_length": "03:55:00",
+   "fleet_ids": [
+    32207,
+    32209,
+    32208
+   ],
+   "tag": [
+    "sports-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 29,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 3,
+   "callsign": "CRX401",
+   "flight_number": "CX401",
+   "flight_distance": 564,
+   "flight_length": "01:40:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 30,
+   "type": "scheduled",
+   "departure_id": 3,
+   "arrival_id": 1,
+   "callsign": "CRX402",
+   "flight_number": "CX402",
+   "flight_distance": 564,
+   "flight_length": "01:40:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 31,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 4,
+   "callsign": "CRX403",
+   "flight_number": "CX403",
+   "flight_distance": 581,
+   "flight_length": "01:39:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 32,
+   "type": "scheduled",
+   "departure_id": 4,
+   "arrival_id": 1,
+   "callsign": "CRX404",
+   "flight_number": "CX404",
+   "flight_distance": 581,
+   "flight_length": "01:39:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 33,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 6,
+   "callsign": "CRX405",
+   "flight_number": "CX405",
+   "flight_distance": 845,
+   "flight_length": "02:13:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 34,
+   "type": "scheduled",
+   "departure_id": 6,
+   "arrival_id": 1,
+   "callsign": "CRX406",
+   "flight_number": "CX406",
+   "flight_distance": 845,
+   "flight_length": "02:13:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 35,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 5,
+   "callsign": "CRX407",
+   "flight_number": "CX407",
+   "flight_distance": 952,
+   "flight_length": "02:27:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive",
+    "ski"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 36,
+   "type": "scheduled",
+   "departure_id": 5,
+   "arrival_id": 1,
+   "callsign": "CRX408",
+   "flight_number": "CX408",
+   "flight_distance": 952,
+   "flight_length": "02:27:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive",
+    "ski"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 37,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 7,
+   "callsign": "CRX409",
+   "flight_number": "CX409",
+   "flight_distance": 1282,
+   "flight_length": "03:09:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 38,
+   "type": "scheduled",
+   "departure_id": 7,
+   "arrival_id": 1,
+   "callsign": "CRX410",
+   "flight_number": "CX410",
+   "flight_distance": 1282,
+   "flight_length": "03:09:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 39,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 8,
+   "callsign": "CRX411",
+   "flight_number": "CX411",
+   "flight_distance": 1378,
+   "flight_length": "03:29:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209,
+    32208
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 40,
+   "type": "scheduled",
+   "departure_id": 8,
+   "arrival_id": 1,
+   "callsign": "CRX412",
+   "flight_number": "CX412",
+   "flight_distance": 1378,
+   "flight_length": "03:29:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209,
+    32208
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 41,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 16,
+   "callsign": "CRX501",
+   "flight_number": "CX501",
+   "flight_distance": 3456,
+   "flight_length": "07:37:00",
+   "fleet_ids": [
+    32205,
+    32206,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 42,
+   "type": "scheduled",
+   "departure_id": 16,
+   "arrival_id": 1,
+   "callsign": "CRX502",
+   "flight_number": "CX502",
+   "flight_distance": 3456,
+   "flight_length": "07:37:00",
+   "fleet_ids": [
+    32205,
+    32206,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 43,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 17,
+   "callsign": "CRX503",
+   "flight_number": "CX503",
+   "flight_distance": 3629,
+   "flight_length": "07:59:00",
+   "fleet_ids": [
+    32205,
+    32206,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 44,
+   "type": "scheduled",
+   "departure_id": 17,
+   "arrival_id": 1,
+   "callsign": "CRX504",
+   "flight_number": "CX504",
+   "flight_distance": 3629,
+   "flight_length": "07:59:00",
+   "fleet_ids": [
+    32205,
+    32206,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 45,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 18,
+   "callsign": "CRX505",
+   "flight_number": "CX505",
+   "flight_distance": 1550,
+   "flight_length": "03:52:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 46,
+   "type": "scheduled",
+   "departure_id": 18,
+   "arrival_id": 1,
+   "callsign": "CRX506",
+   "flight_number": "CX506",
+   "flight_distance": 1550,
+   "flight_length": "03:52:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 47,
+   "type": "scheduled",
+   "departure_id": 1,
+   "arrival_id": 19,
+   "callsign": "CRX507",
+   "flight_number": "CX507",
+   "flight_distance": 1772,
+   "flight_length": "04:21:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 48,
+   "type": "scheduled",
+   "departure_id": 19,
+   "arrival_id": 1,
+   "callsign": "CRX508",
+   "flight_number": "CX508",
+   "flight_distance": 1772,
+   "flight_length": "04:21:00",
+   "fleet_ids": [
+    32202,
+    32205,
+    32206,
+    32209,
+    32208
+   ],
+   "tag": [
+    "executive",
+    "international"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 49,
+   "type": "cargo",
+   "departure_id": 1,
+   "arrival_id": 20,
+   "callsign": "CRX601",
+   "flight_number": "CX601",
+   "flight_distance": 889,
+   "flight_length": "02:24:00",
+   "fleet_ids": [
+    32210,
+    32211
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 50,
+   "type": "cargo",
+   "departure_id": 20,
+   "arrival_id": 1,
+   "callsign": "CRX602",
+   "flight_number": "CX602",
+   "flight_distance": 889,
+   "flight_length": "02:24:00",
+   "fleet_ids": [
+    32210,
+    32211
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 51,
+   "type": "cargo",
+   "departure_id": 1,
+   "arrival_id": 21,
+   "callsign": "CRX603",
+   "flight_number": "CX603",
+   "flight_distance": 1533,
+   "flight_length": "03:49:00",
+   "fleet_ids": [
+    32210,
+    32211
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 52,
+   "type": "cargo",
+   "departure_id": 21,
+   "arrival_id": 1,
+   "callsign": "CRX604",
+   "flight_number": "CX604",
+   "flight_distance": 1533,
+   "flight_length": "03:49:00",
+   "fleet_ids": [
+    32210,
+    32211
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 53,
+   "type": "cargo",
+   "departure_id": 1,
+   "arrival_id": 22,
+   "callsign": "CRX605",
+   "flight_number": "CX605",
+   "flight_distance": 2618,
+   "flight_length": "05:52:00",
+   "fleet_ids": [
+    32210
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 54,
+   "type": "cargo",
+   "departure_id": 22,
+   "arrival_id": 1,
+   "callsign": "CRX606",
+   "flight_number": "CX606",
+   "flight_distance": 2618,
+   "flight_length": "05:52:00",
+   "fleet_ids": [
+    32210
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 55,
+   "type": "cargo",
+   "departure_id": 1,
+   "arrival_id": 23,
+   "callsign": "CRX607",
+   "flight_number": "CX607",
+   "flight_distance": 3881,
+   "flight_length": "08:30:00",
+   "fleet_ids": [
+    32210
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 56,
+   "type": "cargo",
+   "departure_id": 23,
+   "arrival_id": 1,
+   "callsign": "CRX608",
+   "flight_number": "CX608",
+   "flight_distance": 3881,
+   "flight_length": "08:30:00",
+   "fleet_ids": [
+    32210
+   ],
+   "tag": [
+    "cargo-charter"
+   ],
+   "service_days": [],
+   "hidden": false
+  }
+ ],
+ "events": [],
+ "flight_map": {
+  "data": []
+ },
+ "pireps": [],
+ "stats_all_time": null,
+ "stats_30_days": null
+}

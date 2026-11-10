@@ -1,6 +1,14 @@
 // Types mirror sync/crossroads_sync/snapshot.py (schema "crossroads-public/1").
 
+export interface Division {
+  name: string;
+  summary: string | null;
+  base: string | null;
+  fleets: string[];
+}
+
 export interface Airline {
+  divisions: Division[];
   name: string;
   short_name: string;
   tagline: string | null;
@@ -58,6 +66,8 @@ export interface FleetType {
 }
 
 export interface Route {
+  kind: string;
+  tags: string[];
   flight_number: string | null;
   callsign: string | null;
   from: string;
@@ -125,7 +135,7 @@ export interface Airport {
 
 export interface Snapshot {
   schema: "crossroads-public/1";
-  source: "vamsys" | "sample";
+  source: "vamsys" | "preview" | "sample";
   generated_at: string;
   unavailable: string[];
   airline: Airline;
@@ -147,7 +157,7 @@ export function isSnapshot(value: unknown): value is Snapshot {
   const v = value as Record<string, unknown>;
   return (
     v.schema === "crossroads-public/1" &&
-    (v.source === "vamsys" || v.source === "sample") &&
+    (v.source === "vamsys" || v.source === "preview" || v.source === "sample") &&
     typeof v.generated_at === "string" &&
     typeof v.airline === "object" && v.airline !== null &&
     Array.isArray(v.live) && Array.isArray(v.fleet) && Array.isArray(v.routes) &&
@@ -230,9 +240,80 @@ export function isStale(snapshot: Pick<Snapshot, "generated_at">, now: Date = ne
   return Number.isNaN(then) || now.getTime() - then > STALE_AFTER_MINUTES * 60000;
 }
 
-export function filterRoutes(routes: Route[], query: string, type: string): Route[] {
+// ------------------------------------------------------------------ divisions & network
+
+/** The division a route mostly belongs to: the one sharing the most aircraft types with it. */
+export function primaryDivision(route: Pick<Route, "types">, divisions: Division[]): number {
+  let best = -1;
+  let bestOverlap = 0;
+  divisions.forEach((division, index) => {
+    const overlap = route.types.filter((t) => division.fleets.includes(t)).length;
+    if (overlap > bestOverlap) {
+      best = index;
+      bestOverlap = overlap;
+    }
+  });
+  return best;
+}
+
+export function routeInDivision(route: Pick<Route, "types">, division: Division | undefined): boolean {
+  return !division || route.types.some((t) => division.fleets.includes(t));
+}
+
+export interface NetworkFacts {
+  aircraftTypes: number;
+  routes: number;
+  destinations: number;
+  countries: number;
+}
+
+export function networkFacts(snapshot: Pick<Snapshot, "fleet" | "routes" | "airports" | "hubs">): NetworkFacts {
+  const bases = new Set(snapshot.hubs.flatMap((h) => h.airports));
+  const served = new Set(snapshot.routes.flatMap((r) => [r.from, r.to]));
+  const destinations = [...served].filter((icao) => !bases.has(icao));
+  const countries = new Set([...served].map((icao) => snapshot.airports[icao]?.country).filter(Boolean));
+  return {
+    aircraftTypes: snapshot.fleet.length,
+    routes: snapshot.routes.length,
+    destinations: destinations.length,
+    countries: countries.size,
+  };
+}
+
+/** Points along the great circle between two airports, for drawing realistic route arcs. */
+export function greatCircle(a: [number, number], b: [number, number], steps = 32): [number, number][] {
+  const rad = Math.PI / 180;
+  const [lat1, lon1, lat2, lon2] = [a[0] * rad, a[1] * rad, b[0] * rad, b[1] * rad];
+  const d = 2 * Math.asin(Math.sqrt(Math.sin((lat2 - lat1) / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin((lon2 - lon1) / 2) ** 2));
+  if (d === 0) return [a, b];
+  const points: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const f = i / steps;
+    const A = Math.sin((1 - f) * d) / Math.sin(d);
+    const B = Math.sin(f * d) / Math.sin(d);
+    const x = A * Math.cos(lat1) * Math.cos(lon1) + B * Math.cos(lat2) * Math.cos(lon2);
+    const y = A * Math.cos(lat1) * Math.sin(lon1) + B * Math.cos(lat2) * Math.sin(lon2);
+    const z = A * Math.sin(lat1) + B * Math.sin(lat2);
+    points.push([Math.atan2(z, Math.sqrt(x * x + y * y)) / rad, Math.atan2(y, x) / rad]);
+  }
+  return points;
+}
+
+/** Read a query parameter from the hash route, e.g. #/routes?division=Cargo%20Charter */
+export function hashParam(name: string, hash: string = typeof window === "undefined" ? "" : window.location.hash): string {
+  const query = hash.split("?")[1] ?? "";
+  return new URLSearchParams(query).get(name) ?? "";
+}
+
+export function formatWeight(value: number | null, unit: "lbs" | "kg" | null): string {
+  if (value === null) return "—";
+  return `${integerFormat.format(value)} ${unit ?? ""}`.trim();
+}
+
+export function filterRoutes(routes: Route[], query: string, type: string, division?: Division): Route[] {
   const q = query.trim().toUpperCase();
   return routes.filter((route) => {
+    if (!routeInDivision(route, division)) return false;
     if (type && !route.types.includes(type)) return false;
     if (!q) return true;
     return [route.from, route.to, route.flight_number, route.callsign]
