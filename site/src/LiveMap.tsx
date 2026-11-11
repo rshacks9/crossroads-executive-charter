@@ -2,7 +2,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import type { Airport, Division, LiveFlight, Route } from "./data";
-import { formatFeet, greatCircle, primaryDivision } from "./data";
+import { formatFeet, greatCircle, routeDivision } from "./data";
 
 export const DIVISION_COLORS = ["#e8703a", "#2a6f97", "#2f7a55", "#7b4fa0", "#b0812a", "#55646c"];
 
@@ -76,7 +76,7 @@ export function LiveMap({ flights, airports, bases, routes = [], divisions = [],
       const a = airports[route.from];
       const b = airports[route.to];
       if (!has(a) || !has(b)) continue;
-      const color = DIVISION_COLORS[Math.max(0, primaryDivision(route, divisions)) % DIVISION_COLORS.length];
+      const color = DIVISION_COLORS[Math.max(0, routeDivision(route, divisions)) % DIVISION_COLORS.length];
       L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon]), { color, weight: 2, opacity: 0.75, dashArray: route.kind === "cargo" ? "6 6" : undefined, interactive: false }).addTo(group);
       served.add(route.from).add(route.to);
     }

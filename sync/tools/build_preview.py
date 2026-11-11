@@ -23,7 +23,15 @@ ROUTES_CSV = [
     (DATA / "routes-import.csv", 14214036),
     (DATA / "routes-update-2.csv", 14214095),
     (DATA / "routes-update-3.csv", None),
+    (DATA / "routes-update-4-b390.csv", None),
+    (DATA / "routes-update-5-c750-kbdl.csv", 14214327),
+    (DATA / "routes-update-6-kbdl-mustang.csv", None),
+    # Network expansion, being imported 2026-11-11. vAMSYS assigns the real IDs; these only need to be
+    # unique inside the preview.
+    (DATA / "routes-update-7-expansion.csv", 14215001),
 ]
+# routes-update-7 names the Hawker fleet by placeholder until its ID is pasted in (see ROUTES-7-README.md).
+FLEET_PLACEHOLDERS = {"HAWKER": "32217"}
 OUT = ROOT / "crossroads_sync" / "preview_raw.json"
 
 AIRPORTS = [  # icao, iata, name, country, lat, lon, base
@@ -50,6 +58,56 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("KONT", "ONT", "Ontario International", "United States", 34.0560, -117.6012, False),
     ("PANC", "ANC", "Ted Stevens Anchorage International", "United States", 61.1743, -149.9962, False),
     ("EDDP", "LEJ", "Leipzig/Halle", "Germany", 51.4239, 12.2364, False),
+    # Added with routes 5 (KBDL) and 7 (network expansion). Coordinates from OurAirports (public domain).
+    ("CYYZ", "YYZ", "Toronto Pearson International", "Canada", 43.6759, -79.6294, False),
+    ("EGLF", "FAB", "Farnborough", "United Kingdom", 51.2758, -0.7763, False),
+    ("EGSS", "STN", "London Stansted", "United Kingdom", 51.8850, 0.2350, False),
+    ("KACK", "ACK", "Nantucket Memorial", "United States", 41.2531, -70.0602, False),
+    ("KAGC", "AGC", "Allegheny County (Pittsburgh)", "United States", 40.3544, -79.9302, False),
+    ("KAPA", "APA", "Centennial (Denver)", "United States", 39.5701, -104.8490, False),
+    ("KAUS", "AUS", "Austin-Bergstrom International", "United States", 30.1975, -97.6620, False),
+    ("KBCT", "BCT", "Boca Raton", "United States", 26.3785, -80.1077, False),
+    ("KBDL", "BDL", "Bradley International (Hartford)", "United States", 41.9386, -72.6880, False),
+    ("KBED", "BED", "Hanscom Field (Bedford)", "United States", 42.4700, -71.2890, False),
+    ("KBKL", "BKL", "Cleveland Burke Lakefront", "United States", 41.5175, -81.6833, False),
+    ("KCHS", "CHS", "Charleston International", "United States", 32.8962, -80.0382, False),
+    ("KCLT", "CLT", "Charlotte Douglas International", "United States", 35.2140, -80.9431, False),
+    ("KCMH", "CMH", "John Glenn Columbus International", "United States", 39.9980, -82.8919, False),
+    ("KDEN", "DEN", "Denver International", "United States", 39.8600, -104.6738, False),
+    ("KDTS", "DSI", "Destin Executive", "United States", 30.4001, -86.4715, False),
+    ("KDTW", "DTW", "Detroit Metropolitan Wayne County", "United States", 42.2138, -83.3538, False),
+    ("KEGE", "EGE", "Eagle County Regional (Vail)", "United States", 39.6426, -106.9180, False),
+    ("KEWR", "EWR", "Newark Liberty International", "United States", 40.6894, -74.1705, False),
+    ("KHOU", "HOU", "Houston William P. Hobby", "United States", 29.6453, -95.2768, False),
+    ("KHXD", "HHH", "Hilton Head", "United States", 32.2244, -80.6975, False),
+    ("KIAD", "IAD", "Washington Dulles International", "United States", 38.9445, -77.4558, False),
+    ("KIAH", "IAH", "Houston George Bush Intercontinental", "United States", 29.9844, -95.3414, False),
+    ("KJAC", "JAC", "Jackson Hole", "United States", 43.6073, -110.7380, False),
+    ("KJAX", "JAX", "Jacksonville International", "United States", 30.4925, -81.6878, False),
+    ("KMEM", "MEM", "Memphis International", "United States", 35.0438, -89.9763, False),
+    ("KMKC", "MKC", "Charles B. Wheeler Downtown (Kansas City)", "United States", 39.1232, -94.5928, False),
+    ("KMSP", "MSP", "Minneapolis-St Paul International", "United States", 44.8801, -93.2217, False),
+    ("KMSY", "MSY", "New Orleans Louis Armstrong International", "United States", 29.9934, -90.2647, False),
+    ("KMYR", "MYR", "Myrtle Beach International", "United States", 33.6797, -78.9283, False),
+    ("KOAK", "OAK", "Oakland International", "United States", 37.7201, -122.2212, False),
+    ("KOSU", "OSU", "Ohio State University (Columbus)", "United States", 40.0798, -83.0730, False),
+    ("KPDK", "PDK", "DeKalb-Peachtree (Atlanta)", "United States", 33.8763, -84.3021, False),
+    ("KPHL", "PHL", "Philadelphia International", "United States", 39.8719, -75.2411, False),
+    ("KPHX", "PHX", "Phoenix Sky Harbor International", "United States", 33.4353, -112.0059, False),
+    ("KPTK", "PTK", "Oakland County International (Pontiac)", "United States", 42.6655, -83.4201, False),
+    ("KSDF", "SDF", "Louisville Muhammad Ali International", "United States", 38.1706, -85.7351, False),
+    ("KSEA", "SEA", "Seattle-Tacoma International", "United States", 47.4479, -122.3103, False),
+    ("KSJC", "SJC", "San Jose Mineta International", "United States", 37.3625, -121.9292, False),
+    ("KSUS", "SUS", "Spirit of St. Louis", "United States", 38.6621, -90.6520, False),
+    ("KTPA", "TPA", "Tampa International", "United States", 27.9755, -82.5332, False),
+    ("KVNY", "VNY", "Van Nuys", "United States", 34.2098, -118.4900, False),
+    ("LFMN", "NCE", "Nice Cote d'Azur", "France", 43.6584, 7.2159, False),
+    ("LSGG", "GVA", "Geneva", "Switzerland", 46.2381, 6.1090, False),
+    ("MBPV", "PLS", "Providenciales International (Turks and Caicos)", "Turks and Caicos Islands", 21.7737, -72.2683, False),
+    ("MMUN", "CUN", "Cancun International", "Mexico", 21.0408, -86.8735, False),
+    ("MYNN", "NAS", "Nassau Lynden Pindling International", "Bahamas", 25.0390, -77.4662, False),
+    ("PHNL", "HNL", "Honolulu Daniel K. Inouye International", "United States", 21.3184, -157.9257, False),
+    ("TXKF", "BDA", "Bermuda L.F. Wade International", "Bermuda", 32.3638, -64.6782, False),
 ]
 
 FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cruise_kt
@@ -68,6 +126,9 @@ FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cru
     (32211, "A306", "Airbus A300-600F", "cargo", None, 48000, "kg", ["N306CR"], 450),
     (32213, "A388", "Airbus A380-800 Executive", "pax", 150, None, "kg", ["N380CR"], 490),
     (32214, "B77L", "Boeing 777F", "cargo", None, 102000, "kg", ["N777CR"], 490),
+    (32215, "PRM1", "Beechcraft Premier IA", "pax", 6, None, "lbs", ["N390CR"], 450),
+    (32216, "C750", "Cessna Citation X", "pax", 8, None, "lbs", ["N750CR"], 500),
+    (32217, "H25B", "Hawker 800XP", "pax", 8, None, "lbs", ["N800CR"], 430),
 ]
 
 RANKS = [  # level, name, abbr, hours, pireps, honorary
@@ -138,7 +199,7 @@ def main() -> None:
     }
     for n, row in enumerate(final_routes(), start=1):
         dep, arr = row["Departure Airport (ICAO/IATA)"], row["Arrival Airport (ICAO/IATA)"]
-        fleet_ids = [int(x) for x in row["Fleet IDs"].split(",") if x.strip()]
+        fleet_ids = [int(FLEET_PLACEHOLDERS.get(x.strip(), x)) for x in row["Fleet IDs"].split(",") if x.strip()]
         distance = great_circle_nm(coords[dep], coords[arr])
         cruise = min(speeds[f] for f in fleet_ids)
         minutes = round(distance / cruise * 60 + 25)  # taxi, climb and descent allowance

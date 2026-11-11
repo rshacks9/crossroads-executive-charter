@@ -312,11 +312,40 @@ export function formatWeight(value: number | null, unit: "lbs" | "kg" | null): s
   return `${integerFormat.format(value)} ${unit ?? ""}`.trim();
 }
 
-export function filterRoutes(routes: Route[], query: string, type: string, division?: Division): Route[] {
+/**
+ * The division a route is sold under. Route tags from vAMSYS decide first (cargo, group and sports
+ * charters); executive routes fall back to the division sharing the most aircraft types.
+ */
+export function routeDivision(route: Pick<Route, "types" | "tags" | "kind">, divisions: Division[]): number {
+  const find = (pattern: RegExp) => divisions.findIndex((d) => pattern.test(d.name));
+  const tags = route.tags.map((t) => t.toLowerCase());
+  if (route.kind === "cargo" || tags.includes("cargo-charter")) {
+    const i = find(/cargo/i);
+    if (i >= 0) return i;
+  }
+  if (tags.includes("sports-charter") || tags.includes("group-charter")) {
+    const i = find(/group|sport/i);
+    if (i >= 0) return i;
+  }
+  return primaryDivision(route, divisions);
+}
+
+/** Which Indianapolis base a route works from: "KTYQ", "KIND" or "" for point-to-point legs. */
+export function routeBase(route: Pick<Route, "from" | "to">, bases: string[]): string {
+  return bases.find((b) => route.from === b || route.to === b) ?? "";
+}
+
+export const POINT_TO_POINT = "p2p";
+
+export function filterRoutes(routes: Route[], query: string, type: string, division?: Division, base = "", bases: string[] = []): Route[] {
   const q = query.trim().toUpperCase();
   return routes.filter((route) => {
     if (!routeInDivision(route, division)) return false;
     if (type && !route.types.includes(type)) return false;
+    if (base) {
+      const here = routeBase(route, bases);
+      if (base === POINT_TO_POINT ? here !== "" : here !== base) return false;
+    }
     if (!q) return true;
     return [route.from, route.to, route.flight_number, route.callsign]
       .some((field) => field !== null && field.toUpperCase().includes(q));

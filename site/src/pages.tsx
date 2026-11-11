@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
-import type { AirlineEvent, Division, LiveFlight, Snapshot } from "./data";
+import type { ReactNode } from "react";
+import type { AirlineEvent, Division, FleetType, LiveFlight, Snapshot } from "./data";
 import {
+  POINT_TO_POINT,
   filterRoutes,
   formatCompact,
   formatDate,
@@ -12,17 +14,21 @@ import {
   networkFacts,
   progressPercent,
   relativeAge,
+  routeBase,
+  routeDivision,
   routeInDivision,
 } from "./data";
+import { FLEET_INFO, NEWS, SERVICES, baseFor } from "./content";
+import type { NewsItem } from "./content";
 import { DIVISION_COLORS, LiveMap } from "./LiveMap";
 
-interface PageProps {
+export interface PageProps {
   snapshot: Snapshot;
 }
 
 // ------------------------------------------------------------------ shared bits
 
-function SectionHead({ eyebrow, title, action, intro }: { eyebrow: string; title: string; action?: { href: string; label: string }; intro?: string }) {
+export function SectionHead({ eyebrow, title, action, intro }: { eyebrow: string; title: string; action?: { href: string; label: string }; intro?: string }) {
   return (
     <div className="section-head">
       <div>
@@ -35,7 +41,20 @@ function SectionHead({ eyebrow, title, action, intro }: { eyebrow: string; title
   );
 }
 
-function Leg({ from, to, snapshot }: { from: string; to: string; snapshot: Snapshot }) {
+export function PageHeader({ eyebrow, title, lede, children }: { eyebrow: string; title: string; lede?: string; children?: ReactNode }) {
+  return (
+    <header className="page-header">
+      <div className="page-header__inner">
+        <p className="eyebrow eyebrow--on-ink">{eyebrow}</p>
+        <h1 className="page-title">{title}</h1>
+        {lede ? <p className="page-header__lede">{lede}</p> : null}
+        {children}
+      </div>
+    </header>
+  );
+}
+
+export function Leg({ from, to, snapshot }: { from: string; to: string; snapshot: Snapshot }) {
   const a = snapshot.airports[from];
   const b = snapshot.airports[to];
   return (
@@ -57,7 +76,7 @@ function Progress({ flight }: { flight: LiveFlight }) {
   );
 }
 
-function bases(snapshot: Snapshot): string[] {
+export function bases(snapshot: Snapshot): string[] {
   return [...new Set(snapshot.hubs.flatMap((hub) => hub.airports))];
 }
 
@@ -65,7 +84,7 @@ function joinHref(snapshot: Snapshot): { href: string; external: boolean } {
   return snapshot.airline.join_url ? { href: snapshot.airline.join_url, external: true } : { href: "#/pilots", external: false };
 }
 
-function JoinButton({ snapshot, label = "Apply to fly with us", quiet = false }: { snapshot: Snapshot; label?: string; quiet?: boolean }) {
+export function JoinButton({ snapshot, label = "Apply to fly with us", quiet = false }: { snapshot: Snapshot; label?: string; quiet?: boolean }) {
   const join = joinHref(snapshot);
   return (
     <a className={`button${quiet ? " button--ghost" : ""}`} href={join.href} rel={join.external ? "noopener" : undefined}>
@@ -79,8 +98,12 @@ function divisionFor(snapshot: Snapshot, code: string): { division: Division; in
   return index >= 0 ? { division: snapshot.airline.divisions[index]!, index } : null;
 }
 
-function DivisionDot({ index }: { index: number }) {
+export function DivisionDot({ index }: { index: number }) {
   return <span className="division-dot" style={{ background: DIVISION_COLORS[index % DIVISION_COLORS.length] }} aria-hidden="true" />;
+}
+
+export function shortName(name: string): string {
+  return name.replace(/^(Cessna|Airbus|Embraer|Boeing|Gulfstream|McDonnell Douglas|Beechcraft) /, "");
 }
 
 function MapLegend({ snapshot }: PageProps) {
@@ -119,7 +142,7 @@ function FlightCard({ flight, snapshot }: { flight: LiveFlight; snapshot: Snapsh
   );
 }
 
-function EventItem({ event }: { event: AirlineEvent }) {
+export function EventItem({ event }: { event: AirlineEvent }) {
   const start = event.start ? new Date(event.start) : null;
   const valid = start && !Number.isNaN(start.getTime());
   return (
@@ -154,58 +177,80 @@ function EventItem({ event }: { event: AirlineEvent }) {
   );
 }
 
-function CareerLadder({ snapshot }: PageProps) {
-  const ladder = snapshot.ranks.filter((r) => !r.honorary);
-  if (!ladder.length) return null;
+export function NewsCard({ item, compact = false }: { item: NewsItem; compact?: boolean }) {
+  const date = new Date(`${item.date}T12:00:00Z`);
   return (
-    <ol className="ladder">
-      {ladder.map((rank, i) => (
-        <li key={rank.name} className="ladder__step" style={{ ["--step" as string]: i }}>
-          <span className="ladder__level" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-          <strong>{rank.name}</strong>
-          <span className="ladder__req">
-            {rank.hours ? `${formatNumber(rank.hours)} h` : "Day one"}
-            {rank.flights ? ` · ${formatNumber(rank.flights)} flights` : ""}
-          </span>
-          {rank.description ? <span className="ladder__desc">{rank.description}</span> : null}
-        </li>
-      ))}
-    </ol>
+    <li className={`news-card news-card--${item.kind.toLowerCase()}`}>
+      <p className="news-card__meta">
+        <span className="news-card__kind">{item.kind}</span>
+        <time dateTime={item.date}>{date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}</time>
+      </p>
+      <h3>{item.title}</h3>
+      {!compact ? <p>{item.body}</p> : null}
+      {item.link ? <a className="text-link" href={item.link.href}>{item.link.label} →</a> : null}
+    </li>
   );
+}
+
+function airframes(snapshot: Snapshot): number {
+  return snapshot.fleet.reduce((sum, f) => sum + f.aircraft_count, 0);
 }
 
 // ------------------------------------------------------------------ home
 
+/** The first accepted PIREPs, from the launch announcement. Shown only until vAMSYS supplies recent flights. */
+const FIRST_FLIGHTS = [
+  { callsign: "CRX115", from: "KTYQ", to: "KMDW", aircraft: "Premier IA" },
+  { callsign: "CRX116", from: "KMDW", to: "KTYQ", aircraft: "Citation Mustang" },
+  { callsign: "CRX121", from: "KTYQ", to: "KBDL", aircraft: "Citation X" },
+];
+
 export function HomePage({ snapshot }: PageProps) {
-  const { airline, stats, live, events, recent_flights: recent, fleet } = snapshot;
+  const { airline, stats, live, recent_flights: recent, fleet } = snapshot;
   const facts = networkFacts(snapshot);
   const all = stats.all_time;
   const month = stats.last_30_days;
-  const heaviest = fleet.find((f) => f.code === "A388") ?? fleet.find((f) => f.code === "MD11") ?? fleet.find((f) => f.type === "cargo");
-  const smallest = fleet.find((f) => f.code === "C510") ?? fleet[0];
+  const baseList = bases(snapshot);
+  const e190 = FLEET_INFO.E190?.livery;
 
   return (
     <>
       <section className="hero">
         <div className="hero__inner">
-          <p className="eyebrow eyebrow--on-ink">Virtual airline · Indianapolis, Indiana</p>
-          <h1>{airline.name}</h1>
-          {airline.tagline ? <p className="hero__lede">{airline.tagline}</p> : null}
-          <p className="hero__pitch">
-            {smallest && heaviest
-              ? `From the ${smallest.name.replace(/^Cessna /, "")} to the ${heaviest.name.replace(/^(McDonnell Douglas|Airbus) /, "").replace(/-800 Executive$/, "")}: ${facts.aircraftTypes} aircraft types, ${facts.routes} routes and one career path.`
-              : `${facts.aircraftTypes} aircraft types, ${facts.routes} routes and one career path.`}
-          </p>
-          <div className="hero__actions">
-            <JoinButton snapshot={snapshot} />
-            <a className="button button--ghost" href={live.length ? "#/live" : "#/routes"}>
-              {live.length ? `${live.length} ${live.length === 1 ? "flight" : "flights"} in the air` : "Explore the network"}
-            </a>
+          <div className="hero__copy">
+            <p className="eyebrow eyebrow--on-ink">Virtual airline · Indianapolis, Indiana</p>
+            <h1>{airline.name}</h1>
+            {airline.tagline ? <p className="hero__lede">{airline.tagline}</p> : null}
+            <p className="hero__pitch">
+              From the four-seat Citation Mustang to a 150-seat executive A380 and the 777F: {facts.aircraftTypes} aircraft types, {facts.routes} routes from two Indianapolis bases, and one career path.
+            </p>
+            <div className="hero__actions">
+              <JoinButton snapshot={snapshot} />
+              <a className="button button--ghost" href={live.length ? "#/live" : "#/routes"}>
+                {live.length ? `${live.length} ${live.length === 1 ? "flight" : "flights"} in the air` : "Explore the network"}
+              </a>
+            </div>
           </div>
+          <aside className="hero__panel" aria-label="Our two bases">
+            <p className="hero__panel-title">Two bases, one airline</p>
+            {baseList.map((icao) => {
+              const airport = snapshot.airports[icao];
+              const routes = snapshot.routes.filter((r) => routeBase(r, baseList) === icao).length;
+              const types = fleet.filter((f) => baseFor(f.code) === icao).length;
+              return (
+                <div key={icao} className="hero__base">
+                  <strong>{icao}</strong>
+                  <span>{airport?.name ?? icao}</span>
+                  <span className="hero__base-facts">{types} types · {routes} routes</span>
+                </div>
+              );
+            })}
+            <p className="hero__panel-note">{icaoNote(baseList)}</p>
+          </aside>
         </div>
       </section>
 
-      <section className="stats" aria-label={all ? "Airline statistics" : "Network at a glance"}>
+      <section className="stats" aria-label={all ? "Airline statistics from vAMSYS" : "Network at a glance"}>
         <div className="stats__inner">
           {all ? (
             <>
@@ -213,33 +258,58 @@ export function HomePage({ snapshot }: PageProps) {
               <div className="stat"><span className="stat__value">{formatCompact(all.flight_hours)}</span><span className="stat__label">Flight hours</span></div>
               <div className="stat"><span className="stat__value">{formatCompact(all.passengers)}</span><span className="stat__label">Passengers carried</span></div>
               <div className="stat"><span className="stat__value">{formatNumber(month?.flights ?? null)}</span><span className="stat__label">Flights, last 30 days</span></div>
+              <div className="stat"><span className="stat__value">{all.average_landing_rate != null ? `${Math.abs(Math.round(all.average_landing_rate))}` : "—"}</span><span className="stat__label">Avg landing, fpm</span></div>
             </>
           ) : (
             <>
               <div className="stat"><span className="stat__value">{facts.aircraftTypes}</span><span className="stat__label">Aircraft types</span></div>
+              <div className="stat"><span className="stat__value">{formatNumber(airframes(snapshot))}</span><span className="stat__label">Airframes</span></div>
               <div className="stat"><span className="stat__value">{facts.routes}</span><span className="stat__label">Scheduled routes</span></div>
               <div className="stat"><span className="stat__value">{facts.destinations}</span><span className="stat__label">Destinations</span></div>
-              <div className="stat"><span className="stat__value">{airline.divisions.length || facts.countries}</span><span className="stat__label">{airline.divisions.length ? "Divisions" : "Countries"}</span></div>
+              <div className="stat"><span className="stat__value">{facts.countries}</span><span className="stat__label">Countries</span></div>
             </>
           )}
         </div>
+        <p className="stats__source">{all ? "Statistics from vAMSYS, updated with every sync." : "Counted from the published schedule. Flight statistics appear once live vAMSYS data is connected."}</p>
+      </section>
+
+      <section className="page">
+        <SectionHead eyebrow="Why Crossroads" title="An airline built like a real charter operator" />
+        <ul className="reasons">
+          <li>
+            <h3>Two airports, real logic</h3>
+            <p>Light and mid-size jets work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
+          </li>
+          <li>
+            <h3>Business jet to freighter</h3>
+            <p>{facts.aircraftTypes} types across {airline.divisions.length || "four"} divisions on one schedule. Fly a 47-minute hop to Midway in the morning and a 777F to Leipzig at night.</p>
+          </li>
+          <li>
+            <h3>A career you can see</h3>
+            <p>Six ranks from Cadet to Chief Pilot, earned with hours and accepted PIREPs. One logbook covers every aircraft you fly.</p>
+          </li>
+          <li>
+            <h3>Briefed before you board</h3>
+            <p>Every route has a Crew Tools briefing with live weather, runway winds, a fuel estimate and an approach card. Book on vAMSYS, dispatch with SimBrief, and Pegasus files the PIREP.</p>
+          </li>
+        </ul>
       </section>
 
       {airline.divisions.length ? (
         <section className="page">
-          <SectionHead eyebrow="Four ways to fly" title="Pick your flying" intro="Every pilot can fly every division. Switch between a 40-minute light-jet hop and a transatlantic freighter run whenever you like." />
+          <SectionHead eyebrow="Four divisions" title="Pick your flying" intro="Every pilot can fly every division. Each route only offers the aircraft that suit it." action={{ href: "#/services", label: "Divisions and services" }} />
           <ul className="division-grid">
             {airline.divisions.map((division, i) => {
               const types = fleet.filter((f) => division.fleets.includes(f.code));
               const routeCount = snapshot.routes.filter((r) => routeInDivision(r, division)).length;
-              const base = division.base ? snapshot.airports[division.base] : undefined;
+              const service = SERVICES.find((s) => s.division === division.name);
               return (
                 <li key={division.name} className="division" style={{ ["--accent" as string]: DIVISION_COLORS[i % DIVISION_COLORS.length] }}>
-                  <p className="division__base">{division.base ? `${division.base}${base ? ` · ${base.name}` : ""}` : "Network-wide"}</p>
+                  <p className="division__base">{division.base ? `Based ${division.base}` : "Network-wide"} · {routeCount} routes</p>
                   <h3>{division.name}</h3>
                   {division.summary ? <p className="division__summary">{division.summary}</p> : null}
-                  <p className="division__types">{types.map((t) => <span key={t.code} className="chip">{t.name.replace(/^(Cessna|Airbus|Embraer|Boeing|Gulfstream|McDonnell Douglas) /, "")}</span>)}</p>
-                  <a className="text-link" href={`#/routes?division=${encodeURIComponent(division.name)}`}>{routeCount} routes →</a>
+                  <p className="division__types">{types.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
+                  <a className="text-link" href={service ? `#/services?d=${service.slug}` : `#/routes?division=${encodeURIComponent(division.name)}`}>Sample itinerary →</a>
                 </li>
               );
             })}
@@ -247,86 +317,85 @@ export function HomePage({ snapshot }: PageProps) {
         </section>
       ) : null}
 
-      <section className="page">
-        <SectionHead
-          eyebrow={live.length ? "Right now" : "Where we fly"}
-          title={live.length ? "On the map" : "The network"}
-          action={{ href: live.length ? "#/live" : "#/routes", label: live.length ? "Full live board" : "All routes" }}
-        />
-        <LiveUnavailable snapshot={snapshot} />
-        <div className={live.length ? "live-grid" : ""}>
-          <div>
-            <LiveMap flights={live} airports={snapshot.airports} bases={bases(snapshot)} routes={live.length ? [] : snapshot.routes} divisions={airline.divisions} height={live.length ? 380 : 460} label={live.length ? "Live flights" : "Route network"} />
-            {!live.length ? <MapLegend snapshot={snapshot} /> : null}
+      {e190 ? (
+        <section className="livery-band">
+          <div className="livery-band__inner">
+            <div className="livery-band__copy">
+              <p className="eyebrow eyebrow--on-ink">Our colours</p>
+              <h2>White, charcoal and one orange line</h2>
+              <p>Our livery is a clean white fuselage with a charcoal and signal-orange cheatline, and the crossroads mark on the tail: two routes meeting at Indianapolis. It's in work now for the E190 and the Citation Mustang.</p>
+              <a className="text-link text-link--on-ink" href="#/fleet">See the fleet →</a>
+            </div>
+            <figure className="livery-band__figure">
+              <img src={e190.src} alt={e190.alt} loading="lazy" width={1100} height={280} />
+              <figcaption>E190 livery preview render</figcaption>
+            </figure>
           </div>
+        </section>
+      ) : null}
+
+      <section className="page page--split page--split-wide">
+        <div>
+          <SectionHead
+            eyebrow={live.length ? "Right now" : "Where we fly"}
+            title={live.length ? "On the map" : "The network"}
+            action={{ href: live.length ? "#/live" : "#/routes", label: live.length ? "Full live board" : "All routes" }}
+          />
+          <LiveUnavailable snapshot={snapshot} />
+          <LiveMap flights={live} airports={snapshot.airports} bases={baseList} routes={live.length ? [] : snapshot.routes} divisions={airline.divisions} height={420} label={live.length ? "Live flights" : "Route network"} />
+          {!live.length ? <MapLegend snapshot={snapshot} /> : null}
+        </div>
+        <div>
           {live.length ? (
-            <ul className="flight-list">
-              {live.slice(0, 4).map((flight, i) => <FlightCard key={`${flight.callsign}-${i}`} flight={flight} snapshot={snapshot} />)}
-            </ul>
+            <>
+              <SectionHead eyebrow="In the air" title="Live flights" />
+              <ul className="flight-list">
+                {live.slice(0, 3).map((flight, i) => <FlightCard key={`${flight.callsign}-${i}`} flight={flight} snapshot={snapshot} />)}
+              </ul>
+            </>
           ) : null}
+          <SectionHead eyebrow="Just landed" title={recent.length ? "Latest flights" : "Logbook firsts"} />
+          {recent.length ? (
+            <table className="table table--compact">
+              <thead><tr><th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col" className="num">Landing</th></tr></thead>
+              <tbody>
+                {recent.slice(0, 6).map((r, i) => (
+                  <tr key={`${r.callsign}-${i}`}>
+                    <td><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span></td>
+                    <td><Leg from={r.from} to={r.to} snapshot={snapshot} /></td>
+                    <td>{r.aircraft ?? "—"}</td>
+                    <td className="num">{r.landing_rate != null ? `${r.landing_rate} fpm` : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <>
+              <ul className="firsts">
+                {FIRST_FLIGHTS.map((f) => (
+                  <li key={f.callsign}>
+                    <strong className="callsign">{f.callsign}</strong>
+                    <Leg from={f.from} to={f.to} snapshot={snapshot} />
+                    <span className="muted">{f.aircraft}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="fineprint">The first three PIREPs accepted on 11 November 2026. Live logbook entries replace this list once vAMSYS data is connected.</p>
+            </>
+          )}
         </div>
       </section>
 
       <section className="page">
-        <SectionHead eyebrow="Why Crossroads" title="Built for pilots who like variety" />
-        <ul className="reasons">
-          <li>
-            <h3>Two bases, real-world logic</h3>
-            <p>Light jets work out of Indianapolis Executive. Everything from the Longitude up flies from Indianapolis International, the way a real operator would split it.</p>
-          </li>
-          <li>
-            <h3>Executive to freighter</h3>
-            <p>{facts.aircraftTypes} types across {airline.divisions.length || "four"} divisions, from four-seat light jets to an MD-11F, all on one schedule.</p>
-          </li>
-          <li>
-            <h3>A career you can see</h3>
-            <p>Six ranks from Cadet to Chief Pilot, earned by hours and completed flights. Your logbook follows you across every aircraft.</p>
-          </li>
-          <li>
-            <h3>Modern tools, no busywork</h3>
-            <p>Book in the vAMSYS pilot portal, plan with SimBrief, and let Pegasus ACARS track and file your flight automatically.</p>
-          </li>
-        </ul>
+        <SectionHead eyebrow="News & NOTAMs" title="From the ops desk" action={{ href: "#/news", label: "All news" }} />
+        <ul className="news-grid">{NEWS.slice(0, 3).map((item) => <NewsCard key={item.title} item={item} />)}</ul>
       </section>
-
-      {events.length || recent.length ? (
-        <section className="page page--split">
-          <div>
-            <SectionHead eyebrow="Coming up" title="Events" action={events.length ? { href: "#/events", label: "All events" } : undefined} />
-            {events.length ? (
-              <ul className="event-list">{events.slice(0, 2).map((e) => <EventItem key={e.name + e.start} event={e} />)}</ul>
-            ) : (
-              <p className="muted">No events are scheduled right now.</p>
-            )}
-          </div>
-          <div>
-            <SectionHead eyebrow="Just landed" title="Recent flights" />
-            {recent.length ? (
-              <table className="table table--compact">
-                <thead><tr><th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col" className="num">Landing</th></tr></thead>
-                <tbody>
-                  {recent.slice(0, 6).map((r, i) => (
-                    <tr key={`${r.callsign}-${i}`}>
-                      <td><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span></td>
-                      <td><Leg from={r.from} to={r.to} snapshot={snapshot} /></td>
-                      <td>{r.aircraft ?? "—"}</td>
-                      <td className="num">{r.landing_rate != null ? `${r.landing_rate} fpm` : "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="muted">The first logbook entries will appear here.</p>
-            )}
-          </div>
-        </section>
-      ) : null}
 
       <section className="cta-band">
         <div className="cta-band__inner">
           <div>
             <h2>Your first flight is one application away.</h2>
-            <p>Start as a Cadet in the Citation Mustang. Where you take it from there is up to you.</p>
+            <p>Start as a Cadet in the Citation Mustang at KTYQ. Where you take it from there is up to you.</p>
           </div>
           <div className="hero__actions">
             <JoinButton snapshot={snapshot} label="Join Crossroads" />
@@ -338,6 +407,12 @@ export function HomePage({ snapshot }: PageProps) {
   );
 }
 
+function icaoNote(baseList: string[]): string {
+  return baseList.includes("KTYQ") && baseList.includes("KIND")
+    ? "KTYQ takes jets up to Citation X size. KIND takes the Longitude, Gulfstreams, airliners and freighters."
+    : "All operations from Indianapolis.";
+}
+
 // ------------------------------------------------------------------ live
 
 export function LivePage({ snapshot }: PageProps) {
@@ -346,45 +421,48 @@ export function LivePage({ snapshot }: PageProps) {
   const { live } = snapshot;
   const prelaunch = snapshot.source !== "vamsys";
   return (
-    <section className="page">
-      <h1 className="page-title">Live flights</h1>
-      <p className="lede">
-        {live.length
+    <>
+      <PageHeader
+        eyebrow="Operations"
+        title="Live flights"
+        lede={live.length
           ? `${live.length} ${live.length === 1 ? "flight is" : "flights are"} in progress. Positions as of ${relativeAge(snapshot.generated_at)}; this page refreshes every minute.`
           : prelaunch
-            ? "Live tracking switches on when our pilots start flying. Until then, here's the network they'll be flying."
+            ? "Live tracking switches on once the vAMSYS data connection is enabled. Until then, here's the network our pilots fly."
             : "No flights are in progress right now. Here's where we fly."}
-      </p>
-      <LiveUnavailable snapshot={snapshot} />
-      <LiveMap flights={live} airports={snapshot.airports} bases={bases(snapshot)} routes={live.length ? [] : snapshot.routes} divisions={snapshot.airline.divisions} height={520} onSelect={select} />
-      {!live.length ? <MapLegend snapshot={snapshot} /> : null}
-      {live.length ? (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col">Phase</th>
-                <th scope="col" className="num">Altitude</th><th scope="col" className="num">Speed</th><th scope="col">Progress</th><th scope="col">ETA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {live.map((f, i) => (
-                <tr key={`${f.callsign}-${i}`} className={selected === i ? "is-selected" : undefined}>
-                  <td data-label="Flight"><strong>{f.callsign ?? f.flight_number ?? "—"}</strong>{f.pilot ? <span className="sub">{f.rank ? `${f.rank} ` : ""}{f.pilot}</span> : null}</td>
-                  <td data-label="Route"><Leg from={f.from} to={f.to} snapshot={snapshot} /></td>
-                  <td data-label="Aircraft">{f.aircraft ?? "—"}{f.registration ? <span className="sub">{f.registration}</span> : null}</td>
-                  <td data-label="Phase">{f.phase ?? "—"}</td>
-                  <td data-label="Altitude" className="num">{formatFeet(f.altitude_ft)}</td>
-                  <td data-label="Speed" className="num">{f.groundspeed_kt != null ? `${f.groundspeed_kt} kt` : "—"}</td>
-                  <td data-label="Progress"><Progress flight={f} />{f.remaining_nm != null ? <span className="sub">{formatNumber(f.remaining_nm)} nm to go</span> : null}</td>
-                  <td data-label="ETA">{f.eta ? formatDate(f.eta, true) : "—"}</td>
+      />
+      <section className="page">
+        <LiveUnavailable snapshot={snapshot} />
+        <LiveMap flights={live} airports={snapshot.airports} bases={bases(snapshot)} routes={live.length ? [] : snapshot.routes} divisions={snapshot.airline.divisions} height={520} onSelect={select} />
+        {!live.length ? <MapLegend snapshot={snapshot} /> : null}
+        {live.length ? (
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col">Phase</th>
+                  <th scope="col" className="num">Altitude</th><th scope="col" className="num">Speed</th><th scope="col">Progress</th><th scope="col">ETA</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : null}
-    </section>
+              </thead>
+              <tbody>
+                {live.map((f, i) => (
+                  <tr key={`${f.callsign}-${i}`} className={selected === i ? "is-selected" : undefined}>
+                    <td data-label="Flight"><strong>{f.callsign ?? f.flight_number ?? "—"}</strong>{f.pilot ? <span className="sub">{f.rank ? `${f.rank} ` : ""}{f.pilot}</span> : null}</td>
+                    <td data-label="Route"><Leg from={f.from} to={f.to} snapshot={snapshot} /></td>
+                    <td data-label="Aircraft">{f.aircraft ?? "—"}{f.registration ? <span className="sub">{f.registration}</span> : null}</td>
+                    <td data-label="Phase">{f.phase ?? "—"}</td>
+                    <td data-label="Altitude" className="num">{formatFeet(f.altitude_ft)}</td>
+                    <td data-label="Speed" className="num">{f.groundspeed_kt != null ? `${f.groundspeed_kt} kt` : "—"}</td>
+                    <td data-label="Progress"><Progress flight={f} />{f.remaining_nm != null ? <span className="sub">{formatNumber(f.remaining_nm)} nm to go</span> : null}</td>
+                    <td data-label="ETA">{f.eta ? formatDate(f.eta, true) : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </section>
+    </>
   );
 }
 
@@ -398,62 +476,109 @@ const KIND: Record<string, string> = {
   "cargo-containers": "Freighter",
 };
 
+const isFreighter = (t: FleetType) => t.type === "cargo" || t.type === "cargo-containers";
+
+function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snapshot; accent: string }) {
+  const info = FLEET_INFO[type.code];
+  const base = baseFor(type.code);
+  const routes = snapshot.routes.filter((r) => r.types.includes(type.code)).length;
+  const sim = snapshot.airline.sim_aircraft?.[type.code];
+  return (
+    <li className="fleet-card" id={`type-${type.code}`}>
+      <div className={`fleet-card__media${info?.livery ? " fleet-card__media--livery" : ""}`} style={{ ["--accent" as string]: accent }}>
+        {info?.livery ? (
+          <img src={info.livery.src} alt={info.livery.alt} loading="lazy" />
+        ) : type.image ? (
+          <img src={type.image} alt={type.name} loading="lazy" referrerPolicy="no-referrer" />
+        ) : (
+          <span className="fleet-card__code" aria-hidden="true">{type.code}</span>
+        )}
+        {info?.livery ? <span className="fleet-card__badge">Crossroads livery</span> : null}
+      </div>
+      <div className="fleet-card__body">
+        <p className="eyebrow">{type.code}{type.type ? ` · ${KIND[type.type] ?? type.type}` : ""}{info ? ` · ${info.role}` : ""}</p>
+        <h3>{type.name}</h3>
+        {info ? <p className="fleet-card__blurb">{info.blurb}</p> : null}
+        <dl className="specs specs--4">
+          {isFreighter(type)
+            ? <div><dt>Payload</dt><dd>{formatWeight(type.max_cargo, type.weight_unit)}</dd></div>
+            : <div><dt>Seats</dt><dd>{formatNumber(type.max_pax)}</dd></div>}
+          <div><dt>Range</dt><dd>{info ? `${formatNumber(info.range_nm)} nm` : "—"}</dd></div>
+          <div><dt>Cruise</dt><dd>{info ? `${info.cruise_kt} kt` : "—"}</dd></div>
+          <div><dt>Routes</dt><dd>{routes}</dd></div>
+        </dl>
+        <p className="fleet-card__row">
+          <span className={`tag tag--base tag--${base.toLowerCase()}`}>Base {base}</span>
+          {type.registrations.map((r) => <span key={r} className="reg">{r}</span>)}
+        </p>
+        {sim ? <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{sim}</p> : null}
+        <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>Routes for the {shortName(type.name)} →</a>
+        {type.image && type.image_attribution && !info?.livery ? (
+          <p className="credit">Photo: {type.image_link ? <a href={type.image_link} rel="noopener">{type.image_attribution}</a> : type.image_attribution}</p>
+        ) : null}
+      </div>
+    </li>
+  );
+}
+
 export function FleetPage({ snapshot }: PageProps) {
-  const total = snapshot.fleet.reduce((sum, f) => sum + f.aircraft_count, 0);
+  const [baseFilter, setBaseFilter] = useState<"" | "KTYQ" | "KIND">("");
+  const total = airframes(snapshot);
   const divisions = snapshot.airline.divisions;
-  const groups: { title: string; base: string | null; summary: string | null; index: number; types: typeof snapshot.fleet }[] = divisions.length
+  const groups: { title: string; summary: string | null; index: number; types: FleetType[] }[] = divisions.length
     ? divisions.map((d, index) => ({
-        title: d.name, base: d.base, summary: d.summary, index,
+        title: d.name, summary: d.summary, index,
         // Keep the order the division lists its aircraft in (smallest to largest), not alphabetical.
         types: snapshot.fleet.filter((f) => d.fleets.includes(f.code)).sort((a, b) => d.fleets.indexOf(a.code) - d.fleets.indexOf(b.code)),
       }))
-    : [{ title: "Fleet", base: null, summary: null, index: 0, types: snapshot.fleet }];
+    : [{ title: "Fleet", summary: null, index: 0, types: snapshot.fleet }];
   const unassigned = divisions.length ? snapshot.fleet.filter((f) => !divisionFor(snapshot, f.code)) : [];
-  if (unassigned.length) groups.push({ title: "Other aircraft", base: null, summary: null, index: groups.length, types: unassigned });
-  const routesFor = (code: string) => snapshot.routes.filter((r) => r.types.includes(code)).length;
+  if (unassigned.length) groups.push({ title: "Other aircraft", summary: null, index: groups.length, types: unassigned });
+  const ktyq = snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ").length;
+  const seats = snapshot.fleet.filter((f) => !isFreighter(f)).reduce((s, f) => s + (f.max_pax ?? 0) * f.aircraft_count, 0);
 
   return (
-    <section className="page">
-      <h1 className="page-title">Fleet</h1>
-      <p className="lede">{snapshot.fleet.length} aircraft types, {formatNumber(total)} airframes on the line, across {groups.length} {groups.length === 1 ? "division" : "divisions"}.</p>
-      {snapshot.unavailable.includes("aircraft") ? <p className="callout">Airframe counts could not be refreshed this time.</p> : null}
-      {groups.filter((g) => g.types.length).map((group) => (
-        <div key={group.title} className="fleet-group">
-          <div className="fleet-group__head">
-            <h2><DivisionDot index={group.index} />{group.title}</h2>
-            {group.base ? <span className="tag">Based at {group.base}</span> : null}
-          </div>
-          {group.summary ? <p className="muted fleet-group__summary">{group.summary}</p> : null}
-          <ul className="fleet-grid">
-            {group.types.map((type) => (
-              <li key={type.code} className="fleet-card">
-                <div className="fleet-card__media" style={{ ["--accent" as string]: DIVISION_COLORS[group.index % DIVISION_COLORS.length] }}>
-                  {type.image ? <img src={type.image} alt={type.name} loading="lazy" referrerPolicy="no-referrer" /> : <span className="fleet-card__code" aria-hidden="true">{type.code}</span>}
-                </div>
-                <div className="fleet-card__body">
-                  <p className="eyebrow">{type.code}{type.type ? ` · ${KIND[type.type] ?? type.type}` : ""}</p>
-                  <h3>{type.name}</h3>
-                  {snapshot.airline.sim_aircraft?.[type.code] ? (
-                    <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{snapshot.airline.sim_aircraft[type.code]}</p>
-                  ) : null}
-                  <dl className="specs">
-                    <div><dt>In fleet</dt><dd>{type.aircraft_count}</dd></div>
-                    {type.type === "cargo" || type.type === "cargo-containers"
-                      ? <div><dt>Freight</dt><dd>{formatWeight(type.max_cargo, type.weight_unit)}</dd></div>
-                      : <div><dt>Seats</dt><dd>{formatNumber(type.max_pax)}</dd></div>}
-                    <div><dt>Routes</dt><dd>{routesFor(type.code)}</dd></div>
-                  </dl>
-                  {type.registrations.length ? <p className="regs" aria-label="Registrations">{type.registrations.map((r) => <span key={r} className="reg">{r}</span>)}</p> : null}
-                  {type.image && type.image_attribution ? (
-                    <p className="credit">Photo: {type.image_link ? <a href={type.image_link} rel="noopener">{type.image_attribution}</a> : type.image_attribution}</p>
-                  ) : null}
-                </div>
-              </li>
-            ))}
-          </ul>
+    <>
+      <PageHeader eyebrow="Fleet" title="From Mustang to 777F" lede={`${snapshot.fleet.length} aircraft types and ${formatNumber(total)} airframes, every one registered N…CR. Light and mid-size jets live at Indianapolis Executive, everything larger at Indianapolis International.`}>
+        <dl className="header-facts">
+          <div><dt>Types</dt><dd>{snapshot.fleet.length}</dd></div>
+          <div><dt>At KTYQ</dt><dd>{ktyq}</dd></div>
+          <div><dt>At KIND</dt><dd>{snapshot.fleet.length - ktyq}</dd></div>
+          <div><dt>Passenger seats</dt><dd>{formatNumber(seats)}</dd></div>
+        </dl>
+      </PageHeader>
+      <section className="page">
+        {snapshot.unavailable.includes("aircraft") ? <p className="callout">Airframe counts could not be refreshed this time.</p> : null}
+        <div className="chips" role="group" aria-label="Filter by base">
+          {(["", "KTYQ", "KIND"] as const).map((b) => (
+            <button key={b || "all"} type="button" className="chip-button" aria-pressed={baseFilter === b} onClick={() => setBaseFilter(b)}>
+              {b ? `${b} · ${snapshot.airports[b]?.name ?? b}` : "Both bases"}
+            </button>
+          ))}
         </div>
-      ))}
-    </section>
+        {groups.map((group) => {
+          const types = group.types.filter((t) => !baseFilter || baseFor(t.code) === baseFilter);
+          if (!types.length) return null;
+          const accent = DIVISION_COLORS[group.index % DIVISION_COLORS.length]!;
+          return (
+            <div key={group.title} className="fleet-group">
+              <div className="fleet-group__head">
+                <h2><DivisionDot index={group.index} />{group.title}</h2>
+                <span className="tag">{types.length} {types.length === 1 ? "type" : "types"}</span>
+              </div>
+              {group.summary ? <p className="muted fleet-group__summary">{group.summary}</p> : null}
+              <ul className="fleet-grid">
+                {types.map((type) => <FleetCard key={type.code} type={type} snapshot={snapshot} accent={accent} />)}
+              </ul>
+            </div>
+          );
+        })}
+        <p className="fineprint fleet-note">
+          Range and cruise are rounded Crossroads planning figures for flight simulation, not manufacturer data. Always dispatch with SimBrief.
+          Livery images are preview renders of Crossroads paint schemes for the simulator. Aircraft names are used only to identify the simulator models we fly.
+        </p>
+      </section>
+    </>
   );
 }
 
@@ -461,8 +586,16 @@ export function FleetPage({ snapshot }: PageProps) {
 
 export function RoutesPage({ snapshot }: PageProps) {
   const divisions = snapshot.airline.divisions;
+  const baseList = bases(snapshot);
   const [query, setQuery] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState(() => {
+    const wanted = hashParam("type");
+    return snapshot.fleet.some((f) => f.code === wanted) ? wanted : "";
+  });
+  const [base, setBase] = useState(() => {
+    const wanted = hashParam("base");
+    return baseList.includes(wanted) || wanted === POINT_TO_POINT ? wanted : "";
+  });
   const [divisionName, setDivisionName] = useState(() => {
     const wanted = hashParam("division");
     return divisions.some((d) => d.name === wanted) ? wanted : "";
@@ -472,107 +605,178 @@ export function RoutesPage({ snapshot }: PageProps) {
     () => [...new Set(snapshot.routes.filter((r) => routeInDivision(r, division)).flatMap((r) => r.types))].sort(),
     [snapshot.routes, division],
   );
-  const shown = useMemo(() => filterRoutes(snapshot.routes, query, type, division), [snapshot.routes, query, type, division]);
+  const shown = useMemo(() => filterRoutes(snapshot.routes, query, type, division, base, baseList), [snapshot.routes, query, type, division, base, baseList]);
   const names = Object.fromEntries(snapshot.fleet.map((f) => [f.code, f.name]));
+  const longest = shown.reduce((max, r) => Math.max(max, r.distance_nm ?? 0), 0);
+  const airportsServed = new Set(shown.flatMap((r) => [r.from, r.to])).size;
 
   const chooseDivision = (name: string) => {
     setDivisionName(name);
-    setType("");
+    if (type && !snapshot.routes.some((r) => r.types.includes(type) && routeInDivision(r, divisions.find((d) => d.name === name)))) setType("");
     const hash = name ? `#/routes?division=${encodeURIComponent(name)}` : "#/routes";
     window.history.replaceState(null, "", hash);
   };
 
   return (
-    <section className="page">
-      <h1 className="page-title">Route network</h1>
-      <p className="lede">{snapshot.routes.length} scheduled routes from our two Indianapolis bases. Book any of them through the pilot portal.</p>
-      {divisions.length ? (
-        <div className="chips" role="group" aria-label="Filter by division">
-          <button type="button" className="chip-button" aria-pressed={!divisionName} onClick={() => chooseDivision("")}>All divisions</button>
-          {divisions.map((d, i) => (
-            <button key={d.name} type="button" className="chip-button" aria-pressed={divisionName === d.name} onClick={() => chooseDivision(d.name)}>
-              <DivisionDot index={i} />{d.name}
-            </button>
-          ))}
-        </div>
-      ) : null}
-      <LiveMap flights={[]} airports={snapshot.airports} bases={bases(snapshot)} routes={shown} divisions={divisions} height={380} label="Map of the routes shown" />
-      <form className="filters" role="search" onSubmit={(e) => e.preventDefault()}>
-        <label>
-          <span>Search</span>
-          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="ICAO or flight number" autoComplete="off" />
-        </label>
-        <label>
-          <span>Aircraft</span>
-          <select value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="">All types</option>
-            {types.map((t) => <option key={t} value={t}>{names[t] ? `${names[t]} (${t})` : t}</option>)}
-          </select>
-        </label>
-        <p className="filters__count" aria-live="polite">{shown.length} shown</p>
-      </form>
-      {shown.length ? (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr><th scope="col">Flight</th><th scope="col">From</th><th scope="col">To</th><th scope="col" className="num">Distance</th><th scope="col" className="num">Time</th><th scope="col">Aircraft</th></tr>
-            </thead>
-            <tbody>
-              {shown.slice(0, 400).map((r, i) => (
-                <tr key={`${r.flight_number}-${r.from}-${r.to}-${i}`}>
-                  <td data-label="Flight"><strong>{r.callsign ?? r.flight_number ?? "—"}</strong>{r.kind === "cargo" ? <span className="tag tag--cargo">Cargo</span> : null}</td>
-                  <td data-label="From"><strong>{r.from}</strong><span className="sub">{snapshot.airports[r.from]?.name}</span></td>
-                  <td data-label="To"><strong>{r.to}</strong><span className="sub">{snapshot.airports[r.to]?.name}</span></td>
-                  <td data-label="Distance" className="num">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"}</td>
-                  <td data-label="Time" className="num">{formatDuration(r.duration_min)}</td>
-                  <td data-label="Aircraft">{r.types.join(", ") || "Any"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {shown.length > 400 ? <p className="muted">Showing the first 400 matches. Narrow your search to see more.</p> : null}
-        </div>
-      ) : (
-        <p className="empty">No routes match that search.</p>
-      )}
-    </section>
+    <>
+      <PageHeader eyebrow="Route network" title={`${snapshot.routes.length} routes from Indianapolis`} lede="Filter by division, base or aircraft. Every route here can be booked in the vAMSYS pilot portal, and every route has a Crew Tools briefing." />
+      <section className="page">
+        {divisions.length ? (
+          <div className="chips" role="group" aria-label="Filter by division">
+            <button type="button" className="chip-button" aria-pressed={!divisionName} onClick={() => chooseDivision("")}>All divisions</button>
+            {divisions.map((d, i) => (
+              <button key={d.name} type="button" className="chip-button" aria-pressed={divisionName === d.name} onClick={() => chooseDivision(d.name)}>
+                <DivisionDot index={i} />{d.name}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <form className="filters filters--top" role="search" onSubmit={(e) => e.preventDefault()}>
+          <label>
+            <span>Search</span>
+            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="ICAO or flight number" autoComplete="off" />
+          </label>
+          <label>
+            <span>Base</span>
+            <select value={base} onChange={(e) => setBase(e.target.value)}>
+              <option value="">Both bases and point-to-point</option>
+              {baseList.map((b) => <option key={b} value={b}>{b} · {snapshot.airports[b]?.name ?? b}</option>)}
+              <option value={POINT_TO_POINT}>Point-to-point (away from base)</option>
+            </select>
+          </label>
+          <label>
+            <span>Aircraft</span>
+            <select value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="">All types</option>
+              {types.map((t) => <option key={t} value={t}>{names[t] ? `${names[t]} (${t})` : t}</option>)}
+            </select>
+          </label>
+        </form>
+        <dl className="route-summary" aria-live="polite">
+          <div><dt>Routes shown</dt><dd>{shown.length}</dd></div>
+          <div><dt>Airports</dt><dd>{airportsServed}</dd></div>
+          <div><dt>Longest</dt><dd>{longest ? `${formatNumber(longest)} nm` : "—"}</dd></div>
+        </dl>
+        <LiveMap flights={[]} airports={snapshot.airports} bases={baseList} routes={shown} divisions={divisions} height={420} label="Map of the routes shown" />
+        <MapLegend snapshot={snapshot} />
+        {shown.length ? (
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr><th scope="col">Flight</th><th scope="col">From</th><th scope="col">To</th><th scope="col" className="num">Distance</th><th scope="col" className="num">Block</th><th scope="col">Aircraft</th><th scope="col">Briefing</th></tr>
+              </thead>
+              <tbody>
+                {shown.slice(0, 400).map((r, i) => {
+                  const d = routeDivision(r, divisions);
+                  return (
+                    <tr key={`${r.flight_number}-${r.from}-${r.to}-${i}`}>
+                      <td data-label="Flight">
+                        <strong>{d >= 0 ? <DivisionDot index={d} /> : null}{r.callsign ?? r.flight_number ?? "—"}</strong>
+                        <span className="sub">{d >= 0 ? divisions[d]!.name : ""}{r.tags.includes("ski") ? " · ski" : ""}{r.tags.includes("international") ? " · international" : ""}</span>
+                        {r.kind === "cargo" ? <span className="tag tag--cargo">Cargo</span> : null}
+                      </td>
+                      <td data-label="From"><strong>{r.from}</strong><span className="sub">{snapshot.airports[r.from]?.name}</span></td>
+                      <td data-label="To"><strong>{r.to}</strong><span className="sub">{snapshot.airports[r.to]?.name}</span></td>
+                      <td data-label="Distance" className="num">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"}</td>
+                      <td data-label="Block" className="num">{formatDuration(r.duration_min)}</td>
+                      <td data-label="Aircraft"><span className="type-list">{r.types.map((t) => <abbr key={t} title={names[t] ?? t}>{t}</abbr>)}</span></td>
+                      <td data-label="Briefing">{r.callsign ? <a className="text-link" href={`#/crew?route=${encodeURIComponent(r.callsign)}`}>Brief</a> : "—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {shown.length > 400 ? <p className="muted">Showing the first 400 matches. Narrow your search to see more.</p> : null}
+          </div>
+        ) : (
+          <p className="empty">No routes match those filters.</p>
+        )}
+        <p className="fineprint">Distances are great-circle. Block times are schedule estimates; your SimBrief OFP has the real figure for the day's winds. Routes from the 11 November network expansion are still being loaded into vAMSYS, so a few may not be bookable yet.</p>
+      </section>
+    </>
   );
 }
 
-// ------------------------------------------------------------------ pilots / join
+// ------------------------------------------------------------------ fly with us (walkthrough)
+
+const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[] }[] = [
+  {
+    title: "Apply and join the hub",
+    tool: "vAMSYS",
+    body: "Crossroads runs on vAMSYS. Create your pilot account through our vAMSYS application. Once staff approve it, you join the Indianapolis hub as a Cadet.",
+    tips: ["Use a username you're happy to see on a leaderboard", "Link your SimBrief account in your vAMSYS profile settings"],
+  },
+  {
+    title: "Install Pegasus",
+    tool: "Pegasus ACARS",
+    body: "Pegasus is vAMSYS's flight tracker. It runs next to your simulator, records the flight from the gate to the gate, and files your PIREP when you're done.",
+    tips: ["Sign in with your vAMSYS account", "Check that Pegasus supports your simulator version before your first flight"],
+  },
+  {
+    title: "Book a route",
+    tool: "vAMSYS pilot portal",
+    body: "Pick a route from the schedule in the pilot portal. Each route only offers the aircraft that suit it: light and mid-size jets from KTYQ, everything larger from KIND.",
+    tips: ["Use the Route network page here to plan by division, base or aircraft", "Cadets: start with the short KTYQ hops (CRX115 to Midway is 126 nm)"],
+  },
+  {
+    title: "Dispatch with SimBrief",
+    tool: "SimBrief",
+    body: "Generate your OFP from the booking. SimBrief gives you the route, fuel and weights. Load the plan into your aircraft's FMS and check it against the Crew Tools briefing for weather and runway winds.",
+    tips: ["Fuel policy: 45 minutes final reserve, always", "Use cost index guidance from the handbook"],
+  },
+  {
+    title: "Fly it",
+    tool: "MSFS + Pegasus",
+    body: "Spawn at a parking spot at the departure airport, start Pegasus before engine start, and fly the flight. Online on VATSIM or offline, it's up to you.",
+    tips: ["Stabilised by 1,000 ft in cloud and 500 ft visual, or go around", "No slew, time acceleration or in-flight refuelling"],
+  },
+  {
+    title: "File the PIREP",
+    tool: "Pegasus → vAMSYS",
+    body: "Pegasus files the PIREP when you shut down at the gate. Add comments for anything unusual. Staff review it, and accepted flights count toward your hours, your rank and the airline's statistics on this site.",
+    tips: ["Target a 60–250 fpm touchdown", "Diversions and go-arounds belong in the comments"],
+  },
+];
 
 export function PilotsPage({ snapshot }: PageProps) {
   const { airline } = snapshot;
   const facts = networkFacts(snapshot);
   const faqs: { q: string; a: string }[] = [
     { q: "Do I need real-world flying experience?", a: "No. Bring your simulator and a willingness to fly by the book. The career ladder starts you in light jets and you work up from there." },
-    { q: "Which simulators can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, so any simulator Pegasus supports works. Check Pegasus's current list before you apply." },
-    { q: "Can I fly the big jets straight away?", a: "Every route is open to every pilot. Ranks mark your experience by hours and completed flights; they don't lock you out of aircraft." },
-    { q: "Where do I start each flight?", a: "Light jets (Mustang, CJ4, Learjet 35A) operate from Indianapolis Executive, KTYQ. Everything larger operates from Indianapolis International, KIND." },
-    { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you do fly online, use our callsign and follow the network's rules." },
+    { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, so any simulator Pegasus supports will work. The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
+    { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },
+    { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
+    { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you fly online, use your CRX callsign and follow the network's rules." },
+    { q: "Is this a real airline?", a: "No. Crossroads Executive & Charter is a fictional virtual airline for flight simulation. It doesn't sell flights and isn't connected to any real operator." },
   ];
 
   return (
     <>
-      <section className="page">
-        <h1 className="page-title">Fly for Crossroads</h1>
-        <p className="lede">Pilots fly our {facts.routes}-route schedule from home in their simulator, log flights automatically, and work their way up from Cadet to Chief Pilot.</p>
-
-        <ol className="steps">
-          <li><h2>Apply</h2><p>Create your pilot account through our vAMSYS application{airline.join_url ? "" : " (opening soon)"}.</p></li>
-          <li><h2>Get approved</h2><p>Staff review applications and you join the Indianapolis hub.</p></li>
-          <li><h2>Book and fly</h2><p>Pick a route, dispatch with SimBrief, fly with Pegasus running, and your flight files itself.</p></li>
-        </ol>
+      <PageHeader eyebrow="Fly with us" title="How a Crossroads flight works" lede={`Six steps from application to accepted PIREP. Fly our ${facts.routes}-route schedule from home and build your logbook from Cadet to Chief Pilot.`}>
         <div className="hero__actions">
           <JoinButton snapshot={snapshot} label={airline.join_url ? "Start your application" : "Applications open soon"} />
-          {airline.pilot_login_url ? <a className="button button--quiet" href={airline.pilot_login_url} rel="noopener">Existing pilots: log in</a> : null}
-          {airline.discord_url ? <a className="button button--quiet" href={airline.discord_url} rel="noopener">Join our Discord</a> : null}
+          {airline.pilot_login_url ? <a className="button button--ghost" href={airline.pilot_login_url} rel="noopener">Existing pilots: log in</a> : null}
+          {airline.discord_url ? <a className="button button--ghost" href={airline.discord_url} rel="noopener">Join our Discord</a> : null}
         </div>
-      </section>
+      </PageHeader>
 
       <section className="page">
-        <SectionHead eyebrow="Career path" title="From Cadet to Chief Pilot" intro="Promotions come automatically as your hours and completed flights add up." />
-        <CareerLadder snapshot={snapshot} />
+        <ol className="walkthrough">
+          {WALKTHROUGH.map((step, i) => (
+            <li key={step.title} className="walkthrough__step">
+              <span className="walkthrough__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <p className="eyebrow">{step.tool}</p>
+                <h2>{step.title}</h2>
+                <p>{step.body}</p>
+                <ul className="ticks">{step.tips.map((t) => <li key={t}>{t}</li>)}</ul>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="callout">
+          Before your first flight, read the <a href="#/handbook">pilot handbook</a>: callsigns, flight-number blocks, fuel policy and what we expect on landing. Then look at the <a href="#/careers">career ladder</a>.
+        </p>
       </section>
 
       {snapshot.hubs.length ? (
@@ -581,12 +785,13 @@ export function PilotsPage({ snapshot }: PageProps) {
           <ul className="hub-list">
             {bases(snapshot).map((icao) => {
               const airport = snapshot.airports[icao];
-              const here = airline.divisions.filter((d) => d.base === icao);
+              const here = snapshot.fleet.filter((f) => baseFor(f.code) === icao);
               return (
                 <li key={icao} className="hub">
                   <h3>{icao}{airport ? <span className="hub__name">{airport.name}</span> : null}</h3>
-                  <p className="hub__airports">{here.length ? here.map((d) => d.name).join(" · ") : "All operations"}</p>
-                  <p className="muted">{here.flatMap((d) => d.fleets).length ? `${here.flatMap((d) => d.fleets).length} aircraft types` : ""}</p>
+                  <p className="hub__airports">{icao === "KTYQ" ? "Light and mid-size jets" : "Large-cabin jets, airliners and freighters"}</p>
+                  <p className="division__types">{here.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
+                  <a className="text-link" href={`#/routes?base=${icao}`}>Routes from {icao} →</a>
                 </li>
               );
             })}
@@ -606,22 +811,5 @@ export function PilotsPage({ snapshot }: PageProps) {
         </div>
       </section>
     </>
-  );
-}
-
-// ------------------------------------------------------------------ events
-
-export function EventsPage({ snapshot }: PageProps) {
-  return (
-    <section className="page page--narrow">
-      <h1 className="page-title">Events</h1>
-      <p className="lede">Group flights, tours and challenges. Register and fly them from the pilot portal.</p>
-      {snapshot.unavailable.includes("events") ? <p className="callout">Events could not be refreshed this time.</p> : null}
-      {snapshot.events.length ? (
-        <ul className="event-list">{snapshot.events.map((e) => <EventItem key={e.name + e.start} event={e} />)}</ul>
-      ) : (
-        <p className="empty">Nothing is scheduled yet. Our first group flights will be announced here.</p>
-      )}
-    </section>
   );
 }

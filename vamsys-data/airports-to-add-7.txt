@@ -1,0 +1,48 @@
+CYYZ,Toronto Pearson International
+EGLF,Farnborough
+EGSS,London Stansted
+KACK,Nantucket Memorial
+KAGC,Allegheny County (Pittsburgh)
+KAPA,Centennial (Denver)
+KAUS,Austin-Bergstrom International
+KBCT,Boca Raton
+KBED,Hanscom Field (Bedford)
+KBKL,Cleveland Burke Lakefront
+KCHS,Charleston International
+KCLT,Charlotte Douglas International
+KCMH,John Glenn Columbus International
+KDEN,Denver International
+KDTS,Destin Executive
+KDTW,Detroit Metropolitan Wayne County
+KEGE,Eagle County Regional (Vail)
+KEWR,Newark Liberty International
+KHOU,Houston William P. Hobby
+KHXD,Hilton Head
+KIAD,Washington Dulles International
+KIAH,Houston George Bush Intercontinental
+KJAC,Jackson Hole
+KJAX,Jacksonville International
+KMEM,Memphis International
+KMKC,Charles B. Wheeler Downtown (Kansas City)
+KMSP,Minneapolis-St Paul International
+KMSY,New Orleans Louis Armstrong International
+KMYR,Myrtle Beach International
+KOAK,Oakland International
+KOSU,Ohio State University (Columbus)
+KPDK,DeKalb-Peachtree (Atlanta)
+KPHL,Philadelphia International
+KPHX,Phoenix Sky Harbor International
+KPTK,Oakland County International (Pontiac)
+KSDF,Louisville Muhammad Ali International
+KSEA,Seattle-Tacoma International
+KSJC,San Jose Mineta International
+KSUS,Spirit of St. Louis
+KTPA,Tampa International
+KVNY,Van Nuys
+LFMN,Nice Cote d'Azur
+LSGG,Geneva
+MBPV,Providenciales International (Turks and Caicos)
+MMUN,Cancun International
+MYNN,Nassau Lynden Pindling International
+PHNL,Honolulu Daniel K. Inouye International
+TXKF,Bermuda L.F. Wade International

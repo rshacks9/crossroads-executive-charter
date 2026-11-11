@@ -13,6 +13,9 @@ import {
   loadSnapshot,
   networkFacts,
   primaryDivision,
+  routeBase,
+  routeDivision,
+  POINT_TO_POINT,
   progressPercent,
   relativeAge,
   componentText,
@@ -101,9 +104,30 @@ describe("routes and divisions", () => {
     expect(primaryDivision({ types: ["ZZZZ"] }, divisions)).toBe(-1);
   });
 
+  it("files routes under a division by tag first, then by aircraft", () => {
+    const name = (callsign: string) => divisions[routeDivision(routes.find((r) => r.callsign === callsign)!, divisions)]!.name;
+    expect(name("CRX101")).toBe("Executive");
+    expect(name("CRX311")).toBe("Group & Sports Charter");
+    expect(name("CRX517")).toBe("Group & Sports Charter"); // group charter that business jets can also fly
+    expect(name("CRX607")).toBe("Cargo Charter");
+  });
+
+  it("filters by base, including point-to-point legs", () => {
+    const bases = ["KTYQ", "KIND"];
+    const ktyq = filterRoutes(routes, "", "", undefined, "KTYQ", bases);
+    expect(ktyq.length).toBeGreaterThan(50);
+    expect(ktyq.every((r) => r.from === "KTYQ" || r.to === "KTYQ")).toBe(true);
+    const p2p = filterRoutes(routes, "", "", undefined, POINT_TO_POINT, bases);
+    expect(p2p.map((r) => r.callsign)).toContain("CRX171");
+    expect(p2p.every((r) => routeBase(r, bases) === "")).toBe(true);
+    // KTYQ only takes jets up to Citation X size.
+    const small = new Set(["C510", "PRM1", "C25C", "LJ35", "H25B", "C750"]);
+    expect(ktyq.every((r) => r.types.every((t) => small.has(t)))).toBe(true);
+  });
+
   it("summarises the network without counting the bases as destinations", () => {
     const facts = networkFacts(snapshot);
-    expect(facts).toMatchObject({ aircraftTypes: 15, routes: 56, destinations: 21 });
+    expect(facts).toMatchObject({ aircraftTypes: 18, routes: 178, destinations: 70 });
     expect(facts.countries).toBeGreaterThanOrEqual(5);
   });
 });

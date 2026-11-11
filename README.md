@@ -1,7 +1,9 @@
 # Crossroads Executive & Charter: public website
 
-The public face of the airline: home page with live stats, a live flight map, fleet, route network,
-pilot ranks and hubs, and events. Its data comes from vAMSYS, so the site updates itself as pilots
+The public face of the airline: home page with live stats, a live flight map, fleet (with livery
+renders), route network filtered by division/base/aircraft, divisions and services with sample
+itineraries, career and ranks, a how-to-fly walkthrough, the pilot handbook and SOPs, an about page,
+and news/NOTAMs plus vAMSYS events. Light and dark themes. Its data comes from vAMSYS, so the site updates itself as pilots
 fly. Joining, booking and PIREPs stay in vAMSYS. This site links there and never duplicates them.
 
 ```
@@ -17,6 +19,7 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 | `sync/crossroads_sync/` | Builds the snapshot. `snapshot.py` is the allowlist; `fetch.py` makes the GET calls |
 | `sync/vamsys/` | Kimi's read-only vAMSYS client, vendored unchanged from `../va-website/infrastructure/vamsys` |
 | `site/` | Vite + React + TypeScript static site; Leaflet map on OpenStreetMap tiles |
+| `site/src/content.ts` | Editorial content vAMSYS doesn't hold: aircraft roles and planning figures, sample itineraries, SOPs, news. No statistics or member claims |
 | `sync/crossroads_sync/crew.py` | Builds `crew.json` for the Crew Tools page (see below) |
 | `sync/kimi_tools/` | Kimi's Jumpseat calculation modules (weather, fuel, performance, approach), vendored unchanged |
 | `.github/workflows/sync-deploy.yml` | Test → pull vAMSYS → build → deploy to GitHub Pages, on a schedule |

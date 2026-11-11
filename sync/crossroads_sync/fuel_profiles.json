@@ -7,6 +7,9 @@
  "profiles": {
   "C510": {"cruise": 300, "climb": 420, "descent": 150, "taxi": 60, "holding": 260, "reserve_minutes": 45, "vref_kt": 95},
   "C25C": {"cruise": 500, "climb": 700, "descent": 220, "taxi": 80, "holding": 420, "reserve_minutes": 45, "vref_kt": 115},
+  "PRM1": {"cruise": 380, "climb": 540, "descent": 180, "taxi": 70, "holding": 320, "reserve_minutes": 45, "vref_kt": 110},
+  "H25B": {"cruise": 800, "climb": 1150, "descent": 320, "taxi": 120, "holding": 680, "reserve_minutes": 45, "vref_kt": 125},
+  "C750": {"cruise": 900, "climb": 1300, "descent": 360, "taxi": 130, "holding": 760, "reserve_minutes": 45, "vref_kt": 125},
   "LJ35": {"cruise": 720, "climb": 1000, "descent": 300, "taxi": 110, "holding": 600, "reserve_minutes": 45, "vref_kt": 125},
   "C700": {"cruise": 820, "climb": 1150, "descent": 330, "taxi": 120, "holding": 690, "reserve_minutes": 45, "vref_kt": 115},
   "GLF6": {"cruise": 1900, "climb": 2700, "descent": 750, "taxi": 250, "holding": 1600, "reserve_minutes": 45, "vref_kt": 125},

@@ -24,23 +24,33 @@ class PreviewTests(unittest.TestCase):
         self.assertIsNone(self.snapshot["stats"]["last_30_days"])
 
     def test_preview_mirrors_the_vamsys_setup(self):
-        self.assertEqual(len(self.snapshot["routes"]), 56)
-        self.assertEqual(len(self.snapshot["fleet"]), 15)
-        self.assertEqual(len(self.snapshot["airports"]), 23)
+        # Updates 1-6 (58 routes) plus the 120-route network expansion of 2026-11-11.
+        self.assertEqual(len(self.snapshot["routes"]), 178)
+        self.assertEqual(len(self.snapshot["fleet"]), 18)
+        self.assertEqual(len(self.snapshot["airports"]), 72)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
     def test_hub_rule_small_jets_ktyq_everything_else_kind(self):
-        small = {"C510", "C25C", "LJ35"}
+        # KTYQ takes light and mid jets up to Citation X size; KIND takes everything bigger.
+        small = {"C510", "PRM1", "C25C", "LJ35", "H25B", "C750"}
         for route in self.snapshot["routes"]:
             ends = {route["from"], route["to"]}
             if "KTYQ" in ends:
                 self.assertTrue(set(route["types"]) <= small, route)
-            else:
+            if "KIND" in ends:
                 self.assertTrue(set(route["types"]).isdisjoint(small), route)
+
+    def test_new_jets_and_registrations(self):
+        regs = {f["code"]: f["registrations"] for f in self.snapshot["fleet"]}
+        self.assertEqual(regs["PRM1"], ["N390CR"])
+        self.assertEqual(regs["C750"], ["N750CR"])
+        self.assertEqual(regs["H25B"], ["N800CR"])
+        hawker = [r for r in self.snapshot["routes"] if "H25B" in r["types"]]
+        self.assertGreater(len(hawker), 50)
 
     def test_cargo_routes_flagged_and_freighters_only(self):
         cargo = [r for r in self.snapshot["routes"] if r["kind"] == "cargo"]
-        self.assertEqual(len(cargo), 8)
+        self.assertEqual(len(cargo), 14)
         self.assertTrue(all(set(r["types"]) <= {"MD11", "A306", "B77L"} for r in cargo))
 
     def test_divisions_cover_every_fleet_exactly_once(self):

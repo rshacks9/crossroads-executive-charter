@@ -4,20 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Crossroads Executive & Charter · Virtual Airline from Indianapolis</title>
-    <meta name="description" content="A flight-sim virtual airline from Indianapolis: 15 aircraft types from the Citation Mustang to the A380 and 777F, 56 routes across executive, charter and cargo divisions, and a clear career path. Join on vAMSYS." />
+    <meta name="description" content="A fictional flight-sim virtual airline from Indianapolis: 18 aircraft types from the Citation Mustang to the A380 and 777F, 178 routes across executive, charter, sports and cargo divisions, and a six-rank career path. Join on vAMSYS." />
     <meta name="theme-color" content="#1b2328" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Apply the saved theme before first paint. Storage can be unavailable (private mode); fall back to the system setting.
+      try { var t = localStorage.getItem("crossroads-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href="https://rshacks9.github.io/crossroads-executive-charter/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Crossroads Executive & Charter" />
     <meta property="og:title" content="Crossroads Executive & Charter · Virtual Airline" />
-    <meta property="og:description" content="Light jets to the A380 and 777F. Two Indianapolis bases, 56 routes, four divisions and one career path. Fly with us on vAMSYS." />
+    <meta property="og:description" content="Light jets to the A380 and 777F. Two Indianapolis bases, 178 routes, four divisions and one career path. A virtual airline for flight simulation on vAMSYS." />
     <meta property="og:url" content="https://rshacks9.github.io/crossroads-executive-charter/" />
     <meta property="og:image" content="https://rshacks9.github.io/crossroads-executive-charter/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Crossroads Executive & Charter: 15 aircraft types, 56 routes, 4 divisions" />
+    <meta property="og:image:alt" content="Crossroads Executive &amp; Charter virtual airline logo and network" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://rshacks9.github.io/crossroads-executive-charter/og.png" />
 
@@ -26,7 +31,7 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Crossroads Executive & Charter",
-        "description": "Flight simulation virtual airline based in Indianapolis, Indiana. Not affiliated with any real-world airline.",
+        "description": "Fictional flight simulation virtual airline based in Indianapolis, Indiana. Not a real air carrier or charter operator and not affiliated with any real company.",
         "url": "https://rshacks9.github.io/crossroads-executive-charter/",
         "logo": "https://rshacks9.github.io/crossroads-executive-charter/og.png"
       }
@@ -35,7 +40,7 @@
   <body>
     <div id="root"></div>
     <noscript>
-      <p style="font-family:sans-serif;padding:24px">Crossroads Executive &amp; Charter is a flight-simulation virtual airline from Indianapolis. Please enable JavaScript to see our fleet, routes and live flights.</p>
+      <p style="font-family:sans-serif;padding:24px">Crossroads Executive &amp; Charter is a fictional virtual airline for flight simulation, based in Indianapolis. It is not a real air carrier or charter operator and is not affiliated with any real company. Please enable JavaScript to see our fleet, routes and live flights.</p>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

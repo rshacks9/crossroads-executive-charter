@@ -11,32 +11,57 @@
   {
    "name": "Executive",
    "base": "KTYQ",
-   "summary": "Light jets out of Indianapolis Executive. Quick hops to Teterboro, Chicago and Nashville, and longer legs to Aspen, Scottsdale and Key West.",
-   "fleets": ["C510", "C25C", "LJ35"]
+   "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Nassau, Geneva and Le Bourget.",
+   "fleets": [
+    "C510",
+    "PRM1",
+    "C25C",
+    "LJ35",
+    "H25B",
+    "C750",
+    "C700",
+    "GLF6",
+    "GA7C"
+   ]
   },
   {
-   "name": "Global Executive",
+   "name": "Executive Charter",
    "base": "KIND",
-   "summary": "The Longitude, both Gulfstreams and VIP-configured Airbus jets up to the A380, flying coast to coast and across the Atlantic to London Luton and Paris Le Bourget.",
-   "fleets": ["C700", "GLF6", "GA7C", "BCS3", "A346", "A388"]
+   "summary": "VIP-configured Airbus jets for delegations, tours and private groups: the 48-seat A220, the 100-seat A340-600 and the 150-seat A380, flying from Indianapolis International to Las Vegas, Los Angeles, Geneva, Honolulu and Paris.",
+   "fleets": [
+    "BCS3",
+    "A346",
+    "A388"
+   ]
   },
   {
    "name": "Group & Sports Charter",
    "base": "KIND",
-   "summary": "Teams, tours and getaways in the E-Jets and the 757, from Indianapolis to Orlando, Las Vegas, Boston and Los Angeles.",
-   "fleets": ["E175", "E190", "B752"]
+   "summary": "Teams, bands and incentive groups in the E175, E190 and 757 from Indianapolis International to game-day cities, Cancun, Providenciales and beyond.",
+   "fleets": [
+    "E175",
+    "E190",
+    "B752"
+   ]
   },
   {
    "name": "Cargo Charter",
    "base": "KIND",
-   "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Ontario, Anchorage and Leipzig.",
-   "fleets": ["A306", "MD11", "B77L"]
+   "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Newark, Oakland, Ontario, Anchorage, Stansted and Leipzig.",
+   "fleets": [
+    "A306",
+    "MD11",
+    "B77L"
+   ]
   }
  ],
  "sim_aircraft": {
   "C510": "Cockspur Citation Mustang (add-on)",
+  "PRM1": "Carenado B390 Premier IA (add-on)",
   "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
   "LJ35": "Flysimware Learjet 35A (add-on)",
+  "H25B": "FlightFX Hawker 800XP (add-on)",
+  "C750": "FlightFX Citation X (add-on)",
   "C700": "Cessna Citation Longitude (MSFS 2024 default)",
   "GLF6": "Gulfstream G650 (community mod)",
   "GA7C": "Gulfstream G700 (community mod)",

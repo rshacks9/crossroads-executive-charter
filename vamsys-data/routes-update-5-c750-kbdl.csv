@@ -1,0 +1,3 @@
+ID,Departure Airport (ICAO/IATA),Arrival Airport (ICAO/IATA),Type,Callsign,Flight Number,Fleet IDs,_delete,Service Days,Tags,Is Hidden
+,KTYQ,KBDL,scheduled,CRX121,CX121,"32216",FALSE,,executive,FALSE
+,KBDL,KTYQ,scheduled,CRX122,CX122,"32216",FALSE,,executive,FALSE
