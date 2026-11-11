@@ -244,6 +244,7 @@ export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[
   { block: "CRX401–499", use: "Executive, large-cabin jets", base: "KIND" },
   { block: "CRX501–599", use: "International and long-range", base: "KIND" },
   { block: "CRX601–699", use: "Cargo charter", base: "KIND" },
+  { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs)", base: "KTYQ" },
 ];
 
 export const COST_INDEX: { group: string; types: string; guidance: string }[] = [
@@ -278,6 +279,34 @@ export const SOP_RULES: { title: string; body: string; link?: { href: string; la
   { title: "Write it up", body: "PIREP comments are read. Diversions, go-arounds, technical issues and firm landings all belong there. Honest write-ups are part of the job." },
 ];
 
+// ------------------------------------------------------------------ tours (vAMSYS Activities)
+
+export interface Tour {
+  name: string;
+  window: string;
+  points: number;
+  summary: string;
+  /** Airport pairs in order; each is a scheduled Crossroads route. */
+  legs: [string, string][];
+}
+
+export const TOURS: Tour[] = [
+  {
+    name: "Ski Season Tour 2026-27",
+    window: "11 November 2026 to 15 April 2027",
+    points: 500,
+    summary: "Four mountain fields from Indianapolis Executive in the CJ4, Learjet, Hawker or Citation X. Brief the terrain and the hot-and-high numbers on every leg.",
+    legs: [["KTYQ", "KEGE"], ["KEGE", "KTYQ"], ["KTYQ", "KASE"], ["KASE", "KTYQ"], ["KTYQ", "KJAC"], ["KJAC", "KTYQ"], ["KTYQ", "KSUN"], ["KSUN", "KTYQ"]],
+  },
+  {
+    name: "Across the Pond: Transatlantic Executive Tour",
+    window: "11 November 2026 to 30 June 2027",
+    points: 750,
+    summary: "Three European business capitals from KIND in the G650, G700, A340 or A380, with a North Atlantic crossing on every leg.",
+    legs: [["KIND", "LFPB"], ["LFPB", "KIND"], ["KIND", "LSGG"], ["LSGG", "KIND"], ["KIND", "LSZH"], ["LSZH", "KIND"]],
+  },
+];
+
 // ------------------------------------------------------------------ news / NOTAMs
 
 export interface NewsItem {
@@ -289,6 +318,20 @@ export interface NewsItem {
 }
 
 export const NEWS: NewsItem[] = [
+  {
+    date: "2026-11-11",
+    kind: "Network",
+    title: "Network now 292 routes",
+    body: "Update 8 added 134 routes and 39 airports in vAMSYS, taking the schedule from 158 to 292 routes at 111 airports. New light-jet flying from KTYQ to Sun Valley, Montrose, Steamboat, Bozeman, Truckee, the Caribbean and the Northeast; Munich, Zurich, Madrid, Milan Linate and Shannon from KIND, plus a Liege cargo run; and a new CRX701 block for KTYQ and point-to-point legs. The routes to Honolulu, Jackson Hole, Nassau, Providenciales, New Orleans, Philadelphia, Hilton Head and Cleveland Burke Lakefront are back on the schedule too.",
+    link: { href: "#/routes", label: "Explore the network" },
+  },
+  {
+    date: "2026-11-11",
+    kind: "News",
+    title: "Two tours open: Ski Season 2026-27 and Across the Pond",
+    body: "The Ski Season Tour 2026-27 (8 legs, KTYQ to Vail, Aspen, Jackson Hole and Sun Valley and back) runs until 15 April 2027. Across the Pond (6 legs, KIND to Paris Le Bourget, Geneva and Zurich and back) runs until 30 June 2027. Register for both under Activities in the vAMSYS pilot portal; finishing a tour earns a badge and bonus points.",
+    link: { href: "#/careers", label: "Tour legs and details" },
+  },
   {
     date: "2026-11-11",
     kind: "News",

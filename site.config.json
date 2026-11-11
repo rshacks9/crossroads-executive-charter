@@ -3,7 +3,7 @@
  "short_name": "Crossroads",
  "tagline": "Executive and charter flying from the Crossroads of America.",
  "join_url": null,
- "pilot_login_url": "https://vamsys.io/login",
+ "pilot_login_url": "https://vamsys.io/login/crossroads",
  "discord_url": null,
  "contact_email": null,
  "show_pilot_names": false,
@@ -47,7 +47,7 @@
   {
    "name": "Cargo Charter",
    "base": "KIND",
-   "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Newark, Oakland, Ontario, Anchorage, Stansted and Leipzig.",
+   "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Newark, Oakland, Ontario, Anchorage, Stansted, Leipzig and Liege.",
    "fleets": [
     "A306",
     "MD11",

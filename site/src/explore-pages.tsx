@@ -54,7 +54,7 @@ export function useCrew(): Crew | null {
 }
 
 function bookUrl(snapshot: Snapshot): string {
-  return snapshot.airline.pilot_login_url ?? snapshot.airline.join_url ?? "https://vamsys.io/login";
+  return snapshot.airline.pilot_login_url ?? snapshot.airline.join_url ?? "https://vamsys.io/login/crossroads";
 }
 
 function typeNames(snapshot: Snapshot): Record<string, string> {
@@ -552,7 +552,7 @@ export function PlanPage({ snapshot }: PageProps) {
 // ------------------------------------------------------------------ pilot resources
 
 const LINKS: { title: string; href: string; body: string }[] = [
-  { title: "vAMSYS pilot portal", href: "https://vamsys.io/login", body: "Book routes, see your logbook and rank, and download Pegasus from the portal." },
+  { title: "vAMSYS pilot hub", href: "https://vamsys.io/login/crossroads", body: "The Crossroads sign-in page on vAMSYS: book routes, see your logbook and rank, and download Pegasus. New pilots use its Register link." },
   { title: "SimBrief", href: "https://www.simbrief.com/", body: "Free flight planning. Link it in your vAMSYS profile so bookings carry over. Every route page here has a pre-filled SimBrief link." },
   { title: "Pegasus ACARS", href: PEGASUS_URL, body: "vAMSYS's flight tracker. The official guide covers simulator setup, signing in, tracking your booking and filing the PIREP. Download it from the ACARS page in the pilot portal." },
 ];

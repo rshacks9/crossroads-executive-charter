@@ -315,3 +315,11 @@ describe("external links", () => {
     expect(PEGASUS_URL).toBe("https://vamsys.co.uk/docs/pegasus/pegasus-acars");
   });
 });
+
+describe("tours", () => {
+  it("every tour leg is a scheduled Crossroads route", async () => {
+    const { TOURS } = await import("./content");
+    expect(TOURS.map((t) => t.legs.length)).toEqual([8, 6]);
+    for (const tour of TOURS) for (const [from, to] of tour.legs) expect(snapshot.routes.some((r) => r.from === from && r.to === to), `${tour.name} ${from}-${to}`).toBe(true);
+  });
+});

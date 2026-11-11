@@ -787,6 +787,14 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 .notfound .page-title { margin: 8px 0 12px; }
 .notfound .hero__actions { margin: 20px 0; }
 
+/* tours */
+.tour-list { list-style: none; margin: 0 0 24px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.tour { padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--signal); border-radius: var(--radius); background: var(--panel); display: grid; gap: 8px; }
+.tour h3 { font-size: 24px; }
+.tour__legs { margin: 4px 0 0; padding-left: 22px; display: grid; gap: 4px; font-size: 15px; }
+.tour__legs a { text-decoration: none; }
+.tour__legs a:hover { text-decoration: underline; }
+
 /* keyboard-focusable airport markers on explorer maps */
 .leaflet-container path.airport-marker:focus { outline: none; }
 .leaflet-container path.airport-marker:focus-visible { stroke: #e8703a; stroke-width: 5px; stroke-opacity: 1; paint-order: stroke; filter: drop-shadow(0 0 2px #1b2328) drop-shadow(0 0 4px #e8703a); }

@@ -127,7 +127,7 @@ describe("routes and divisions", () => {
 
   it("summarises the network without counting the bases as destinations", () => {
     const facts = networkFacts(snapshot);
-    expect(facts).toMatchObject({ aircraftTypes: 18, routes: 158, destinations: 62 });
+    expect(facts).toMatchObject({ aircraftTypes: 18, routes: 292, destinations: 109 });
     expect(facts.countries).toBeGreaterThanOrEqual(5);
   });
 });

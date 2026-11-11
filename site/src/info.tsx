@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
-import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, baseFor } from "./content";
+import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
+import { routeHref } from "./explore";
 import { DIVISION_COLORS } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
@@ -185,6 +186,27 @@ export function CareersPage({ snapshot }: PageProps) {
             </ol>
           </div>
         </div>
+        <SectionHead eyebrow="Tours & badges" title="Two tours in vAMSYS Activities" intro="Register for a tour under Activities in the vAMSYS pilot portal, then fly the legs in order. Finishing a tour earns its badge and bonus points." />
+        <ul className="tour-list">
+          {TOURS.map((tour) => (
+            <li key={tour.name} className="tour">
+              <h3>{tour.name}</h3>
+              <p className="muted">{tour.legs.length} legs · {tour.points} points · {tour.window}</p>
+              <p>{tour.summary}</p>
+              <ol className="tour__legs">
+                {tour.legs.map(([from, to], i) => {
+                  const route = snapshot.routes.find((r) => r.from === from && r.to === to);
+                  return (
+                    <li key={i}>
+                      {route ? <a href={routeHref(route)}><strong>{route.callsign}</strong> {from} → {to}</a> : <span>{from} → {to}</span>}
+                    </li>
+                  );
+                })}
+              </ol>
+            </li>
+          ))}
+        </ul>
+        {snapshot.airline.pilot_login_url ? <p className="fineprint">Activities are in the <a href={snapshot.airline.pilot_login_url} rel="noopener">vAMSYS pilot portal</a>. Tour dates and points are set in vAMSYS and may change there.</p> : null}
         <div className="hero__actions">
           <JoinButton snapshot={snapshot} label="Start as a Cadet" />
           <a className="button button--quiet" href="#/pilots">How a flight works</a>
@@ -266,7 +288,7 @@ export function HandbookPage({ snapshot }: PageProps) {
                 <p>Everything bigger: the Longitude, Gulfstreams, E-Jets, 757, Airbus VIP jets and all freighters.</p>
               </div>
             </div>
-            <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton). Fly them as positioning or one-way trips.</p>
+            <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton, Teterboro–Zurich, Shannon–London City, Van Nuys–Honolulu, and CRX701-series light-jet legs such as Teterboro–Miami Executive, Morristown–Nantucket and Santa Monica–Las Vegas). Fly them as positioning or one-way trips.</p>
           </section>
 
           <section id="hb-fuel" className="hb-section">

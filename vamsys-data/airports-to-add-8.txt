@@ -1,0 +1,39 @@
+EBLG,Liège Airport
+EDDM,Munich Airport
+EGLC,London City Airport
+EINN,Shannon Airport
+KADS,Addison Airport
+KAFW,Perot Field/Fort Worth Alliance Airport
+KBFI,King County International Airport - Boeing Field
+KBZN,Bozeman Yellowstone International Airport
+KCMI,University of Illinois Willard Airport
+KCRQ,McClellan-Palomar Airport
+KFRG,Republic Airport
+KHDN,Yampa Valley Airport
+KLNK,Lincoln Airport
+KMMU,Morristown Municipal Airport
+KMSN,Dane County Regional Truax Field
+KMTJ,Montrose Regional Airport
+KOPF,Miami-Opa Locka Executive Airport
+KPDX,Portland International Airport
+KPVD,Rhode Island T. F. Green International Airport
+KPWM,Portland International Jetport
+KRNO,Reno Tahoe International Airport
+KSAT,San Antonio International Airport
+KSLC,Salt Lake City International Airport
+KSMO,Santa Monica Municipal Airport
+KSNA,John Wayne Orange County International Airport
+KSRQ,Sarasota Bradenton International Airport
+KSTL,St. Louis Lambert International Airport
+KSUN,Friedman Memorial Airport
+KTMB,Miami Executive Airport
+KTRK,Truckee Tahoe Airport
+KUNV,State College Regional Airport
+LEMD,Adolfo Suárez Madrid–Barajas Airport
+LIML,Milano Linate Airport
+LSZH,Zürich Airport
+MDPC,Punta Cana International Airport
+MKJS,Sangster International Airport
+MMMX,Mexico City Benito Juárez International Airport
+TIST,Cyril E. King Airport
+TJSJ,Luis Munoz Marin International Airport

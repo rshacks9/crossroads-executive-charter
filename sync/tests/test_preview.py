@@ -24,10 +24,10 @@ class PreviewTests(unittest.TestCase):
         self.assertIsNone(self.snapshot["stats"]["last_30_days"])
 
     def test_preview_mirrors_the_vamsys_setup(self):
-        # Updates 1-6 (58 routes) plus the 100 routes imported in the 2026-11-11 network expansion.
-        self.assertEqual(len(self.snapshot["routes"]), 158)
+        # Updates 1-6 (58 routes), update 7 (100) and update 8 (134: 114 new, 20 restored) as imported 2026-11-11.
+        self.assertEqual(len(self.snapshot["routes"]), 292)
         self.assertEqual(len(self.snapshot["fleet"]), 18)
-        self.assertEqual(len(self.snapshot["airports"]), 64)
+        self.assertEqual(len(self.snapshot["airports"]), 111)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
     def test_hub_rule_small_jets_ktyq_everything_else_kind(self):
@@ -50,7 +50,7 @@ class PreviewTests(unittest.TestCase):
 
     def test_cargo_routes_flagged_and_freighters_only(self):
         cargo = [r for r in self.snapshot["routes"] if r["kind"] == "cargo"]
-        self.assertEqual(len(cargo), 14)
+        self.assertEqual(len(cargo), 20)
         self.assertTrue(all(set(r["types"]) <= {"MD11", "A306", "B77L"} for r in cargo))
 
     def test_divisions_cover_every_fleet_exactly_once(self):

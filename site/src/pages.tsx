@@ -720,7 +720,7 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
     title: "Apply and join the hub",
     tool: "vAMSYS",
     body: "Crossroads runs on vAMSYS. Create your pilot account through our vAMSYS application. Once staff approve it, you join the Indianapolis hub as a Cadet.",
-    tips: ["Use a username you're happy to see on a leaderboard", "Link your SimBrief account in your vAMSYS profile settings"],
+    tips: ["New pilots: open the Crossroads pilot hub at vamsys.io/login/crossroads and use its Register link", "Use a username you're happy to see on a leaderboard", "Link your SimBrief account in your vAMSYS profile settings"],
   },
   {
     title: "Install Pegasus",

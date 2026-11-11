@@ -1,7 +1,7 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-11T10:11:56Z",
+ "generated_at": "2026-11-11T11:59:27Z",
  "unavailable": [],
  "airline": {
   "divisions": [
@@ -43,7 +43,7 @@
    },
    {
     "name": "Cargo Charter",
-    "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Newark, Oakland, Ontario, Anchorage, Stansted and Leipzig.",
+    "summary": "A300-600F, MD-11F and 777F freighters on ad-hoc runs to Miami, Newark, Oakland, Ontario, Anchorage, Stansted, Leipzig and Liege.",
     "base": "KIND",
     "fleets": [
      "A306",
@@ -76,7 +76,7 @@
   "short_name": "Crossroads",
   "tagline": "Executive and charter flying from the Crossroads of America.",
   "join_url": null,
-  "pilot_login_url": "https://vamsys.io/login",
+  "pilot_login_url": "https://vamsys.io/login/crossroads",
   "discord_url": null,
   "contact_email": null
  },
@@ -386,6 +386,45 @@
    "tags": [
     "cargo-charter"
    ],
+   "flight_number": "CX620",
+   "callsign": "CRX620",
+   "from": "EBLG",
+   "to": "KIND",
+   "distance_nm": 3684,
+   "duration_min": 486,
+   "departure_time": null,
+   "types": [
+    "B77L",
+    "MD11"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX536",
+   "callsign": "CRX536",
+   "from": "EDDM",
+   "to": "KIND",
+   "distance_nm": 3967,
+   "duration_min": 521,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "cargo",
+   "tags": [
+    "cargo-charter"
+   ],
    "flight_number": "CX608",
    "callsign": "CRX608",
    "from": "EDDP",
@@ -444,6 +483,25 @@
     "executive",
     "international"
    ],
+   "flight_number": "CX540",
+   "callsign": "CRX540",
+   "from": "EGLC",
+   "to": "EINN",
+   "distance_nm": 339,
+   "duration_min": 67,
+   "departure_time": null,
+   "types": [
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
    "flight_number": "CX514",
    "callsign": "CRX514",
    "from": "EGLF",
@@ -479,6 +537,45 @@
    "kind": "scheduled",
    "tags": [
     "executive",
+    "international"
+   ],
+   "flight_number": "CX539",
+   "callsign": "CRX539",
+   "from": "EINN",
+   "to": "EGLC",
+   "distance_nm": 339,
+   "duration_min": 67,
+   "departure_time": null,
+   "types": [
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX538",
+   "callsign": "CRX538",
+   "from": "EINN",
+   "to": "KIND",
+   "distance_nm": 3146,
+   "duration_min": 418,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
     "short-hop"
    ],
    "flight_number": "CX174",
@@ -487,6 +584,29 @@
    "to": "KBED",
    "distance_nm": 91,
    "duration_min": 41,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX720",
+   "callsign": "CRX720",
+   "from": "KACK",
+   "to": "KMMU",
+   "distance_nm": 199,
+   "duration_min": 60,
    "departure_time": null,
    "types": [
     "C25C",
@@ -517,6 +637,68 @@
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX727",
+   "callsign": "CRX727",
+   "from": "KADS",
+   "to": "KASE",
+   "distance_nm": 614,
+   "duration_min": 111,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX712",
+   "callsign": "CRX712",
+   "from": "KADS",
+   "to": "KTYQ",
+   "distance_nm": 663,
+   "duration_min": 142,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "cargo",
+   "tags": [
+    "cargo-charter"
+   ],
+   "flight_number": "CX616",
+   "callsign": "CRX616",
+   "from": "KAFW",
+   "to": "KIND",
+   "distance_nm": 668,
+   "duration_min": 114,
+   "departure_time": null,
+   "types": [
+    "A306",
+    "B77L",
+    "MD11"
    ],
    "days": []
   },
@@ -623,6 +805,27 @@
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX728",
+   "callsign": "CRX728",
+   "from": "KASE",
+   "to": "KADS",
+   "distance_nm": 614,
+   "duration_min": 111,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -838,6 +1041,49 @@
   {
    "kind": "scheduled",
    "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX332",
+   "callsign": "CRX332",
+   "from": "KBFI",
+   "to": "KIND",
+   "distance_nm": 1617,
+   "duration_min": 241,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX158",
+   "callsign": "CRX158",
+   "from": "KBKL",
+   "to": "KTYQ",
+   "distance_nm": 226,
+   "duration_min": 65,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive",
     "short-hop"
    ],
@@ -875,6 +1121,48 @@
     "B752",
     "BCS3",
     "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX432",
+   "callsign": "CRX432",
+   "from": "KBZN",
+   "to": "KIND",
+   "distance_nm": 1149,
+   "duration_min": 178,
+   "departure_time": null,
+   "types": [
+    "BCS3",
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX182",
+   "callsign": "CRX182",
+   "from": "KBZN",
+   "to": "KTYQ",
+   "distance_nm": 1143,
+   "duration_min": 184,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -939,6 +1227,47 @@
     "BCS3",
     "E175",
     "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX336",
+   "callsign": "CRX336",
+   "from": "KCMI",
+   "to": "KIND",
+   "distance_nm": 93,
+   "duration_min": 37,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX723",
+   "callsign": "CRX723",
+   "from": "KCRQ",
+   "to": "KSDL",
+   "distance_nm": 271,
+   "duration_min": 73,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "PRM1"
    ],
    "days": []
   },
@@ -1132,6 +1461,71 @@
    "tags": [
     "executive"
    ],
+   "flight_number": "CX198",
+   "callsign": "CRX198",
+   "from": "KFRG",
+   "to": "KTYQ",
+   "distance_nm": 588,
+   "duration_min": 129,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX434",
+   "callsign": "CRX434",
+   "from": "KHDN",
+   "to": "KIND",
+   "distance_nm": 960,
+   "duration_min": 153,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX180",
+   "callsign": "CRX180",
+   "from": "KHDN",
+   "to": "KTYQ",
+   "distance_nm": 959,
+   "duration_min": 159,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
    "flight_number": "CX144",
    "callsign": "CRX144",
    "from": "KHOU",
@@ -1185,6 +1579,26 @@
     "C510",
     "C750",
     "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX138",
+   "callsign": "CRX138",
+   "from": "KHXD",
+   "to": "KTYQ",
+   "distance_nm": 540,
+   "duration_min": 120,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
     "LJ35",
     "PRM1"
    ],
@@ -1282,6 +1696,45 @@
    "tags": [
     "cargo-charter"
    ],
+   "flight_number": "CX619",
+   "callsign": "CRX619",
+   "from": "KIND",
+   "to": "EBLG",
+   "distance_nm": 3684,
+   "duration_min": 486,
+   "departure_time": null,
+   "types": [
+    "B77L",
+    "MD11"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX535",
+   "callsign": "CRX535",
+   "from": "KIND",
+   "to": "EDDM",
+   "distance_nm": 3967,
+   "duration_min": 521,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "cargo",
+   "tags": [
+    "cargo-charter"
+   ],
    "flight_number": "CX607",
    "callsign": "CRX607",
    "from": "KIND",
@@ -1347,6 +1800,45 @@
    "duration_min": 460,
    "departure_time": null,
    "types": [
+    "B77L",
+    "MD11"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX537",
+   "callsign": "CRX537",
+   "from": "KIND",
+   "to": "EINN",
+   "distance_nm": 3146,
+   "duration_min": 418,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "cargo",
+   "tags": [
+    "cargo-charter"
+   ],
+   "flight_number": "CX615",
+   "callsign": "CRX615",
+   "from": "KIND",
+   "to": "KAFW",
+   "distance_nm": 668,
+   "duration_min": 114,
+   "departure_time": null,
+   "types": [
+    "A306",
     "B77L",
     "MD11"
    ],
@@ -1454,6 +1946,26 @@
    "tags": [
     "sports-charter"
    ],
+   "flight_number": "CX331",
+   "callsign": "CRX331",
+   "from": "KIND",
+   "to": "KBFI",
+   "distance_nm": 1617,
+   "duration_min": 241,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
    "flight_number": "CX301",
    "callsign": "CRX301",
    "from": "KIND",
@@ -1472,6 +1984,27 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX431",
+   "callsign": "CRX431",
+   "from": "KIND",
+   "to": "KBZN",
+   "distance_nm": 1149,
+   "duration_min": 178,
+   "departure_time": null,
+   "types": [
+    "BCS3",
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "sports-charter"
    ],
    "flight_number": "CX323",
@@ -1480,6 +2013,27 @@
    "to": "KCMH",
    "distance_nm": 158,
    "duration_min": 46,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX335",
+   "callsign": "CRX335",
+   "from": "KIND",
+   "to": "KCMI",
+   "distance_nm": 93,
+   "duration_min": 37,
    "departure_time": null,
    "types": [
     "B752",
@@ -1572,6 +2126,28 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX433",
+   "callsign": "CRX433",
+   "from": "KIND",
+   "to": "KHDN",
+   "distance_nm": 960,
+   "duration_min": 153,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX403",
@@ -1627,6 +2203,26 @@
     "BCS3",
     "E175",
     "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX427",
+   "callsign": "CRX427",
+   "from": "KIND",
+   "to": "KJAC",
+   "distance_nm": 1117,
+   "duration_min": 168,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
    ],
    "days": []
   },
@@ -1715,6 +2311,27 @@
   {
    "kind": "scheduled",
    "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX339",
+   "callsign": "CRX339",
+   "from": "KIND",
+   "to": "KLNK",
+   "distance_nm": 484,
+   "duration_min": 90,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "group-charter"
    ],
    "flight_number": "CX201",
@@ -1774,6 +2391,27 @@
   {
    "kind": "scheduled",
    "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX329",
+   "callsign": "CRX329",
+   "from": "KIND",
+   "to": "KMSN",
+   "distance_nm": 247,
+   "duration_min": 58,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "sports-charter"
    ],
    "flight_number": "CX313",
@@ -1782,6 +2420,26 @@
    "to": "KMSP",
    "distance_nm": 436,
    "duration_min": 83,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter"
+   ],
+   "flight_number": "CX205",
+   "callsign": "CRX205",
+   "from": "KIND",
+   "to": "KMSY",
+   "distance_nm": 616,
+   "duration_min": 107,
    "departure_time": null,
    "types": [
     "B752",
@@ -1832,6 +2490,66 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive"
+   ],
+   "flight_number": "CX439",
+   "callsign": "CRX439",
+   "from": "KIND",
+   "to": "KOPF",
+   "distance_nm": 882,
+   "duration_min": 138,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX333",
+   "callsign": "CRX333",
+   "from": "KIND",
+   "to": "KPDX",
+   "distance_nm": 1627,
+   "duration_min": 242,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX315",
+   "callsign": "CRX315",
+   "from": "KIND",
+   "to": "KPHL",
+   "distance_nm": 510,
+   "duration_min": 93,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "sports-charter"
    ],
    "flight_number": "CX311",
@@ -1843,6 +2561,45 @@
    "departure_time": null,
    "types": [
     "A346",
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter"
+   ],
+   "flight_number": "CX215",
+   "callsign": "CRX215",
+   "from": "KIND",
+   "to": "KRNO",
+   "distance_nm": 1539,
+   "duration_min": 230,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX325",
+   "callsign": "CRX325",
+   "from": "KIND",
+   "to": "KSAT",
+   "distance_nm": 856,
+   "duration_min": 139,
+   "departure_time": null,
+   "types": [
     "B752",
     "BCS3",
     "E175",
@@ -1912,6 +2669,86 @@
   {
    "kind": "scheduled",
    "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX341",
+   "callsign": "CRX341",
+   "from": "KIND",
+   "to": "KSLC",
+   "distance_nm": 1175,
+   "duration_min": 182,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX441",
+   "callsign": "CRX441",
+   "from": "KIND",
+   "to": "KSNA",
+   "distance_nm": 1554,
+   "duration_min": 223,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX327",
+   "callsign": "CRX327",
+   "from": "KIND",
+   "to": "KSTL",
+   "distance_nm": 198,
+   "duration_min": 51,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX435",
+   "callsign": "CRX435",
+   "from": "KIND",
+   "to": "KSUN",
+   "distance_nm": 1271,
+   "duration_min": 187,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX401",
@@ -1952,6 +2789,46 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX437",
+   "callsign": "CRX437",
+   "from": "KIND",
+   "to": "KTRK",
+   "distance_nm": 1558,
+   "duration_min": 224,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX337",
+   "callsign": "CRX337",
+   "from": "KIND",
+   "to": "KUNV",
+   "distance_nm": 393,
+   "duration_min": 77,
+   "departure_time": null,
+   "types": [
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX413",
@@ -1964,6 +2841,27 @@
    "types": [
     "A346",
     "B752",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX533",
+   "callsign": "CRX533",
+   "from": "KIND",
+   "to": "LEMD",
+   "distance_nm": 3646,
+   "duration_min": 481,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
     "GLF6"
    ],
    "days": []
@@ -2015,6 +2913,25 @@
     "executive",
     "international"
    ],
+   "flight_number": "CX531",
+   "callsign": "CRX531",
+   "from": "KIND",
+   "to": "LIML",
+   "distance_nm": 3977,
+   "duration_min": 512,
+   "departure_time": null,
+   "types": [
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
    "flight_number": "CX509",
    "callsign": "CRX509",
    "from": "KIND",
@@ -2027,6 +2944,111 @@
     "A388",
     "GA7C",
     "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX529",
+   "callsign": "CRX529",
+   "from": "KIND",
+   "to": "LSZH",
+   "distance_nm": 3886,
+   "duration_min": 511,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX519",
+   "callsign": "CRX519",
+   "from": "KIND",
+   "to": "MBPV",
+   "distance_nm": 1294,
+   "duration_min": 198,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "C700",
+    "E175",
+    "E190",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX213",
+   "callsign": "CRX213",
+   "from": "KIND",
+   "to": "MDPC",
+   "distance_nm": 1573,
+   "duration_min": 235,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX211",
+   "callsign": "CRX211",
+   "from": "KIND",
+   "to": "MKJS",
+   "distance_nm": 1346,
+   "duration_min": 204,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "cargo",
+   "tags": [
+    "cargo-charter"
+   ],
+   "flight_number": "CX617",
+   "callsign": "CRX617",
+   "from": "KIND",
+   "to": "MMMX",
+   "distance_nm": 1385,
+   "duration_min": 210,
+   "departure_time": null,
+   "types": [
+    "A306",
+    "B77L",
+    "MD11"
    ],
    "days": []
   },
@@ -2100,6 +3122,68 @@
     "executive",
     "international"
    ],
+   "flight_number": "CX515",
+   "callsign": "CRX515",
+   "from": "KIND",
+   "to": "PHNL",
+   "distance_nm": 3767,
+   "duration_min": 496,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX443",
+   "callsign": "CRX443",
+   "from": "KIND",
+   "to": "TIST",
+   "distance_nm": 1694,
+   "duration_min": 251,
+   "departure_time": null,
+   "types": [
+    "BCS3",
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX209",
+   "callsign": "CRX209",
+   "from": "KIND",
+   "to": "TJSJ",
+   "distance_nm": 1655,
+   "duration_min": 246,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
    "flight_number": "CX507",
    "callsign": "CRX507",
    "from": "KIND",
@@ -2135,6 +3219,47 @@
     "C700",
     "GA7C",
     "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX428",
+   "callsign": "CRX428",
+   "from": "KJAC",
+   "to": "KIND",
+   "distance_nm": 1117,
+   "duration_min": 168,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX168",
+   "callsign": "CRX168",
+   "from": "KJAC",
+   "to": "KTYQ",
+   "distance_nm": 1112,
+   "duration_min": 180,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -2203,6 +3328,25 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX722",
+   "callsign": "CRX722",
+   "from": "KLAS",
+   "to": "KSMO",
+   "distance_nm": 204,
+   "duration_min": 61,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX112",
@@ -2237,6 +3381,27 @@
     "A388",
     "B752",
     "BCS3"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX340",
+   "callsign": "CRX340",
+   "from": "KLNK",
+   "to": "KIND",
+   "distance_nm": 484,
+   "duration_min": 90,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
    ],
    "days": []
   },
@@ -2347,6 +3512,95 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX719",
+   "callsign": "CRX719",
+   "from": "KMMU",
+   "to": "KACK",
+   "distance_nm": 199,
+   "duration_min": 60,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX196",
+   "callsign": "CRX196",
+   "from": "KMMU",
+   "to": "KTYQ",
+   "distance_nm": 543,
+   "duration_min": 121,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX330",
+   "callsign": "CRX330",
+   "from": "KMSN",
+   "to": "KIND",
+   "distance_nm": 247,
+   "duration_min": 58,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX716",
+   "callsign": "CRX716",
+   "from": "KMSN",
+   "to": "KTYQ",
+   "distance_nm": 232,
+   "duration_min": 66,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "sports-charter"
    ],
    "flight_number": "CX314",
@@ -2361,6 +3615,47 @@
     "BCS3",
     "E175",
     "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter"
+   ],
+   "flight_number": "CX206",
+   "callsign": "CRX206",
+   "from": "KMSY",
+   "to": "KIND",
+   "distance_nm": 616,
+   "duration_min": 107,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX178",
+   "callsign": "CRX178",
+   "from": "KMTJ",
+   "to": "KTYQ",
+   "distance_nm": 1008,
+   "duration_min": 166,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -2427,6 +3722,47 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive"
+   ],
+   "flight_number": "CX440",
+   "callsign": "CRX440",
+   "from": "KOPF",
+   "to": "KIND",
+   "distance_nm": 882,
+   "duration_min": 138,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX186",
+   "callsign": "CRX186",
+   "from": "KOPF",
+   "to": "KTYQ",
+   "distance_nm": 899,
+   "duration_min": 184,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive",
     "short-hop"
    ],
@@ -2466,6 +3802,47 @@
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX334",
+   "callsign": "CRX334",
+   "from": "KPDX",
+   "to": "KIND",
+   "distance_nm": 1627,
+   "duration_min": 242,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX316",
+   "callsign": "CRX316",
+   "from": "KPHL",
+   "to": "KIND",
+   "distance_nm": 510,
+   "duration_min": 93,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
    ],
    "days": []
   },
@@ -2516,6 +3893,131 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive"
+   ],
+   "flight_number": "CX702",
+   "callsign": "CRX702",
+   "from": "KPVD",
+   "to": "KTYQ",
+   "distance_nm": 680,
+   "duration_min": 145,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX704",
+   "callsign": "CRX704",
+   "from": "KPWM",
+   "to": "KTYQ",
+   "distance_nm": 744,
+   "duration_min": 156,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter"
+   ],
+   "flight_number": "CX216",
+   "callsign": "CRX216",
+   "from": "KRNO",
+   "to": "KIND",
+   "distance_nm": 1539,
+   "duration_min": 230,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX708",
+   "callsign": "CRX708",
+   "from": "KRNO",
+   "to": "KTYQ",
+   "distance_nm": 1538,
+   "duration_min": 240,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX326",
+   "callsign": "CRX326",
+   "from": "KSAT",
+   "to": "KIND",
+   "distance_nm": 856,
+   "duration_min": 139,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX714",
+   "callsign": "CRX714",
+   "from": "KSAT",
+   "to": "KTYQ",
+   "distance_nm": 870,
+   "duration_min": 179,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive",
     "short-hop"
    ],
@@ -2532,6 +4034,26 @@
     "C750",
     "H25B",
     "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX724",
+   "callsign": "CRX724",
+   "from": "KSDL",
+   "to": "KCRQ",
+   "distance_nm": 271,
+   "duration_min": 73,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
     "PRM1"
    ],
    "days": []
@@ -2612,6 +4134,210 @@
     "C700",
     "GA7C",
     "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX342",
+   "callsign": "CRX342",
+   "from": "KSLC",
+   "to": "KIND",
+   "distance_nm": 1175,
+   "duration_min": 182,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX721",
+   "callsign": "CRX721",
+   "from": "KSMO",
+   "to": "KLAS",
+   "distance_nm": 204,
+   "duration_min": 61,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX442",
+   "callsign": "CRX442",
+   "from": "KSNA",
+   "to": "KIND",
+   "distance_nm": 1554,
+   "duration_min": 223,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX729",
+   "callsign": "CRX729",
+   "from": "KSNA",
+   "to": "KSUN",
+   "distance_nm": 613,
+   "duration_min": 111,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX706",
+   "callsign": "CRX706",
+   "from": "KSNA",
+   "to": "KTYQ",
+   "distance_nm": 1557,
+   "duration_min": 242,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX184",
+   "callsign": "CRX184",
+   "from": "KSRQ",
+   "to": "KTYQ",
+   "distance_nm": 781,
+   "duration_min": 163,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter"
+   ],
+   "flight_number": "CX328",
+   "callsign": "CRX328",
+   "from": "KSTL",
+   "to": "KIND",
+   "distance_nm": 198,
+   "duration_min": 51,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX436",
+   "callsign": "CRX436",
+   "from": "KSUN",
+   "to": "KIND",
+   "distance_nm": 1271,
+   "duration_min": 187,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX730",
+   "callsign": "CRX730",
+   "from": "KSUN",
+   "to": "KSNA",
+   "distance_nm": 613,
+   "duration_min": 111,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX176",
+   "callsign": "CRX176",
+   "from": "KSUN",
+   "to": "KTYQ",
+   "distance_nm": 1267,
+   "duration_min": 202,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -2704,6 +4430,27 @@
    "tags": [
     "executive"
    ],
+   "flight_number": "CX717",
+   "callsign": "CRX717",
+   "from": "KTEB",
+   "to": "KTMB",
+   "distance_nm": 966,
+   "duration_min": 160,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
    "flight_number": "CX102",
    "callsign": "CRX102",
    "from": "KTEB",
@@ -2714,6 +4461,46 @@
    "types": [
     "C25C",
     "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX541",
+   "callsign": "CRX541",
+   "from": "KTEB",
+   "to": "LSZH",
+   "distance_nm": 3410,
+   "duration_min": 443,
+   "departure_time": null,
+   "types": [
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX718",
+   "callsign": "CRX718",
+   "from": "KTMB",
+   "to": "KTEB",
+   "distance_nm": 966,
+   "duration_min": 160,
+   "departure_time": null,
+   "types": [
+    "C25C",
     "C750",
     "H25B",
     "LJ35",
@@ -2744,6 +4531,69 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX438",
+   "callsign": "CRX438",
+   "from": "KTRK",
+   "to": "KIND",
+   "distance_nm": 1558,
+   "duration_min": 224,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX710",
+   "callsign": "CRX710",
+   "from": "KTRK",
+   "to": "KTYQ",
+   "distance_nm": 1557,
+   "duration_min": 242,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski",
+    "short-hop"
+   ],
+   "flight_number": "CX726",
+   "callsign": "CRX726",
+   "from": "KTRK",
+   "to": "KVNY",
+   "distance_nm": 317,
+   "duration_min": 69,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX169",
@@ -2752,6 +4602,28 @@
    "to": "KACK",
    "distance_nm": 740,
    "duration_min": 156,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX711",
+   "callsign": "CRX711",
+   "from": "KTYQ",
+   "to": "KADS",
+   "distance_nm": 663,
+   "duration_min": 142,
    "departure_time": null,
    "types": [
     "C25C",
@@ -2942,6 +4814,29 @@
     "executive",
     "short-hop"
    ],
+   "flight_number": "CX157",
+   "callsign": "CRX157",
+   "from": "KTYQ",
+   "to": "KBKL",
+   "distance_nm": 226,
+   "duration_min": 65,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
    "flight_number": "CX117",
    "callsign": "CRX117",
    "from": "KTYQ",
@@ -2956,6 +4851,27 @@
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX181",
+   "callsign": "CRX181",
+   "from": "KTYQ",
+   "to": "KBZN",
+   "distance_nm": 1143,
+   "duration_min": 184,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -3095,6 +5011,49 @@
    "tags": [
     "executive"
    ],
+   "flight_number": "CX197",
+   "callsign": "CRX197",
+   "from": "KTYQ",
+   "to": "KFRG",
+   "distance_nm": 588,
+   "duration_min": 129,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX179",
+   "callsign": "CRX179",
+   "from": "KTYQ",
+   "to": "KHDN",
+   "distance_nm": 959,
+   "duration_min": 159,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
    "flight_number": "CX143",
    "callsign": "CRX143",
    "from": "KTYQ",
@@ -3139,6 +5098,26 @@
    "tags": [
     "executive"
    ],
+   "flight_number": "CX137",
+   "callsign": "CRX137",
+   "from": "KTYQ",
+   "to": "KHXD",
+   "distance_nm": 540,
+   "duration_min": 120,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
    "flight_number": "CX133",
    "callsign": "CRX133",
    "from": "KTYQ",
@@ -3153,6 +5132,27 @@
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX167",
+   "callsign": "CRX167",
+   "from": "KTYQ",
+   "to": "KJAC",
+   "distance_nm": 1112,
+   "duration_min": 180,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -3226,12 +5226,100 @@
    "tags": [
     "executive"
    ],
+   "flight_number": "CX195",
+   "callsign": "CRX195",
+   "from": "KTYQ",
+   "to": "KMMU",
+   "distance_nm": 543,
+   "duration_min": 121,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX715",
+   "callsign": "CRX715",
+   "from": "KTYQ",
+   "to": "KMSN",
+   "distance_nm": 232,
+   "duration_min": 66,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX177",
+   "callsign": "CRX177",
+   "from": "KTYQ",
+   "to": "KMTJ",
+   "distance_nm": 1008,
+   "duration_min": 166,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
    "flight_number": "CX161",
    "callsign": "CRX161",
    "from": "KTYQ",
    "to": "KMYR",
    "distance_nm": 518,
    "duration_min": 116,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX185",
+   "callsign": "CRX185",
+   "from": "KTYQ",
+   "to": "KOPF",
+   "distance_nm": 899,
+   "duration_min": 184,
    "departure_time": null,
    "types": [
     "C25C",
@@ -3314,6 +5402,92 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive"
+   ],
+   "flight_number": "CX701",
+   "callsign": "CRX701",
+   "from": "KTYQ",
+   "to": "KPVD",
+   "distance_nm": 680,
+   "duration_min": 145,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX703",
+   "callsign": "CRX703",
+   "from": "KTYQ",
+   "to": "KPWM",
+   "distance_nm": 744,
+   "duration_min": 156,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX707",
+   "callsign": "CRX707",
+   "from": "KTYQ",
+   "to": "KRNO",
+   "distance_nm": 1538,
+   "duration_min": 240,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX713",
+   "callsign": "CRX713",
+   "from": "KTYQ",
+   "to": "KSAT",
+   "distance_nm": 870,
+   "duration_min": 179,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive",
     "short-hop"
    ],
@@ -3345,6 +5519,69 @@
    "to": "KSDL",
    "distance_nm": 1287,
    "duration_min": 205,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX705",
+   "callsign": "CRX705",
+   "from": "KTYQ",
+   "to": "KSNA",
+   "distance_nm": 1557,
+   "duration_min": 242,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX183",
+   "callsign": "CRX183",
+   "from": "KTYQ",
+   "to": "KSRQ",
+   "distance_nm": 781,
+   "duration_min": 163,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX175",
+   "callsign": "CRX175",
+   "from": "KTYQ",
+   "to": "KSUN",
+   "distance_nm": 1267,
+   "duration_min": 202,
    "departure_time": null,
    "types": [
     "C25C",
@@ -3402,6 +5639,27 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "ski"
+   ],
+   "flight_number": "CX709",
+   "callsign": "CRX709",
+   "from": "KTYQ",
+   "to": "KTRK",
+   "distance_nm": 1557,
+   "duration_min": 242,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX123",
@@ -3416,6 +5674,131 @@
     "C750",
     "H25B",
     "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX193",
+   "callsign": "CRX193",
+   "from": "KTYQ",
+   "to": "MDPC",
+   "distance_nm": 1586,
+   "duration_min": 246,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX191",
+   "callsign": "CRX191",
+   "from": "KTYQ",
+   "to": "MKJS",
+   "distance_nm": 1363,
+   "duration_min": 215,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX165",
+   "callsign": "CRX165",
+   "from": "KTYQ",
+   "to": "MYNN",
+   "distance_nm": 1003,
+   "duration_min": 165,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX189",
+   "callsign": "CRX189",
+   "from": "KTYQ",
+   "to": "TIST",
+   "distance_nm": 1705,
+   "duration_min": 263,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX187",
+   "callsign": "CRX187",
+   "from": "KTYQ",
+   "to": "TJSJ",
+   "distance_nm": 1666,
+   "duration_min": 257,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "sports-charter",
+    "college"
+   ],
+   "flight_number": "CX338",
+   "callsign": "CRX338",
+   "from": "KUNV",
+   "to": "KIND",
+   "distance_nm": 393,
+   "duration_min": 77,
+   "departure_time": null,
+   "types": [
+    "BCS3",
+    "E175",
+    "E190"
    ],
    "days": []
   },
@@ -3459,6 +5842,28 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "ski",
+    "short-hop"
+   ],
+   "flight_number": "CX725",
+   "callsign": "CRX725",
+   "from": "KVNY",
+   "to": "KTRK",
+   "distance_nm": 317,
+   "duration_min": 69,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX124",
@@ -3473,6 +5878,47 @@
     "C750",
     "H25B",
     "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX527",
+   "callsign": "CRX527",
+   "from": "KVNY",
+   "to": "PHNL",
+   "distance_nm": 2217,
+   "duration_min": 308,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX534",
+   "callsign": "CRX534",
+   "from": "LEMD",
+   "to": "KIND",
+   "distance_nm": 3646,
+   "duration_min": 481,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
    ],
    "days": []
   },
@@ -3523,6 +5969,25 @@
     "executive",
     "international"
    ],
+   "flight_number": "CX532",
+   "callsign": "CRX532",
+   "from": "LIML",
+   "to": "KIND",
+   "distance_nm": 3977,
+   "duration_min": 512,
+   "departure_time": null,
+   "types": [
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
    "flight_number": "CX510",
    "callsign": "CRX510",
    "from": "LSGG",
@@ -3535,6 +6000,172 @@
     "A388",
     "GA7C",
     "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX530",
+   "callsign": "CRX530",
+   "from": "LSZH",
+   "to": "KIND",
+   "distance_nm": 3886,
+   "duration_min": 511,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX542",
+   "callsign": "CRX542",
+   "from": "LSZH",
+   "to": "KTEB",
+   "distance_nm": 3410,
+   "duration_min": 443,
+   "departure_time": null,
+   "types": [
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX520",
+   "callsign": "CRX520",
+   "from": "MBPV",
+   "to": "KIND",
+   "distance_nm": 1294,
+   "duration_min": 198,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "C700",
+    "E175",
+    "E190",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX214",
+   "callsign": "CRX214",
+   "from": "MDPC",
+   "to": "KIND",
+   "distance_nm": 1573,
+   "duration_min": 235,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX194",
+   "callsign": "CRX194",
+   "from": "MDPC",
+   "to": "KTYQ",
+   "distance_nm": 1586,
+   "duration_min": 246,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX212",
+   "callsign": "CRX212",
+   "from": "MKJS",
+   "to": "KIND",
+   "distance_nm": 1346,
+   "duration_min": 204,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E175",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX192",
+   "callsign": "CRX192",
+   "from": "MKJS",
+   "to": "KTYQ",
+   "distance_nm": 1363,
+   "duration_min": 215,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "cargo",
+   "tags": [
+    "cargo-charter"
+   ],
+   "flight_number": "CX618",
+   "callsign": "CRX618",
+   "from": "MMMX",
+   "to": "KIND",
+   "distance_nm": 1385,
+   "duration_min": 210,
+   "departure_time": null,
+   "types": [
+    "A306",
+    "B77L",
+    "MD11"
    ],
    "days": []
   },
@@ -3585,6 +6216,28 @@
    "days": []
   },
   {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX166",
+   "callsign": "CRX166",
+   "from": "MYNN",
+   "to": "KTYQ",
+   "distance_nm": 1003,
+   "duration_min": 165,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
    "kind": "cargo",
    "tags": [
     "cargo-charter"
@@ -3599,6 +6252,129 @@
    "types": [
     "B77L",
     "MD11"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX516",
+   "callsign": "CRX516",
+   "from": "PHNL",
+   "to": "KIND",
+   "distance_nm": 3767,
+   "duration_min": 496,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "A388",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX528",
+   "callsign": "CRX528",
+   "from": "PHNL",
+   "to": "KVNY",
+   "distance_nm": 2217,
+   "duration_min": 308,
+   "departure_time": null,
+   "types": [
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX444",
+   "callsign": "CRX444",
+   "from": "TIST",
+   "to": "KIND",
+   "distance_nm": 1694,
+   "duration_min": 251,
+   "departure_time": null,
+   "types": [
+    "BCS3",
+    "C700",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX190",
+   "callsign": "CRX190",
+   "from": "TIST",
+   "to": "KTYQ",
+   "distance_nm": 1705,
+   "duration_min": 263,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "group-charter",
+    "international"
+   ],
+   "flight_number": "CX210",
+   "callsign": "CRX210",
+   "from": "TJSJ",
+   "to": "KIND",
+   "distance_nm": 1655,
+   "duration_min": 246,
+   "departure_time": null,
+   "types": [
+    "B752",
+    "BCS3",
+    "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international"
+   ],
+   "flight_number": "CX188",
+   "callsign": "CRX188",
+   "from": "TJSJ",
+   "to": "KTYQ",
+   "distance_nm": 1666,
+   "duration_min": 257,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -3744,6 +6520,24 @@
    "lon": -79.6294,
    "base": false
   },
+  "EBLG": {
+   "icao": "EBLG",
+   "iata": "LGG",
+   "name": "Liege",
+   "country": "Belgium",
+   "lat": 50.6386,
+   "lon": 5.4439,
+   "base": false
+  },
+  "EDDM": {
+   "icao": "EDDM",
+   "iata": "MUC",
+   "name": "Munich",
+   "country": "Germany",
+   "lat": 48.3538,
+   "lon": 11.7861,
+   "base": false
+  },
   "EDDP": {
    "icao": "EDDP",
    "iata": "LEJ",
@@ -3760,6 +6554,15 @@
    "country": "United Kingdom",
    "lat": 51.8747,
    "lon": -0.3683,
+   "base": false
+  },
+  "EGLC": {
+   "icao": "EGLC",
+   "iata": "LCY",
+   "name": "London City",
+   "country": "United Kingdom",
+   "lat": 51.5053,
+   "lon": 0.0553,
    "base": false
   },
   "EGLF": {
@@ -3780,6 +6583,15 @@
    "lon": 0.235,
    "base": false
   },
+  "EINN": {
+   "icao": "EINN",
+   "iata": "SNN",
+   "name": "Shannon",
+   "country": "Ireland",
+   "lat": 52.702,
+   "lon": -8.9248,
+   "base": false
+  },
   "KACK": {
    "icao": "KACK",
    "iata": "ACK",
@@ -3787,6 +6599,24 @@
    "country": "United States",
    "lat": 41.2531,
    "lon": -70.0602,
+   "base": false
+  },
+  "KADS": {
+   "icao": "KADS",
+   "iata": "ADS",
+   "name": "Addison (Dallas)",
+   "country": "United States",
+   "lat": 32.9686,
+   "lon": -96.8364,
+   "base": false
+  },
+  "KAFW": {
+   "icao": "KAFW",
+   "iata": "AFW",
+   "name": "Fort Worth Alliance",
+   "country": "United States",
+   "lat": 32.9904,
+   "lon": -97.3195,
    "base": false
   },
   "KAGC": {
@@ -3861,6 +6691,24 @@
    "lon": -71.289,
    "base": false
   },
+  "KBFI": {
+   "icao": "KBFI",
+   "iata": "BFI",
+   "name": "King County International (Boeing Field)",
+   "country": "United States",
+   "lat": 47.527,
+   "lon": -122.2999,
+   "base": false
+  },
+  "KBKL": {
+   "icao": "KBKL",
+   "iata": "BKL",
+   "name": "Burke Lakefront",
+   "country": "United States",
+   "lat": 41.5175,
+   "lon": -81.6833,
+   "base": false
+  },
   "KBNA": {
    "icao": "KBNA",
    "iata": "BNA",
@@ -3877,6 +6725,15 @@
    "country": "United States",
    "lat": 42.3656,
    "lon": -71.0096,
+   "base": false
+  },
+  "KBZN": {
+   "icao": "KBZN",
+   "iata": "BZN",
+   "name": "Bozeman Yellowstone International",
+   "country": "United States",
+   "lat": 45.7789,
+   "lon": -111.1537,
    "base": false
   },
   "KCHS": {
@@ -3904,6 +6761,24 @@
    "country": "United States",
    "lat": 39.998,
    "lon": -82.8919,
+   "base": false
+  },
+  "KCMI": {
+   "icao": "KCMI",
+   "iata": "CMI",
+   "name": "University of Illinois Willard",
+   "country": "United States",
+   "lat": 40.0398,
+   "lon": -88.2762,
+   "base": false
+  },
+  "KCRQ": {
+   "icao": "KCRQ",
+   "iata": "CLD",
+   "name": "McClellan-Palomar (Carlsbad)",
+   "country": "United States",
+   "lat": 33.1283,
+   "lon": -117.28,
    "base": false
   },
   "KDAL": {
@@ -3969,6 +6844,24 @@
    "lon": -81.7596,
    "base": false
   },
+  "KFRG": {
+   "icao": "KFRG",
+   "iata": "FRG",
+   "name": "Republic (Farmingdale)",
+   "country": "United States",
+   "lat": 40.7286,
+   "lon": -73.4143,
+   "base": false
+  },
+  "KHDN": {
+   "icao": "KHDN",
+   "iata": "HDN",
+   "name": "Yampa Valley (Steamboat Springs)",
+   "country": "United States",
+   "lat": 40.4812,
+   "lon": -107.218,
+   "base": false
+  },
   "KHOU": {
    "icao": "KHOU",
    "iata": "HOU",
@@ -3985,6 +6878,15 @@
    "country": "United States",
    "lat": 41.067,
    "lon": -73.7076,
+   "base": false
+  },
+  "KHXD": {
+   "icao": "KHXD",
+   "iata": "HHH",
+   "name": "Hilton Head",
+   "country": "United States",
+   "lat": 32.2244,
+   "lon": -80.6975,
    "base": false
   },
   "KIAD": {
@@ -4014,6 +6916,15 @@
    "lon": -86.2944,
    "base": true
   },
+  "KJAC": {
+   "icao": "KJAC",
+   "iata": "JAC",
+   "name": "Jackson Hole",
+   "country": "United States",
+   "lat": 43.6073,
+   "lon": -110.738,
+   "base": false
+  },
   "KJAX": {
    "icao": "KJAX",
    "iata": "JAX",
@@ -4039,6 +6950,15 @@
    "country": "United States",
    "lat": 33.9416,
    "lon": -118.4085,
+   "base": false
+  },
+  "KLNK": {
+   "icao": "KLNK",
+   "iata": "LNK",
+   "name": "Lincoln (Nebraska)",
+   "country": "United States",
+   "lat": 40.8449,
+   "lon": -96.7618,
    "base": false
   },
   "KMCO": {
@@ -4086,6 +7006,24 @@
    "lon": -94.5928,
    "base": false
   },
+  "KMMU": {
+   "icao": "KMMU",
+   "iata": "MMU",
+   "name": "Morristown Municipal",
+   "country": "United States",
+   "lat": 40.7991,
+   "lon": -74.4149,
+   "base": false
+  },
+  "KMSN": {
+   "icao": "KMSN",
+   "iata": "MSN",
+   "name": "Dane County Regional (Madison)",
+   "country": "United States",
+   "lat": 43.1399,
+   "lon": -89.3375,
+   "base": false
+  },
   "KMSP": {
    "icao": "KMSP",
    "iata": "MSP",
@@ -4093,6 +7031,24 @@
    "country": "United States",
    "lat": 44.8801,
    "lon": -93.2217,
+   "base": false
+  },
+  "KMSY": {
+   "icao": "KMSY",
+   "iata": "MSY",
+   "name": "Louis Armstrong New Orleans International",
+   "country": "United States",
+   "lat": 29.9934,
+   "lon": -90.2647,
+   "base": false
+  },
+  "KMTJ": {
+   "icao": "KMTJ",
+   "iata": "MTJ",
+   "name": "Montrose Regional",
+   "country": "United States",
+   "lat": 38.5098,
+   "lon": -107.894,
    "base": false
   },
   "KMYR": {
@@ -4122,6 +7078,15 @@
    "lon": -117.6012,
    "base": false
   },
+  "KOPF": {
+   "icao": "KOPF",
+   "iata": "OPF",
+   "name": "Miami-Opa Locka Executive",
+   "country": "United States",
+   "lat": 25.907,
+   "lon": -80.2784,
+   "base": false
+  },
   "KOSU": {
    "icao": "KOSU",
    "iata": "OSU",
@@ -4140,6 +7105,24 @@
    "lon": -84.3021,
    "base": false
   },
+  "KPDX": {
+   "icao": "KPDX",
+   "iata": "PDX",
+   "name": "Portland International",
+   "country": "United States",
+   "lat": 45.5887,
+   "lon": -122.598,
+   "base": false
+  },
+  "KPHL": {
+   "icao": "KPHL",
+   "iata": "PHL",
+   "name": "Philadelphia International",
+   "country": "United States",
+   "lat": 39.8719,
+   "lon": -75.2411,
+   "base": false
+  },
   "KPHX": {
    "icao": "KPHX",
    "iata": "PHX",
@@ -4156,6 +7139,42 @@
    "country": "United States",
    "lat": 42.6655,
    "lon": -83.4201,
+   "base": false
+  },
+  "KPVD": {
+   "icao": "KPVD",
+   "iata": "PVD",
+   "name": "Rhode Island T. F. Green International",
+   "country": "United States",
+   "lat": 41.725,
+   "lon": -71.4257,
+   "base": false
+  },
+  "KPWM": {
+   "icao": "KPWM",
+   "iata": "PWM",
+   "name": "Portland International Jetport",
+   "country": "United States",
+   "lat": 43.6462,
+   "lon": -70.3093,
+   "base": false
+  },
+  "KRNO": {
+   "icao": "KRNO",
+   "iata": "RNO",
+   "name": "Reno Tahoe International",
+   "country": "United States",
+   "lat": 39.4991,
+   "lon": -119.768,
+   "base": false
+  },
+  "KSAT": {
+   "icao": "KSAT",
+   "iata": "SAT",
+   "name": "San Antonio International",
+   "country": "United States",
+   "lat": 29.5337,
+   "lon": -98.4698,
    "base": false
   },
   "KSDF": {
@@ -4194,6 +7213,60 @@
    "lon": -121.9292,
    "base": false
   },
+  "KSLC": {
+   "icao": "KSLC",
+   "iata": "SLC",
+   "name": "Salt Lake City International",
+   "country": "United States",
+   "lat": 40.7889,
+   "lon": -111.9799,
+   "base": false
+  },
+  "KSMO": {
+   "icao": "KSMO",
+   "iata": "SMO",
+   "name": "Santa Monica Municipal",
+   "country": "United States",
+   "lat": 34.0158,
+   "lon": -118.451,
+   "base": false
+  },
+  "KSNA": {
+   "icao": "KSNA",
+   "iata": "SNA",
+   "name": "John Wayne Orange County International",
+   "country": "United States",
+   "lat": 33.6751,
+   "lon": -117.8693,
+   "base": false
+  },
+  "KSRQ": {
+   "icao": "KSRQ",
+   "iata": "SRQ",
+   "name": "Sarasota Bradenton International",
+   "country": "United States",
+   "lat": 27.3946,
+   "lon": -82.5544,
+   "base": false
+  },
+  "KSTL": {
+   "icao": "KSTL",
+   "iata": "STL",
+   "name": "St. Louis Lambert International",
+   "country": "United States",
+   "lat": 38.7487,
+   "lon": -90.37,
+   "base": false
+  },
+  "KSUN": {
+   "icao": "KSUN",
+   "iata": "SUN",
+   "name": "Friedman Memorial (Sun Valley)",
+   "country": "United States",
+   "lat": 43.5044,
+   "lon": -114.296,
+   "base": false
+  },
   "KSUS": {
    "icao": "KSUS",
    "iata": "SUS",
@@ -4212,6 +7285,15 @@
    "lon": -74.0608,
    "base": false
   },
+  "KTMB": {
+   "icao": "KTMB",
+   "iata": "TMB",
+   "name": "Miami Executive",
+   "country": "United States",
+   "lat": 25.6479,
+   "lon": -80.4328,
+   "base": false
+  },
   "KTPA": {
    "icao": "KTPA",
    "iata": "TPA",
@@ -4219,6 +7301,15 @@
    "country": "United States",
    "lat": 27.9755,
    "lon": -82.5332,
+   "base": false
+  },
+  "KTRK": {
+   "icao": "KTRK",
+   "iata": "TKF",
+   "name": "Truckee Tahoe",
+   "country": "United States",
+   "lat": 39.3186,
+   "lon": -120.1406,
    "base": false
   },
   "KTYQ": {
@@ -4230,6 +7321,15 @@
    "lon": -86.2514,
    "base": true
   },
+  "KUNV": {
+   "icao": "KUNV",
+   "iata": "SCE",
+   "name": "State College Regional",
+   "country": "United States",
+   "lat": 40.8494,
+   "lon": -77.8485,
+   "base": false
+  },
   "KVNY": {
    "icao": "KVNY",
    "iata": "VNY",
@@ -4237,6 +7337,15 @@
    "country": "United States",
    "lat": 34.2098,
    "lon": -118.49,
+   "base": false
+  },
+  "LEMD": {
+   "icao": "LEMD",
+   "iata": "MAD",
+   "name": "Madrid-Barajas Adolfo Suarez",
+   "country": "Spain",
+   "lat": 40.4934,
+   "lon": -3.5722,
    "base": false
   },
   "LFMN": {
@@ -4257,6 +7366,15 @@
    "lon": 2.4414,
    "base": false
   },
+  "LIML": {
+   "icao": "LIML",
+   "iata": "LIN",
+   "name": "Milano Linate",
+   "country": "Italy",
+   "lat": 45.4451,
+   "lon": 9.2767,
+   "base": false
+  },
   "LSGG": {
    "icao": "LSGG",
    "iata": "GVA",
@@ -4264,6 +7382,51 @@
    "country": "Switzerland",
    "lat": 46.2381,
    "lon": 6.109,
+   "base": false
+  },
+  "LSZH": {
+   "icao": "LSZH",
+   "iata": "ZRH",
+   "name": "Zurich",
+   "country": "Switzerland",
+   "lat": 47.4581,
+   "lon": 8.5481,
+   "base": false
+  },
+  "MBPV": {
+   "icao": "MBPV",
+   "iata": "PLS",
+   "name": "Providenciales International",
+   "country": "Turks and Caicos Islands",
+   "lat": 21.7737,
+   "lon": -72.2683,
+   "base": false
+  },
+  "MDPC": {
+   "icao": "MDPC",
+   "iata": "PUJ",
+   "name": "Punta Cana International",
+   "country": "Dominican Republic",
+   "lat": 18.5671,
+   "lon": -68.3646,
+   "base": false
+  },
+  "MKJS": {
+   "icao": "MKJS",
+   "iata": "MBJ",
+   "name": "Sangster International",
+   "country": "Jamaica",
+   "lat": 18.5034,
+   "lon": -77.9132,
+   "base": false
+  },
+  "MMMX": {
+   "icao": "MMMX",
+   "iata": "MEX",
+   "name": "Mexico City Benito Juarez International",
+   "country": "Mexico",
+   "lat": 19.4358,
+   "lon": -99.0703,
    "base": false
   },
   "MMSD": {
@@ -4284,6 +7447,15 @@
    "lon": -86.8735,
    "base": false
   },
+  "MYNN": {
+   "icao": "MYNN",
+   "iata": "NAS",
+   "name": "Lynden Pindling International",
+   "country": "Bahamas",
+   "lat": 25.039,
+   "lon": -77.4662,
+   "base": false
+  },
   "PANC": {
    "icao": "PANC",
    "iata": "ANC",
@@ -4291,6 +7463,33 @@
    "country": "United States",
    "lat": 61.1743,
    "lon": -149.9962,
+   "base": false
+  },
+  "PHNL": {
+   "icao": "PHNL",
+   "iata": "HNL",
+   "name": "Daniel K. Inouye International",
+   "country": "United States",
+   "lat": 21.3184,
+   "lon": -157.9257,
+   "base": false
+  },
+  "TIST": {
+   "icao": "TIST",
+   "iata": "STT",
+   "name": "Cyril E. King",
+   "country": "U.S. Virgin Islands",
+   "lat": 18.3371,
+   "lon": -64.9773,
+   "base": false
+  },
+  "TJSJ": {
+   "icao": "TJSJ",
+   "iata": "SJU",
+   "name": "Luis Munoz Marin International",
+   "country": "Puerto Rico",
+   "lat": 18.4394,
+   "lon": -66.0018,
    "base": false
   },
   "TNCM": {

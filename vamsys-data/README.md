@@ -61,3 +61,10 @@ restrict aircraft; the route-to-fleet assignments above do that.
 
 - Custom page **Pilot Handbook** (Documents category, page 3114): bases, divisions, flight-number
   blocks, callsign, how a flight works, ranks.
+
+## Update 8 (2026-11-11)
+
+Import #30335 added 134 routes (network now 292) and 39 airports (now 111). Details, page IDs, tours,
+comms and settings are in `ORWELL-CHANGES-8.md`. The eight "rejected" airports from update 7 actually
+exist in Orwell; their 20 routes were restored in update 8. New callsign block CRX701-799 (light jets,
+KTYQ and point-to-point).

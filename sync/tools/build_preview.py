@@ -30,6 +30,9 @@ ROUTES_CSV = [
     # 22 edits. The 20 routes to the 8 airports vAMSYS rejected were dropped. vAMSYS assigns the real
     # IDs; these only need to be unique inside the preview.
     (DATA / "routes-update-7-import.csv", 14215001),
+    # Update 8 as imported 2026-11-11 (Orwell import #30335, 134/134 OK): 114 new routes plus the 20
+    # update-7 routes restored once it turned out their 8 airports were never rejected. Network 292.
+    (DATA / "routes-update-8-import.csv", 14216001),
 ]
 # The planning file (routes-update-7-expansion.csv) used a placeholder for the Hawker fleet; kept so it
 # still builds if anyone points ROUTES_CSV back at it.
@@ -60,7 +63,7 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("KONT", "ONT", "Ontario International", "United States", 34.0560, -117.6012, False),
     ("PANC", "ANC", "Ted Stevens Anchorage International", "United States", 61.1743, -149.9962, False),
     ("EDDP", "LEJ", "Leipzig/Halle", "Germany", 51.4239, 12.2364, False),
-    # Added with routes 5 (KBDL) and 7 (network expansion; the 8 airports vAMSYS rejected are left out). Coordinates from OurAirports (public domain).
+    # Added with routes 5 (KBDL) and 7 (network expansion). Coordinates from OurAirports (public domain).
     ("CYYZ", "YYZ", "Toronto Pearson International", "Canada", 43.6759, -79.6294, False),
     ("EGLF", "FAB", "Farnborough", "United Kingdom", 51.2758, -0.7763, False),
     ("EGSS", "STN", "London Stansted", "United Kingdom", 51.8850, 0.2350, False),
@@ -102,6 +105,55 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("LSGG", "GVA", "Geneva", "Switzerland", 46.2381, 6.1090, False),
     ("MMUN", "CUN", "Cancun International", "Mexico", 21.0408, -86.8735, False),
     ("TXKF", "BDA", "Bermuda L.F. Wade International", "Bermuda", 32.3638, -64.6782, False),
+    # Update 8: the 8 airports from update 7 that do exist in Orwell, plus the 39 added in round 8.
+    # Coordinates from OurAirports (public domain).
+    ("EBLG", "LGG", "Liege", "Belgium", 50.6386, 5.4439, False),
+    ("EDDM", "MUC", "Munich", "Germany", 48.3538, 11.7861, False),
+    ("EGLC", "LCY", "London City", "United Kingdom", 51.5053, 0.0553, False),
+    ("EINN", "SNN", "Shannon", "Ireland", 52.7020, -8.9248, False),
+    ("KADS", "ADS", "Addison (Dallas)", "United States", 32.9686, -96.8364, False),
+    ("KAFW", "AFW", "Fort Worth Alliance", "United States", 32.9904, -97.3195, False),
+    ("KBFI", "BFI", "King County International (Boeing Field)", "United States", 47.5270, -122.2999, False),
+    ("KBKL", "BKL", "Burke Lakefront", "United States", 41.5175, -81.6833, False),
+    ("KBZN", "BZN", "Bozeman Yellowstone International", "United States", 45.7789, -111.1537, False),
+    ("KCMI", "CMI", "University of Illinois Willard", "United States", 40.0398, -88.2762, False),
+    ("KCRQ", "CLD", "McClellan-Palomar (Carlsbad)", "United States", 33.1283, -117.2800, False),
+    ("KFRG", "FRG", "Republic (Farmingdale)", "United States", 40.7286, -73.4143, False),
+    ("KHDN", "HDN", "Yampa Valley (Steamboat Springs)", "United States", 40.4812, -107.2180, False),
+    ("KHXD", "HHH", "Hilton Head", "United States", 32.2244, -80.6975, False),
+    ("KJAC", "JAC", "Jackson Hole", "United States", 43.6073, -110.7380, False),
+    ("KLNK", "LNK", "Lincoln (Nebraska)", "United States", 40.8449, -96.7618, False),
+    ("KMMU", "MMU", "Morristown Municipal", "United States", 40.7991, -74.4149, False),
+    ("KMSN", "MSN", "Dane County Regional (Madison)", "United States", 43.1399, -89.3375, False),
+    ("KMSY", "MSY", "Louis Armstrong New Orleans International", "United States", 29.9934, -90.2647, False),
+    ("KMTJ", "MTJ", "Montrose Regional", "United States", 38.5098, -107.8940, False),
+    ("KOPF", "OPF", "Miami-Opa Locka Executive", "United States", 25.9070, -80.2784, False),
+    ("KPDX", "PDX", "Portland International", "United States", 45.5887, -122.5980, False),
+    ("KPHL", "PHL", "Philadelphia International", "United States", 39.8719, -75.2411, False),
+    ("KPVD", "PVD", "Rhode Island T. F. Green International", "United States", 41.7250, -71.4257, False),
+    ("KPWM", "PWM", "Portland International Jetport", "United States", 43.6462, -70.3093, False),
+    ("KRNO", "RNO", "Reno Tahoe International", "United States", 39.4991, -119.7680, False),
+    ("KSAT", "SAT", "San Antonio International", "United States", 29.5337, -98.4698, False),
+    ("KSLC", "SLC", "Salt Lake City International", "United States", 40.7889, -111.9799, False),
+    ("KSMO", "SMO", "Santa Monica Municipal", "United States", 34.0158, -118.4510, False),
+    ("KSNA", "SNA", "John Wayne Orange County International", "United States", 33.6751, -117.8693, False),
+    ("KSRQ", "SRQ", "Sarasota Bradenton International", "United States", 27.3946, -82.5544, False),
+    ("KSTL", "STL", "St. Louis Lambert International", "United States", 38.7487, -90.3700, False),
+    ("KSUN", "SUN", "Friedman Memorial (Sun Valley)", "United States", 43.5044, -114.2960, False),
+    ("KTMB", "TMB", "Miami Executive", "United States", 25.6479, -80.4328, False),
+    ("KTRK", "TKF", "Truckee Tahoe", "United States", 39.3186, -120.1406, False),
+    ("KUNV", "SCE", "State College Regional", "United States", 40.8494, -77.8485, False),
+    ("LEMD", "MAD", "Madrid-Barajas Adolfo Suarez", "Spain", 40.4934, -3.5722, False),
+    ("LIML", "LIN", "Milano Linate", "Italy", 45.4451, 9.2767, False),
+    ("LSZH", "ZRH", "Zurich", "Switzerland", 47.4581, 8.5481, False),
+    ("MBPV", "PLS", "Providenciales International", "Turks and Caicos Islands", 21.7737, -72.2683, False),
+    ("MDPC", "PUJ", "Punta Cana International", "Dominican Republic", 18.5671, -68.3646, False),
+    ("MKJS", "MBJ", "Sangster International", "Jamaica", 18.5034, -77.9132, False),
+    ("MMMX", "MEX", "Mexico City Benito Juarez International", "Mexico", 19.4358, -99.0703, False),
+    ("MYNN", "NAS", "Lynden Pindling International", "Bahamas", 25.0390, -77.4662, False),
+    ("PHNL", "HNL", "Daniel K. Inouye International", "United States", 21.3184, -157.9257, False),
+    ("TIST", "STT", "Cyril E. King", "U.S. Virgin Islands", 18.3371, -64.9773, False),
+    ("TJSJ", "SJU", "Luis Munoz Marin International", "Puerto Rico", 18.4394, -66.0018, False),
 ]
 
 FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cruise_kt
