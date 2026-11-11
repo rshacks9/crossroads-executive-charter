@@ -11,7 +11,7 @@
   {
    "name": "Executive",
    "base": "KTYQ",
-   "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Nassau, Geneva and Le Bourget.",
+   "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
    "fleets": [
     "C510",
     "PRM1",
@@ -27,7 +27,7 @@
   {
    "name": "Executive Charter",
    "base": "KIND",
-   "summary": "VIP-configured Airbus jets for delegations, tours and private groups: the 48-seat A220, the 100-seat A340-600 and the 150-seat A380, flying from Indianapolis International to Las Vegas, Los Angeles, Geneva, Honolulu and Paris.",
+   "summary": "VIP-configured Airbus jets for delegations, tours and private groups: the 48-seat A220, the 100-seat A340-600 and the 150-seat A380, flying from Indianapolis International to Las Vegas, Los Angeles, Houston, Geneva and Paris.",
    "fleets": [
     "BCS3",
     "A346",
@@ -37,7 +37,7 @@
   {
    "name": "Group & Sports Charter",
    "base": "KIND",
-   "summary": "Teams, bands and incentive groups in the E175, E190 and 757 from Indianapolis International to game-day cities, Cancun, Providenciales and beyond.",
+   "summary": "Teams, bands and incentive groups in the E175, E190 and 757 from Indianapolis International to game-day cities, Orlando, Tampa, Cancun and beyond.",
    "fleets": [
     "E175",
     "E190",

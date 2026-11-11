@@ -24,10 +24,10 @@ class PreviewTests(unittest.TestCase):
         self.assertIsNone(self.snapshot["stats"]["last_30_days"])
 
     def test_preview_mirrors_the_vamsys_setup(self):
-        # Updates 1-6 (58 routes) plus the 120-route network expansion of 2026-11-11.
-        self.assertEqual(len(self.snapshot["routes"]), 178)
+        # Updates 1-6 (58 routes) plus the 100 routes imported in the 2026-11-11 network expansion.
+        self.assertEqual(len(self.snapshot["routes"]), 158)
         self.assertEqual(len(self.snapshot["fleet"]), 18)
-        self.assertEqual(len(self.snapshot["airports"]), 72)
+        self.assertEqual(len(self.snapshot["airports"]), 64)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
     def test_hub_rule_small_jets_ktyq_everything_else_kind(self):

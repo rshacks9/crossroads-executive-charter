@@ -266,7 +266,7 @@ export function HandbookPage({ snapshot }: PageProps) {
                 <p>Everything bigger: the Longitude, Gulfstreams, E-Jets, 757, Airbus VIP jets and all freighters.</p>
               </div>
             </div>
-            <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton, Van Nuys–Honolulu). Fly them as positioning or one-way trips.</p>
+            <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton). Fly them as positioning or one-way trips.</p>
           </section>
 
           <section id="hb-fuel" className="hb-section">

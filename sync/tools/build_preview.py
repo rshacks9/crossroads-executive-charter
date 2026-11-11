@@ -26,11 +26,13 @@ ROUTES_CSV = [
     (DATA / "routes-update-4-b390.csv", None),
     (DATA / "routes-update-5-c750-kbdl.csv", 14214327),
     (DATA / "routes-update-6-kbdl-mustang.csv", None),
-    # Network expansion, being imported 2026-11-11. vAMSYS assigns the real IDs; these only need to be
-    # unique inside the preview.
-    (DATA / "routes-update-7-expansion.csv", 14215001),
+    # Network expansion as imported 2026-11-11 (Orwell import #30334, 122/122 OK): 100 new routes and
+    # 22 edits. The 20 routes to the 8 airports vAMSYS rejected were dropped. vAMSYS assigns the real
+    # IDs; these only need to be unique inside the preview.
+    (DATA / "routes-update-7-import.csv", 14215001),
 ]
-# routes-update-7 names the Hawker fleet by placeholder until its ID is pasted in (see ROUTES-7-README.md).
+# The planning file (routes-update-7-expansion.csv) used a placeholder for the Hawker fleet; kept so it
+# still builds if anyone points ROUTES_CSV back at it.
 FLEET_PLACEHOLDERS = {"HAWKER": "32217"}
 OUT = ROOT / "crossroads_sync" / "preview_raw.json"
 
@@ -58,7 +60,7 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("KONT", "ONT", "Ontario International", "United States", 34.0560, -117.6012, False),
     ("PANC", "ANC", "Ted Stevens Anchorage International", "United States", 61.1743, -149.9962, False),
     ("EDDP", "LEJ", "Leipzig/Halle", "Germany", 51.4239, 12.2364, False),
-    # Added with routes 5 (KBDL) and 7 (network expansion). Coordinates from OurAirports (public domain).
+    # Added with routes 5 (KBDL) and 7 (network expansion; the 8 airports vAMSYS rejected are left out). Coordinates from OurAirports (public domain).
     ("CYYZ", "YYZ", "Toronto Pearson International", "Canada", 43.6759, -79.6294, False),
     ("EGLF", "FAB", "Farnborough", "United Kingdom", 51.2758, -0.7763, False),
     ("EGSS", "STN", "London Stansted", "United Kingdom", 51.8850, 0.2350, False),
@@ -69,7 +71,6 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("KBCT", "BCT", "Boca Raton", "United States", 26.3785, -80.1077, False),
     ("KBDL", "BDL", "Bradley International (Hartford)", "United States", 41.9386, -72.6880, False),
     ("KBED", "BED", "Hanscom Field (Bedford)", "United States", 42.4700, -71.2890, False),
-    ("KBKL", "BKL", "Cleveland Burke Lakefront", "United States", 41.5175, -81.6833, False),
     ("KCHS", "CHS", "Charleston International", "United States", 32.8962, -80.0382, False),
     ("KCLT", "CLT", "Charlotte Douglas International", "United States", 35.2140, -80.9431, False),
     ("KCMH", "CMH", "John Glenn Columbus International", "United States", 39.9980, -82.8919, False),
@@ -79,20 +80,16 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("KEGE", "EGE", "Eagle County Regional (Vail)", "United States", 39.6426, -106.9180, False),
     ("KEWR", "EWR", "Newark Liberty International", "United States", 40.6894, -74.1705, False),
     ("KHOU", "HOU", "Houston William P. Hobby", "United States", 29.6453, -95.2768, False),
-    ("KHXD", "HHH", "Hilton Head", "United States", 32.2244, -80.6975, False),
     ("KIAD", "IAD", "Washington Dulles International", "United States", 38.9445, -77.4558, False),
     ("KIAH", "IAH", "Houston George Bush Intercontinental", "United States", 29.9844, -95.3414, False),
-    ("KJAC", "JAC", "Jackson Hole", "United States", 43.6073, -110.7380, False),
     ("KJAX", "JAX", "Jacksonville International", "United States", 30.4925, -81.6878, False),
     ("KMEM", "MEM", "Memphis International", "United States", 35.0438, -89.9763, False),
     ("KMKC", "MKC", "Charles B. Wheeler Downtown (Kansas City)", "United States", 39.1232, -94.5928, False),
     ("KMSP", "MSP", "Minneapolis-St Paul International", "United States", 44.8801, -93.2217, False),
-    ("KMSY", "MSY", "New Orleans Louis Armstrong International", "United States", 29.9934, -90.2647, False),
     ("KMYR", "MYR", "Myrtle Beach International", "United States", 33.6797, -78.9283, False),
     ("KOAK", "OAK", "Oakland International", "United States", 37.7201, -122.2212, False),
     ("KOSU", "OSU", "Ohio State University (Columbus)", "United States", 40.0798, -83.0730, False),
     ("KPDK", "PDK", "DeKalb-Peachtree (Atlanta)", "United States", 33.8763, -84.3021, False),
-    ("KPHL", "PHL", "Philadelphia International", "United States", 39.8719, -75.2411, False),
     ("KPHX", "PHX", "Phoenix Sky Harbor International", "United States", 33.4353, -112.0059, False),
     ("KPTK", "PTK", "Oakland County International (Pontiac)", "United States", 42.6655, -83.4201, False),
     ("KSDF", "SDF", "Louisville Muhammad Ali International", "United States", 38.1706, -85.7351, False),
@@ -103,10 +100,7 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("KVNY", "VNY", "Van Nuys", "United States", 34.2098, -118.4900, False),
     ("LFMN", "NCE", "Nice Cote d'Azur", "France", 43.6584, 7.2159, False),
     ("LSGG", "GVA", "Geneva", "Switzerland", 46.2381, 6.1090, False),
-    ("MBPV", "PLS", "Providenciales International (Turks and Caicos)", "Turks and Caicos Islands", 21.7737, -72.2683, False),
     ("MMUN", "CUN", "Cancun International", "Mexico", 21.0408, -86.8735, False),
-    ("MYNN", "NAS", "Nassau Lynden Pindling International", "Bahamas", 25.0390, -77.4662, False),
-    ("PHNL", "HNL", "Honolulu Daniel K. Inouye International", "United States", 21.3184, -157.9257, False),
     ("TXKF", "BDA", "Bermuda L.F. Wade International", "Bermuda", 32.3638, -64.6782, False),
 ]
 

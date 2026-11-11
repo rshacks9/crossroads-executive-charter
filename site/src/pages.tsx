@@ -691,7 +691,7 @@ export function RoutesPage({ snapshot }: PageProps) {
         ) : (
           <p className="empty">No routes match those filters.</p>
         )}
-        <p className="fineprint">Distances are great-circle. Block times are schedule estimates; your SimBrief OFP has the real figure for the day's winds. Routes from the 11 November network expansion are still being loaded into vAMSYS, so a few may not be bookable yet.</p>
+        <p className="fineprint">Distances are great-circle. Block times are schedule estimates; your SimBrief OFP has the real figure for the day's winds.</p>
       </section>
     </>
   );

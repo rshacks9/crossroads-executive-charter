@@ -66,7 +66,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "Ultra-long-range",
     range_nm: 6500,
     cruise_kt: 490,
-    blurb: "It crosses the Atlantic to Luton, Farnborough, Le Bourget, Geneva and Nice, and flies to Honolulu, all from Indianapolis.",
+    blurb: "It crosses the Atlantic to Luton, Farnborough, Le Bourget, Geneva and Nice, all nonstop from Indianapolis.",
   },
   GA7C: {
     role: "Flagship business jet",
@@ -84,13 +84,13 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "VIP widebody, 100 seats",
     range_nm: 7000,
     cruise_kt: 480,
-    blurb: "Four engines and a 100-seat premium cabin for tours and long-range groups to Europe and Hawaii.",
+    blurb: "Four engines and a 100-seat premium cabin for tours and long-range groups to Europe and the West Coast.",
   },
   A388: {
     role: "VIP flagship, 150 seats",
     range_nm: 7500,
     cruise_kt: 490,
-    blurb: "A 150-seat executive A380 for the biggest charters: Las Vegas, Los Angeles, Le Bourget, Geneva and Honolulu.",
+    blurb: "A 150-seat executive A380 for the biggest charters: Las Vegas, Los Angeles, Houston, Le Bourget and Geneva.",
   },
   E175: {
     role: "Regional group charter",
@@ -158,7 +158,7 @@ export const SERVICES: Service[] = [
     points: [
       "Six light and mid-size types at KTYQ, from the Mustang to the Citation X",
       "Longitude, G650 and G700 at KIND for coast-to-coast and transatlantic trips",
-      "Ski fields (Aspen, Vail, Jackson Hole) are off-limits to the Mustang and Premier",
+      "Ski fields (Aspen, Vail) are off-limits to the Mustang and Premier",
       "Short hops under an hour for when you have one evening to fly",
     ],
     itinerary: {
@@ -178,7 +178,7 @@ export const SERVICES: Service[] = [
     pitch: "When the group outgrows a business jet. Executive-configured Airbus aircraft fly delegations, tours and private parties from Indianapolis International.",
     points: [
       "A220-300 with 48 seats, A340-600 with 100 and A380 with 150",
-      "Long-range legs to Le Bourget, Geneva, Honolulu and Los Cabos",
+      "Long-range legs to Le Bourget, Geneva, London Luton and Los Cabos",
       "Business-jet flexibility, airliner procedures: full SimBrief OFPs and cost index",
       "Shares the KIND ramp with the Gulfstreams and freighters",
     ],
@@ -197,8 +197,8 @@ export const SERVICES: Service[] = [
     pitch: "Indianapolis is a sports town. Our E-Jets and the 757 take teams, bands and incentive groups to game-day cities and sunshine.",
     points: [
       "E175 (76 seats), E190 (100) and 757-200 (180), plus the A220 and A340 on longer legs",
-      "Game-day cities: Boston, Phoenix, Denver, Minneapolis, Philadelphia, Seattle and more",
-      "Group getaways to Orlando, Las Vegas, New Orleans, Cancun and Providenciales",
+      "Game-day cities: Boston, Phoenix, Denver, Minneapolis, Houston, Seattle and more",
+      "Group getaways to Orlando, Las Vegas, Tampa and Cancun",
       "Quick turns and tight slot times, the way charter flying really works",
     ],
     itinerary: {
@@ -243,7 +243,7 @@ export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[
 
 export const COST_INDEX: { group: string; types: string; guidance: string }[] = [
   { group: "Light and mid-size jets", types: "Mustang, Premier IA, CJ4, Learjet 35A, Hawker 800XP, Citation X", guidance: "No cost index. Fly the type's normal (long-range) cruise schedule. High-speed cruise is fine on short hops." },
-  { group: "Large-cabin business jets", types: "Longitude, G650, G700", guidance: "Normal cruise Mach. Long-range cruise on transatlantic and Honolulu legs." },
+  { group: "Large-cabin business jets", types: "Longitude, G650, G700", guidance: "Normal cruise Mach. Long-range cruise on transatlantic legs." },
   { group: "Passenger airliners", types: "E175, E190, A220, 757, A340, A380", guidance: "CI 30–50. Up to CI 80 to make up a late departure on a group or sports charter." },
   { group: "Freighters", types: "A300-600F, MD-11F, 777F", guidance: "CI 20–40. Lower on long overwater legs." },
 ];
@@ -294,8 +294,8 @@ export const NEWS: NewsItem[] = [
   {
     date: "2026-11-11",
     kind: "Network",
-    title: "Network expansion: 120 new routes",
-    body: "Up to 60 new route pairs and 48 new airports are being loaded into vAMSYS, among them Vail, Geneva, Nice, Farnborough, Cancun, Bermuda and Toronto, plus new sports-charter cities from Seattle to Minneapolis. This site shows the full planned network. A few airports are still being added in vAMSYS, so some new routes may appear here before you can book them.",
+    title: "Network expansion: 100 new routes",
+    body: "Fifty new route pairs and 40 new airports are now live in vAMSYS, among them Vail, Geneva, Nice, Farnborough, Cancun, Bermuda and Toronto, plus new sports-charter cities from Seattle to Minneapolis. The Hawker 800XP and Citation X were added to the existing KTYQ routes in the same import. Every route on this site can be booked.",
     link: { href: "#/routes", label: "Explore the network" },
   },
   {

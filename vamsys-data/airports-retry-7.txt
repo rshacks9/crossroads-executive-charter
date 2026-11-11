@@ -1,0 +1,8 @@
+KBKL,Cleveland Burke Lakefront
+KHXD,Hilton Head
+KJAC,Jackson Hole
+KMSY,New Orleans Louis Armstrong International
+KPHL,Philadelphia International
+MBPV,Providenciales International (Turks and Caicos)
+MYNN,Nassau Lynden Pindling International
+PHNL,Honolulu Daniel K. Inouye International
