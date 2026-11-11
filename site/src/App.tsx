@@ -1,22 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Snapshot } from "./data";
-import { isStale, loadSnapshot, relativeAge } from "./data";
+import { type Snapshot, isStale, loadSnapshot, relativeAge } from "./data";
 import { CrewPage } from "./crew";
 import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./info";
 import { FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
 import { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, SearchDialog, StatsPage, TypePage } from "./explore-pages";
 import type { Location } from "./explore";
 import { findRoute, parseLocation, setMeta } from "./explore";
+import { DEFAULT_AIRLINE_NAME, countsFromSnapshot, homeTitle, siteDescription } from "./html-facts";
 
 export const ROUTES = [
   { path: "", label: "Home", nav: false, description: "" },
-  { path: "fleet", label: "Fleet", nav: true, description: "Eighteen aircraft types from the Citation Mustang to the A380 and 777F, with planning range, seats, base and the simulator model we fly." },
+  { path: "fleet", label: "Fleet", nav: true, description: "The whole Crossroads fleet, from the Citation Mustang to the A380 and 777F: planning range, seats, base and the simulator model for every type." },
   { path: "routes", label: "Network", nav: true, description: "Interactive route explorer: click an airport to see its routes as great circles, with distance, block time and the aircraft that fly them." },
   { path: "destinations", label: "Destinations", nav: true, description: "Every airport on the Crossroads schedule." },
   { path: "services", label: "Services", nav: true, description: "Executive, Executive Charter, Group & Sports Charter and Cargo Charter divisions, with sample itineraries on real Crossroads routes." },
   { path: "plan", label: "Plan a charter", nav: true, description: "Flight-sim charter planning tool." },
   { path: "live", label: "Live", nav: true, description: "Crossroads flights in progress on the map." },
-  { path: "careers", label: "Careers", nav: false, description: "Six ranks from Cadet to Chief Pilot, earned with hours and accepted PIREPs." },
+  { path: "careers", label: "Careers", nav: false, description: "The rank ladder from Cadet to Chief Pilot, earned with hours and accepted PIREPs." },
   { path: "handbook", label: "Handbook", nav: false, description: "Crossroads SOPs: callsigns, flight-number blocks, fuel policy, cost index and landing rates." },
   { path: "resources", label: "Resources", nav: true, description: "Pilot downloads and links." },
   { path: "stats", label: "Stats", nav: false, description: "Network statistics." },
@@ -150,10 +150,10 @@ export function App() {
   useEffect(() => {
     const route = ROUTES.find((r) => r.path === loc.page);
     if (!route || ["destinations", "plan", "resources", "stats"].includes(loc.page)) return;
-    const name = snapshot?.airline.name ?? "Crossroads Executive & Charter";
+    const name = snapshot?.airline.name ?? DEFAULT_AIRLINE_NAME;
     setMeta(
-      route.path ? `${route.label} · ${name}` : `${name} · Virtual airline from Indianapolis`,
-      route.description || "A fictional flight-sim virtual airline from Indianapolis: light jets to the A380 and 777F across executive, charter, sports and cargo divisions. Join on vAMSYS.",
+      route.path ? `${route.label} · ${name}` : homeTitle(name),
+      route.description || siteDescription(countsFromSnapshot(snapshot)),
     );
   }, [loc, snapshot]);
 

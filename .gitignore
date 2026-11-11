@@ -7,3 +7,6 @@ __pycache__/
 
 # local import markers
 vamsys-data/IMPORT*_DONE
+
+# TypeScript build cache
+*.tsbuildinfo
