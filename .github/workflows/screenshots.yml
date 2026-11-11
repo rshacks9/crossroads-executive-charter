@@ -1,0 +1,83 @@
+name: Screenshots and page checks
+
+# Builds the site from the schedule preview (no vAMSYS credentials, no deploy), then captures every
+# page at phone, desktop and wide-monitor sizes and records layout, console, request and
+# accessibility findings. The result is the "screenshots" artifact and the run summary.
+# It reports; it does not fail on findings. Run it by hand, or push a branch named shots/<anything>.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Capture this address instead of the fresh build (for example the live site)"
+        required: false
+        default: ""
+  push:
+    branches: ["shots/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shots:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Build the site from the schedule preview
+        run: |
+          (cd sync && python -B -m crossroads_sync --preview --config ../site.config.json --output ../site/public/data/snapshot.json)
+          cd site
+          npm ci --no-audit --no-fund
+          npm run build
+
+      # Pinned, and installed without saving: the capture tools are not dependencies of the site.
+      - name: Install the capture tools
+        working-directory: site
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.64.1 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+
+      - name: Capture
+        working-directory: site
+        env:
+          TARGET: ${{ inputs.url }}
+        run: |
+          if [ -n "$TARGET" ]; then
+            BASE="$TARGET"
+          else
+            BASE="http://127.0.0.1:4180/"
+            npx vite preview --host 127.0.0.1 --port 4180 --strictPort > "$RUNNER_TEMP/preview.log" 2>&1 &
+            for i in $(seq 1 30); do curl -fsS "$BASE" > /dev/null 2>&1 && break; sleep 1; done
+            curl -fsS "$BASE" > /dev/null
+          fi
+          node tools/shots.mjs "$BASE" "$RUNNER_TEMP/shots"
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/shots/summary.md" ]; then cat "$RUNNER_TEMP/shots/summary.md" >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f "$RUNNER_TEMP/preview.log" ]; then tail -n 20 "$RUNNER_TEMP/preview.log"; fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}/shots
+          if-no-files-found: warn
+          retention-days: 7
