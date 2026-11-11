@@ -4,3 +4,6 @@ __pycache__/
 *.pyc
 .env
 .env.*
+
+# local import markers
+vamsys-data/IMPORT*_DONE

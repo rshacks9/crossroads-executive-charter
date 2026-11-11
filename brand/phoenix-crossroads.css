@@ -1,0 +1,164 @@
+/*
+   Crossroads Executive & Charter - vAMSYS Phoenix custom stylesheet
+   Version 1.1 (2026-11-11). Upload in Orwell: HQ > Settings > Style Settings > stylesheet.
+
+   Palette (same as the logo, the dashboard artwork and the Style Settings colours):
+     ink      #1b2328  (27, 35, 40)     top bar, card headers, alert boxes
+     signal   #e8703a  (232, 112, 58)   accents and borders only (white text on it fails AA)
+     deep     #b9501f  (185, 80, 31)    buttons and links: white on it is 4.9:1
+     light    #f29a6c  (242, 154, 108)  accent text on dark surfaces
+     on-ink   #eef2f3  (238, 242, 243)  text on ink: 14:1
+
+   Every selector below was read from the live Phoenix markup and the vAMSYS app
+   stylesheet (build b3c542f). vAMSYS injects this file into its custom-va-style element
+   after its own CSS, so equal-specificity rules here win. Keep angle-bracket tags
+   out of this file: the upload check must not sniff it as HTML.
+*/
+
+/* 1. Brand tokens: the app's buttons, tabs and links all read the --primary scale */
+:root {
+    --crx-ink: 27, 35, 40;
+    --crx-ink-soft: 38, 49, 56;
+    --crx-signal: 232, 112, 58;
+    --crx-deep: 185, 80, 31;
+    --crx-light: 242, 154, 108;
+    --crx-on-ink: 238, 242, 243;
+
+    --primary: 185, 80, 31;
+    --primary-50: 253, 245, 240;
+    --primary-100: 250, 230, 219;
+    --primary-200: 246, 205, 182;
+    --primary-300: 242, 154, 108;
+    --primary-400: 232, 112, 58;
+    --primary-500: 194, 83, 31;
+    --primary-600: 169, 70, 25;
+    --primary-700: 140, 58, 21;
+    --primary-800: 111, 47, 19;
+    --primary-900: 90, 39, 17;
+    --primary-950: 51, 21, 7;
+}
+
+::selection { background: rgba(var(--crx-signal), 0.30); }
+
+/* 2. Top bar: ink in both modes, with the orange rule from the logo */
+.app-header {
+    background: rgb(var(--crx-ink)) !important;
+    border-bottom: 3px solid rgb(var(--crx-signal));
+}
+html:not(.dark) .app-header .logo-box .logo-light { display: block; }
+html:not(.dark) .app-header .logo-box .logo-dark { display: none; }
+
+.app-header .nav-link,
+.app-header .nav-link h5,
+.app-header .nav-link span,
+#button-toggle-menu,
+#utc-clock-button { color: rgb(var(--crx-on-ink)) !important; }
+.app-header .nav-link:hover,
+.app-header .nav-link:hover h5 { color: rgb(var(--crx-light)) !important; }
+
+.app-header .alert.alert-info {
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: rgb(var(--crx-on-ink)) !important;
+    padding: 6px 14px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+}
+.app-header .nav-link .text-xs { white-space: nowrap; }
+.app-header .nav-link img { border-radius: 3px; }
+
+/* 3. Sidebar: active item marked like the logo's route line */
+.app-menu .menu .menu-link.active {
+    background: rgba(var(--crx-signal), 0.10);
+    box-shadow: inset 3px 0 0 rgb(var(--crx-signal));
+}
+
+/* 4. Buttons (primary colour comes from --primary; info buttons go ink instead of blue) */
+.btn-primary {
+    font-weight: 600 !important;
+    letter-spacing: 0.03em;
+}
+.btn-info {
+    background-color: rgb(var(--crx-ink)) !important;
+    border-color: rgb(var(--crx-ink)) !important;
+    color: #fff !important;
+}
+.btn-info:hover { background-color: rgb(var(--crx-ink-soft)) !important; }
+html.dark .btn-info {
+    background-color: rgb(var(--crx-ink-soft)) !important;
+    border-color: rgba(var(--crx-light), 0.5) !important;
+}
+
+/* 5. Alert boxes in the page body: ink panel, orange edge */
+main .alert.alert-info {
+    background-color: rgb(var(--crx-ink)) !important;
+    color: rgb(var(--crx-on-ink)) !important;
+    border: 0 !important;
+    border-left: 4px solid rgb(var(--crx-signal)) !important;
+}
+main .alert.alert-info a {
+    color: rgb(var(--crx-light)) !important;
+    text-decoration: underline;
+}
+html.dark main .alert.alert-info { background-color: rgb(var(--crx-ink-soft)) !important; }
+
+/* 6. Cards: ink header, upper-case title */
+.card:not(.airport-card) > .card-header {
+    background: rgb(var(--crx-ink));
+    color: rgb(var(--crx-on-ink));
+    border-bottom: 0;
+    border-radius: 0.375rem 0.375rem 0 0;
+    padding-bottom: 0.75rem !important;
+}
+.card:not(.airport-card) > .card-header :is(h1, h2, h3, h4, h5, h6) { color: #fff; }
+.card:not(.airport-card) > .card-header .card-title {
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.95rem;
+}
+.card:not(.airport-card) > .card-header .text-sm { color: rgba(var(--crx-on-ink), 0.80); }
+.card:not(.airport-card) > .card-header .btn.btn-sm {
+    color: #fff;
+    border-color: rgb(var(--crx-light));
+}
+.card:not(.airport-card) > .card-header .btn.btn-sm:hover {
+    background: rgb(var(--crx-deep));
+    border-color: rgb(var(--crx-deep));
+    color: #fff;
+}
+
+/* 7. Statistic tiles and other sections: orange top rule, small upper-case heading */
+.fi-section { border-top: 3px solid rgb(var(--crx-signal)); }
+.fi-section-header-heading {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.8rem;
+}
+
+/* 8. Statistics tabs and table headings */
+nav[aria-label="Tabs"] > button,
+nav[aria-label="Tabs"] > a {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.78rem;
+}
+.striped-padded-table table thead th,
+.fi-ta-header-cell-label {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+}
+
+/* 9. Booking box on the dashboard: ink instead of the default blue */
+.dashboard-card-booking {
+    background-color: rgb(var(--crx-ink)) !important;
+    border-top: 3px solid rgb(var(--crx-signal)) !important;
+    color: rgb(var(--crx-on-ink)) !important;
+}
+
+/* 10. Dark mode: the deep orange is too dark for text on dark surfaces */
+html.dark .text-primary { color: rgb(var(--crx-light)); }
+html.dark .hover\:text-white:hover { color: #fff; }
+html.dark .dashboard-card-booking { background-color: rgb(var(--crx-ink-soft)) !important; }
+html.dark nav[aria-label="Tabs"] > :is(button, a):not(.border-b-primary) { color: rgb(180, 192, 198); }
