@@ -328,7 +328,7 @@ export function App() {
             <div>
               <p className="footer__head">Elsewhere</p>
               <ul>
-                {airline?.join_url ? <li><a href={airline.join_url} rel="noopener">Apply on vAMSYS</a></li> : null}
+                {airline?.join_url || airline?.pilot_login_url ? <li><a href={airline.join_url ?? airline.pilot_login_url!} rel="noopener">Register on vAMSYS</a></li> : null}
                 {airline?.pilot_login_url ? <li><a href={airline.pilot_login_url} rel="noopener">Pilot login (vAMSYS)</a></li> : null}
                 {airline?.discord_url ? <li><a href={airline.discord_url} rel="noopener">Discord</a></li> : null}
                 {airline?.contact_email ? <li><a href={`mailto:${airline.contact_email}`}>Contact</a></li> : null}

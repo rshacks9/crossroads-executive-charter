@@ -81,11 +81,20 @@ export function bases(snapshot: Snapshot): string[] {
   return [...new Set(snapshot.hubs.flatMap((hub) => hub.airports))];
 }
 
-function joinHref(snapshot: Snapshot): { href: string; external: boolean } {
-  return snapshot.airline.join_url ? { href: snapshot.airline.join_url, external: true } : { href: "#/pilots", external: false };
+/**
+ * Where new pilots sign up: the vAMSYS application when join_url is set, otherwise the airline's
+ * vAMSYS sign-in page (it carries the Register link), otherwise the Fly-with-us page.
+ */
+export function joinHref(snapshot: Pick<Snapshot, "airline">): { href: string; external: boolean } {
+  const { join_url, pilot_login_url } = snapshot.airline;
+  if (join_url) return { href: join_url, external: true };
+  if (pilot_login_url) return { href: pilot_login_url, external: true };
+  return { href: "#/pilots", external: false };
 }
 
-export function JoinButton({ snapshot, label = "Apply to fly with us", quiet = false }: { snapshot: Snapshot; label?: string; quiet?: boolean }) {
+export const REGISTER_LABEL = "Register on vAMSYS";
+
+export function JoinButton({ snapshot, label = REGISTER_LABEL, quiet = false }: { snapshot: Snapshot; label?: string; quiet?: boolean }) {
   const join = joinHref(snapshot);
   return (
     <a className={`button${quiet ? " button--ghost" : ""}`} href={join.href} rel={join.external ? "noopener" : undefined}>
@@ -717,9 +726,9 @@ export function RoutesPage({ snapshot }: PageProps) {
 
 const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; link?: { href: string; label: string } }[] = [
   {
-    title: "Apply and join the hub",
+    title: "Register and join the hub",
     tool: "vAMSYS",
-    body: "Crossroads runs on vAMSYS. Create your pilot account through our vAMSYS application. Once staff approve it, you join the Indianapolis hub as a Cadet.",
+    body: "Crossroads runs on vAMSYS. Register through the Crossroads sign-in page on vAMSYS (the Register link). Once staff approve your application, you join the Indianapolis hub as a Cadet.",
     tips: ["New pilots: open the Crossroads pilot hub at vamsys.io/login/crossroads and use its Register link", "Use a username you're happy to see on a leaderboard", "Link your SimBrief account in your vAMSYS profile settings"],
   },
   {
@@ -771,7 +780,7 @@ export function PilotsPage({ snapshot }: PageProps) {
     <>
       <PageHeader eyebrow="Fly with us" title="How a Crossroads flight works" lede={`Six steps from application to accepted PIREP. Fly our ${facts.routes}-route schedule from home and build your logbook from Cadet to Chief Pilot.`}>
         <div className="hero__actions">
-          <JoinButton snapshot={snapshot} label={airline.join_url ? "Start your application" : "Applications open soon"} />
+          <JoinButton snapshot={snapshot} label={REGISTER_LABEL} />
           {airline.pilot_login_url ? <a className="button button--ghost" href={airline.pilot_login_url} rel="noopener">Existing pilots: log in</a> : null}
           {airline.discord_url ? <a className="button button--ghost" href={airline.discord_url} rel="noopener">Join our Discord</a> : null}
         </div>
@@ -818,7 +827,7 @@ export function PilotsPage({ snapshot }: PageProps) {
       ) : null}
 
       <section className="page page--narrow">
-        <SectionHead eyebrow="Questions" title="Before you apply" />
+        <SectionHead eyebrow="Questions" title="Before you register" />
         <div className="faq">
           {faqs.map((f) => (
             <details key={f.q}>

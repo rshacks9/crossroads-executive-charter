@@ -76,4 +76,19 @@ describe("pages render from the snapshot", () => {
   it("explains the explorer's keyboard controls", () => {
     expect(text(renderToString(<RoutesPage snapshot={snapshot} />))).toContain("Escape to clear");
   });
+
+  it("register buttons go to the airline's vAMSYS sign-in page while join_url is unset", async () => {
+    const { joinHref } = await import("./pages");
+    expect(snapshot.airline.join_url).toBeNull();
+    const login = "https://vamsys.io/login/crossroads";
+    expect(snapshot.airline.pilot_login_url).toBe(login);
+    expect(joinHref(snapshot)).toEqual({ href: login, external: true });
+    expect(joinHref({ airline: { ...snapshot.airline, join_url: "https://example.test/join" } }).href).toBe("https://example.test/join");
+    expect(joinHref({ airline: { ...snapshot.airline, pilot_login_url: null } }).href).toBe("#/pilots");
+    for (const html of [renderToString(<PilotsPage snapshot={snapshot} />), renderToString(<HomePage snapshot={snapshot} />), renderToString(<ResourcesPage snapshot={snapshot} />), renderToString(<CareersPage snapshot={snapshot} />)]) {
+      expect(html).toContain(`href="${login}"`);
+      expect(html).not.toMatch(/Applications open soon|Apply to fly with us|Apply on vAMSYS/);
+    }
+    expect(renderToString(<PilotsPage snapshot={snapshot} />)).toContain("Register on vAMSYS");
+  });
 });

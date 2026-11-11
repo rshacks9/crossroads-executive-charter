@@ -648,7 +648,7 @@ export function ResourcesPage({ snapshot }: PageProps) {
           <li><strong>250 kt below 10,000 ft</strong> in the US unless ATC says otherwise.</li>
           <li><strong>Write it up.</strong> Diversions, go-arounds and firm landings go in the PIREP comments.</li>
         </ol>
-        <p className="callout">New here? Start with <a href="#/pilots">how a Crossroads flight works</a>, then the <a href="#/careers">career ladder</a>. <JoinButton snapshot={snapshot} label="Apply on vAMSYS" quiet /></p>
+        <p className="callout">New here? Start with <a href="#/pilots">how a Crossroads flight works</a>, then the <a href="#/careers">career ladder</a>. <JoinButton snapshot={snapshot} quiet /></p>
       </section>
     </>
   );

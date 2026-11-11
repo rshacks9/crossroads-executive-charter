@@ -79,7 +79,7 @@ committing, so the committed snapshot stays fictional.
 4. **Pages.** Repository → Settings → Pages → Source: *GitHub Actions*. Run the workflow once from the
    Actions tab. Add a custom domain there if you have one.
 5. **Links.** Fill `join_url`, `pilot_login_url` and `discord_url` in `site.config.json` (https only).
-   Until `join_url` is set, the Join buttons point at the Pilots page instead.
+   Until `join_url` is set, the Register buttons use `pilot_login_url` (the airline's vAMSYS sign-in page, which has the Register link), then the Pilots page.
 
 ## Privacy and safety
 
