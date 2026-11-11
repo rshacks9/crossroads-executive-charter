@@ -11,12 +11,13 @@
   {
    "name": "Executive",
    "base": "KTYQ",
-   "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
+   "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang and Phenom 300E to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
    "fleets": [
     "C510",
     "PRM1",
     "C25C",
     "LJ35",
+    "E55P",
     "H25B",
     "C750",
     "C700",
@@ -60,6 +61,7 @@
   "PRM1": "Carenado B390 Premier IA (add-on)",
   "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
   "LJ35": "Flysimware Learjet 35A (add-on)",
+  "E55P": "FSReborn Phenom 300E (add-on)",
   "H25B": "FlightFX Hawker 800XP (add-on)",
   "C750": "FlightFX Citation X (add-on)",
   "C700": "Cessna Citation Longitude (MSFS 2024 default)",

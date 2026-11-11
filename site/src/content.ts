@@ -3,7 +3,7 @@
 // comes from snapshot.json; nothing here may claim members, statistics, awards or real-world status.
 
 /** Aircraft that work out of Indianapolis Executive (KTYQ). Everything else is based at KIND. */
-export const KTYQ_TYPES = ["C510", "PRM1", "C25C", "LJ35", "H25B", "C750"] as const;
+export const KTYQ_TYPES = ["C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"] as const;
 
 export function baseFor(code: string): "KTYQ" | "KIND" {
   return (KTYQ_TYPES as readonly string[]).includes(code) ? "KTYQ" : "KIND";
@@ -43,6 +43,12 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     range_nm: 1700,
     cruise_kt: 440,
     blurb: "Steam-era handling with a fast cruise. You hand-fly more of it, and you have to watch the numbers at hot-and-high airports.",
+  },
+  E55P: {
+    role: "Light jet, long legs",
+    range_nm: 1950,
+    cruise_kt: 450,
+    blurb: "The Phenom 300E is the newest jet at KTYQ. It is flown single-pilot, is comfortable on short runways and is on every light-jet route within its range, including the mountain fields and London City.",
   },
   H25B: {
     role: "Mid-size cabin",
@@ -248,7 +254,7 @@ export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[
 ];
 
 export const COST_INDEX: { group: string; types: string; guidance: string }[] = [
-  { group: "Light and mid-size jets", types: "Mustang, Premier IA, CJ4, Learjet 35A, Hawker 800XP, Citation X", guidance: "No cost index. Fly the type's normal (long-range) cruise schedule. High-speed cruise is fine on short hops." },
+  { group: "Light and mid-size jets", types: "Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X", guidance: "No cost index. Fly the type's normal (long-range) cruise schedule. High-speed cruise is fine on short hops." },
   { group: "Large-cabin business jets", types: "Longitude, G650, G700", guidance: "Normal cruise Mach. Long-range cruise on transatlantic legs." },
   { group: "Passenger airliners", types: "E175, E190, A220, 757, A340, A380", guidance: "CI 30–50. Up to CI 80 to make up a late departure on a group or sports charter." },
   { group: "Freighters", types: "A300-600F, MD-11F, 777F", guidance: "CI 20–40. Lower on long overwater legs." },
@@ -295,7 +301,7 @@ export const TOURS: Tour[] = [
     name: "Ski Season Tour 2026-27",
     window: "11 November 2026 to 15 April 2027",
     points: 500,
-    summary: "Four mountain fields from Indianapolis Executive in the CJ4, Learjet, Hawker or Citation X. Brief the terrain and the hot-and-high numbers on every leg.",
+    summary: "Four mountain fields from Indianapolis Executive in the CJ4, Phenom 300E, Learjet, Hawker or Citation X. Brief the terrain and the hot-and-high numbers on every leg.",
     legs: [["KTYQ", "KEGE"], ["KEGE", "KTYQ"], ["KTYQ", "KASE"], ["KASE", "KTYQ"], ["KTYQ", "KJAC"], ["KJAC", "KTYQ"], ["KTYQ", "KSUN"], ["KSUN", "KTYQ"]],
   },
   {
@@ -304,6 +310,13 @@ export const TOURS: Tour[] = [
     points: 750,
     summary: "Three European business capitals from KIND in the G650, G700, A340 or A380, with a North Atlantic crossing on every leg.",
     legs: [["KIND", "LFPB"], ["LFPB", "KIND"], ["KIND", "LSGG"], ["LSGG", "KIND"], ["KIND", "LSZH"], ["LSZH", "KIND"]],
+  },
+  {
+    name: "Crossroads Circuit",
+    window: "11 November 2026 to 31 December 2027",
+    points: 300,
+    summary: "Eight short legs out of Indianapolis Executive, each under an hour, in any KTYQ light or mid-size jet. A good way to learn a new type.",
+    legs: [["KTYQ", "KSDF"], ["KSDF", "KTYQ"], ["KTYQ", "KMDW"], ["KMDW", "KTYQ"], ["KTYQ", "KCMH"], ["KCMH", "KTYQ"], ["KTYQ", "KBNA"], ["KBNA", "KTYQ"]],
   },
 ];
 
@@ -318,6 +331,27 @@ export interface NewsItem {
 }
 
 export const NEWS: NewsItem[] = [
+  {
+    date: "2026-11-11",
+    kind: "Fleet",
+    title: "Phenom 300E joins KTYQ",
+    body: "Embraer Phenom 300E N300CR is now based at Indianapolis Executive and flies every KTYQ and point-to-point light-jet route within its 1,950 nm planning range, including the mountain airports, the Caribbean and London City.",
+    link: { href: "#/fleet/E55P", label: "Phenom 300E" },
+  },
+  {
+    date: "2026-11-11",
+    kind: "Network",
+    title: "Network now 310 routes; airport restrictions applied",
+    body: "Update 11 added 16 routes: a KTYQ-KIND positioning leg (CRX733/734), Martha's Vineyard from KTYQ and Teterboro, Van Nuys-Las Vegas, Denver Centennial-Aspen, Opa-locka-Nassau, White Plains-Boca Raton and Chicago Midway-Teterboro. Fleets were also tidied to match real airport limits: no Gulfstreams at Aspen (95 ft wingspan limit) or London City (steep approach), no A220 at Teterboro (weight limit), and no A340-600 at Van Nuys, Luton or St Maarten.",
+    link: { href: "#/routes", label: "Explore the network" },
+  },
+  {
+    date: "2026-11-11",
+    kind: "News",
+    title: "New tour: Crossroads Circuit",
+    body: "Eight short legs from KTYQ to Louisville, Chicago Midway, Columbus and Nashville and back, in any KTYQ jet, for a badge and 300 points. It runs until 31 December 2027. Register under Activities in the vAMSYS pilot portal.",
+    link: { href: "#/careers", label: "Tour legs and details" },
+  },
   {
     date: "2026-11-11",
     kind: "Network",

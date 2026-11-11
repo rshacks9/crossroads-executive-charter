@@ -1,19 +1,20 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-11T11:59:27Z",
+ "generated_at": "2026-11-11T19:29:50Z",
  "unavailable": [],
  "airline": {
   "divisions": [
    {
     "name": "Executive",
-    "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bour…",
+    "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang and Phenom 300E to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Ge…",
     "base": "KTYQ",
     "fleets": [
      "C510",
      "PRM1",
      "C25C",
      "LJ35",
+     "E55P",
      "H25B",
      "C750",
      "C700",
@@ -57,6 +58,7 @@
    "PRM1": "Carenado B390 Premier IA (add-on)",
    "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
    "LJ35": "Flysimware Learjet 35A (add-on)",
+   "E55P": "FSReborn Phenom 300E (add-on)",
    "H25B": "FlightFX Hawker 800XP (add-on)",
    "C750": "FlightFX Citation X (add-on)",
    "C700": "Cessna Citation Longitude (MSFS 2024 default)",
@@ -282,6 +284,21 @@
    "image_link": null
   },
   {
+   "code": "E55P",
+   "name": "Embraer Phenom 300E",
+   "type": "pax",
+   "max_pax": 9,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "aircraft_count": 1,
+   "registrations": [
+    "N300CR"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
    "code": "GLF6",
    "name": "Gulfstream G650",
    "type": "pax",
@@ -449,10 +466,9 @@
    "from": "EGGW",
    "to": "KIND",
    "distance_nm": 3456,
-   "duration_min": 457,
+   "duration_min": 448,
    "departure_time": null,
    "types": [
-    "A346",
     "GA7C",
     "GLF6"
    ],
@@ -488,11 +504,12 @@
    "from": "EGLC",
    "to": "EINN",
    "distance_nm": 339,
-   "duration_min": 67,
+   "duration_min": 85,
    "departure_time": null,
    "types": [
-    "GA7C",
-    "GLF6"
+    "C25C",
+    "C510",
+    "E55P"
    ],
    "days": []
   },
@@ -544,11 +561,12 @@
    "from": "EINN",
    "to": "EGLC",
    "distance_nm": 339,
-   "duration_min": 67,
+   "duration_min": 85,
    "departure_time": null,
    "types": [
-    "GA7C",
-    "GLF6"
+    "C25C",
+    "C510",
+    "E55P"
    ],
    "days": []
   },
@@ -589,6 +607,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -612,6 +631,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -634,6 +654,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -656,6 +677,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -677,6 +699,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -719,9 +742,33 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski",
+    "short-hop"
+   ],
+   "flight_number": "CX741",
+   "callsign": "CRX741",
+   "from": "KAPA",
+   "to": "KASE",
+   "distance_nm": 96,
+   "duration_min": 38,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35"
    ],
    "days": []
   },
@@ -761,6 +808,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -802,6 +850,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -824,6 +873,30 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
+    "H25B",
+    "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "ski",
+    "short-hop"
+   ],
+   "flight_number": "CX742",
+   "callsign": "CRX742",
+   "from": "KASE",
+   "to": "KAPA",
+   "distance_nm": 96,
+   "duration_min": 38,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -843,9 +916,7 @@
    "duration_min": 147,
    "departure_time": null,
    "types": [
-    "C700",
-    "GA7C",
-    "GLF6"
+    "C700"
    ],
    "days": []
   },
@@ -865,6 +936,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -886,6 +958,30 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX746",
+   "callsign": "CRX746",
+   "from": "KBCT",
+   "to": "KHPN",
+   "distance_nm": 937,
+   "duration_min": 190,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -927,6 +1023,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -949,6 +1046,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -970,6 +1068,7 @@
    "types": [
     "C510",
     "C750",
+    "E55P",
     "H25B"
    ],
    "days": []
@@ -991,6 +1090,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1032,6 +1132,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1075,6 +1176,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1098,6 +1200,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1161,6 +1264,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -1182,6 +1286,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1204,6 +1309,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1227,6 +1333,30 @@
     "BCS3",
     "E175",
     "E190"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX731",
+   "callsign": "CRX731",
+   "from": "KCMH",
+   "to": "KTYQ",
+   "distance_nm": 154,
+   "duration_min": 52,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
    ],
    "days": []
   },
@@ -1267,6 +1397,7 @@
    "types": [
     "C25C",
     "C510",
+    "E55P",
     "PRM1"
    ],
    "days": []
@@ -1287,6 +1418,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1303,9 +1435,11 @@
    "from": "KDAL",
    "to": "KVNY",
    "distance_nm": 1084,
-   "duration_min": 158,
+   "duration_min": 176,
    "departure_time": null,
    "types": [
+    "C25C",
+    "E55P",
     "GA7C",
     "GLF6"
    ],
@@ -1347,8 +1481,7 @@
    "types": [
     "C25C",
     "C510",
-    "C750",
-    "H25B",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -1410,6 +1543,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -1444,13 +1578,11 @@
    "from": "KEYW",
    "to": "KTYQ",
    "distance_nm": 956,
-   "duration_min": 194,
+   "duration_min": 158,
    "departure_time": null,
    "types": [
     "C25C",
-    "C510",
-    "C750",
-    "H25B",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -1472,6 +1604,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1516,6 +1649,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -1537,6 +1671,30 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX745",
+   "callsign": "CRX745",
+   "from": "KHPN",
+   "to": "KBCT",
+   "distance_nm": 937,
+   "duration_min": 190,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1578,6 +1736,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1599,6 +1758,7 @@
    "types": [
     "C25C",
     "C510",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -1640,6 +1800,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -1759,10 +1920,9 @@
    "from": "KIND",
    "to": "EGGW",
    "distance_nm": 3456,
-   "duration_min": 457,
+   "duration_min": 448,
    "departure_time": null,
    "types": [
-    "A346",
     "GA7C",
     "GLF6"
    ],
@@ -1897,9 +2057,7 @@
    "duration_min": 147,
    "departure_time": null,
    "types": [
-    "C700",
-    "GA7C",
-    "GLF6"
+    "C700"
    ],
    "days": []
   },
@@ -2756,10 +2914,9 @@
    "from": "KIND",
    "to": "KTEB",
    "distance_nm": 564,
-   "duration_min": 100,
+   "duration_min": 97,
    "departure_time": null,
    "types": [
-    "BCS3",
     "C700",
     "GA7C",
     "GLF6"
@@ -2809,6 +2966,31 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "positioning",
+    "short-hop"
+   ],
+   "flight_number": "CX734",
+   "callsign": "CRX734",
+   "from": "KIND",
+   "to": "KTYQ",
+   "distance_nm": 19,
+   "duration_min": 28,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "sports-charter",
     "college"
    ],
@@ -2839,7 +3021,6 @@
    "duration_min": 230,
    "departure_time": null,
    "types": [
-    "A346",
     "B752",
     "GLF6"
    ],
@@ -3192,7 +3373,6 @@
    "duration_min": 261,
    "departure_time": null,
    "types": [
-    "A346",
     "BCS3",
     "C700",
     "GA7C",
@@ -3258,6 +3438,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -3340,7 +3521,8 @@
    "departure_time": null,
    "types": [
     "C25C",
-    "C510"
+    "C510",
+    "E55P"
    ],
    "days": []
   },
@@ -3359,8 +3541,33 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX740",
+   "callsign": "CRX740",
+   "from": "KLAS",
+   "to": "KVNY",
+   "distance_nm": 199,
+   "duration_min": 60,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
    ],
    "days": []
   },
@@ -3428,6 +3635,29 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive"
+   ],
+   "flight_number": "CX747",
+   "callsign": "CRX747",
+   "from": "KMDW",
+   "to": "KTEB",
+   "distance_nm": 619,
+   "duration_min": 134,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive",
     "short-hop"
    ],
@@ -3442,6 +3672,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3503,6 +3734,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3526,6 +3758,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3548,6 +3781,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3592,6 +3826,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3654,8 +3889,56 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX738",
+   "callsign": "CRX738",
+   "from": "KMVY",
+   "to": "KTEB",
+   "distance_nm": 159,
+   "duration_min": 53,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX736",
+   "callsign": "CRX736",
+   "from": "KMVY",
+   "to": "KTYQ",
+   "distance_nm": 715,
+   "duration_min": 151,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
    ],
    "days": []
   },
@@ -3675,6 +3958,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3754,6 +4038,32 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "international",
+    "short-hop"
+   ],
+   "flight_number": "CX743",
+   "callsign": "CRX743",
+   "from": "KOPF",
+   "to": "MYNN",
+   "distance_nm": 161,
+   "duration_min": 53,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3776,8 +4086,7 @@
    "types": [
     "C25C",
     "C510",
-    "C750",
-    "H25B",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -3799,6 +4108,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3884,6 +4194,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3906,6 +4217,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3928,6 +4240,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -3968,6 +4281,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4009,6 +4323,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4032,6 +4347,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4054,6 +4370,7 @@
    "types": [
     "C25C",
     "C510",
+    "E55P",
     "PRM1"
    ],
    "days": []
@@ -4092,6 +4409,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4173,7 +4491,8 @@
    "departure_time": null,
    "types": [
     "C25C",
-    "C510"
+    "C510",
+    "E55P"
    ],
    "days": []
   },
@@ -4212,6 +4531,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4232,6 +4552,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4253,6 +4574,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4315,6 +4637,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4336,6 +4659,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4358,6 +4682,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4399,6 +4724,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4415,13 +4741,59 @@
    "from": "KTEB",
    "to": "KIND",
    "distance_nm": 564,
-   "duration_min": 100,
+   "duration_min": 97,
    "departure_time": null,
    "types": [
-    "BCS3",
     "C700",
     "GA7C",
     "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX748",
+   "callsign": "CRX748",
+   "from": "KTEB",
+   "to": "KMDW",
+   "distance_nm": 619,
+   "duration_min": 134,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX737",
+   "callsign": "CRX737",
+   "from": "KTEB",
+   "to": "KMVY",
+   "distance_nm": 159,
+   "duration_min": 53,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
    ],
    "days": []
   },
@@ -4440,6 +4812,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4462,6 +4835,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4502,6 +4876,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4564,6 +4939,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4586,6 +4962,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4607,6 +4984,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4629,6 +5007,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4652,6 +5031,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4674,6 +5054,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4696,6 +5077,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4718,6 +5100,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4739,6 +5122,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4761,6 +5145,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4782,6 +5167,7 @@
    "types": [
     "C510",
     "C750",
+    "E55P",
     "H25B"
    ],
    "days": []
@@ -4802,6 +5188,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4825,6 +5212,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4848,6 +5236,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4870,6 +5259,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4891,6 +5281,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4913,6 +5304,31 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX732",
+   "callsign": "CRX732",
+   "from": "KTYQ",
+   "to": "KCMH",
+   "distance_nm": 154,
+   "duration_min": 52,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4935,6 +5351,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -4956,8 +5373,7 @@
    "types": [
     "C25C",
     "C510",
-    "C750",
-    "H25B",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -4979,6 +5395,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -4994,13 +5411,11 @@
    "from": "KTYQ",
    "to": "KEYW",
    "distance_nm": 956,
-   "duration_min": 194,
+   "duration_min": 158,
    "departure_time": null,
    "types": [
     "C25C",
-    "C510",
-    "C750",
-    "H25B",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -5022,6 +5437,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5044,6 +5460,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5065,6 +5482,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5087,6 +5505,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5108,6 +5527,7 @@
    "types": [
     "C25C",
     "C510",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -5129,6 +5549,32 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "positioning",
+    "short-hop"
+   ],
+   "flight_number": "CX733",
+   "callsign": "CRX733",
+   "from": "KTYQ",
+   "to": "KIND",
+   "distance_nm": 19,
+   "duration_min": 28,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5151,6 +5597,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5171,6 +5618,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5193,6 +5641,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5215,6 +5664,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5237,6 +5687,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5260,6 +5711,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5282,8 +5734,32 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX735",
+   "callsign": "CRX735",
+   "from": "KTYQ",
+   "to": "KMVY",
+   "distance_nm": 715,
+   "duration_min": 151,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
    ],
    "days": []
   },
@@ -5303,6 +5779,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5325,6 +5802,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5347,8 +5825,7 @@
    "types": [
     "C25C",
     "C510",
-    "C750",
-    "H25B",
+    "E55P",
     "LJ35",
     "PRM1"
    ],
@@ -5370,6 +5847,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5393,6 +5871,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5415,6 +5894,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5437,6 +5917,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5458,6 +5939,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5479,6 +5961,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5502,6 +5985,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5523,6 +6007,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5543,6 +6028,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5564,6 +6050,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5586,6 +6073,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5608,6 +6096,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5630,6 +6119,7 @@
     "C25C",
     "C510",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5652,6 +6142,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5672,6 +6163,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5693,6 +6185,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5714,6 +6207,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5735,6 +6229,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -5757,6 +6252,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B"
    ],
    "days": []
@@ -5777,6 +6273,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5812,9 +6309,11 @@
    "from": "KVNY",
    "to": "KDAL",
    "distance_nm": 1084,
-   "duration_min": 158,
+   "duration_min": 176,
    "departure_time": null,
    "types": [
+    "C25C",
+    "E55P",
     "GA7C",
     "GLF6"
    ],
@@ -5833,9 +6332,32 @@
    "duration_min": 230,
    "departure_time": null,
    "types": [
-    "A346",
     "B752",
     "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX739",
+   "callsign": "CRX739",
+   "from": "KVNY",
+   "to": "KLAS",
+   "distance_nm": 199,
+   "duration_min": 60,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
    ],
    "days": []
   },
@@ -5856,6 +6378,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -5876,6 +6399,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -6103,6 +6627,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -6145,6 +6670,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -6219,6 +6745,31 @@
    "kind": "scheduled",
    "tags": [
     "executive",
+    "international",
+    "short-hop"
+   ],
+   "flight_number": "CX744",
+   "callsign": "CRX744",
+   "from": "MYNN",
+   "to": "KOPF",
+   "distance_nm": 161,
+   "duration_min": 53,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
     "international"
    ],
    "flight_number": "CX166",
@@ -6231,6 +6782,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35",
     "PRM1"
@@ -6333,6 +6885,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B"
    ],
    "days": []
@@ -6373,6 +6926,7 @@
    "types": [
     "C25C",
     "C750",
+    "E55P",
     "H25B",
     "LJ35"
    ],
@@ -6392,7 +6946,6 @@
    "duration_min": 261,
    "departure_time": null,
    "types": [
-    "A346",
     "BCS3",
     "C700",
     "GA7C",
@@ -7049,6 +7602,15 @@
    "country": "United States",
    "lat": 38.5098,
    "lon": -107.894,
+   "base": false
+  },
+  "KMVY": {
+   "icao": "KMVY",
+   "iata": "MVY",
+   "name": "Martha's Vineyard",
+   "country": "United States",
+   "lat": 41.3931,
+   "lon": -70.6143,
    "base": false
   },
   "KMYR": {

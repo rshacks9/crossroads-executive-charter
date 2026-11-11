@@ -25,16 +25,20 @@ class PreviewTests(unittest.TestCase):
 
     def test_preview_mirrors_the_vamsys_setup(self):
         # Updates 1-6 (58 routes), update 7 (100) and update 8 (134: 114 new, 20 restored) as imported 2026-11-11.
-        self.assertEqual(len(self.snapshot["routes"]), 292)
-        self.assertEqual(len(self.snapshot["fleet"]), 18)
-        self.assertEqual(len(self.snapshot["airports"]), 111)
+        self.assertEqual(len(self.snapshot["routes"]), 310)
+        self.assertEqual(len(self.snapshot["fleet"]), 19)
+        self.assertEqual(len(self.snapshot["airports"]), 112)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
     def test_hub_rule_small_jets_ktyq_everything_else_kind(self):
         # KTYQ takes light and mid jets up to Citation X size; KIND takes everything bigger.
-        small = {"C510", "PRM1", "C25C", "LJ35", "H25B", "C750"}
+        small = {"C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"}
         for route in self.snapshot["routes"]:
             ends = {route["from"], route["to"]}
+            if ends == {"KTYQ", "KIND"}:
+                # CRX733/734, the base-to-base positioning leg, is flown by the KTYQ jets.
+                self.assertTrue(set(route["types"]) <= small, route)
+                continue
             if "KTYQ" in ends:
                 self.assertTrue(set(route["types"]) <= small, route)
             if "KIND" in ends:
@@ -45,6 +49,9 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(regs["PRM1"], ["N390CR"])
         self.assertEqual(regs["C750"], ["N750CR"])
         self.assertEqual(regs["H25B"], ["N800CR"])
+        self.assertEqual(regs["E55P"], ["N300CR"])
+        phenom = [r for r in self.snapshot["routes"] if "E55P" in r["types"]]
+        self.assertGreater(len(phenom), 130)
         hawker = [r for r in self.snapshot["routes"] if "H25B" in r["types"]]
         self.assertGreater(len(hawker), 50)
 

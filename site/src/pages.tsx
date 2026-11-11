@@ -771,8 +771,8 @@ export function PilotsPage({ snapshot }: PageProps) {
     { q: "Do I need real-world flying experience?", a: "No. Bring your simulator and a willingness to fly by the book. The career ladder starts you in light jets and you work up from there." },
     { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, so any simulator Pegasus supports will work (the vAMSYS Pegasus guide lists them). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
     { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },
-    { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
-    { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you fly online, use your CRX callsign and follow the network's rules." },
+    { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
+    { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you fly online, use your CRX callsign and follow the network's rules: you stay at the controls, monitor the frequency and make every radio call yourself." },
     { q: "Is this a real airline?", a: "No. Crossroads Executive & Charter is a fictional virtual airline for flight simulation. It doesn't sell flights and isn't connected to any real operator." },
   ];
 

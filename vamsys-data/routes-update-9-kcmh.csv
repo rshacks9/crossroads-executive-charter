@@ -1,0 +1,3 @@
+ID,Departure Airport (ICAO/IATA),Arrival Airport (ICAO/IATA),Type,Callsign,Flight Number,Fleet IDs,_delete,Service Days,Tags,Is Hidden
+,KCMH,KTYQ,scheduled,CRX731,CX731,"32199,32200,32201,32215,32217,32216",FALSE,,"executive,short-hop",FALSE
+,KTYQ,KCMH,scheduled,CRX732,CX732,"32199,32200,32201,32215,32217,32216",FALSE,,"executive,short-hop",FALSE

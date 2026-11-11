@@ -121,13 +121,13 @@ describe("routes and divisions", () => {
     expect(p2p.map((r) => r.callsign)).toContain("CRX171");
     expect(p2p.every((r) => routeBase(r, bases) === "")).toBe(true);
     // KTYQ only takes jets up to Citation X size.
-    const small = new Set(["C510", "PRM1", "C25C", "LJ35", "H25B", "C750"]);
+    const small = new Set(["C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"]);
     expect(ktyq.every((r) => r.types.every((t) => small.has(t)))).toBe(true);
   });
 
   it("summarises the network without counting the bases as destinations", () => {
     const facts = networkFacts(snapshot);
-    expect(facts).toMatchObject({ aircraftTypes: 18, routes: 292, destinations: 109 });
+    expect(facts).toMatchObject({ aircraftTypes: 19, routes: 310, destinations: 110 });
     expect(facts.countries).toBeGreaterThanOrEqual(5);
   });
 });

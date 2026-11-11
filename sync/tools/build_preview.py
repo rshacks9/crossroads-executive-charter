@@ -33,6 +33,12 @@ ROUTES_CSV = [
     # Update 8 as imported 2026-11-11 (Orwell import #30335, 134/134 OK): 114 new routes plus the 20
     # update-7 routes restored once it turned out their 8 airports were never rejected. Network 292.
     (DATA / "routes-update-8-import.csv", 14216001),
+    # Update 9 (import #30336): KCMH-KTYQ pair. Update 10 (#30337): Phenom 300E on CRX113/114 and 415/416.
+    (DATA / "routes-update-9-kcmh.csv", 14217001),
+    (DATA / "routes-update-10-phenom.csv", None),
+    # Update 11 (import #30348, 158/158 OK): Phenom on every light-jet route in range, airport-restriction
+    # fixes, CJ4 on KDAL-KVNY, and 16 new routes (CRX733-748). Network 310 routes at 112 airports.
+    (DATA / "routes-update-11-import.csv", 14218001),
 ]
 # The planning file (routes-update-7-expansion.csv) used a placeholder for the Hawker fleet; kept so it
 # still builds if anyone points ROUTES_CSV back at it.
@@ -154,6 +160,8 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("PHNL", "HNL", "Daniel K. Inouye International", "United States", 21.3184, -157.9257, False),
     ("TIST", "STT", "Cyril E. King", "U.S. Virgin Islands", 18.3371, -64.9773, False),
     ("TJSJ", "SJU", "Luis Munoz Marin International", "Puerto Rico", 18.4394, -66.0018, False),
+    # Update 11.
+    ("KMVY", "MVY", "Martha's Vineyard", "United States", 41.3931, -70.6143, False),
 ]
 
 FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cruise_kt
@@ -175,6 +183,7 @@ FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cru
     (32215, "PRM1", "Beechcraft Premier IA", "pax", 6, None, "lbs", ["N390CR"], 450),
     (32216, "C750", "Cessna Citation X", "pax", 8, None, "lbs", ["N750CR"], 500),
     (32217, "H25B", "Hawker 800XP", "pax", 8, None, "lbs", ["N800CR"], 430),
+    (32220, "E55P", "Embraer Phenom 300E", "pax", 9, None, "lbs", ["N300CR"], 450),
 ]
 
 RANKS = [  # level, name, abbr, hours, pireps, honorary
@@ -195,21 +204,23 @@ def great_circle_nm(a: tuple[float, float], b: tuple[float, float]) -> int:
 
 def final_routes() -> list[dict[str, str]]:
     """Apply the import files in order, the way vAMSYS did (rows with an ID update; others create)."""
-    by_id: dict[str, dict[str, str]] = {}
+    # Keyed by callsign (unique per route): from update 10 on the files carry the real Orwell IDs, which
+    # differ from the placeholder IDs this preview gave the routes created by updates 7 and 8.
+    by_callsign: dict[str, dict[str, str]] = {}
     for path, first_new_id in ROUTES_CSV:
-        next_id = first_new_id
         with path.open(encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
+                callsign = row["Callsign"]
                 if row["ID"]:
-                    if row["ID"] not in by_id:
-                        raise SystemExit(f"{path.name}: update for unknown route {row['ID']}")
-                    by_id[row["ID"]] = row
+                    if callsign not in by_callsign:
+                        raise SystemExit(f"{path.name}: update for unknown route {callsign}")
                 else:
-                    if next_id is None:
+                    if first_new_id is None:
                         raise SystemExit(f"{path.name}: creates routes but has no starting ID")
-                    by_id[str(next_id)] = row
-                    next_id += 1
-    return list(by_id.values())
+                    if callsign in by_callsign:
+                        raise SystemExit(f"{path.name}: {callsign} already exists")
+                by_callsign[callsign] = row
+    return list(by_callsign.values())
 
 
 def main() -> None:

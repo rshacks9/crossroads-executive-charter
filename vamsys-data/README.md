@@ -68,3 +68,11 @@ Import #30335 added 134 routes (network now 292) and 39 airports (now 111). Deta
 comms and settings are in `ORWELL-CHANGES-8.md`. The eight "rejected" airports from update 7 actually
 exist in Orwell; their 20 routes were restored in update 8. New callsign block CRX701-799 (light jets,
 KTYQ and point-to-point).
+
+## Update 11 (2026-11-11)
+
+Import #30348 (158/158): 142 fleet edits and 16 new routes, CRX733-748. Network now **310 routes, 112
+airports** (KMVY added), 19 fleets with the Phenom 300E (32220, E55P, N300CR). Also page 3120 Featured
+Routes, tour 66748 Crossroads Circuit, alert 4543, NOTAMs 6293-6295, brand colours and a new Phoenix
+dashboard (hero banner, link tiles, full-width globe map). Details and the FedEx Virtual comparison are in
+`ORWELL-CHANGES-11.md`. Real Orwell route IDs: `orwell-route-ids-2026-11-11.csv` (do not derive IDs).

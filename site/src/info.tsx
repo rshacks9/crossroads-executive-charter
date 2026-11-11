@@ -178,7 +178,7 @@ export function CareersPage({ snapshot }: PageProps) {
             <SectionHead eyebrow="Suggested path" title="A natural progression" />
             <ol className="path">
               <li><strong>Mustang & Premier</strong> short KTYQ hops: Midway, Nashville, Louisville</li>
-              <li><strong>CJ4 & Learjet</strong> longer legs: Aspen, Scottsdale, Van Nuys</li>
+              <li><strong>CJ4, Learjet & Phenom 300E</strong> longer legs: Aspen, Scottsdale, Van Nuys</li>
               <li><strong>Hawker & Citation X</strong> coast-to-coast executive from KTYQ</li>
               <li><strong>E-Jets & 757</strong> group and sports charters from KIND</li>
               <li><strong>Gulfstreams, A340, A380</strong> long-range executive and VIP</li>
