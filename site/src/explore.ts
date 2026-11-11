@@ -439,6 +439,88 @@ export function scheduleCsv(snapshot: Pick<Snapshot, "routes" | "airports" | "ai
   return [header.join(","), ...rows].join("\n") + "\n";
 }
 
+// ------------------------------------------------------------------ keyboard map markers
+
+/** Tab and arrow order for airport markers: bases first, then west to east (ties by ICAO). */
+export function markerOrder(icaos: Iterable<string>, airports: Record<string, Pick<Airport, "lon">>, bases: string[]): string[] {
+  return [...new Set(icaos)].sort((a, b) => {
+    const ba = bases.indexOf(a);
+    const bb = bases.indexOf(b);
+    if (ba >= 0 || bb >= 0) return (ba < 0 ? 99 : ba) - (bb < 0 ? 99 : bb);
+    return (airports[a]?.lon ?? 999) - (airports[b]?.lon ?? 999) || a.localeCompare(b);
+  });
+}
+
+/** Accessible name for a marker, e.g. "KTYQ Indianapolis Executive, 24 routes". */
+export function markerLabel(icao: string, airport: Pick<Airport, "name"> | undefined, routes: number, opts: { base?: boolean; selected?: boolean } = {}): string {
+  const name = airport?.name ? ` ${airport.name}` : "";
+  return `${icao}${name}${opts.base ? " (Crossroads base)" : ""}, ${routes} ${routes === 1 ? "route" : "routes"}${opts.selected ? ", selected" : ""}`;
+}
+
+export type MarkerAction = "select" | "next" | "prev" | "first" | "last" | "clear";
+
+export function markerKeyAction(key: string): MarkerAction | null {
+  switch (key) {
+    case "Enter":
+    case " ":
+    case "Spacebar":
+      return "select";
+    case "ArrowRight":
+    case "ArrowDown":
+      return "next";
+    case "ArrowLeft":
+    case "ArrowUp":
+      return "prev";
+    case "Home":
+      return "first";
+    case "End":
+      return "last";
+    case "Escape":
+    case "Esc":
+      return "clear";
+    default:
+      return null;
+  }
+}
+
+/** The minimal DOM surface the marker wiring needs (an SVG path in the browser, a fake in tests). */
+export interface MarkerElement {
+  setAttribute(name: string, value: string): void;
+  addEventListener(type: "keydown", listener: (event: { key: string; preventDefault(): void; stopPropagation(): void }) => void): void;
+  focus?(options?: { preventScroll?: boolean }): void;
+}
+
+/**
+ * Make one map marker a keyboard button: focusable, named, Enter/Space select it, arrows/Home/End
+ * move focus through the ordered markers, Escape clears the selection. Keys are kept from Leaflet's
+ * own keyboard panning.
+ */
+export function wireMarker(el: MarkerElement, icao: string, label: string, pressed: boolean, handlers: { onSelect: (icao: string) => void; onMove: (icao: string, action: "next" | "prev" | "first" | "last") => void; onClear?: () => void }): void {
+  el.setAttribute("tabindex", "0");
+  el.setAttribute("role", "button");
+  el.setAttribute("aria-label", label);
+  el.setAttribute("aria-pressed", pressed ? "true" : "false");
+  el.setAttribute("data-icao", icao);
+  el.addEventListener("keydown", (event) => {
+    const action = markerKeyAction(event.key);
+    if (!action) return;
+    if (action === "clear" && !handlers.onClear) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (action === "select") handlers.onSelect(icao);
+    else if (action === "clear") handlers.onClear!();
+    else handlers.onMove(icao, action);
+  });
+}
+
+/** Index of the marker to focus after an arrow/Home/End press; wraps around at the ends. */
+export function moveIndex(current: number, count: number, action: "next" | "prev" | "first" | "last"): number {
+  if (count <= 0) return -1;
+  if (action === "first") return 0;
+  if (action === "last") return count - 1;
+  return action === "next" ? (current + 1) % count : (current - 1 + count) % count;
+}
+
 // ------------------------------------------------------------------ page meta
 
 export function setMeta(title: string, description: string): void {

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import type { Airport, Division, Route } from "./data";
 import { greatCircle, routeDivision } from "./data";
 import { DIVISION_COLORS } from "./LiveMap";
-import { routeKey } from "./explore";
+import { markerLabel, markerOrder, moveIndex, routeKey, wireMarker } from "./explore";
 
 interface Props {
   routes: Route[];
@@ -17,6 +17,8 @@ interface Props {
   selectedRoute?: string | null;
   onAirportClick?: (icao: string) => void;
   onRouteClick?: (key: string) => void;
+  /** Escape on a focused marker. */
+  onClearSelection?: () => void;
   /** Range ring in nautical miles around an airport. */
   ring?: { icao: string; nm: number; label: string } | null;
   /** Extra great-circle line, e.g. an unscheduled charter leg. */
@@ -31,13 +33,13 @@ function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
 }
 
-export function ExploreMap({ routes, airports, bases, divisions, selectedAirport, selectedRoute, onAirportClick, onRouteClick, ring, extraLeg, height = 460, label }: Props) {
+export function ExploreMap({ routes, airports, bases, divisions, selectedAirport, selectedRoute, onAirportClick, onRouteClick, onClearSelection, ring, extraLeg, height = 460, label }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const layer = useRef<L.LayerGroup | null>(null);
   const bounds = useRef<L.LatLngBounds | null>(null);
-  const handlers = useRef({ onAirportClick, onRouteClick });
-  handlers.current = { onAirportClick, onRouteClick };
+  const handlers = useRef({ onAirportClick, onRouteClick, onClearSelection });
+  handlers.current = { onAirportClick, onRouteClick, onClearSelection };
 
   useEffect(() => {
     if (!container.current || map.current) return;
@@ -70,6 +72,9 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
     const instance = map.current;
     const group = layer.current;
     if (!instance || !group) return;
+    // Redrawing replaces the marker elements; remember which one had keyboard focus.
+    const active = typeof document !== "undefined" ? document.activeElement : null;
+    const refocus = active && container.current?.contains(active) ? active.getAttribute("data-icao") : null;
     group.clearLayers();
     const points: L.LatLngExpression[] = [];
     const served = new Set<string>();
@@ -86,7 +91,9 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
 
     const drawn = new Set<string>();
     let highlight: Route | undefined;
+    const counts = new Map<string, number>();
     for (const route of routes) {
+      for (const end of [route.from, route.to]) counts.set(end, (counts.get(end) ?? 0) + 1);
       const key = routeKey(route);
       if (key === selectedRoute) highlight = route;
       const pair = [route.from, route.to].sort().join("-");
@@ -129,9 +136,15 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
       }
     }
 
-    for (const icao of served) {
-      const airport = airports[icao];
-      if (!has(airport)) continue;
+    // Markers are added in keyboard order (bases, then west to east) so Tab follows the map.
+    const order = markerOrder([...served].filter((icao) => has(airports[icao])), airports, bases);
+    const elements = new Map<string, HTMLElement | SVGElement>();
+    const focusMarker = (icao: string | undefined) => {
+      const el = icao ? elements.get(icao) : undefined;
+      if (el && "focus" in el) (el as HTMLElement).focus({ preventScroll: true });
+    };
+    for (const icao of order) {
+      const airport = airports[icao] as Airport & { lat: number; lon: number };
       const base = bases.includes(icao);
       const selected = icao === selectedAirport;
       const marker = L.circleMarker([airport.lat, airport.lon], {
@@ -141,12 +154,27 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
         fillColor: selected || base ? "#e8703a" : "#ffffff",
         fillOpacity: 1,
         bubblingMouseEvents: false,
+        className: "airport-marker",
       })
         .bindTooltip(`${escapeHtml(icao)} · ${escapeHtml(airport.name)}${base ? " (base)" : ""}`, { direction: "top" })
         .addTo(group);
-      if (onAirportClick) marker.on("click", () => handlers.current.onAirportClick?.(icao));
+      if (onAirportClick) {
+        marker.on("click", () => handlers.current.onAirportClick?.(icao));
+        const el = marker.getElement();
+        if (el) {
+          elements.set(icao, el as SVGElement);
+          wireMarker(el as unknown as Parameters<typeof wireMarker>[0], icao, markerLabel(icao, airport, counts.get(icao) ?? 0, { base, selected }), selected, {
+            onSelect: (code) => handlers.current.onAirportClick?.(code),
+            onMove: (code, action) => focusMarker(order[moveIndex(order.indexOf(code), order.length, action)]),
+            onClear: () => handlers.current.onClearSelection?.(),
+          });
+          el.addEventListener("focus", () => marker.openTooltip());
+          el.addEventListener("blur", () => marker.closeTooltip());
+        }
+      }
       points.push([airport.lat, airport.lon]);
     }
+    if (refocus) focusMarker(refocus);
 
     if (lastFit.current !== fitKey) {
       lastFit.current = fitKey;

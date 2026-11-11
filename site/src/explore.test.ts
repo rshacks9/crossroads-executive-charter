@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Snapshot } from "./data";
-import { FLEET_INFO } from "./content";
+import { FLEET_INFO, PEGASUS_URL } from "./content";
 import {
   COMFORT_SHARE,
   airportSummary,
@@ -12,6 +12,11 @@ import {
   findRoute,
   initialCourse,
   listJoin,
+  markerKeyAction,
+  markerLabel,
+  markerOrder,
+  moveIndex,
+  wireMarker,
   networkStats,
   parseLocation,
   routeHref,
@@ -234,5 +239,79 @@ describe("downloads and links", () => {
     // Fields with commas or quotes are quoted (RFC 4180).
     const tricky = { ...snapshot, routes: [route], airports: { ...snapshot.airports, [route.from]: { ...snapshot.airports[route.from]!, name: 'Field "A", North' } } };
     expect(scheduleCsv(tricky)).toContain('"Field ""A"", North"');
+  });
+});
+
+describe("keyboard map markers", () => {
+  type Listener = (e: { key: string; preventDefault(): void; stopPropagation(): void }) => void;
+  function fakeMarker() {
+    const attrs: Record<string, string> = {};
+    let listener: Listener | null = null;
+    return {
+      attrs,
+      el: { setAttribute: (n: string, v: string) => { attrs[n] = v; }, addEventListener: (_t: "keydown", l: Listener) => { listener = l; } },
+      press(key: string) {
+        const e = { key, prevented: false, stopped: false, preventDefault() { this.prevented = true; }, stopPropagation() { this.stopped = true; } };
+        listener!(e);
+        return e;
+      },
+    };
+  }
+
+  it("makes a marker a named, focusable button", () => {
+    const m = fakeMarker();
+    const ktyq = snapshot.airports.KTYQ!;
+    const count = snapshot.routes.filter((r) => r.from === "KTYQ" || r.to === "KTYQ").length;
+    wireMarker(m.el, "KTYQ", markerLabel("KTYQ", ktyq, count), false, { onSelect: () => {}, onMove: () => {}, onClear: () => {} });
+    expect(m.attrs.tabindex).toBe("0");
+    expect(m.attrs.role).toBe("button");
+    expect(m.attrs["aria-pressed"]).toBe("false");
+    expect(m.attrs["aria-label"]).toBe(`KTYQ Indianapolis Executive, ${count} routes`);
+    expect(markerLabel("KASE", snapshot.airports.KASE, 1, { selected: true })).toBe("KASE Aspen/Pitkin County, 1 route, selected");
+  });
+
+  it("Enter and Space select, arrows move, Escape clears, other keys pass through", () => {
+    const m = fakeMarker();
+    const calls: string[] = [];
+    wireMarker(m.el, "KASE", "KASE", true, {
+      onSelect: (icao) => calls.push(`select ${icao}`),
+      onMove: (icao, action) => calls.push(`${action} ${icao}`),
+      onClear: () => calls.push("clear"),
+    });
+    for (const key of ["Enter", " ", "ArrowRight", "ArrowDown", "ArrowLeft", "Home", "End", "Escape"]) {
+      const e = m.press(key);
+      expect(e.prevented, key).toBe(true);
+      expect(e.stopped, key).toBe(true); // keeps Leaflet from panning the map
+    }
+    expect(calls).toEqual(["select KASE", "select KASE", "next KASE", "next KASE", "prev KASE", "first KASE", "last KASE", "clear"]);
+    const tab = m.press("Tab");
+    expect(tab.prevented).toBe(false); // Tab keeps moving focus normally
+    expect(markerKeyAction("a")).toBeNull();
+  });
+
+  it("leaves Escape alone when there is nothing to clear", () => {
+    const m = fakeMarker();
+    wireMarker(m.el, "KASE", "KASE", false, { onSelect: () => {}, onMove: () => {} });
+    expect(m.press("Escape").prevented).toBe(false);
+  });
+
+  it("orders markers bases first, then west to east, and wraps arrow moves", () => {
+    const served = [...new Set(snapshot.routes.flatMap((r) => [r.from, r.to]))];
+    const order = markerOrder(served, snapshot.airports, ["KTYQ", "KIND"]);
+    expect(order.slice(0, 2)).toEqual(["KTYQ", "KIND"]);
+    expect(order.length).toBe(served.length);
+    const lons = order.slice(2).map((i) => snapshot.airports[i]!.lon!);
+    for (let i = 1; i < lons.length; i++) expect(lons[i]).toBeGreaterThanOrEqual(lons[i - 1]!);
+    expect(moveIndex(order.length - 1, order.length, "next")).toBe(0);
+    expect(moveIndex(0, order.length, "prev")).toBe(order.length - 1);
+    expect(moveIndex(5, order.length, "first")).toBe(0);
+    expect(moveIndex(5, order.length, "last")).toBe(order.length - 1);
+    expect(moveIndex(0, 0, "next")).toBe(-1);
+  });
+});
+
+describe("external links", () => {
+  it("points Pegasus at the official vAMSYS Pegasus ACARS docs", () => {
+    expect(PEGASUS_URL).toBe("https://vamsys.co.uk/docs/pegasus/pegasus-acars");
   });
 });

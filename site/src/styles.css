@@ -786,3 +786,8 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 .notfound { padding-top: 64px; padding-bottom: 64px; }
 .notfound .page-title { margin: 8px 0 12px; }
 .notfound .hero__actions { margin: 20px 0; }
+
+/* keyboard-focusable airport markers on explorer maps */
+.leaflet-container path.airport-marker:focus { outline: none; }
+.leaflet-container path.airport-marker:focus-visible { stroke: #e8703a; stroke-width: 5px; stroke-opacity: 1; paint-order: stroke; filter: drop-shadow(0 0 2px #1b2328) drop-shadow(0 0 4px #e8703a); }
+@media (forced-colors: active) { .leaflet-container path.airport-marker:focus-visible { stroke: Highlight; filter: none; } }

@@ -230,6 +230,11 @@ export const SERVICES: Service[] = [
   },
 ];
 
+// ------------------------------------------------------------------ external links
+
+/** Official vAMSYS documentation for Pegasus ACARS (verified 2026-11-11: 200, "Pegasus ACARS | vAMSYS"). */
+export const PEGASUS_URL = "https://vamsys.co.uk/docs/pegasus/pegasus-acars";
+
 // ------------------------------------------------------------------ handbook
 
 export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[] = [
@@ -264,9 +269,9 @@ export const LANDING_RATES: { band: string; label: string; tone: "good" | "ok" |
   { band: "Over 600 fpm", label: "Hard landing. Note it in the PIREP and expect a staff review", tone: "bad" },
 ];
 
-export const SOP_RULES: { title: string; body: string }[] = [
+export const SOP_RULES: { title: string; body: string; link?: { href: string; label: string } }[] = [
   { title: "Right base, right aircraft", body: "Light and mid-size jets (up to Citation X size) start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. Book a route that matches the aircraft." },
-  { title: "Gate to gate with Pegasus", body: "Start Pegasus before engine start and leave it running until the engines are off at the gate. No slew, no time acceleration, no in-flight refuelling. If real life calls, pause and say so in your PIREP comments." },
+  { title: "Gate to gate with Pegasus", link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" }, body: "Start Pegasus before engine start and leave it running until the engines are off at the gate. No slew, no time acceleration, no in-flight refuelling. If real life calls, pause and say so in your PIREP comments." },
   { title: "Stabilised or go around", body: "On speed, on path and configured by 1,000 ft above the airport in cloud and 500 ft in visual conditions. If you aren't, go around. Nobody is penalised for a go-around." },
   { title: "Speed and altitude discipline", body: "250 kt below 10,000 ft in the US unless ATC says otherwise. Respect published SID and STAR restrictions and any noise abatement procedure published for the airport." },
   { title: "Online or offline", body: "Fly on VATSIM if you like. You don't have to. Online, use your CRX callsign, follow the network's rules and put CALLSIGN/CROSSROADS in your flight plan remarks." },

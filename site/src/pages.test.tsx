@@ -9,7 +9,8 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, StatsPage, TypePage } = await import("./explore-pages");
-const { FleetPage, RoutesPage, HomePage } = await import("./pages");
+const { FleetPage, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { HandbookPage, CareersPage } = await import("./info");
 const { findRoute } = await import("./explore");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -59,5 +60,20 @@ describe("pages render from the snapshot", () => {
     expect(text(renderToString(<NotFoundPage snapshot={snapshot} />))).toContain("We can't find that page");
     expect(text(renderToString(<AirportPage snapshot={snapshot} icao="ZZZZ" />))).toContain("We can't find airport ZZZZ");
     expect(text(renderToString(<TypePage snapshot={snapshot} code="B748" />))).toContain("We can't find aircraft type B748");
+  });
+
+  it("links Pegasus to the official vAMSYS guide everywhere it is offered", () => {
+    const url = "https://vamsys.co.uk/docs/pegasus/pegasus-acars";
+    for (const html of [
+      renderToString(<ResourcesPage snapshot={snapshot} />),
+      renderToString(<PilotsPage snapshot={snapshot} />),
+      renderToString(<HandbookPage snapshot={snapshot} />),
+      renderToString(<CareersPage snapshot={snapshot} />),
+    ]) expect(html).toContain(`href="${url}"`);
+    expect(renderToString(<ResourcesPage snapshot={snapshot} />)).not.toContain('href="https://vamsys.io/"');
+  });
+
+  it("explains the explorer's keyboard controls", () => {
+    expect(text(renderToString(<RoutesPage snapshot={snapshot} />))).toContain("Escape to clear");
   });
 });

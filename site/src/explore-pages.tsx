@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Crew, Route, Snapshot } from "./data";
 import { formatDuration, formatNumber, formatWeight, loadCrew, routeDivision } from "./data";
-import { FLEET_INFO, baseFor } from "./content";
+import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import { ExploreMap } from "./ExploreMap";
 import { DIVISION_COLORS } from "./LiveMap";
 import type { Bar, FitStatus, SearchEntry } from "./explore";
@@ -254,7 +254,7 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
       </PageHeader>
       <section className="page page--split page--split-wide">
         <div>
-          <ExploreMap routes={summary.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} selectedAirport={icao} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onAirportClick={(other) => { if (other !== icao) window.location.hash = airportHref(other); }} height={420} label={`Routes serving ${icao}`} />
+          <ExploreMap routes={summary.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} selectedAirport={icao} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onClearSelection={() => setSelectedRoute(null)} onAirportClick={(other) => { if (other !== icao) window.location.hash = airportHref(other); }} height={420} label={`Routes serving ${icao}`} />
           <p className="fineprint">Click a route line to highlight it, or another airport to open its page.</p>
         </div>
         <div>
@@ -554,7 +554,7 @@ export function PlanPage({ snapshot }: PageProps) {
 const LINKS: { title: string; href: string; body: string }[] = [
   { title: "vAMSYS pilot portal", href: "https://vamsys.io/login", body: "Book routes, see your logbook and rank, and download Pegasus from the portal." },
   { title: "SimBrief", href: "https://www.simbrief.com/", body: "Free flight planning. Link it in your vAMSYS profile so bookings carry over. Every route page here has a pre-filled SimBrief link." },
-  { title: "Pegasus ACARS", href: "https://vamsys.io/", body: "vAMSYS's flight tracker. Download it from the pilot portal after you sign in, start it before engine start and it files your PIREP at the gate." },
+  { title: "Pegasus ACARS", href: PEGASUS_URL, body: "vAMSYS's flight tracker. The official guide covers simulator setup, signing in, tracking your booking and filing the PIREP. Download it from the ACARS page in the pilot portal." },
 ];
 
 const GENERIC_CHECKLIST = `CROSSROADS EXECUTIVE & CHARTER - GENERIC FLOW CARD
@@ -642,7 +642,7 @@ export function ResourcesPage({ snapshot }: PageProps) {
         <SectionHead eyebrow="SOPs in brief" title="The six rules" action={{ href: "#/handbook", label: "Full handbook" }} />
         <ol className="sop-brief">
           <li><strong>Right base, right aircraft.</strong> Light and mid jets at KTYQ, everything larger at KIND.</li>
-          <li><strong>Gate to gate with Pegasus.</strong> No slew, time acceleration or in-flight refuelling.</li>
+          <li><strong>Gate to gate with <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</strong> No slew, time acceleration or in-flight refuelling.</li>
           <li><strong>45 minutes final reserve</strong> on every flight. Dispatch with SimBrief.</li>
           <li><strong>Stabilised or go around:</strong> 1,000 ft in cloud, 500 ft visual.</li>
           <li><strong>250 kt below 10,000 ft</strong> in the US unless ATC says otherwise.</li>

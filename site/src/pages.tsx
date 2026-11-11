@@ -16,7 +16,7 @@ import {
   routeBase,
   routeInDivision,
 } from "./data";
-import { FLEET_INFO, NEWS, SERVICES, baseFor } from "./content";
+import { FLEET_INFO, NEWS, PEGASUS_URL, SERVICES, baseFor } from "./content";
 import type { NewsItem } from "./content";
 import { DIVISION_COLORS, LiveMap } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
@@ -696,10 +696,12 @@ export function RoutesPage({ snapshot }: PageProps) {
               selectedRoute={selectedRoute}
               onAirportClick={(icao) => { setSelectedAirport((cur) => (cur === icao ? null : icao)); setSelectedRoute(null); }}
               onRouteClick={setSelectedRoute}
+              onClearSelection={() => { setSelectedAirport(null); setSelectedRoute(null); }}
               height={520}
-              label="Route explorer map. Use the airport picker beside the map for keyboard access."
+              label="Route explorer map. Tab to an airport marker and press Enter to select it; arrow keys move between airports and Escape clears the selection. The airport picker beside the map does the same."
             />
             <MapLegend snapshot={snapshot} />
+            <p className="fineprint">Keyboard: Tab to an airport, Enter or Space to select, arrow keys to move between airports, Escape to clear.</p>
           </div>
           <ExplorerPanel snapshot={snapshot} routes={shown} selected={airportInView} onSelect={setSelectedAirport} selectedRoute={selectedRoute} onRoute={setSelectedRoute} />
         </div>
@@ -713,7 +715,7 @@ export function RoutesPage({ snapshot }: PageProps) {
 
 // ------------------------------------------------------------------ fly with us (walkthrough)
 
-const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[] }[] = [
+const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; link?: { href: string; label: string } }[] = [
   {
     title: "Apply and join the hub",
     tool: "vAMSYS",
@@ -724,7 +726,8 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[] }
     title: "Install Pegasus",
     tool: "Pegasus ACARS",
     body: "Pegasus is vAMSYS's flight tracker. It runs next to your simulator, records the flight from the gate to the gate, and files your PIREP when you're done.",
-    tips: ["Sign in with your vAMSYS account", "Check that Pegasus supports your simulator version before your first flight"],
+    tips: ["Download it from the ACARS page in the vAMSYS pilot portal (Phoenix) and sign in with your vAMSYS account", "Check that Pegasus supports your simulator version before your first flight"],
+    link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" },
   },
   {
     title: "Book a route",
@@ -757,7 +760,7 @@ export function PilotsPage({ snapshot }: PageProps) {
   const facts = networkFacts(snapshot);
   const faqs: { q: string; a: string }[] = [
     { q: "Do I need real-world flying experience?", a: "No. Bring your simulator and a willingness to fly by the book. The career ladder starts you in light jets and you work up from there." },
-    { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, so any simulator Pegasus supports will work. The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
+    { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, so any simulator Pegasus supports will work (the vAMSYS Pegasus guide lists them). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
     { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },
     { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
     { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you fly online, use your CRX callsign and follow the network's rules." },
@@ -784,6 +787,7 @@ export function PilotsPage({ snapshot }: PageProps) {
                 <h2>{step.title}</h2>
                 <p>{step.body}</p>
                 <ul className="ticks">{step.tips.map((t) => <li key={t}>{t}</li>)}</ul>
+                {step.link ? <a className="text-link" href={step.link.href} rel="noopener" target="_blank">{step.link.label}<span className="visually-hidden"> (opens in a new tab)</span> ↗</a> : null}
               </div>
             </li>
           ))}

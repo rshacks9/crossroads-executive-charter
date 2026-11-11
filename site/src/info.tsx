@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
-import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, SERVICES, SOP_RULES, baseFor } from "./content";
+import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, baseFor } from "./content";
 import { DIVISION_COLORS } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
@@ -168,7 +168,7 @@ export function CareersPage({ snapshot }: PageProps) {
           <div>
             <SectionHead eyebrow="How it counts" title="What moves you up" />
             <ul className="ticks">
-              <li>Hours and PIREPs come from accepted flights only, filed through Pegasus.</li>
+              <li>Hours and PIREPs come from accepted flights only, filed through <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</li>
               <li>Every division counts the same. A Mustang hop and a 777F crossing both add to your logbook.</li>
               <li>Staff review every PIREP. Rejected flights don't count toward a promotion.</li>
             </ul>
@@ -303,7 +303,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             <h2>7. Rules of the road</h2>
             <div className="sop-grid">
               {SOP_RULES.map((s) => (
-                <div key={s.title} className="mini-card"><h3>{s.title}</h3><p>{s.body}</p></div>
+                <div key={s.title} className="mini-card"><h3>{s.title}</h3><p>{s.body}</p>{s.link ? <p><a className="text-link" href={s.link.href} rel="noopener" target="_blank">{s.link.label}<span className="visually-hidden"> (opens in a new tab)</span> ↗</a></p> : null}</div>
               ))}
             </div>
           </section>
