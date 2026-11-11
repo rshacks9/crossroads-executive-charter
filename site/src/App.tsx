@@ -4,23 +4,27 @@ import { isStale, loadSnapshot, relativeAge } from "./data";
 import { CrewPage } from "./crew";
 import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./info";
 import { FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
+import { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, SearchDialog, StatsPage, TypePage } from "./explore-pages";
+import type { Location } from "./explore";
+import { findRoute, parseLocation, setMeta } from "./explore";
 
 export const ROUTES = [
-  { path: "", label: "Home", nav: false },
-  { path: "fleet", label: "Fleet", nav: true },
-  { path: "routes", label: "Network", nav: true },
-  { path: "services", label: "Services", nav: true },
-  { path: "live", label: "Live", nav: true },
-  { path: "careers", label: "Careers", nav: true },
-  { path: "handbook", label: "Handbook", nav: true },
-  { path: "crew", label: "Crew Tools", nav: true },
-  { path: "news", label: "News", nav: true },
-  { path: "about", label: "About", nav: true },
-  { path: "pilots", label: "Fly with us", nav: true },
+  { path: "", label: "Home", nav: false, description: "" },
+  { path: "fleet", label: "Fleet", nav: true, description: "Eighteen aircraft types from the Citation Mustang to the A380 and 777F, with planning range, seats, base and the simulator model we fly." },
+  { path: "routes", label: "Network", nav: true, description: "Interactive route explorer: click an airport to see its routes as great circles, with distance, block time and the aircraft that fly them." },
+  { path: "destinations", label: "Destinations", nav: true, description: "Every airport on the Crossroads schedule." },
+  { path: "services", label: "Services", nav: true, description: "Executive, Executive Charter, Group & Sports Charter and Cargo Charter divisions, with sample itineraries on real Crossroads routes." },
+  { path: "plan", label: "Plan a charter", nav: true, description: "Flight-sim charter planning tool." },
+  { path: "live", label: "Live", nav: true, description: "Crossroads flights in progress on the map." },
+  { path: "careers", label: "Careers", nav: false, description: "Six ranks from Cadet to Chief Pilot, earned with hours and accepted PIREPs." },
+  { path: "handbook", label: "Handbook", nav: false, description: "Crossroads SOPs: callsigns, flight-number blocks, fuel policy, cost index and landing rates." },
+  { path: "resources", label: "Resources", nav: true, description: "Pilot downloads and links." },
+  { path: "stats", label: "Stats", nav: false, description: "Network statistics." },
+  { path: "crew", label: "Crew Tools", nav: true, description: "Route briefings with live METAR and TAF, runway winds, a fuel estimate and an approach card. For simulation only." },
+  { path: "news", label: "News", nav: true, description: "Launch news, fleet and network changes and standing NOTAMs." },
+  { path: "about", label: "About", nav: false, description: "Crossroads Executive & Charter, a fictional virtual airline built at the Crossroads of America, Indianapolis." },
+  { path: "pilots", label: "Fly with us", nav: true, description: "How a Crossroads flight works, from vAMSYS application to accepted PIREP." },
 ] as const;
-
-/** Old links keep working. */
-const ALIASES: Record<string, RoutePath> = { events: "news", divisions: "services", ranks: "careers", join: "pilots" };
 
 export const DISCLAIMER =
   "Crossroads Executive & Charter is a fictional virtual airline for flight simulation. It is not a real air carrier or charter operator and is not affiliated with any real company.";
@@ -42,11 +46,19 @@ export function Mark({ className = "wordmark__mark" }: { className?: string }) {
 
 export type RoutePath = (typeof ROUTES)[number]["path"];
 
-function currentPath(): RoutePath {
-  const raw = window.location.hash.replace(/^#\/?/, "").split(/[?#]/)[0] ?? "";
-  if (ALIASES[raw]) return ALIASES[raw];
-  return (ROUTES.find((r) => r.path === raw)?.path ?? "") as RoutePath;
+function currentLocation(): Location {
+  return parseLocation(window.location.hash);
 }
+
+/** The nav item a location belongs to, for aria-current. */
+function navSection(loc: Location): string {
+  if (loc.page === "airport") return "destinations";
+  if (loc.page === "type") return "fleet";
+  if (loc.page === "route") return "routes";
+  return loc.page;
+}
+
+const sameLocation = (a: Location, b: Location) => JSON.stringify(a) === JSON.stringify(b);
 
 type Theme = "light" | "dark";
 
@@ -96,7 +108,9 @@ function ThemeToggle() {
 const REFRESH_MS = 60_000;
 
 export function App() {
-  const [path, setPath] = useState<RoutePath>(currentPath);
+  const [loc, setLoc] = useState<Location>(currentLocation);
+  const path = navSection(loc);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -118,9 +132,12 @@ export function App() {
 
   useEffect(() => {
     const onHash = () => {
-      const next = currentPath();
-      setPath((prev) => {
-        if (prev !== next) window.scrollTo({ top: 0 });
+      const next = currentLocation();
+      setLoc((prev) => {
+        if (sameLocation(prev, next)) return prev;
+        window.scrollTo({ top: 0 });
+        // Move focus to the new page for keyboard and screen-reader users.
+        window.setTimeout(() => document.getElementById("main")?.focus({ preventScroll: true }), 0);
         return next;
       });
       setMenuOpen(false);
@@ -129,11 +146,30 @@ export function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
+  // Detail pages, the 404 and the tool pages set their own title and description.
   useEffect(() => {
-    const label = ROUTES.find((r) => r.path === path)?.label ?? "Home";
+    const route = ROUTES.find((r) => r.path === loc.page);
+    if (!route || ["destinations", "plan", "resources", "stats"].includes(loc.page)) return;
     const name = snapshot?.airline.name ?? "Crossroads Executive & Charter";
-    document.title = path ? `${label} · ${name}` : `${name} · Virtual airline from Indianapolis`;
-  }, [path, snapshot]);
+    setMeta(
+      route.path ? `${route.label} · ${name}` : `${name} · Virtual airline from Indianapolis`,
+      route.description || "A fictional flight-sim virtual airline from Indianapolis: light jets to the A380 and 777F across executive, charter, sports and cargo divisions. Join on vAMSYS.",
+    );
+  }, [loc, snapshot]);
+
+  // "/" or Ctrl/Cmd+K opens search, unless the user is typing in a field.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
+      if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !typing)) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const airline = snapshot?.airline;
   const navRoutes = ROUTES.filter((r) => r.nav);
@@ -151,6 +187,11 @@ export function App() {
             </span>
           </a>
           <div className="masthead__tools">
+            <button type="button" className="search-button" onClick={() => setSearchOpen(true)} aria-label="Search routes, airports and aircraft" aria-keyshortcuts="/ Control+K" disabled={!snapshot}>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" strokeWidth="2.2" /><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+              <span className="search-button__label">Search</span>
+              <kbd>/</kbd>
+            </button>
             <ThemeToggle />
             <button
               type="button"
@@ -205,6 +246,22 @@ export function App() {
           <section className="page page--narrow" aria-busy="true">
             <p className="lede">Loading the board…</p>
           </section>
+        ) : loc.page === "notfound" ? (
+          <NotFoundPage snapshot={snapshot} />
+        ) : loc.page === "airport" ? (
+          <AirportPage key={loc.id} snapshot={snapshot} icao={loc.id} />
+        ) : loc.page === "type" ? (
+          <TypePage key={loc.id} snapshot={snapshot} code={loc.id} />
+        ) : loc.page === "route" ? (
+          <RoutePage key={loc.id} snapshot={snapshot} route={findRoute(snapshot, loc.id)} />
+        ) : path === "destinations" ? (
+          <DestinationsPage snapshot={snapshot} />
+        ) : path === "plan" ? (
+          <PlanPage snapshot={snapshot} />
+        ) : path === "resources" ? (
+          <ResourcesPage snapshot={snapshot} />
+        ) : path === "stats" ? (
+          <StatsPage snapshot={snapshot} />
         ) : path === "live" ? (
           <LivePage snapshot={snapshot} />
         ) : path === "fleet" ? (
@@ -229,6 +286,7 @@ export function App() {
           <HomePage snapshot={snapshot} />
         )}
       </main>
+      {snapshot ? <SearchDialog snapshot={snapshot} open={searchOpen} onClose={() => setSearchOpen(false)} /> : null}
 
       <footer className="footer">
         <div className="footer__inner">
@@ -248,6 +306,9 @@ export function App() {
               <ul>
                 <li><a href="#/fleet">Fleet</a></li>
                 <li><a href="#/routes">Route network</a></li>
+                <li><a href="#/destinations">Destinations</a></li>
+                <li><a href="#/stats">Network stats</a></li>
+                <li><a href="#/plan">Plan a charter</a></li>
                 <li><a href="#/services">Divisions &amp; services</a></li>
                 <li><a href="#/about">About</a></li>
                 <li><a href="#/news">News &amp; NOTAMs</a></li>
@@ -259,6 +320,7 @@ export function App() {
                 <li><a href="#/pilots">How to fly with us</a></li>
                 <li><a href="#/careers">Career &amp; ranks</a></li>
                 <li><a href="#/handbook">Handbook &amp; SOPs</a></li>
+                <li><a href="#/resources">Pilot resources</a></li>
                 <li><a href="#/crew">Crew Tools</a></li>
                 <li><a href="#/live">Live flights</a></li>
               </ul>

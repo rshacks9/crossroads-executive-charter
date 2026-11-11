@@ -6,7 +6,6 @@ import {
   filterRoutes,
   formatCompact,
   formatDate,
-  formatDuration,
   formatFeet,
   formatNumber,
   formatWeight,
@@ -15,12 +14,14 @@ import {
   progressPercent,
   relativeAge,
   routeBase,
-  routeDivision,
   routeInDivision,
 } from "./data";
 import { FLEET_INFO, NEWS, SERVICES, baseFor } from "./content";
 import type { NewsItem } from "./content";
 import { DIVISION_COLORS, LiveMap } from "./LiveMap";
+import { ExploreMap } from "./ExploreMap";
+import { ExplorerPanel, RouteTable } from "./explore-pages";
+import { airportHref, networkStats, routeHref, typeHref } from "./explore";
 
 export interface PageProps {
   snapshot: Snapshot;
@@ -344,6 +345,7 @@ export function HomePage({ snapshot }: PageProps) {
           <LiveUnavailable snapshot={snapshot} />
           <LiveMap flights={live} airports={snapshot.airports} bases={baseList} routes={live.length ? [] : snapshot.routes} divisions={airline.divisions} height={420} label={live.length ? "Live flights" : "Route network"} />
           {!live.length ? <MapLegend snapshot={snapshot} /> : null}
+          <HomeNumbers snapshot={snapshot} />
         </div>
         <div>
           {live.length ? (
@@ -405,6 +407,21 @@ export function HomePage({ snapshot }: PageProps) {
       </section>
     </>
   );
+}
+
+function HomeNumbers({ snapshot }: PageProps) {
+  const stats = networkStats(snapshot);
+  return (
+    <ul className="home-numbers">
+      {stats.longest ? <li><span>Longest leg</span><a href={routeHref(stats.longest)}>{routeKey(stats.longest)} to {stats.longest.to === "KIND" || stats.longest.to === "KTYQ" ? stats.longest.from : stats.longest.to} · {formatNumber(stats.longest.distance_nm)} nm</a></li> : null}
+      {stats.topAirports[0] ? <li><span>Busiest destination</span><a href={airportHref(stats.topAirports[0].label.split(" ")[0]!)}>{stats.topAirports[0].label} · {stats.topAirports[0].value} routes</a></li> : null}
+      <li><span>Explore</span><a href="#/stats">Network stats</a> · <a href="#/destinations">All destinations</a> · <a href="#/plan">Plan a charter</a></li>
+    </ul>
+  );
+}
+
+function routeKey(route: { callsign: string | null; flight_number: string | null; from: string; to: string }): string {
+  return route.callsign ?? route.flight_number ?? `${route.from}${route.to}`;
 }
 
 function icaoNote(baseList: string[]): string {
@@ -497,7 +514,7 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
       </div>
       <div className="fleet-card__body">
         <p className="eyebrow">{type.code}{type.type ? ` · ${KIND[type.type] ?? type.type}` : ""}{info ? ` · ${info.role}` : ""}</p>
-        <h3>{type.name}</h3>
+        <h3><a className="card-link" href={typeHref(type.code)}>{type.name}</a></h3>
         {info ? <p className="fleet-card__blurb">{info.blurb}</p> : null}
         <dl className="specs specs--4">
           {isFreighter(type)
@@ -512,7 +529,10 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
           {type.registrations.map((r) => <span key={r} className="reg">{r}</span>)}
         </p>
         {sim ? <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{sim}</p> : null}
-        <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>Routes for the {shortName(type.name)} →</a>
+        <p className="fleet-card__links">
+          <a className="text-link" href={typeHref(type.code)}>Specs, range ring and routes →</a>
+          <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>On the map →</a>
+        </p>
         {type.image && type.image_attribution && !info?.livery ? (
           <p className="credit">Photo: {type.image_link ? <a href={type.image_link} rel="noopener">{type.image_attribution}</a> : type.image_attribution}</p>
         ) : null}
@@ -600,6 +620,11 @@ export function RoutesPage({ snapshot }: PageProps) {
     const wanted = hashParam("division");
     return divisions.some((d) => d.name === wanted) ? wanted : "";
   });
+  const [selectedAirport, setSelectedAirport] = useState<string | null>(() => {
+    const wanted = hashParam("airport").toUpperCase();
+    return snapshot.routes.some((r) => r.from === wanted || r.to === wanted) ? wanted : null;
+  });
+  const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const division = divisions.find((d) => d.name === divisionName);
   const types = useMemo(
     () => [...new Set(snapshot.routes.filter((r) => routeInDivision(r, division)).flatMap((r) => r.types))].sort(),
@@ -608,6 +633,9 @@ export function RoutesPage({ snapshot }: PageProps) {
   const shown = useMemo(() => filterRoutes(snapshot.routes, query, type, division, base, baseList), [snapshot.routes, query, type, division, base, baseList]);
   const names = Object.fromEntries(snapshot.fleet.map((f) => [f.code, f.name]));
   const longest = shown.reduce((max, r) => Math.max(max, r.distance_nm ?? 0), 0);
+  // Keep the explorer selection valid when filters remove the airport.
+  const airportInView = selectedAirport && shown.some((r) => r.from === selectedAirport || r.to === selectedAirport) ? selectedAirport : null;
+  const tableRoutes = airportInView ? shown.filter((r) => r.from === airportInView || r.to === airportInView) : shown;
   const airportsServed = new Set(shown.flatMap((r) => [r.from, r.to])).size;
 
   const chooseDivision = (name: string) => {
@@ -619,7 +647,7 @@ export function RoutesPage({ snapshot }: PageProps) {
 
   return (
     <>
-      <PageHeader eyebrow="Route network" title={`${snapshot.routes.length} routes from Indianapolis`} lede="Filter by division, base or aircraft. Every route here can be booked in the vAMSYS pilot portal, and every route has a Crew Tools briefing." />
+      <PageHeader eyebrow="Route explorer" title={`${snapshot.routes.length} routes from Indianapolis`} lede="Click any airport on the map to see its routes as great circles, then pick a route for distance, block time, the aircraft that fly it and a booking link. Every route can be booked in the vAMSYS pilot portal and has a Crew Tools briefing." />
       <section className="page">
         {divisions.length ? (
           <div className="chips" role="group" aria-label="Filter by division">
@@ -657,40 +685,26 @@ export function RoutesPage({ snapshot }: PageProps) {
           <div><dt>Airports</dt><dd>{airportsServed}</dd></div>
           <div><dt>Longest</dt><dd>{longest ? `${formatNumber(longest)} nm` : "—"}</dd></div>
         </dl>
-        <LiveMap flights={[]} airports={snapshot.airports} bases={baseList} routes={shown} divisions={divisions} height={420} label="Map of the routes shown" />
-        <MapLegend snapshot={snapshot} />
-        {shown.length ? (
-          <div className="table-wrap">
-            <table className="table">
-              <thead>
-                <tr><th scope="col">Flight</th><th scope="col">From</th><th scope="col">To</th><th scope="col" className="num">Distance</th><th scope="col" className="num">Block</th><th scope="col">Aircraft</th><th scope="col">Briefing</th></tr>
-              </thead>
-              <tbody>
-                {shown.slice(0, 400).map((r, i) => {
-                  const d = routeDivision(r, divisions);
-                  return (
-                    <tr key={`${r.flight_number}-${r.from}-${r.to}-${i}`}>
-                      <td data-label="Flight">
-                        <strong>{d >= 0 ? <DivisionDot index={d} /> : null}{r.callsign ?? r.flight_number ?? "—"}</strong>
-                        <span className="sub">{d >= 0 ? divisions[d]!.name : ""}{r.tags.includes("ski") ? " · ski" : ""}{r.tags.includes("international") ? " · international" : ""}</span>
-                        {r.kind === "cargo" ? <span className="tag tag--cargo">Cargo</span> : null}
-                      </td>
-                      <td data-label="From"><strong>{r.from}</strong><span className="sub">{snapshot.airports[r.from]?.name}</span></td>
-                      <td data-label="To"><strong>{r.to}</strong><span className="sub">{snapshot.airports[r.to]?.name}</span></td>
-                      <td data-label="Distance" className="num">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"}</td>
-                      <td data-label="Block" className="num">{formatDuration(r.duration_min)}</td>
-                      <td data-label="Aircraft"><span className="type-list">{r.types.map((t) => <abbr key={t} title={names[t] ?? t}>{t}</abbr>)}</span></td>
-                      <td data-label="Briefing">{r.callsign ? <a className="text-link" href={`#/crew?route=${encodeURIComponent(r.callsign)}`}>Brief</a> : "—"}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            {shown.length > 400 ? <p className="muted">Showing the first 400 matches. Narrow your search to see more.</p> : null}
+        <div className="explorer">
+          <div className="explorer__map">
+            <ExploreMap
+              routes={shown}
+              airports={snapshot.airports}
+              bases={baseList}
+              divisions={divisions}
+              selectedAirport={airportInView}
+              selectedRoute={selectedRoute}
+              onAirportClick={(icao) => { setSelectedAirport((cur) => (cur === icao ? null : icao)); setSelectedRoute(null); }}
+              onRouteClick={setSelectedRoute}
+              height={520}
+              label="Route explorer map. Use the airport picker beside the map for keyboard access."
+            />
+            <MapLegend snapshot={snapshot} />
           </div>
-        ) : (
-          <p className="empty">No routes match those filters.</p>
-        )}
+          <ExplorerPanel snapshot={snapshot} routes={shown} selected={airportInView} onSelect={setSelectedAirport} selectedRoute={selectedRoute} onRoute={setSelectedRoute} />
+        </div>
+        <h2 className="h3 table-title">{airportInView ? `Routes serving ${airportInView}` : "All routes shown"} <span className="tag">{tableRoutes.length}</span>{airportInView ? <button type="button" className="button button--small button--quiet" onClick={() => { setSelectedAirport(null); setSelectedRoute(null); }}>Show all</button> : null}</h2>
+        <RouteTable routes={tableRoutes} snapshot={snapshot} />
         <p className="fineprint">Distances are great-circle. Block times are schedule estimates; your SimBrief OFP has the real figure for the day's winds.</p>
       </section>
     </>
@@ -791,7 +805,7 @@ export function PilotsPage({ snapshot }: PageProps) {
                   <h3>{icao}{airport ? <span className="hub__name">{airport.name}</span> : null}</h3>
                   <p className="hub__airports">{icao === "KTYQ" ? "Light and mid-size jets" : "Large-cabin jets, airliners and freighters"}</p>
                   <p className="division__types">{here.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
-                  <a className="text-link" href={`#/routes?base=${icao}`}>Routes from {icao} →</a>
+                  <a className="text-link" href={airportHref(icao)}>{icao} airport page →</a>
                 </li>
               );
             })}

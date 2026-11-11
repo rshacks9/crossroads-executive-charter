@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found · Crossroads Executive &amp; Charter</title>
+  <meta name="robots" content="noindex" />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root { --ink: #1b2328; --paper: #f7f9fa; --text: #1b2328; --text-2: #55646c; --signal: #e8703a; }
+    @media (prefers-color-scheme: dark) { :root { --paper: #12181c; --text: #e6ecee; --text-2: #a3b2b9; } }
+    body { margin: 0; background: var(--paper); color: var(--text); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    header { background: var(--ink); padding: 16px; }
+    header a { color: #eef2f3; font-weight: 700; text-decoration: none; letter-spacing: .02em; }
+    main { max-width: 640px; margin: 0 auto; padding: 64px 16px; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: 13px; color: var(--text-2); }
+    h1 { font-size: 40px; line-height: 1.1; margin: 8px 0 16px; }
+    .button { display: inline-block; background: var(--signal); color: var(--ink); padding: 12px 20px; border-radius: 6px; font-weight: 700; text-decoration: none; margin: 8px 8px 0 0; }
+    .fine { font-size: 14px; color: var(--text-2); margin-top: 48px; }
+  </style>
+</head>
+<body>
+  <header><a href="./">Crossroads Executive &amp; Charter</a></header>
+  <main>
+    <p class="eyebrow">Error 404 · off the chart</p>
+    <h1>We can't find that page</h1>
+    <p>The link may be out of date. Everything on the site lives under the home page:</p>
+    <p>
+      <a class="button" id="home" href="./">Home</a>
+      <a class="button" id="routes" href="./#/routes">Route network</a>
+      <a class="button" id="fleet" href="./#/fleet">Fleet</a>
+    </p>
+    <p class="fine">Crossroads Executive &amp; Charter is a fictional virtual airline for flight simulation. It is not a real air carrier or charter operator and is not affiliated with any real company.</p>
+  </main>
+  <script>
+    // GitHub Pages serves this file for any missing path; point the links at the project root.
+    (function () {
+      var base = "/crossroads-executive-charter/";
+      if (location.pathname.indexOf(base) === 0) {
+        document.getElementById("home").href = base;
+        document.getElementById("routes").href = base + "#/routes";
+        document.getElementById("fleet").href = base + "#/fleet";
+      }
+    })();
+  </script>
+</body>
+</html>

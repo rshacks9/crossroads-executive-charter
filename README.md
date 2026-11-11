@@ -3,7 +3,15 @@
 The public face of the airline: home page with live stats, a live flight map, fleet (with livery
 renders), route network filtered by division/base/aircraft, divisions and services with sample
 itineraries, career and ranks, a how-to-fly walkthrough, the pilot handbook and SOPs, an about page,
-and news/NOTAMs plus vAMSYS events. Light and dark themes. Its data comes from vAMSYS, so the site updates itself as pilots
+and news/NOTAMs plus vAMSYS events. Light and dark themes.
+
+Data-driven pages (all generated in the browser from `snapshot.json`, logic in `site/src/explore.ts`,
+tests in `explore.test.ts` and `pages.test.tsx`): an interactive route explorer (`#/routes`, click an
+airport for its great circles), a page per destination (`#/airport/KASE`, runways from `crew.json`), a
+page per aircraft type with a planning-range ring (`#/fleet/C750`), a page per route with SimBrief and
+vAMSYS links (`#/route/CRX101`), a charter planning tool (`#/plan`), pilot resources with generated
+briefing cards and a schedule CSV (`#/resources`), network stats (`#/stats`), site search (`/` or
+Ctrl+K) and a 404 page. Its data comes from vAMSYS, so the site updates itself as pilots
 fly. Joining, booking and PIREPs stay in vAMSYS. This site links there and never duplicates them.
 
 ```
