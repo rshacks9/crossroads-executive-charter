@@ -11,9 +11,9 @@ vi.mock("leaflet/dist/leaflet.css", () => ({}));
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
-const { divisionColor } = await import("./LiveMap");
+const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
-const { firstWeekly, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
+const { firstWeekly, formatFeet, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
 const { CrewPage, WeatherBoard } = await import("./crew");
 const { Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
@@ -569,7 +569,8 @@ describe("flights flown by automation", () => {
     callsign, flight_number: null, from: "KMDW", to: "KTYQ", aircraft: "C510", landing_rate: -97, duration_min: 40, landed: snapshot.generated_at, ...(automation === undefined ? {} : { automation }),
   });
   // The visible words, then the sentence a screen reader hears with them.
-  const label = `<span class="tag tag--automation">${AUTOMATION_LABEL}<span class="visually-hidden">: one of the founder&#x27;s own flights, flown with his automation tools while he monitors it</span></span>`;
+  // "Monitored by him" is true of a flight in the air and of one that has landed.
+  const label = `<span class="tag tag--automation">${AUTOMATION_LABEL}<span class="visually-hidden">: one of the founder&#x27;s own flights, flown with his automation tools and monitored by him</span></span>`;
   const count = (html: string) => html.split(label).length - 1;
   const busy: Snapshot = { ...snapshot, live: [inAir("CRX115", true), inAir("CRX301", false), inAir("CRX302")], recent_flights: [landed("CRX116", true), landed("CRX303", false), landed("CRX304")] };
 
@@ -592,6 +593,15 @@ describe("flights flown by automation", () => {
     expect(base).toBeGreaterThan(-1);
     expect(own).toBeGreaterThan(base);
     expect(css[own]).toContain("display: flex;");
+  });
+
+  it("names the label in the live map's plane tooltip and marker title too", () => {
+    const [listed, other] = busy.live;
+    if (!listed || !other) throw new Error("the test flights are missing");
+    expect(flightTooltip(listed)).toBe(`<strong>CRX115</strong><br>KTYQ → KMDW<br>PRM1 · ${formatFeet(25000)}<br>${AUTOMATION_LABEL}`);
+    expect(flightTitle(listed)).toBe("CRX115 KTYQ to KMDW, flown by automation");
+    expect(flightTooltip(other)).not.toContain(AUTOMATION_LABEL);
+    expect(flightTitle(other)).toBe("CRX301 KTYQ to KMDW");
   });
 
   it("labels nothing that is not listed", () => {

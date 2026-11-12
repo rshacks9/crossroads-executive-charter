@@ -3,6 +3,7 @@ import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import type { Airport, Division, LiveFlight, Route } from "./data";
 import { formatFeet, greatCircle, routeDivision } from "./data";
+import { AUTOMATION_LABEL } from "./content";
 
 /** Division colours as Leaflet writes them on each line: a fallback under the `.route--dN` classes,
  *  which take the theme's `--div-N` tokens (styles.css). */
@@ -48,6 +49,18 @@ function escapeHtml(value: string): string {
 }
 
 const has = (a: Airport | undefined): a is Airport & { lat: number; lon: number } => a?.lat != null && a.lon != null;
+
+/** A plane's tooltip (HTML): callsign, leg, aircraft and altitude, then the automation label on a listed flight. */
+export function flightTooltip(flight: LiveFlight): string {
+  const name = escapeHtml(flight.callsign ?? flight.flight_number ?? "Flight");
+  const label = flight.automation ? `<br>${AUTOMATION_LABEL}` : "";
+  return `<strong>${name}</strong><br>${escapeHtml(flight.from)} → ${escapeHtml(flight.to)}<br>${escapeHtml(flight.aircraft ?? "")} · ${escapeHtml(formatFeet(flight.altitude_ft))}${label}`;
+}
+
+/** A plane marker's title, which keyboard and screen-reader users get: the flight, its leg and the automation label. */
+export function flightTitle(flight: LiveFlight): string {
+  return `${flight.callsign ?? "Flight"} ${flight.from} to ${flight.to}${flight.automation ? `, ${AUTOMATION_LABEL.toLowerCase()}` : ""}`;
+}
 
 export function LiveMap({ flights, airports, bases, routes = [], divisions = [], height = 440, onSelect, label }: Props) {
   const container = useRef<HTMLDivElement>(null);
@@ -138,9 +151,8 @@ export function LiveMap({ flights, airports, bases, routes = [], divisions = [],
       }
       if (here) {
         const icon = L.divIcon({ className: "plane-icon", html: `<span style="transform:rotate(${flight.heading ?? 0}deg)">${PLANE}</span>`, iconSize: [26, 26], iconAnchor: [13, 13] });
-        const name = escapeHtml(flight.callsign ?? flight.flight_number ?? "Flight");
-        L.marker(here, { icon, keyboard: true, title: `${flight.callsign ?? "Flight"} ${flight.from} to ${flight.to}` })
-          .bindTooltip(`<strong>${name}</strong><br>${escapeHtml(flight.from)} → ${escapeHtml(flight.to)}<br>${escapeHtml(flight.aircraft ?? "")} · ${escapeHtml(formatFeet(flight.altitude_ft))}`, { direction: "top", offset: [0, -10] })
+        L.marker(here, { icon, keyboard: true, title: flightTitle(flight) })
+          .bindTooltip(flightTooltip(flight), { direction: "top", offset: [0, -10] })
           .on("click", () => onSelect?.(index))
           .addTo(group);
         points.push(here);

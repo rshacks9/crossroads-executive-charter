@@ -17,7 +17,7 @@ import {
   routeBase,
   routeInDivision,
 } from "./data";
-import { FLEET_INFO, NEWS, PEGASUS_URL, RULES_URL, SERVICES, VATSIM_REMARKS, baseFor } from "./content";
+import { AUTOMATION_DETAIL, AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, FLEET_INFO, NEWS, PEGASUS_URL, RULES_URL, SERVICES, VATSIM_REMARKS, baseFor } from "./content";
 import type { NewsItem } from "./content";
 import { LiveMap, divisionColor } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
@@ -25,6 +25,9 @@ import { ExplorerPanel, RouteTable } from "./explore-pages";
 import { airportHref, defaultSimTypes, divisionBaseLabel, firstFlight, jumpTo, listJoin, mapLegendKeys, networkStats, routeHref, routesForTypes, typeHref } from "./explore";
 import type { FirstFlight } from "./explore";
 import { capital, countWords, numberWord } from "./html-facts";
+
+// The automation wording lives in content.ts, where the live map reads it too.
+export { AUTOMATION_DETAIL, AUTOMATION_DISCLOSURE, AUTOMATION_LABEL };
 
 export interface PageProps {
   snapshot: Snapshot;
@@ -184,17 +187,12 @@ function LiveUnavailable({ snapshot }: PageProps) {
   ) : null;
 }
 
-/** The label on a flight that site.config.json lists under automation_flights. */
-export const AUTOMATION_LABEL = "Flown by automation";
-/** The Live page says this whether or not a listed flight is in the air. */
-export const AUTOMATION_DISCLOSURE = "Some of the founder's own flights are flown with his automation tools, which he monitors.";
-
 /** "Flown by automation", with the whole sentence for screen readers. */
 export function AutomationLabel() {
   return (
     <span className="tag tag--automation">
       {AUTOMATION_LABEL}
-      <span className="visually-hidden">: one of the founder&apos;s own flights, flown with his automation tools while he monitors it</span>
+      <span className="visually-hidden">{`: ${AUTOMATION_DETAIL}`}</span>
     </span>
   );
 }

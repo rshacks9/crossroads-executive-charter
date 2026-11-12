@@ -4,6 +4,13 @@
 
 import { capital, numberWord } from "./html-facts";
 
+/** The label on a flight that site.config.json lists under automation_flights. */
+export const AUTOMATION_LABEL = "Flown by automation";
+/** What the label stands for, read out with it: true of a flight in the air and of one that has landed. */
+export const AUTOMATION_DETAIL = "one of the founder's own flights, flown with his automation tools and monitored by him";
+/** The Live page says this whether or not a listed flight is in the air. */
+export const AUTOMATION_DISCLOSURE = "Some of the founder's own flights are flown with his automation tools, which he monitors.";
+
 /**
  * The types based at Indianapolis Executive (KTYQ): the light and mid-size jets that fly from it, and
  * the Piper M600, listed there with the Executive division although its only routes are its own hop
