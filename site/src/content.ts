@@ -5,7 +5,7 @@
 import { capital, numberWord } from "./html-facts";
 
 /** Aircraft that work out of Indianapolis Executive (KTYQ). Everything else is based at KIND. */
-export const KTYQ_TYPES = ["C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"] as const;
+export const KTYQ_TYPES = ["M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"] as const;
 
 export function baseFor(code: string): "KTYQ" | "KIND" {
   return (KTYQ_TYPES as readonly string[]).includes(code) ? "KTYQ" : "KIND";
@@ -21,6 +21,12 @@ export interface FleetInfo {
 }
 
 export const FLEET_INFO: Record<string, FleetInfo> = {
+  M600: {
+    role: "Single-engine turboprop",
+    range_nm: 1200,
+    cruise_kt: 260,
+    blurb: "The only turboprop on the line, flown single-pilot. It flies the short hop between Westfield-Barnes and Bradley International at Hartford.",
+  },
   C510: {
     role: "Entry light jet",
     range_nm: 950,

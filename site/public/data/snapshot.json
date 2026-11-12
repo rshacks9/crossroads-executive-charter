@@ -1,7 +1,7 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-12T05:49:32Z",
+ "generated_at": "2026-11-12T14:52:02Z",
  "unavailable": [],
  "airline": {
   "divisions": [
@@ -10,6 +10,7 @@
     "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang and Phenom 300E to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
     "base": "KTYQ",
     "fleets": [
+     "M600",
      "C510",
      "PRM1",
      "C25C",
@@ -54,6 +55,7 @@
    }
   ],
   "sim_aircraft": {
+   "M600": "FSReborn Piper M600 (add-on)",
    "C510": "Cockspur Citation Mustang (add-on)",
    "PRM1": "Carenado B390 Premier IA (add-on)",
    "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
@@ -368,6 +370,21 @@
    "aircraft_count": 1,
    "registrations": [
     "N611CR"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "M600",
+   "name": "Piper M600",
+   "type": "pax",
+   "max_pax": 5,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "aircraft_count": 1,
+   "registrations": [
+    "N600CR"
    ],
    "image": null,
    "image_attribution": null,
@@ -968,6 +985,47 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX751",
+   "callsign": "CRX751",
+   "from": "KBAF",
+   "to": "KBDL",
+   "distance_nm": 13,
+   "duration_min": 28,
+   "departure_time": null,
+   "types": [
+    "M600"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX750",
+   "callsign": "CRX750",
+   "from": "KBAF",
+   "to": "KTYQ",
+   "distance_nm": 625,
+   "duration_min": 135,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "executive"
    ],
    "flight_number": "CX746",
@@ -1050,6 +1108,43 @@
     "H25B",
     "LJ35",
     "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive",
+    "short-hop"
+   ],
+   "flight_number": "CX752",
+   "callsign": "CRX752",
+   "from": "KBDL",
+   "to": "KBAF",
+   "distance_nm": 13,
+   "duration_min": 28,
+   "departure_time": null,
+   "types": [
+    "M600"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX445",
+   "callsign": "CRX445",
+   "from": "KBDL",
+   "to": "KLAX",
+   "distance_nm": 2191,
+   "duration_min": 299,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "GA7C",
+    "GLF6"
    ],
    "days": []
   },
@@ -3574,6 +3669,25 @@
   {
    "kind": "scheduled",
    "tags": [
+    "executive"
+   ],
+   "flight_number": "CX446",
+   "callsign": "CRX446",
+   "from": "KLAX",
+   "to": "KBDL",
+   "distance_nm": 2191,
+   "duration_min": 299,
+   "departure_time": null,
+   "types": [
+    "A346",
+    "GA7C",
+    "GLF6"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
     "sports-charter"
    ],
    "flight_number": "CX304",
@@ -5117,6 +5231,29 @@
    "to": "KAUS",
    "distance_nm": 813,
    "duration_min": 168,
+   "departure_time": null,
+   "types": [
+    "C25C",
+    "C510",
+    "C750",
+    "E55P",
+    "H25B",
+    "LJ35",
+    "PRM1"
+   ],
+   "days": []
+  },
+  {
+   "kind": "scheduled",
+   "tags": [
+    "executive"
+   ],
+   "flight_number": "CX749",
+   "callsign": "CRX749",
+   "from": "KTYQ",
+   "to": "KBAF",
+   "distance_nm": 625,
+   "duration_min": 135,
    "departure_time": null,
    "types": [
     "C25C",
@@ -7215,6 +7352,15 @@
    "country": "United States",
    "lat": 30.1975,
    "lon": -97.662,
+   "base": false
+  },
+  "KBAF": {
+   "icao": "KBAF",
+   "iata": "BAF",
+   "name": "Westfield-Barnes Regional",
+   "country": "United States",
+   "lat": 42.1578,
+   "lon": -72.7156,
    "base": false
   },
   "KBCT": {

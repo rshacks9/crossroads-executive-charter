@@ -847,7 +847,7 @@ export function PilotsPage({ snapshot }: PageProps) {
               return (
                 <li key={icao} className="hub">
                   <h3>{icao}{airport ? <span className="hub__name">{airport.name}</span> : null}</h3>
-                  <p className="hub__airports">{icao === "KTYQ" ? "Light and mid-size jets" : "Large-cabin jets, airliners and freighters"}</p>
+                  <p className="hub__airports">{icao === "KTYQ" ? "Light and mid-size aircraft" : "Large-cabin jets, airliners and freighters"}</p>
                   <p className="division__types">{here.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
                   <a className="text-link" href={airportHref(icao)}>{icao} airport page →</a>
                 </li>

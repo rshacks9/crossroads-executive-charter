@@ -304,7 +304,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             <div className="two-up">
               <div className="mini-card">
                 <h3>KTYQ · Indianapolis Executive</h3>
-                <p>Light and mid-size jets up to Citation X size: {ktyq.join(", ")}.</p>
+                <p>Light and mid-size aircraft up to Citation X size: {ktyq.join(", ")}.</p>
               </div>
               <div className="mini-card">
                 <h3>KIND · Indianapolis International</h3>
