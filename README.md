@@ -23,7 +23,7 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 
 | Path | What it is |
 | --- | --- |
-| `site.config.json` | Airline name, tagline, join/login/Discord links, `show_pilot_names`, the weekly group flight |
+| `site.config.json` | Airline name, tagline, join/login/Discord links, `show_pilot_names`, the weekly group flight, the flights flown by automation |
 | `sync/crossroads_sync/` | Builds the snapshot. `snapshot.py` is the allowlist; `fetch.py` makes the GET calls |
 | `sync/vamsys/` | Kimi's read-only vAMSYS client, vendored unchanged from `va-website/infrastructure/vamsys` |
 | `site/` | Vite + React + TypeScript static site; Leaflet map on OpenStreetMap tiles |
@@ -113,6 +113,13 @@ and the run summary.
    (`{"weekday": "Sunday", "utc": "20:00"}`). The News page shows it in UTC and Indianapolis time
    (15:00 in winter, 16:00 in summer) while vAMSYS lists no events, and until `join_url` is set it
    says the group flight starts once registration opens. Remove the entry to show no group flight.
+7. **Flights flown by automation.** `automation_flights` lists the founder's own flights that his
+   automation tools flew while he monitored them. An entry is `{"pirep_id": 1234567}` for a filed
+   PIREP, or `{"callsign": "CRX115", "date": "2026-11-11"}` with the UTC date the flight took off or
+   landed (for a flight in the air: the date of the sync or of its ETA). Every listed flight on the
+   live board and in the latest flights carries a "Flown by automation" label, and the Live page
+   always says that some of the founder's own flights are flown this way. The three setup test
+   flights are listed. The snapshot gets only a yes or no per flight, never the list or the ids.
 
 ## Privacy and safety
 
@@ -135,6 +142,8 @@ them on the first live run:
 - `page[size]=100` is accepted (override with `CROSSROADS_PAGE_SIZE` if vAMSYS rejects it).
 - Route `departure_time` timezone (shown without a zone).
 - Empty `service_days` shown as "Daily".
+- Automation labels: PIREPs match on `id`, or on `callsign` and the date of `landing_time` (or
+  `on_blocks_time`) and of that time less `flight_length`; live flights on `booking.callsign`.
 
 ## Map tiles
 

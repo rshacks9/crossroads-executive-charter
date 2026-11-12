@@ -59,6 +59,8 @@ export interface LiveFlight {
   route_nm: number | null;
   remaining_nm: number | null;
   eta: string | null;
+  /** Listed in site.config.json automation_flights: flown with the founder's automation tools. */
+  automation?: boolean;
 }
 
 export interface FleetType {
@@ -131,6 +133,8 @@ export interface RecentFlight {
   landing_rate: number | null;
   duration_min: number | null;
   landed: string | null;
+  /** Listed in site.config.json automation_flights: flown with the founder's automation tools. */
+  automation?: boolean;
 }
 
 export interface Airport {

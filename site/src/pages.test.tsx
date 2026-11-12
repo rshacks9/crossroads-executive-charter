@@ -3,13 +3,13 @@
 import { readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import type { Crew, Snapshot } from "./data";
+import type { Crew, LiveFlight, RecentFlight, Snapshot } from "./data";
 
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DISCORD_LABEL, DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
+const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
@@ -557,6 +557,50 @@ describe("texts follow the data", () => {
 
   it("says 'fictional' in the first screen", () => {
     expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
+  });
+});
+
+describe("flights flown by automation", () => {
+  const inAir = (callsign: string, automation?: boolean): LiveFlight => ({
+    callsign, flight_number: null, from: "KTYQ", to: "KMDW", phase: "Cruise", aircraft: "PRM1", aircraft_name: null, registration: null, pilot: null, rank: null, network: null,
+    lat: 41, lon: -87, altitude_ft: 25000, groundspeed_kt: 400, heading: 300, route_nm: 150, remaining_nm: 60, eta: null, ...(automation === undefined ? {} : { automation }),
+  });
+  const landed = (callsign: string, automation?: boolean): RecentFlight => ({
+    callsign, flight_number: null, from: "KMDW", to: "KTYQ", aircraft: "C510", landing_rate: -97, duration_min: 40, landed: snapshot.generated_at, ...(automation === undefined ? {} : { automation }),
+  });
+  // The visible words, then the sentence a screen reader hears with them.
+  const label = `<span class="tag tag--automation">${AUTOMATION_LABEL}<span class="visually-hidden">: one of the founder&#x27;s own flights, flown with his automation tools while he monitors it</span></span>`;
+  const count = (html: string) => html.split(label).length - 1;
+  const busy: Snapshot = { ...snapshot, live: [inAir("CRX115", true), inAir("CRX301", false), inAir("CRX302")], recent_flights: [landed("CRX116", true), landed("CRX303", false), landed("CRX304")] };
+
+  it("labels a listed flight on the live board, the live cards and the latest flights, with words for screen readers", () => {
+    expect(AUTOMATION_LABEL).toBe("Flown by automation");
+    const live = renderToString(<LivePage snapshot={busy} />);
+    expect(count(live)).toBe(1);
+    const row = live.slice(live.indexOf("<strong>CRX115</strong>"));
+    expect(row.indexOf(label)).toBeLessThan(row.indexOf("</tr>"));
+    const home = renderToString(<HomePage snapshot={busy} />);
+    // One live card (CRX115) and one latest-flights row (CRX116).
+    expect(count(home)).toBe(2);
+    expect(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf(label)).toBeLessThan(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf("</tr>"));
+  });
+
+  it("labels nothing that is not listed", () => {
+    const quiet: Snapshot = { ...busy, live: busy.live.map((f) => ({ ...f, automation: false })), recent_flights: busy.recent_flights.map((f) => ({ ...f, automation: undefined })) };
+    for (const html of [renderToString(<LivePage snapshot={quiet} />), renderToString(<HomePage snapshot={quiet} />)]) expect(html).not.toContain("tag--automation");
+  });
+
+  it("discloses on the Live page that the founder flies some of his own flights with automation he monitors", () => {
+    expect(AUTOMATION_DISCLOSURE).toBe("Some of the founder's own flights are flown with his automation tools, which he monitors.");
+    for (const s of [snapshot, busy]) expect(text(renderToString(<LivePage snapshot={s} />))).toContain(AUTOMATION_DISCLOSURE);
+  });
+
+  it("lists the three setup test flights in automation_flights, so live data labels them too", () => {
+    const config = JSON.parse(readFileSync(new URL("../../site.config.json", import.meta.url), "utf-8"));
+    const listed: { callsign?: string; date?: string; pirep_id?: number }[] = config.automation_flights;
+    expect(SETUP_FLIGHTS.map((f) => f.callsign)).toEqual(["CRX115", "CRX116", "CRX121"]);
+    for (const flight of SETUP_FLIGHTS) expect(listed.filter((e) => e.callsign === flight.callsign && e.date === "2026-11-11"), flight.callsign).toHaveLength(1);
+    for (const entry of listed) expect(entry.pirep_id !== undefined || (entry.callsign !== undefined && /^\d{4}-\d{2}-\d{2}$/.test(entry.date ?? "")), JSON.stringify(entry)).toBe(true);
   });
 });
 

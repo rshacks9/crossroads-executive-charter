@@ -11,6 +11,20 @@
   "weekday": "Sunday",
   "utc": "20:00"
  },
+ "automation_flights": [
+  {
+   "callsign": "CRX115",
+   "date": "2026-11-11"
+  },
+  {
+   "callsign": "CRX116",
+   "date": "2026-11-11"
+  },
+  {
+   "callsign": "CRX121",
+   "date": "2026-11-11"
+  }
+ ],
  "divisions": [
   {
    "name": "Executive",

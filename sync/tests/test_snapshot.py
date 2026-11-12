@@ -124,6 +124,74 @@ class RobustnessTests(unittest.TestCase):
         self.assertEqual(build(unavailable=["events", "flight_map", "events"])["unavailable"], ["events", "flight_map"])
 
 
+class AutomationTests(unittest.TestCase):
+    """automation_flights in site.config.json: the founder's flights flown with his automation tools."""
+
+    @staticmethod
+    def flagged(snapshot):
+        return [f["callsign"] for f in snapshot["live"] + snapshot["recent_flights"] if f["automation"]]
+
+    def test_nothing_is_flagged_without_a_list(self):
+        snapshot = build()
+        self.assertTrue(snapshot["live"] and snapshot["recent_flights"])
+        self.assertTrue(all(f["automation"] is False for f in snapshot["live"] + snapshot["recent_flights"]))
+
+    def test_a_pirep_id_flags_that_pirep(self):
+        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": [{"pirep_id": 500}]})), ["CXC700"])
+
+    def test_a_callsign_and_date_flag_the_flight_of_that_day(self):
+        entries = [{"callsign": "cxc102", "date": "2026-11-10"}, {"callsign": "CXC930", "date": "2026-11-08"}, {"callsign": "CXC101", "date": "2026-11-10"}]
+        # CXC102 landed on the 10th; CXC930 flew on the 9th, not the 8th; CXC101 is in the air on the 10th (NOW).
+        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": entries})), ["CXC101", "CXC102"])
+
+    def test_a_flight_across_midnight_matches_its_take_off_or_landing_date(self):
+        raw = copy.deepcopy(SAMPLE)
+        raw["pireps"][0].update({"landing_time": "2026-11-11T00:30:00Z", "flight_length": 7200})
+        raw["flight_map"]["data"][0]["progress"]["estimatedArrivalTime"] = "2026-11-11T01:00:00Z"
+        for day, flagged in (("2026-11-10", ["CXC101", "CXC102"]), ("2026-11-11", ["CXC101", "CXC102"]), ("2026-11-12", [])):
+            with self.subTest(day=day):
+                site = {**SITE, "automation_flights": [{"callsign": "CXC102", "date": day}, {"callsign": "CXC101", "date": day}]}
+                self.assertEqual(self.flagged(build(raw=raw, site=site)), flagged)
+
+    def test_incomplete_or_malformed_entries_flag_nothing(self):
+        entries = [
+            {"callsign": "CXC102"},
+            {"date": "2026-11-10"},
+            {"pirep_id": True},
+            {"pirep_id": "501"},
+            {"pirep_id": 501.0},
+            {"pirep_id": -501},
+            "CXC102",
+            None,
+            {"callsign": "CXC102", "date": "10/11/2026"},
+            {"callsign": "CXC102", "date": "2026-02-30"},
+            {"callsign": "CXC 102", "date": "2026-11-10"},
+        ]
+        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": entries})), [])
+        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": "CXC102"})), [])
+
+    def test_the_list_and_the_ids_never_reach_the_snapshot(self):
+        raw = copy.deepcopy(SAMPLE)
+        raw["pireps"][0]["id"] = 987654
+        site = {**SITE, "automation_flights": [{"pirep_id": 987654}, {"callsign": "CXC700", "date": "2026-11-10"}]}
+        snapshot = build(raw=raw, site=site)
+        self.assertEqual(self.flagged(snapshot), ["CXC102", "CXC700"])
+        dumped = json.dumps(snapshot)
+        for leaked in ("automation_flights", "pirep_id", "987654"):
+            self.assertNotIn(leaked, dumped)
+
+    def test_the_config_lists_the_three_setup_test_flights(self):
+        config = json.loads((Path(__file__).parents[2] / "site.config.json").read_text(encoding="utf-8"))
+        setup = {("CRX115", "2026-11-11T03:00:00Z"), ("CRX116", "2026-11-11T03:55:00Z"), ("CRX121", "2026-11-11T05:55:00Z")}
+        pireps = [
+            {"id": n, "status": "accepted", "callsign": callsign, "departure_airport_id": 4, "arrival_airport_id": 2, "landing_time": landed, "flight_length": 2500}
+            for n, (callsign, landed) in enumerate(sorted(setup) + [("CRX115", "2026-11-12T03:00:00Z")], start=1)
+        ]
+        recent = build(raw={**SAMPLE, "pireps": pireps}, site=config)["recent_flights"]
+        self.assertEqual(sorted((r["callsign"], r["landed"]) for r in recent if r["automation"]), sorted(setup))
+        self.assertEqual(len(recent), 4)
+
+
 class GroupFlightTests(unittest.TestCase):
     def test_weekday_and_utc_time_are_kept(self):
         site = {**SITE, "group_flight": {"weekday": " sunday ", "utc": "20:00"}}

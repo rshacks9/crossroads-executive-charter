@@ -184,6 +184,21 @@ function LiveUnavailable({ snapshot }: PageProps) {
   ) : null;
 }
 
+/** The label on a flight that site.config.json lists under automation_flights. */
+export const AUTOMATION_LABEL = "Flown by automation";
+/** The Live page says this whether or not a listed flight is in the air. */
+export const AUTOMATION_DISCLOSURE = "Some of the founder's own flights are flown with his automation tools, which he monitors.";
+
+/** "Flown by automation", with the whole sentence for screen readers. */
+export function AutomationLabel() {
+  return (
+    <span className="tag tag--automation">
+      {AUTOMATION_LABEL}
+      <span className="visually-hidden">: one of the founder&apos;s own flights, flown with his automation tools while he monitors it</span>
+    </span>
+  );
+}
+
 function FlightCard({ flight, snapshot }: { flight: LiveFlight; snapshot: Snapshot }) {
   return (
     <li className="flight-card">
@@ -191,6 +206,7 @@ function FlightCard({ flight, snapshot }: { flight: LiveFlight; snapshot: Snapsh
         <strong className="callsign">{flight.callsign ?? flight.flight_number ?? "Flight"}</strong>
         <span className="phase">{flight.phase ?? "En route"}</span>
       </div>
+      {flight.automation ? <AutomationLabel /> : null}
       <Leg from={flight.from} to={flight.to} snapshot={snapshot} />
       <Progress flight={flight} />
       <p className="flight-card__meta">
@@ -260,9 +276,10 @@ function airframes(snapshot: Snapshot): number {
 
 /**
  * The three setup test flights, flown by the founder's automation tools while the airline was being
- * built. Labelled as such, never as pilot activity. Shown only until vAMSYS supplies recent flights.
+ * built. Labelled as such, never as pilot activity. Shown only until vAMSYS supplies recent flights;
+ * site.config.json lists them under automation_flights, so they keep a label in that list too.
  */
-const SETUP_FLIGHTS = [
+export const SETUP_FLIGHTS = [
   { callsign: "CRX115", from: "KTYQ", to: "KMDW", aircraft: "Premier IA" },
   { callsign: "CRX116", from: "KMDW", to: "KTYQ", aircraft: "Citation Mustang" },
   { callsign: "CRX121", from: "KTYQ", to: "KBDL", aircraft: "Citation X" },
@@ -430,7 +447,7 @@ export function HomePage({ snapshot }: PageProps) {
               <tbody>
                 {recent.slice(0, 6).map((r, i) => (
                   <tr key={`${r.callsign}-${i}`}>
-                    <td><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span></td>
+                    <td><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span>{r.automation ? <AutomationLabel /> : null}</td>
                     <td><Leg from={r.from} to={r.to} snapshot={snapshot} /></td>
                     <td>{r.aircraft ?? "—"}</td>
                     <td className="num">{r.landing_rate != null ? `${r.landing_rate} fpm` : "—"}</td>
@@ -536,7 +553,7 @@ export function LivePage({ snapshot }: PageProps) {
               <tbody role="rowgroup">
                 {live.map((f, i) => (
                   <tr key={`${f.callsign}-${i}`} role="row" className={selected === i ? "is-selected" : undefined}>
-                    <td data-label="Flight" role="cell"><strong>{f.callsign ?? f.flight_number ?? "—"}</strong>{f.pilot ? <span className="sub">{f.rank ? `${f.rank} ` : ""}{f.pilot}</span> : null}</td>
+                    <td data-label="Flight" role="cell"><strong>{f.callsign ?? f.flight_number ?? "—"}</strong>{f.automation ? <AutomationLabel /> : null}{f.pilot ? <span className="sub">{f.rank ? `${f.rank} ` : ""}{f.pilot}</span> : null}</td>
                     <td data-label="Route" role="cell"><Leg from={f.from} to={f.to} snapshot={snapshot} /></td>
                     <td data-label="Aircraft" role="cell">{f.aircraft ?? "—"}{f.registration ? <span className="sub">{f.registration}</span> : null}</td>
                     <td data-label="Phase" role="cell">{f.phase ?? "—"}</td>
@@ -550,6 +567,7 @@ export function LivePage({ snapshot }: PageProps) {
             </table>
           </div>
         ) : null}
+        <p className="fineprint">{AUTOMATION_DISCLOSURE}</p>
       </section>
     </>
   );
