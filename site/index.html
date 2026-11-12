@@ -6,7 +6,8 @@
     <!-- The title and the two descriptions are filled in from the snapshot at build time: see vite.config.ts and src/html-facts.ts. -->
     <title>{{site_title}}</title>
     <meta name="description" content="{{site_description}}" />
-    <meta name="theme-color" content="#1b2328" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1b2328" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1316" />
     <meta name="color-scheme" content="light dark" />
     <script>
       // Apply the saved theme before first paint. Storage can be unavailable (private mode); fall back to the system setting.

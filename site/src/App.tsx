@@ -7,6 +7,8 @@ import { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, R
 import type { Location } from "./explore";
 import { SEARCH_EVENT, findRoute, isSearchShortcut, parseLocation, setMeta } from "./explore";
 import { DEFAULT_AIRLINE_NAME, countsFromSnapshot, homeTitle, siteDescription } from "./html-facts";
+import type { Theme } from "./theme";
+import { themeColor, themeOverride } from "./theme";
 
 export const ROUTES = [
   { path: "", label: "Home", nav: false, description: "" },
@@ -60,8 +62,6 @@ function navSection(loc: Location): string {
 
 const sameLocation = (a: Location, b: Location) => JSON.stringify(a) === JSON.stringify(b);
 
-type Theme = "light" | "dark";
-
 function storedTheme(): Theme | null {
   try {
     const value = window.localStorage.getItem("crossroads-theme");
@@ -71,15 +71,33 @@ function storedTheme(): Theme | null {
   }
 }
 
+const DARK_SCHEME = "(prefers-color-scheme: dark)";
+
 function systemTheme(): Theme {
-  return typeof window.matchMedia === "function" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return typeof window.matchMedia === "function" && window.matchMedia(DARK_SCHEME).matches ? "dark" : "light";
 }
 
 function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => storedTheme() ?? systemTheme());
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    // The browser toolbar follows: a stored choice pins both theme-color tags to its colour, otherwise
+    // each tag keeps the colour of its own colour scheme (index.html).
+    const stored = storedTheme();
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+      meta.content = themeColor(stored, meta.media);
+    });
   }, [theme]);
+  // With no stored choice the site follows the system setting, also when it changes during a visit.
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const scheme = window.matchMedia(DARK_SCHEME);
+    const follow = (e: MediaQueryListEvent) => {
+      if (storedTheme() === null) setTheme(e.matches ? "dark" : "light");
+    };
+    scheme.addEventListener("change", follow);
+    return () => scheme.removeEventListener("change", follow);
+  }, []);
   const next: Theme = theme === "dark" ? "light" : "dark";
   return (
     <button
@@ -90,7 +108,10 @@ function ThemeToggle() {
       onClick={() => {
         setTheme(next);
         try {
-          window.localStorage.setItem("crossroads-theme", next);
+          // Store only a real override: switching to the system's own theme follows the system again.
+          const override = themeOverride(next, systemTheme());
+          if (override) window.localStorage.setItem("crossroads-theme", override);
+          else window.localStorage.removeItem("crossroads-theme");
         } catch {
           /* private mode: the choice lasts for this visit only */
         }
