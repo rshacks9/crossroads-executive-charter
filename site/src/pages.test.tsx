@@ -299,4 +299,13 @@ describe("pages render from the snapshot", () => {
     expect(html.match(/>Specs and routes/g)).toHaveLength(snapshot.fleet.length);
     expect(html).not.toContain("Specs, range ring");
   });
+
+  it("services: each aircraft pill opens its own type page", () => {
+    const html = renderToString(<ServicesPage snapshot={snapshot} />);
+    const pills = [...html.matchAll(/<a class="chip chip--link" href="([^"]*)"/g)].map((m) => m[1]);
+    expect(pills.length).toBeGreaterThan(1);
+    for (const href of pills) expect(href).toMatch(/^#[/]fleet[/][A-Z0-9]+$/);
+    expect(pills).toContain("#/fleet/C510");
+    expect(html).not.toContain('href="#/fleet"');
+  });
 });

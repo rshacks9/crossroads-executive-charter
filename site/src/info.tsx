@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
-import { divisionBaseLabel, routeHref } from "./explore";
+import { divisionBaseLabel, routeHref, typeHref } from "./explore";
 import { divisionColor } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
@@ -85,7 +85,7 @@ export function ServicesPage({ snapshot }: PageProps) {
                   <div><dt>Destinations</dt><dd>{destinations.size}</dd></div>
                 </dl>
                 <p className="division__types">
-                  {types.map((t) => <a key={t.code} className="chip chip--link" href={`#/fleet`}>{shortName(t.name)}{FLEET_INFO[t.code] ? ` · ${baseFor(t.code)}` : ""}</a>)}
+                  {types.map((t) => <a key={t.code} className="chip chip--link" href={typeHref(t.code)}>{shortName(t.name)}{FLEET_INFO[t.code] ? ` · ${baseFor(t.code)}` : ""}</a>)}
                 </p>
                 <a className="text-link" href={`#/routes?division=${encodeURIComponent(division.name)}`}>All {routes.length} {division.name} routes →</a>
               </div>

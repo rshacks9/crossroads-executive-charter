@@ -706,15 +706,19 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .callout a { color: var(--signal-ink); font-weight: 600; }
 
 /* services */
-.subnav { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 0 !important; }
+.subnav { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 24px !important; }
 .subnav .chip-button { text-decoration: none; }
-.service { border-top: 1px solid var(--line); }
+/* The rule above each division spans the text column, not the whole 1,200 px box. */
+.service { border-top: 0; position: relative; }
+.service::before { content: ""; position: absolute; top: 0; left: var(--gutter); right: var(--gutter); border-top: 1px solid var(--line); }
 .page + .service { padding-top: clamp(32px, 5vw, 56px); }
 .service__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
 @media (max-width: 900px) { .service__grid { grid-template-columns: 1fr; } }
 .service__title { font-size: clamp(30px, 4vw, 42px); border-left: 6px solid var(--accent, var(--signal)); padding-left: 14px; }
 .service__pitch { font-size: 18px; color: var(--text-2); margin-top: 14px; }
 .service__facts { margin: 20px 0 14px; }
+/* Facts start on the text edge, and the numbers share a baseline when a label wraps. */
+.service__facts div { padding-left: 0; background: none; display: grid; align-content: space-between; }
 .service .division__types { margin-bottom: 8px; }
 .chip--link { text-decoration: none; }
 .chip--link:hover { background: var(--line); }
