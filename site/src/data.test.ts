@@ -112,6 +112,20 @@ describe("routes and divisions", () => {
     expect(name("CRX607")).toBe("Cargo Charter");
   });
 
+  it("files a route tagged executive-charter under Executive Charter", () => {
+    const name = (route: Route, list = divisions) => list[routeDivision(route, list)]!.name;
+    // CRX536 is shared by the Gulfstreams and the VIP Airbuses: the tie goes to Executive until tagged.
+    const vip = routes.find((r) => r.callsign === "CRX536")!;
+    expect(name(vip)).toBe("Executive");
+    expect(name({ ...vip, tags: [...vip.tags, "executive-charter"] })).toBe("Executive Charter");
+    // Cargo, group and sports tags still decide first.
+    const sports = routes.find((r) => r.callsign === "CRX311")!;
+    expect(name({ ...sports, tags: [...sports.tags, "executive-charter"] })).toBe("Group & Sports Charter");
+    // Without an Executive Charter division the aircraft decide.
+    const others = divisions.filter((d) => d.name !== "Executive Charter");
+    expect(name({ ...vip, tags: ["executive-charter"] }, others)).toBe("Executive");
+  });
+
   it("filters by base, including point-to-point legs", () => {
     const bases = ["KTYQ", "KIND"];
     const ktyq = filterRoutes(routes, "", "", undefined, "KTYQ", bases);

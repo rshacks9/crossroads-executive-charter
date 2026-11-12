@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
-import { routeHref } from "./explore";
+import { divisionBaseLabel, routeHref } from "./explore";
 import { DIVISION_COLORS } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
@@ -75,7 +75,7 @@ export function ServicesPage({ snapshot }: PageProps) {
           <section key={service.slug} id={`service-${service.slug}`} className="page service" style={{ ["--accent" as string]: DIVISION_COLORS[index % DIVISION_COLORS.length] }}>
             <div className="service__grid">
               <div>
-                <p className="eyebrow">{division.base ? `Based ${division.base}` : "Network-wide"}</p>
+                <p className="eyebrow">{divisionBaseLabel(division, snapshot.fleet)}</p>
                 <h2 className="service__title">{service.headline}</h2>
                 <p className="service__pitch">{service.pitch}</p>
                 <ul className="ticks">{service.points.map((p) => <li key={p}>{p}</li>)}</ul>

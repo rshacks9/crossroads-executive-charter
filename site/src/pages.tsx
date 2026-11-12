@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import type { AirlineEvent, Division, FleetType, LiveFlight, Snapshot } from "./data";
+import type { AirlineEvent, Division, FleetType, LiveFlight, Route, Snapshot } from "./data";
 import {
   POINT_TO_POINT,
   filterRoutes,
@@ -21,7 +21,7 @@ import type { NewsItem } from "./content";
 import { DIVISION_COLORS, LiveMap } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
 import { ExplorerPanel, RouteTable } from "./explore-pages";
-import { airportHref, networkStats, routeHref, typeHref } from "./explore";
+import { airportHref, divisionBaseLabel, mapLegendKeys, networkStats, routeHref, typeHref } from "./explore";
 
 export interface PageProps {
   snapshot: Snapshot;
@@ -116,14 +116,19 @@ export function shortName(name: string): string {
   return name.replace(/^(Cessna|Airbus|Embraer|Boeing|Gulfstream|McDonnell Douglas|Beechcraft) /, "");
 }
 
-function MapLegend({ snapshot }: PageProps) {
-  if (!snapshot.airline.divisions.length) return null;
+/** Key for a route map: only the division colours, and the dashed cargo line, that it draws for `routes`. */
+export function MapLegend({ snapshot, routes }: { snapshot: Snapshot; routes: Route[] }) {
+  const divisions = snapshot.airline.divisions;
+  if (!divisions.length) return null;
+  const keys = mapLegendKeys(routes, divisions, snapshot.airports);
+  const drawn = keys.divisions.filter((i) => i < divisions.length);
+  if (!drawn.length && !keys.cargo) return null;
   return (
     <ul className="legend" aria-label="Map legend">
-      {snapshot.airline.divisions.map((d, i) => (
-        <li key={d.name}><DivisionDot index={i} />{d.name}</li>
+      {drawn.map((i) => (
+        <li key={divisions[i]!.name}><DivisionDot index={i} />{divisions[i]!.name}</li>
       ))}
-      <li><span className="legend__dash" aria-hidden="true" />Cargo routes dashed</li>
+      {keys.cargo ? <li><span className="legend__dash" aria-hidden="true" />Cargo routes dashed</li> : null}
     </ul>
   );
 }
@@ -307,7 +312,7 @@ export function HomePage({ snapshot }: PageProps) {
 
       {airline.divisions.length ? (
         <section className="page">
-          <SectionHead eyebrow="Four divisions" title="Pick your flying" intro="Every pilot can fly every division. Each route only offers the aircraft that suit it." action={{ href: "#/services", label: "Divisions and services" }} />
+          <SectionHead eyebrow="Four divisions" title="Pick your flying" intro={`Every pilot can fly every division. Each route only offers the aircraft that suit it. Divisions share routes, so the counts add up to more than ${snapshot.routes.length}.`} action={{ href: "#/services", label: "Divisions and services" }} />
           <ul className="division-grid">
             {airline.divisions.map((division, i) => {
               const types = fleet.filter((f) => division.fleets.includes(f.code));
@@ -315,7 +320,7 @@ export function HomePage({ snapshot }: PageProps) {
               const service = SERVICES.find((s) => s.division === division.name);
               return (
                 <li key={division.name} className="division" style={{ ["--accent" as string]: DIVISION_COLORS[i % DIVISION_COLORS.length] }}>
-                  <p className="division__base">{division.base ? `Based ${division.base}` : "Network-wide"} · {routeCount} routes</p>
+                  <p className="division__base">{divisionBaseLabel(division, fleet)} · {routeCount} of {snapshot.routes.length} routes</p>
                   <h3>{division.name}</h3>
                   {division.summary ? <p className="division__summary">{division.summary}</p> : null}
                   <p className="division__types">{types.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
@@ -353,7 +358,7 @@ export function HomePage({ snapshot }: PageProps) {
           />
           <LiveUnavailable snapshot={snapshot} />
           <LiveMap flights={live} airports={snapshot.airports} bases={baseList} routes={live.length ? [] : snapshot.routes} divisions={airline.divisions} height={420} label={live.length ? "Live flights" : "Route network"} />
-          {!live.length ? <MapLegend snapshot={snapshot} /> : null}
+          {!live.length ? <MapLegend snapshot={snapshot} routes={snapshot.routes} /> : null}
           <HomeNumbers snapshot={snapshot} />
         </div>
         <div>
@@ -460,7 +465,7 @@ export function LivePage({ snapshot }: PageProps) {
       <section className="page">
         <LiveUnavailable snapshot={snapshot} />
         <LiveMap flights={live} airports={snapshot.airports} bases={bases(snapshot)} routes={live.length ? [] : snapshot.routes} divisions={snapshot.airline.divisions} height={520} onSelect={select} />
-        {!live.length ? <MapLegend snapshot={snapshot} /> : null}
+        {!live.length ? <MapLegend snapshot={snapshot} routes={snapshot.routes} /> : null}
         {live.length ? (
           <div className="table-wrap">
             <table className="table">
@@ -719,7 +724,7 @@ export function RoutesPage({ snapshot }: PageProps) {
               height={520}
               label="Route explorer map. Tab to an airport marker and press Enter to select it; arrow keys move between airports and Escape clears the selection. The airport picker beside the map does the same."
             />
-            <MapLegend snapshot={snapshot} />
+            <MapLegend snapshot={snapshot} routes={shown} />
             <p className="fineprint">Keyboard: Tab to an airport, Enter or Space to select, arrow keys to move between airports, Escape to clear.</p>
           </div>
           <ExplorerPanel snapshot={snapshot} routes={shown} selected={airportInView} onSelect={setSelectedAirport} selectedRoute={selectedRoute} onRoute={setSelectedRoute} />

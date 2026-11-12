@@ -2,8 +2,8 @@
 // stats pages. Everything here is computed from snapshot.json plus the planning figures in
 // content.ts; nothing invents activity, members or real-world facts.
 
-import type { Airport, FleetType, Route, Snapshot } from "./data";
-import { formatDuration, routeDivision } from "./data";
+import type { Airport, Division, FleetType, Route, Snapshot } from "./data";
+import { formatDuration, routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, baseFor } from "./content";
 
 // ------------------------------------------------------------------ routing
@@ -149,6 +149,42 @@ export function listJoin(items: string[]): string {
   if (items.length <= 1) return items.join("");
   if (items.length === 2) return `${items[0]} and ${items[1]}`;
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+// ------------------------------------------------------------------ divisions
+
+/**
+ * Where a division's aircraft work from, e.g. "Based KTYQ and KIND": the bases of its types that are
+ * in the fleet, in the order the division lists them. Without such types, the configured base.
+ */
+export function divisionBaseLabel(division: Pick<Division, "fleets" | "base">, fleet: Pick<FleetType, "code">[]): string {
+  const flown = new Set(fleet.map((f) => f.code));
+  const where = [...new Set(division.fleets.filter((code) => flown.has(code)).map((code) => baseFor(code)))];
+  if (where.length) return `Based ${listJoin(where)}`;
+  return division.base ? `Based ${division.base}` : "Network-wide";
+}
+
+/**
+ * What a route map draws, for its legend: the division colours on its lines and whether a dashed
+ * cargo line is among them. It follows ExploreMap and LiveMap: one line per airport pair, drawn for
+ * the first route listed, coloured by routeDivision (a route without a division takes the first
+ * colour), and only when both airports have coordinates.
+ */
+export function mapLegendKeys(routes: readonly Route[], divisions: Division[], airports: Record<string, Pick<Airport, "lat" | "lon">>): { divisions: number[]; cargo: boolean } {
+  const pairs = new Set<string>();
+  const used = new Set<number>();
+  let cargo = false;
+  for (const route of routes) {
+    const pair = [route.from, route.to].sort().join("-");
+    if (pairs.has(pair)) continue;
+    pairs.add(pair);
+    const a = airports[route.from];
+    const b = airports[route.to];
+    if (!a || !b || a.lat == null || a.lon == null || b.lat == null || b.lon == null) continue;
+    used.add(Math.max(0, routeDivision(route, divisions)));
+    if (route.kind === "cargo") cargo = true;
+  }
+  return { divisions: [...used].sort((x, y) => x - y), cargo };
 }
 
 // ------------------------------------------------------------------ fleet
@@ -392,7 +428,9 @@ export const DISTANCE_BANDS: [number, number, string][] = [
 export function networkStats(snapshot: Pick<Snapshot, "routes" | "airports" | "fleet" | "hubs" | "airline">): NetworkStats {
   const { routes } = snapshot;
   const divisions = snapshot.airline.divisions;
-  const byDivision = divisions.map((d, index) => ({ label: d.name, index, value: routes.filter((r) => routeDivision(r, divisions) === index).length, href: `#/routes?division=${encodeURIComponent(d.name)}` }));
+  // Every route a division's aircraft can fly, as the home page, services and the routes filter count
+  // them: a route shared by two divisions counts for both.
+  const byDivision = divisions.map((d, index) => ({ label: d.name, index, value: routes.filter((r) => routeInDivision(r, d)).length, href: `#/routes?division=${encodeURIComponent(d.name)}` }));
   const byType = snapshot.fleet
     .map((f) => ({ label: f.name, value: routes.filter((r) => r.types.includes(f.code)).length, href: typeHref(f.code) }))
     .sort((a, b) => b.value - a.value || a.label.localeCompare(b.label));

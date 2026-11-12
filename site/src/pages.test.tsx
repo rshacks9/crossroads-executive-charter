@@ -9,7 +9,7 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, StatsPage, TypePage } = await import("./explore-pages");
-const { FleetPage, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { FleetPage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage } = await import("./info");
 const { findRoute, routeHref } = await import("./explore");
 const { routeDivision } = await import("./data");
@@ -78,6 +78,28 @@ describe("pages render from the snapshot", () => {
     const html = renderToString(<HandbookPage snapshot={snapshot} />);
     expect(html).toMatch(/CALLSIGN[/]<wbr ?[/]?>CROSSROADS/);
     expect(html.replace(/<wbr ?[/]?>/g, "")).toContain("CALLSIGN/CROSSROADS");
+  });
+
+  it("keys map legends to the lines drawn and explains shared division counts", () => {
+    const total = snapshot.routes.length;
+    const legend = text(renderToString(<MapLegend snapshot={snapshot} routes={snapshot.routes} />));
+    expect(legend).toContain("Cargo routes dashed");
+    // Until a route carries the executive-charter tag, no line is drawn in that division's colour.
+    if (!snapshot.routes.some((r) => r.tags.includes("executive-charter"))) expect(legend).not.toContain("Executive Charter");
+    const cargo = text(renderToString(<MapLegend snapshot={snapshot} routes={snapshot.routes.filter((r) => r.kind === "cargo")} />));
+    expect(cargo).toContain("Cargo Charter");
+    expect(cargo).not.toContain("Executive");
+    expect(renderToString(<MapLegend snapshot={snapshot} routes={[]} />)).toBe("");
+    for (const html of [
+      renderToString(<DestinationsPage snapshot={snapshot} />),
+      renderToString(<AirportPage snapshot={snapshot} icao="KIND" />),
+      renderToString(<TypePage snapshot={snapshot} code="C25C" />),
+    ]) expect(html).toContain('aria-label="Map legend"');
+    const home = text(renderToString(<HomePage snapshot={snapshot} />));
+    expect(home).toContain("Based KTYQ and KIND");
+    expect(home).toContain(`of ${total} routes`);
+    expect(home).toContain(`so the counts add up to more than ${total}`);
+    expect(text(renderToString(<StatsPage snapshot={snapshot} />))).toContain(`add up to more than ${total} routes`);
   });
 
   it("explains the explorer's keyboard controls", () => {

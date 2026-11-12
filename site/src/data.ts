@@ -313,8 +313,10 @@ export function formatWeight(value: number | null, unit: "lbs" | "kg" | null): s
 }
 
 /**
- * The division a route is sold under. Route tags from vAMSYS decide first (cargo, group and sports
- * charters); executive routes fall back to the division sharing the most aircraft types.
+ * The division a route is sold under, for labels that name one division (row dots, map lines, the
+ * route eyebrow, the schedule CSV). Route tags from vAMSYS decide first (cargo, then group and sports
+ * charters, then executive charters); other routes fall back to the division sharing the most
+ * aircraft types. Counts per division use routeInDivision instead.
  */
 export function routeDivision(route: Pick<Route, "types" | "tags" | "kind">, divisions: Division[]): number {
   const find = (pattern: RegExp) => divisions.findIndex((d) => pattern.test(d.name));
@@ -325,6 +327,10 @@ export function routeDivision(route: Pick<Route, "types" | "tags" | "kind">, div
   }
   if (tags.includes("sports-charter") || tags.includes("group-charter")) {
     const i = find(/group|sport/i);
+    if (i >= 0) return i;
+  }
+  if (tags.includes("executive-charter")) {
+    const i = find(/executive charter/i);
     if (i >= 0) return i;
   }
   return primaryDivision(route, divisions);

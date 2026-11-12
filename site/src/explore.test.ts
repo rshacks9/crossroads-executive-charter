@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Snapshot } from "./data";
+import { routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL } from "./content";
 import {
   COMFORT_SHARE,
@@ -9,9 +10,11 @@ import {
   buildSearchIndex,
   destinationBlurb,
   distanceNm,
+  divisionBaseLabel,
   findRoute,
   initialCourse,
   listJoin,
+  mapLegendKeys,
   markerKeyAction,
   markerLabel,
   markerOrder,
@@ -248,9 +251,18 @@ describe("search", () => {
 describe("network stats", () => {
   const stats = networkStats(snapshot);
 
-  it("counts every route exactly once by division and distance", () => {
+  it("counts every route a division's aircraft can fly, and every route once by distance", () => {
     expect(stats.routes).toBe(snapshot.routes.length);
-    expect(stats.byDivision.reduce((s, b) => s + b.value, 0)).toBe(snapshot.routes.length);
+    const divisions = snapshot.airline.divisions;
+    expect(stats.byDivision.map((b) => b.label)).toEqual(divisions.map((d) => d.name));
+    for (const b of stats.byDivision) {
+      const division = divisions[b.index ?? -1];
+      expect(division, b.label).toBeDefined();
+      expect(b.value, b.label).toBe(snapshot.routes.filter((r) => routeInDivision(r, division)).length);
+      expect(b.value, b.label).toBeGreaterThan(0); // Executive Charter read 0 when ties went to Executive
+    }
+    // Divisions share routes, so the bars add up to more than the schedule, as the fine print says.
+    expect(stats.byDivision.reduce((s, b) => s + b.value, 0)).toBeGreaterThan(snapshot.routes.length);
     expect(stats.distanceBands.reduce((s, b) => s + b.value, 0)).toBe(snapshot.routes.length);
   });
 
@@ -262,6 +274,37 @@ describe("network stats", () => {
     expect(stats.topAirports.length).toBeLessThanOrEqual(10);
     expect(stats.topAirports.some((a) => a.label.startsWith("KIND") || a.label.startsWith("KTYQ"))).toBe(false);
     expect(stats.international).toBeGreaterThan(0);
+  });
+});
+
+describe("divisions on cards and map legends", () => {
+  const divisions = snapshot.airline.divisions;
+  const index = (name: string) => divisions.findIndex((d) => d.name === name);
+
+  it("names the bases a division's aircraft work from", () => {
+    expect(divisionBaseLabel(divisions[index("Executive")]!, snapshot.fleet)).toBe("Based KTYQ and KIND");
+    for (const d of divisions.filter((x) => x.name !== "Executive")) expect(divisionBaseLabel(d, snapshot.fleet), d.name).toBe("Based KIND");
+    expect(divisionBaseLabel({ fleets: [], base: "KTYQ" }, snapshot.fleet)).toBe("Based KTYQ");
+    expect(divisionBaseLabel({ fleets: ["ZZZZ"], base: null }, snapshot.fleet)).toBe("Network-wide");
+  });
+
+  it("keys a legend to the division colours and the dashed cargo line a map draws", () => {
+    const all = mapLegendKeys(snapshot.routes, divisions, snapshot.airports);
+    expect(all.cargo).toBe(true);
+    for (const i of all.divisions) expect(snapshot.routes.some((r) => Math.max(0, routeDivision(r, divisions)) === i), divisions[i]?.name).toBe(true);
+    // No route carries the executive-charter tag yet, so no line is drawn in that division's colour.
+    if (!snapshot.routes.some((r) => r.tags.includes("executive-charter"))) expect(all.divisions).not.toContain(index("Executive Charter"));
+    expect(mapLegendKeys(snapshot.routes.filter((r) => r.kind === "cargo"), divisions, snapshot.airports)).toEqual({ divisions: [index("Cargo Charter")], cargo: true });
+    expect(mapLegendKeys(snapshot.routes.filter((r) => r.from === "KTYQ"), divisions, snapshot.airports)).toEqual({ divisions: [index("Executive")], cargo: false });
+    expect(mapLegendKeys([], divisions, snapshot.airports)).toEqual({ divisions: [], cargo: false });
+  });
+
+  it("follows the maps: one line per airport pair, none without coordinates", () => {
+    const cargo = snapshot.routes.find((r) => r.kind === "cargo")!;
+    const back = { ...cargo, from: cargo.to, to: cargo.from, kind: "scheduled", tags: [], types: ["C510"] };
+    expect(mapLegendKeys([cargo, back], divisions, snapshot.airports)).toEqual({ divisions: [index("Cargo Charter")], cargo: true });
+    const nowhere = { ...snapshot.airports, [cargo.to]: { ...snapshot.airports[cargo.to]!, lat: null } };
+    expect(mapLegendKeys([cargo], divisions, nowhere)).toEqual({ divisions: [], cargo: false });
   });
 });
 

@@ -30,7 +30,7 @@ import {
   suggestFleet,
   typeHref,
 } from "./explore";
-import { DivisionDot, JoinButton, Leg, PageHeader, SectionHead, bases, shortName } from "./pages";
+import { DivisionDot, JoinButton, Leg, MapLegend, PageHeader, SectionHead, bases, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
 const SITE = "Crossroads Executive & Charter";
@@ -322,6 +322,7 @@ export function DestinationsPage({ snapshot }: PageProps) {
           </label>
         </form>
         <ExploreMap routes={snapshot.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={380} label="Map of destinations; select an airport to open its page" />
+        <MapLegend snapshot={snapshot} routes={snapshot.routes} />
         {countries.length ? countries.map((country) => (
           <div key={country} className="dest-group">
             <h2>{country} <span className="tag">{byCountry.get(country)!.length}</span></h2>
@@ -373,6 +374,7 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
         <div>
           <ExploreMap routes={summary.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} selectedAirport={icao} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onClearSelection={() => setSelectedRoute(null)} onAirportClick={(other) => { if (other !== icao) window.location.hash = airportHref(other); }} height={420} label={`Routes serving ${icao}`} />
           <p className="fineprint">Click a route line to highlight it, or another airport to open its page.</p>
+          <MapLegend snapshot={snapshot} routes={summary.routes} />
         </div>
         <div>
           <SectionHead eyebrow="Airfield" title="Runways" />
@@ -466,6 +468,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
         <div>
           <SectionHead eyebrow="Reach" title={info ? `${formatNumber(info.range_nm)} nm from ${base}` : "Routes flown"} />
           <ExploreMap routes={routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} ring={info ? { icao: base, nm: info.range_nm, label: `${shortName(type.name)} planning range from ${base}: ${formatNumber(info.range_nm)} nm` } : null} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={440} label={`Planning range ring and routes for the ${type.name}`} />
+          <MapLegend snapshot={snapshot} routes={routes} />
           <p className="fineprint">The dashed ring is the rounded Crossroads planning range from {base}, still air, for simulation planning only. Winds, weights and reserves change it on the day.</p>
         </div>
         <div>
@@ -833,7 +836,7 @@ export function StatsPage({ snapshot }: PageProps) {
         </div>
       </section>
       <section className="page">
-        <p className="fineprint">A route counts once per direction. Routes are assigned to a division by their vAMSYS tags, then by the aircraft that fly them. International means at least one end outside the United States.</p>
+        <p className="fineprint">A route counts once per direction, and for every division whose aircraft can fly it, so the division bars add up to more than {stats.routes} routes. International means at least one end outside the United States.</p>
       </section>
     </>
   );
