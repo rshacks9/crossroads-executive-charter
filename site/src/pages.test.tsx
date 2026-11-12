@@ -9,13 +9,13 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, NewsCard, PageHeader, RoutesPage, HomePage, PilotsPage, bases } = await import("./pages");
+const { DivisionDot, FleetPage, HOW_TO_JOIN, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
-const { MORE_COUNTRIES, destinationGroups, findRoute, networkStats, onwardLegs, routeHref, routeKey, servedAirports, suggestFleet } = await import("./explore");
+const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
 const { WeatherBoard } = await import("./crew");
-const { FLEET_INFO, KTYQ_TYPES, SERVICES, TOURS, baseFor } = await import("./content");
+const { FLEET_INFO, KTYQ_TYPES, RULES_URL, SERVICES, TOURS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -271,19 +271,47 @@ describe("pages render from the snapshot", () => {
     expect(renderToString(<StatsPage snapshot={snapshot} />)).toMatch(/background:var[(]--div-[0-5][)]/);
   });
 
-  it("register buttons go to the airline's vAMSYS sign-in page while join_url is unset", async () => {
-    const { joinHref } = await import("./pages");
+  it("while join_url is unset, join buttons say How to join and lead to Fly with us, which says registration isn't open", () => {
     expect(snapshot.airline.join_url).toBeNull();
     const login = "https://vamsys.io/login/crossroads";
     expect(snapshot.airline.pilot_login_url).toBe(login);
-    expect(joinHref(snapshot)).toEqual({ href: login, external: true });
-    expect(joinHref({ airline: { ...snapshot.airline, join_url: "https://example.test/join" } }).href).toBe("https://example.test/join");
-    expect(joinHref({ airline: { ...snapshot.airline, pilot_login_url: null } }).href).toBe("#/pilots");
-    for (const html of [renderToString(<PilotsPage snapshot={snapshot} />), renderToString(<HomePage snapshot={snapshot} />), renderToString(<ResourcesPage snapshot={snapshot} />), renderToString(<CareersPage snapshot={snapshot} />)]) {
-      expect(html).toContain(`href="${login}"`);
-      expect(html).not.toMatch(/Applications open soon|Apply to fly with us|Apply on vAMSYS/);
+    expect(registrationOpen(snapshot)).toBe(false);
+    expect(joinHref(snapshot)).toEqual({ href: "#/pilots", external: false });
+    for (const html of [renderToString(<HomePage snapshot={snapshot} />), renderToString(<CareersPage snapshot={snapshot} />)]) {
+      expect(html).toContain(`<a class="button" href="#/pilots">${HOW_TO_JOIN}</a>`);
+      // The sign-in page is no way in for new pilots: its Create Account link bounces while sign-up is closed.
+      expect(html).not.toContain(`href="${login}" rel="noopener">${REGISTER_LABEL}`);
+      expect(html).not.toContain(`>${REGISTER_LABEL}</a>`);
     }
-    expect(renderToString(<PilotsPage snapshot={snapshot} />)).toContain("Register on vAMSYS");
+    expect(renderToString(<HomePage snapshot={snapshot} />)).not.toContain(`href="${login}"`);
+    const pilots = renderToString(<PilotsPage snapshot={snapshot} />);
+    expect(text(pilots)).toContain("Registration isn't open yet. Crossroads is brand new, and its sign-up page on vAMSYS isn't taking new pilots yet.");
+    expect(text(pilots)).toContain("Not open yet: see the note at the top of this page.");
+    expect(pilots).toContain(`href="${login}" rel="noopener">Existing pilots: log in</a>`);
+    expect(pilots).not.toContain(`>${REGISTER_LABEL}</a>`);
+    expect(renderToString(<ResourcesPage snapshot={snapshot} />)).not.toContain('class="button button--ghost"');
+  });
+
+  it("once join_url is set, every join button goes straight to the vAMSYS sign-up page", () => {
+    const signup = "https://vamsys.io/register/crossroads";
+    const open: Snapshot = { ...snapshot, airline: { ...snapshot.airline, join_url: signup } };
+    expect(registrationOpen(open)).toBe(true);
+    expect(joinHref(open)).toEqual({ href: signup, external: true });
+    for (const html of [renderToString(<PilotsPage snapshot={open} />), renderToString(<HomePage snapshot={open} />), renderToString(<ResourcesPage snapshot={open} />), renderToString(<CareersPage snapshot={open} />)]) {
+      expect(html).toContain(`href="${signup}" rel="noopener">${REGISTER_LABEL}</a>`);
+      expect(text(html)).not.toContain("isn't open yet");
+    }
+    expect(renderToString(<PilotsPage snapshot={open} />)).toContain(`<a class="text-link" href="${signup}" rel="noopener">Crossroads sign-up page on vAMSYS`);
+    expect(renderToString(<HomePage snapshot={open} />)).toContain(`<a class="button button--ghost" href="#/pilots">${HOW_TO_JOIN}</a>`);
+  });
+
+  it("uses one label per action: no retired join or booking labels on any page, open or closed", () => {
+    const open: Snapshot = { ...snapshot, airline: { ...snapshot.airline, join_url: "https://vamsys.io/register/crossroads" } };
+    for (const s of [snapshot, open]) {
+      for (const html of [HomePage, PilotsPage, CareersPage, ResourcesPage].map((Page) => renderToString(<Page snapshot={s} />))) {
+        expect(html).not.toMatch(/>(Applications open soon|Apply to fly with us|Apply on vAMSYS|Join Crossroads|Start as a Cadet|How it works|How a flight works|Book this flight in Phoenix)</);
+      }
+    }
   });
 
   it("keeps the page-header text in one block, with the facts or buttons after it", () => {
@@ -468,5 +496,59 @@ describe("texts follow the data", () => {
 
   it("says 'fictional' in the first screen", () => {
     expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
+  });
+});
+
+describe("joining", () => {
+  it("walks a new pilot through the vAMSYS sign-up as the vAMSYS docs describe it", () => {
+    const html = renderToString(<PilotsPage snapshot={snapshot} />);
+    const page = text(html);
+    expect(page).toContain("create an account with your name, email address and a password, then confirm your email");
+    expect(page).toContain("Sign in on the same page with that account");
+    expect(page).toContain("vAMSYS gives you your pilot username, CRX and a number, so there's nothing to choose");
+    expect(html).toContain(`href="${RULES_URL}"`);
+    expect(page).toContain("install FSUIPC as well");
+    expect(page).toContain("Pegasus lists Crossroads only once you hold a booking");
+    expect(page).toContain("Book before you fly");
+    expect(page).toContain("use Jumpseat in Phoenix first");
+    expect(page).toContain("under My vAMSYS Account → Social, Online & 3rd Party");
+    // Retired copy that did not match vAMSYS: a "Register link", a username you choose, staff approval as a given.
+    expect(page).not.toMatch(/Register link|username you're happy|Once staff approve|application to accepted/);
+  });
+
+  it("says plainly that the airline is new, and claims no pilot numbers", () => {
+    const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    expect(page).toContain(`New airline, founding pilots welcome ${NEW_AIRLINE}`);
+    // A date, yes; a head count, never.
+    expect(NEW_AIRLINE).not.toMatch(/[0-9][0-9,]* (pilots|members)|hundreds|thousands|dozens|growing community/i);
+    expect(text(renderToString(<HomePage snapshot={snapshot} />))).toContain("Founding pilots welcome. Crossroads opened on vAMSYS in November 2026 and is just getting started.");
+  });
+
+  it("suggests the starter tour's first leg as the first flight, in the KTYQ jet that comes with MSFS 2024", () => {
+    const starter = TOURS.find((t) => t.starter);
+    const first = firstFlight(snapshot);
+    if (!starter || !first) throw new Error("no starter tour or first flight");
+    expect([first.route.from, first.route.to]).toEqual(starter.legs[0]);
+    const ktyq = defaultSimTypes(snapshot).filter((f) => baseFor(f.code) === "KTYQ");
+    expect(ktyq.map((f) => f.code)).toEqual(["C25C"]);
+    expect(first.defaults.map((f) => f.code)).toEqual(["C25C"]);
+    // Markup as served, without the comments React puts between adjacent text nodes.
+    const html = renderToString(<PilotsPage snapshot={snapshot} />).replace(/<!-- -->/g, "");
+    expect(html).toContain(`<a class="text-link" href="${routeHref(first.route)}"><span>Route details and SimBrief link<span class="visually-hidden">: ${routeKey(first.route)}</span>`);
+    const page = text(html);
+    expect(page).toContain(`No add-on needed: the ${shortName(ktyq[0]!.name)} comes with MSFS 2024 and flies this route.`);
+    expect(page).toContain(`It's leg 1 of the ${starter.name} tour. Register for the tour under Events in Phoenix first`);
+    expect(page).toContain(`${formatNumber(first.route.distance_nm)} nm`);
+    expect(text(renderToString(<HomePage snapshot={snapshot} />))).toContain(`Start as a Cadet at KTYQ in the ${shortName(ktyq[0]!.name)}, which comes with MSFS 2024.`);
+  });
+
+  it("counts the routes the MSFS 2024 default jets can fly instead of typing the number", () => {
+    const defaults = defaultSimTypes(snapshot);
+    expect(defaults.map((f) => f.code)).toEqual(["C25C", "C700"]);
+    const count = snapshot.routes.filter((r) => r.types.includes("C25C") || r.types.includes("C700")).length;
+    expect(routesForTypes(snapshot, defaults)).toHaveLength(count);
+    expect(text(renderToString(<PilotsPage snapshot={snapshot} />))).toContain(`Do I need add-on aircraft? No. The Citation CJ4 and Citation Longitude come with MSFS 2024 and between them fly ${count} of our ${snapshot.routes.length} routes.`);
+    const none: Snapshot = { ...snapshot, airline: { ...snapshot.airline, sim_aircraft: {} } };
+    expect(text(renderToString(<PilotsPage snapshot={none} />))).not.toContain("Do I need add-on aircraft?");
   });
 });

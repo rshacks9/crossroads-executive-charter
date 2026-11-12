@@ -4,7 +4,8 @@
 
 import type { Airport, CrewRunway, Division, FleetType, Route, Snapshot } from "./data";
 import { formatDuration, formatNumber, routeDivision, routeInDivision } from "./data";
-import { FLEET_INFO, baseFor } from "./content";
+import { FLEET_INFO, TOURS, baseFor } from "./content";
+import type { Tour } from "./content";
 
 // ------------------------------------------------------------------ routing
 
@@ -266,6 +267,38 @@ export function routesForType(snapshot: Pick<Snapshot, "routes">, code: string):
 }
 
 export const isFreighterType = (t: Pick<FleetType, "type">) => t.type === "cargo" || t.type === "cargo-containers";
+
+/** Types that come with MSFS 2024, as the simulator labels in site.config.json say ("MSFS 2024 default"). */
+export function defaultSimTypes(snapshot: Pick<Snapshot, "airline" | "fleet">): FleetType[] {
+  const labels = snapshot.airline.sim_aircraft ?? {};
+  return snapshot.fleet.filter((f) => /MSFS 2024 default/i.test(labels[f.code] ?? ""));
+}
+
+/** Routes that at least one of `types` may fly. */
+export function routesForTypes(snapshot: Pick<Snapshot, "routes">, types: readonly Pick<FleetType, "code">[]): Route[] {
+  const codes = new Set(types.map((t) => t.code));
+  return snapshot.routes.filter((r) => r.types.some((code) => codes.has(code)));
+}
+
+export interface FirstFlight {
+  route: Route;
+  tour: Tour;
+  /** The types on this route that come with MSFS 2024. */
+  defaults: FleetType[];
+}
+
+/**
+ * The suggested first flight: the first leg of the starter tour (content.ts), when that leg is on the
+ * schedule. Null when there is no starter tour or its first leg is not a route.
+ */
+export function firstFlight(snapshot: Pick<Snapshot, "airline" | "fleet" | "routes">, tours: readonly Tour[] = TOURS): FirstFlight | null {
+  const tour = tours.find((t) => t.starter);
+  const leg = tour?.legs[0];
+  if (!tour || !leg) return null;
+  const route = snapshot.routes.find((r) => r.from === leg[0] && r.to === leg[1]);
+  if (!route) return null;
+  return { route, tour, defaults: defaultSimTypes(snapshot).filter((f) => route.types.includes(f.code)) };
+}
 
 // ------------------------------------------------------------------ route lists
 

@@ -5,7 +5,7 @@ import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATE
 import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
 import { capital, numberWord } from "./html-facts";
 import { divisionColor } from "./LiveMap";
-import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
+import { DivisionDot, EventItem, HOW_TO_JOIN, JoinButton, Leg, NewsCard, PageHeader, SectionHead, registrationOpen, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
 /** Jump to the section named in the hash query (e.g. #/services?d=cargo) once the page renders. */
@@ -188,7 +188,7 @@ export function CareersPage({ snapshot }: PageProps) {
             </ol>
           </div>
         </div>
-        <SectionHead eyebrow="Tours & badges" title={`${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} in vAMSYS Activities`} intro="Register for a tour under Activities in the vAMSYS pilot portal, then fly the legs in order. Finishing a tour earns its badge and bonus points." />
+        <SectionHead eyebrow="Tours & badges" title={`${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} in vAMSYS Activities`} intro="Register for a tour under Events in Phoenix, the vAMSYS pilot portal, then book and fly the legs in order. Finishing a tour earns its badge and bonus points." />
         <ul className="tour-list">
           {TOURS.map((tour) => (
             <li key={tour.name} className="tour">
@@ -210,8 +210,8 @@ export function CareersPage({ snapshot }: PageProps) {
         </ul>
         {snapshot.airline.pilot_login_url ? <p className="fineprint">Activities are in the <a href={snapshot.airline.pilot_login_url} rel="noopener">vAMSYS pilot portal</a>. Tour dates and points are set in vAMSYS and may change there.</p> : null}
         <div className="hero__actions">
-          <JoinButton snapshot={snapshot} label="Start as a Cadet" />
-          <a className="button button--quiet" href="#/pilots">How a flight works</a>
+          <JoinButton snapshot={snapshot} />
+          {registrationOpen(snapshot) ? <a className="button button--quiet" href="#/pilots">{HOW_TO_JOIN}</a> : null}
         </div>
       </section>
     </>

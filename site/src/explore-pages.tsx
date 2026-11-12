@@ -39,7 +39,7 @@ import {
   typeHref,
 } from "./explore";
 import { numberWord } from "./html-facts";
-import { DivisionDot, JoinButton, Leg, MapLegend, PageHeader, SectionHead, bases, shortName } from "./pages";
+import { DivisionDot, JoinButton, Leg, MapLegend, PageHeader, SectionHead, bases, registrationOpen, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
 const SITE = "Crossroads Executive & Charter";
@@ -748,9 +748,9 @@ export function PlanPage({ snapshot }: PageProps) {
 // ------------------------------------------------------------------ pilot resources
 
 const LINKS: { title: string; href: string; body: string }[] = [
-  { title: "vAMSYS pilot hub", href: "https://vamsys.io/login/crossroads", body: "The Crossroads sign-in page on vAMSYS: book routes, see your logbook and rank, and download Pegasus. New pilots use its Register link." },
-  { title: "SimBrief", href: "https://www.simbrief.com/", body: "Free flight planning. Link it in your vAMSYS profile so bookings carry over. Every route page here has a pre-filled SimBrief link." },
-  { title: "Pegasus ACARS", href: PEGASUS_URL, body: "vAMSYS's flight tracker. The official guide covers simulator setup, signing in, tracking your booking and filing the PIREP. Download it from the ACARS page in the pilot portal." },
+  { title: "vAMSYS pilot hub", href: "https://vamsys.io/login/crossroads", body: "The Crossroads sign-in page on vAMSYS, for pilots who have joined: book routes, see your logbook and rank, and download Pegasus. New pilots start on the Fly with us page." },
+  { title: "SimBrief", href: "https://www.simbrief.com/", body: "Free flight planning. Link your Navigraph account, which is your SimBrief login, in vAMSYS to dispatch from a booking. Every route page here has a pre-filled SimBrief link." },
+  { title: "Pegasus ACARS", href: PEGASUS_URL, body: "vAMSYS's flight tracker. The official guide covers simulator setup, signing in, tracking your booking and filing the PIREP. Download it in Phoenix under Resources → Pegasus ACARS." },
 ];
 
 const GENERIC_CHECKLIST = `CROSSROADS EXECUTIVE & CHARTER - GENERIC FLOW CARD
@@ -844,7 +844,7 @@ export function ResourcesPage({ snapshot }: PageProps) {
           <li><strong>250 kt below 10,000 ft</strong> in the US unless ATC says otherwise.</li>
           <li><strong>Write it up.</strong> Diversions, go-arounds and firm landings go in the PIREP comments.</li>
         </ol>
-        <p className="callout">New here? Start with <a href="#/pilots">how a Crossroads flight works</a>, then the <a href="#/careers">career ladder</a>. <JoinButton snapshot={snapshot} quiet /></p>
+        <p className="callout">New here? Start with <a href="#/pilots">how to join and fly</a>, then the <a href="#/careers">career ladder</a>.{registrationOpen(snapshot) ? <> <JoinButton snapshot={snapshot} quiet /></> : null}</p>
       </section>
     </>
   );

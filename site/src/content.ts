@@ -249,6 +249,12 @@ export const SERVICES: Service[] = [
 /** Official vAMSYS documentation for Pegasus ACARS (verified 2026-11-11: 200, "Pegasus ACARS | vAMSYS"). */
 export const PEGASUS_URL = "https://vamsys.co.uk/docs/pegasus/pegasus-acars";
 
+/**
+ * The Crossroads rules on vAMSYS, which pilots accept when they register (verified 2026-11-12: 200,
+ * the Booking and PIREP Guide with the airline rules; public, no sign-in needed).
+ */
+export const RULES_URL = "https://vamsys.io/crossroads/rules";
+
 // ------------------------------------------------------------------ handbook
 
 export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[] = [
@@ -303,6 +309,8 @@ export interface Tour {
   summary: string;
   /** Airport pairs in order; each is a scheduled Crossroads route. */
   legs: [string, string][];
+  /** The beginner tour: its first leg is the suggested first flight on the Fly with us page. */
+  starter?: boolean;
 }
 
 export const TOURS: Tour[] = [
@@ -325,6 +333,7 @@ export const TOURS: Tour[] = [
     window: "11 November 2026 to 31 December 2027",
     points: 300,
     summary: "Eight short legs out of Indianapolis Executive, each about an hour or less, in any KTYQ light or mid-size jet. A good way to learn a new type.",
+    starter: true,
     legs: [["KTYQ", "KSDF"], ["KSDF", "KTYQ"], ["KTYQ", "KMDW"], ["KMDW", "KTYQ"], ["KTYQ", "KCMH"], ["KCMH", "KTYQ"], ["KTYQ", "KBNA"], ["KBNA", "KTYQ"]],
   },
 ];

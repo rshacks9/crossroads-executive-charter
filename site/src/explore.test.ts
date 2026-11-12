@@ -9,11 +9,13 @@ import {
   airportSummary,
   briefingCard,
   buildSearchIndex,
+  defaultSimTypes,
   destinationBlurb,
   destinationGroups,
   distanceNm,
   divisionBaseLabel,
   findRoute,
+  firstFlight,
   initialCourse,
   isSearchShortcut,
   jumpTo,
@@ -33,6 +35,7 @@ import {
   routeKey,
   routeOtherEnd,
   routesForType,
+  routesForTypes,
   runwayStrips,
   scheduleCsv,
   search,
@@ -589,6 +592,38 @@ describe("tours", () => {
     const { TOURS } = await import("./content");
     expect(TOURS.map((t) => t.legs.length)).toEqual([8, 6, 8]);
     for (const tour of TOURS) for (const [from, to] of tour.legs) expect(snapshot.routes.some((r) => r.from === from && r.to === to), `${tour.name} ${from}-${to}`).toBe(true);
+  });
+});
+
+describe("first flight", () => {
+  const starter = { name: "Starter", window: "", points: 0, summary: "", legs: [["KTYQ", "KSDF"], ["KSDF", "KTYQ"]] as [string, string][], starter: true };
+
+  it("reads the types that come with MSFS 2024 from the simulator labels", () => {
+    const fleet = snapshot.fleet.filter((f) => f.code === "C25C" || f.code === "C510");
+    const labels = { C25C: "Cessna Citation CJ4 (MSFS 2024 default)", C510: "Cockspur Citation Mustang (add-on)" };
+    expect(defaultSimTypes({ airline: { ...snapshot.airline, sim_aircraft: labels }, fleet }).map((f) => f.code)).toEqual(["C25C"]);
+    expect(defaultSimTypes({ airline: { ...snapshot.airline, sim_aircraft: undefined }, fleet })).toEqual([]);
+  });
+
+  it("counts the routes any of a set of types may fly", () => {
+    const both = routesForTypes(snapshot, [{ code: "C25C" }, { code: "C700" }]);
+    expect(both.every((r) => r.types.includes("C25C") || r.types.includes("C700"))).toBe(true);
+    expect(both.length).toBeGreaterThanOrEqual(routesForType(snapshot, "C25C").length);
+    expect(routesForTypes(snapshot, [])).toEqual([]);
+  });
+
+  it("is the starter tour's first leg, with the MSFS 2024 types that fly it", () => {
+    const first = firstFlight(snapshot, [{ ...starter, starter: false, name: "Other" }, starter]);
+    expect(first?.tour.name).toBe("Starter");
+    expect([first?.route.from, first?.route.to]).toEqual(["KTYQ", "KSDF"]);
+    for (const f of first?.defaults ?? []) expect(first?.route.types).toContain(f.code);
+  });
+
+  it("is null without a starter tour, or when the starter's first leg is not on the schedule", () => {
+    expect(firstFlight(snapshot, [])).toBeNull();
+    expect(firstFlight(snapshot, [{ ...starter, starter: false }])).toBeNull();
+    expect(firstFlight(snapshot, [{ ...starter, legs: [["ZZZZ", "KTYQ"]] }])).toBeNull();
+    expect(firstFlight(snapshot, [{ ...starter, legs: [] }])).toBeNull();
   });
 });
 

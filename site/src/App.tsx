@@ -25,7 +25,7 @@ export const ROUTES = [
   { path: "crew", label: "Crew Tools", nav: true, description: "Route briefings with live METAR and TAF, runway winds, a fuel estimate and an approach card. For simulation only." },
   { path: "news", label: "News", nav: true, description: "Launch news, fleet and network changes and standing NOTAMs." },
   { path: "about", label: "About", nav: false, description: "Crossroads Executive & Charter, a fictional virtual airline built at the Crossroads of America, Indianapolis." },
-  { path: "pilots", label: "Fly with us", nav: true, description: "How a Crossroads flight works, from vAMSYS application to accepted PIREP." },
+  { path: "pilots", label: "Fly with us", nav: true, description: "How to join Crossroads on vAMSYS and fly your first flight, from sign-up to accepted PIREP." },
 ] as const;
 
 export const DISCLAIMER =
@@ -376,7 +376,7 @@ export function App() {
             <div>
               <p className="footer__head">Pilots</p>
               <ul>
-                <li><a href="#/pilots">How to fly with us</a></li>
+                <li><a href="#/pilots">How to join</a></li>
                 <li><a href="#/careers">Career &amp; ranks</a></li>
                 <li><a href="#/handbook">Handbook &amp; SOPs</a></li>
                 <li><a href="#/resources">Pilot resources</a></li>
@@ -387,7 +387,8 @@ export function App() {
             <div>
               <p className="footer__head">Elsewhere</p>
               <ul>
-                {airline?.join_url || airline?.pilot_login_url ? <li><a href={airline.join_url ?? airline.pilot_login_url!} rel="noopener">Register on vAMSYS</a></li> : null}
+                {/* Only while registration is open (pages.tsx registrationOpen). */}
+                {airline?.join_url ? <li><a href={airline.join_url} rel="noopener">Register on vAMSYS</a></li> : null}
                 {airline?.pilot_login_url ? <li><a href={airline.pilot_login_url} rel="noopener">Pilot login (vAMSYS)</a></li> : null}
                 {airline?.discord_url ? <li><a href={airline.discord_url} rel="noopener">Discord</a></li> : null}
                 {airline?.contact_email ? <li><a href={`mailto:${airline.contact_email}`}>Contact</a></li> : null}

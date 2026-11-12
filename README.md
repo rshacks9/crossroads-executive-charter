@@ -100,8 +100,12 @@ and the run summary.
    `VAMSYS_CLIENT_SECRET`.
 4. **Pages.** Repository → Settings → Pages → Source: *GitHub Actions*. Run the workflow once from the
    Actions tab. Add a custom domain there if you have one.
-5. **Links.** Fill `join_url`, `pilot_login_url` and `discord_url` in `site.config.json` (https only).
-   Until `join_url` is set, the Register buttons use `pilot_login_url` (the airline's vAMSYS sign-in page, which has the Register link), then the Pilots page.
+5. **Links.** Fill `pilot_login_url` and `discord_url` in `site.config.json` (https only).
+   `join_url` says whether pilot registration is open. Set it to `https://vamsys.io/register/crossroads`
+   once that page shows the vAMSYS sign-up form; every "Register on vAMSYS" button and the footer link
+   then go straight to it. While it is unset the join buttons read "How to join" and open the Fly with
+   us page (`#/pilots`), which says registration isn't open yet. On 2026-11-12 the register page
+   redirected to the vAMSYS sign-in page, so `join_url` stays unset until that changes.
 
 ## Privacy and safety
 

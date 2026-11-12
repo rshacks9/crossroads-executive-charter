@@ -6,6 +6,7 @@ import {
   filterRoutes,
   formatCompact,
   formatDate,
+  formatDuration,
   formatFeet,
   formatNumber,
   hashParam,
@@ -16,12 +17,13 @@ import {
   routeBase,
   routeInDivision,
 } from "./data";
-import { FLEET_INFO, NEWS, PEGASUS_URL, SERVICES, baseFor } from "./content";
+import { FLEET_INFO, NEWS, PEGASUS_URL, RULES_URL, SERVICES, baseFor } from "./content";
 import type { NewsItem } from "./content";
 import { LiveMap, divisionColor } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
 import { ExplorerPanel, RouteTable } from "./explore-pages";
-import { airportHref, divisionBaseLabel, jumpTo, mapLegendKeys, networkStats, routeHref, typeHref } from "./explore";
+import { airportHref, defaultSimTypes, divisionBaseLabel, firstFlight, jumpTo, listJoin, mapLegendKeys, networkStats, routeHref, routesForTypes, typeHref } from "./explore";
+import type { FirstFlight } from "./explore";
 import { numberWord } from "./html-facts";
 
 export interface PageProps {
@@ -86,25 +88,42 @@ export function bases(snapshot: Snapshot): string[] {
 }
 
 /**
- * Where new pilots sign up: the vAMSYS application when join_url is set, otherwise the airline's
- * vAMSYS sign-in page (it carries the Register link), otherwise the Fly-with-us page.
+ * Registration is open when join_url is set in site.config.json: the airline's vAMSYS sign-up page,
+ * https://vamsys.io/register/crossroads. Leave it unset while that page takes no new pilots (on
+ * 2026-11-12 it redirected to the vAMSYS sign-in page, and the sign-in page's Create Account link
+ * goes to it).
  */
+export function registrationOpen(snapshot: Pick<Snapshot, "airline">): boolean {
+  return Boolean(snapshot.airline.join_url);
+}
+
+/** Where the join buttons go: the vAMSYS sign-up page while registration is open, otherwise the Fly-with-us page. */
 export function joinHref(snapshot: Pick<Snapshot, "airline">): { href: string; external: boolean } {
-  const { join_url, pilot_login_url } = snapshot.airline;
-  if (join_url) return { href: join_url, external: true };
-  if (pilot_login_url) return { href: pilot_login_url, external: true };
-  return { href: "#/pilots", external: false };
+  const { join_url } = snapshot.airline;
+  return join_url ? { href: join_url, external: true } : { href: "#/pilots", external: false };
 }
 
 export const REGISTER_LABEL = "Register on vAMSYS";
+/** The label of the buttons that lead to the Fly-with-us page. */
+export const HOW_TO_JOIN = "How to join";
 
-export function JoinButton({ snapshot, label = REGISTER_LABEL, quiet = false }: { snapshot: Snapshot; label?: string; quiet?: boolean }) {
+/** "Register on vAMSYS" while registration is open, "How to join" until then. One label per action, site-wide. */
+export function JoinButton({ snapshot, quiet = false }: { snapshot: Snapshot; quiet?: boolean }) {
   const join = joinHref(snapshot);
   return (
     <a className={`button${quiet ? " button--ghost" : ""}`} href={join.href} rel={join.external ? "noopener" : undefined}>
-      {label}
+      {join.external ? REGISTER_LABEL : HOW_TO_JOIN}
     </a>
   );
+}
+
+/** The home page's closing line: a new airline, and the KTYQ type that comes with MSFS 2024 when there is one. */
+export function foundingLine(snapshot: Pick<Snapshot, "airline" | "fleet">): string {
+  const starters = defaultSimTypes(snapshot).filter((f) => baseFor(f.code) === "KTYQ").map((f) => shortName(f.name));
+  const start = starters.length
+    ? `Start as a Cadet at KTYQ in the ${listJoin(starters)}, which ${starters.length === 1 ? "comes" : "come"} with MSFS 2024.`
+    : "Start as a Cadet at KTYQ.";
+  return `Crossroads opened on vAMSYS in November 2026 and is just getting started. ${start} Where you take it from there is up to you.`;
 }
 
 function divisionFor(snapshot: Snapshot, code: string): { division: Division; index: number } | null {
@@ -416,12 +435,12 @@ export function HomePage({ snapshot }: PageProps) {
       <section className="cta-band">
         <div className="cta-band__inner">
           <div>
-            <h2>Your first flight is one application away.</h2>
-            <p>Start as a Cadet in the Citation Mustang at KTYQ. Where you take it from there is up to you.</p>
+            <h2>Founding pilots welcome.</h2>
+            <p>{foundingLine(snapshot)}</p>
           </div>
           <div className="hero__actions">
-            <JoinButton snapshot={snapshot} label="Join Crossroads" />
-            <a className="button button--ghost" href="#/pilots">How it works</a>
+            <JoinButton snapshot={snapshot} />
+            {registrationOpen(snapshot) ? <a className="button button--ghost" href="#/pilots">{HOW_TO_JOIN}</a> : null}
           </div>
         </div>
       </section>
@@ -755,36 +774,59 @@ export function RoutesPage({ snapshot }: PageProps) {
 
 // ------------------------------------------------------------------ fly with us (walkthrough)
 
-const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; link?: { href: string; label: string } }[] = [
+/**
+ * The six steps from sign-up to accepted PIREP, as the vAMSYS pilot docs give them (How to Register,
+ * Pegasus ACARS, How to Book a Flight, SimBrief Integration; read 2026-11-12) and the Crossroads rules
+ * on vAMSYS say. `join` marks the step that carries the registration status.
+ */
+const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; link?: { href: string; label: string }; join?: boolean }[] = [
   {
-    title: "Register and join the hub",
+    title: "Create your pilot account",
     tool: "vAMSYS",
-    body: "Crossroads runs on vAMSYS. Register through the Crossroads sign-in page on vAMSYS (the Register link). Once staff approve your application, you join the Indianapolis hub as a Cadet.",
-    tips: ["New pilots: open the Crossroads pilot hub at vamsys.io/login/crossroads and use its Register link", "Use a username you're happy to see on a leaderboard", "Link your SimBrief account in your vAMSYS profile settings"],
+    body: "Crossroads runs on vAMSYS, which holds our schedule, bookings and logbooks. New to vAMSYS? On the Crossroads sign-up page, create an account with your name, email address and a password, then confirm your email and finish the Crossroads registration. Already fly for another airline on vAMSYS? Sign in on the same page with that account instead of making a new one: vAMSYS allows one account per person.",
+    tips: [
+      "The form asks you to accept the Crossroads rules, which you can read first (link below)",
+      "vAMSYS gives you your pilot username, CRX and a number, so there's nothing to choose",
+      "From then on you sign in to Phoenix, the vAMSYS pilot portal",
+    ],
+    link: { href: RULES_URL, label: "Crossroads rules on vAMSYS" },
+    join: true,
   },
   {
     title: "Install Pegasus",
     tool: "Pegasus ACARS",
     body: "Pegasus is vAMSYS's flight tracker. It runs next to your simulator, records the flight from the gate to the gate, and files your PIREP when you're done.",
-    tips: ["Download it from the ACARS page in the vAMSYS pilot portal (Phoenix) and sign in with your vAMSYS account", "Check that Pegasus supports your simulator version before your first flight"],
+    tips: [
+      "In Phoenix, open Resources → Pegasus ACARS to download it, and sign in with your vAMSYS account",
+      "On MSFS 2020 and 2024 Pegasus reads the simulator through FSUIPC, so install FSUIPC as well and keep it up to date",
+      "Pegasus lists Crossroads only once you hold a booking, so book first, then open it",
+    ],
     link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" },
   },
   {
     title: "Book a route",
-    tool: "vAMSYS pilot portal",
-    body: "Pick a route from the schedule in the pilot portal. Each route only offers the aircraft that suit it: light and mid-size jets from KTYQ, everything larger from KIND.",
-    tips: ["Use the Route network page here to plan by division, base or aircraft", "Cadets: start with the short KTYQ hops (CRX115 to Midway is 126 nm)"],
+    tool: "vAMSYS Phoenix",
+    body: "In Phoenix, book a route that departs from your current airport and lists your aircraft. Light and mid-size jets fly from KTYQ, everything larger from KIND. To start somewhere else, use Jumpseat in Phoenix first. Never reposition the aircraft in the simulator.",
+    tips: [
+      "Book before you fly: without a booking, a flight can't be added to your logbook afterwards",
+      "A booking stays valid for 24 hours",
+      "Use the Network page here to plan by division, base or aircraft",
+    ],
   },
   {
     title: "Dispatch with SimBrief",
     tool: "SimBrief",
     body: "Generate your OFP from the booking. SimBrief gives you the route, fuel and weights. Load the plan into your aircraft's FMS and check it against the Crew Tools briefing for weather and runway winds.",
-    tips: ["Fuel policy: 45 minutes final reserve, always", "Use cost index guidance from the handbook"],
+    tips: [
+      "Once: link your Navigraph account, which is your SimBrief login, under My vAMSYS Account → Social, Online & 3rd Party",
+      "Fuel policy: 45 minutes final reserve, always",
+      "Use cost index guidance from the handbook",
+    ],
   },
   {
     title: "Fly it",
     tool: "MSFS + Pegasus",
-    body: "Spawn at a parking spot at the departure airport, start Pegasus before engine start, and fly the flight. Online on VATSIM or offline, it's up to you.",
+    body: "Start cold and dark at a parking spot at the departure airport, load the flight plan, and start Pegasus before engine start. Online on VATSIM or offline, it's up to you.",
     tips: ["Stabilised by 1,000 ft in cloud and 500 ft visual, or go around", "No slew, time acceleration or in-flight refuelling"],
   },
   {
@@ -795,12 +837,51 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
   },
 ];
 
+/** The honest note for visitors: a new airline, with no pilot counts claimed. */
+export const NEW_AIRLINE =
+  "Crossroads opened on vAMSYS in November 2026 and is just getting started, so the pilot roster is still short. Pilots who join early are its founding crew.";
+
+/** Shown until registration opens (registrationOpen). */
+export const REGISTRATION_CLOSED =
+  `Crossroads is brand new, and its sign-up page on vAMSYS isn't taking new pilots yet. When it opens, the ${REGISTER_LABEL} buttons on this site will go straight to it.`;
+
+/** FAQ answer: the types that come with MSFS 2024 and how many routes they fly, counted from the schedule. */
+export function addOnAnswer(snapshot: Snapshot, defaults: FleetType[]): string {
+  const names = listJoin(defaults.map((f) => shortName(f.name)));
+  const routes = routesForTypes(snapshot, defaults).length;
+  const one = defaults.length === 1;
+  return `No. The ${names} ${one ? "comes" : "come"} with MSFS 2024 and ${one ? "flies" : "between them fly"} ${routes} of our ${snapshot.routes.length} routes. For every other type, the fleet page names the add-on we use, and any model of the same type works.`;
+}
+
+/** The suggested first flight (explore.ts firstFlight): the starter tour's first leg, from the schedule. */
+export function FirstFlightCard({ first, snapshot }: { first: FirstFlight; snapshot: Snapshot }) {
+  const { route, tour, defaults } = first;
+  const key = routeKey(route);
+  const one = defaults.length === 1;
+  return (
+    <div className="mini-card">
+      <h2 className="h3">Your first flight</h2>
+      <p><strong>{key}</strong> <Leg from={route.from} to={route.to} snapshot={snapshot} /> · {formatNumber(route.distance_nm)} nm · {formatDuration(route.duration_min)}</p>
+      <ul className="ticks">
+        {defaults.length ? <li>{`No add-on needed: the ${listJoin(defaults.map((f) => shortName(f.name)))} ${one ? "comes" : "come"} with MSFS 2024 and ${one ? "flies" : "fly"} this route.`}</li> : null}
+        <li>{`It's leg 1 of the ${tour.name} tour. Register for the tour under Events in Phoenix first, then book the leg from the tour page.`}</li>
+        <li>{`It departs from ${route.from}. If Phoenix shows you somewhere else, use Jumpseat first.`}</li>
+      </ul>
+      <a className="text-link" href={routeHref(route)}><span>Route details and SimBrief link<span className="visually-hidden">: {key}</span> <span aria-hidden="true">→</span></span></a>
+    </div>
+  );
+}
+
 export function PilotsPage({ snapshot }: PageProps) {
   const { airline } = snapshot;
   const facts = networkFacts(snapshot);
+  const open = registrationOpen(snapshot);
+  const first = firstFlight(snapshot);
+  const defaults = defaultSimTypes(snapshot);
   const faqs: { q: string; a: string }[] = [
     { q: "Do I need real-world flying experience?", a: "No. Bring your simulator and a willingness to fly by the book. The career ladder starts you in light jets and you work up from there." },
-    { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, so any simulator Pegasus supports will work (the vAMSYS Pegasus guide lists them). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
+    ...(defaults.length ? [{ q: "Do I need add-on aircraft?", a: addOnAnswer(snapshot, defaults) }] : []),
+    { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, which works with MSFS 2020 and 2024, X-Plane 10, 11 and 12, Prepar3D, FSX and FS2004 (the vAMSYS Pegasus guide keeps the current list). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
     { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },
     { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
     { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you fly online, use your CRX callsign and follow the network's rules: you stay at the controls, monitor the frequency and make every radio call yourself." },
@@ -809,15 +890,27 @@ export function PilotsPage({ snapshot }: PageProps) {
 
   return (
     <>
-      <PageHeader eyebrow="Fly with us" title="How a Crossroads flight works" lede={`Six steps from application to accepted PIREP. Fly our ${facts.routes}-route schedule from home and build your logbook from Cadet to Chief Pilot.`}>
+      <PageHeader eyebrow="Fly with us" title="How to join and fly" lede={`Six steps from vAMSYS sign-up to your first accepted PIREP. Fly our ${facts.routes}-route schedule from home and build your logbook from Cadet to Chief Pilot.`}>
         <div className="hero__actions">
-          <JoinButton snapshot={snapshot} label={REGISTER_LABEL} />
+          {open ? <JoinButton snapshot={snapshot} /> : null}
           {airline.pilot_login_url ? <a className="button button--ghost" href={airline.pilot_login_url} rel="noopener">Existing pilots: log in</a> : null}
           {airline.discord_url ? <a className="button button--ghost" href={airline.discord_url} rel="noopener">Join our Discord</a> : null}
         </div>
       </PageHeader>
 
       <section className="page">
+        {open ? null : (
+          <p className="callout">
+            <strong>Registration isn't open yet.</strong> {REGISTRATION_CLOSED} Until then, <a href="#/routes">explore the network</a>, plan your first flight and read the <a href="#/handbook">pilot handbook</a>.
+          </p>
+        )}
+        <div className="two-up">
+          <div className="mini-card">
+            <h2 className="h3">New airline, founding pilots welcome</h2>
+            <p>{NEW_AIRLINE}</p>
+          </div>
+          {first ? <FirstFlightCard first={first} snapshot={snapshot} /> : null}
+        </div>
         <ol className="walkthrough">
           {WALKTHROUGH.map((step, i) => (
             <li key={step.title} className="walkthrough__step">
@@ -827,6 +920,11 @@ export function PilotsPage({ snapshot }: PageProps) {
                 <h2>{step.title}</h2>
                 <p>{step.body}</p>
                 <ul className="ticks">{step.tips.map((t) => <li key={t}>{t}</li>)}</ul>
+                {step.join ? (
+                  open && airline.join_url
+                    ? <p><a className="text-link" href={airline.join_url} rel="noopener">Crossroads sign-up page on vAMSYS&nbsp;↗</a></p>
+                    : <p className="fineprint">Not open yet: see the note at the top of this page.</p>
+                ) : null}
                 {step.link ? <a className="text-link" href={step.link.href} rel="noopener" target="_blank">{step.link.label}&nbsp;↗<span className="visually-hidden"> (opens in a new tab)</span></a> : null}
               </div>
             </li>

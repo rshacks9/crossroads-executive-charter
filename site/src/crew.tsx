@@ -271,7 +271,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
               Briefing built {relativeAge(crew.generated_at)}{crew.weather_source ? ` with weather from ${crew.weather_source}` : " without live weather"}. {crew.notes.runways} For flight simulation only, never for real-world navigation.
             </p>
             <div className="hero__actions">
-              {snapshot.airline.pilot_login_url ? <a className="button" href={snapshot.airline.pilot_login_url} rel="noopener">Book this flight in Phoenix</a> : null}
+              {snapshot.airline.pilot_login_url ? <a className="button" href={snapshot.airline.pilot_login_url} rel="noopener">Book on vAMSYS</a> : null}
             </div>
           </footer>
         </article>
