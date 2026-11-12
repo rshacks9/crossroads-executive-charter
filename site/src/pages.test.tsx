@@ -9,12 +9,13 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
+const { DISCORD_LABEL, DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, weatherBoard, weeklyTime } = await import("./data");
-const { WeatherBoard } = await import("./crew");
+const { CrewPage, WeatherBoard } = await import("./crew");
+const { Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
 
@@ -556,6 +557,35 @@ describe("texts follow the data", () => {
 
   it("says 'fictional' in the first screen", () => {
     expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
+  });
+});
+
+describe("the Discord link", () => {
+  // A stand-in address for the test only: site.config.json keeps discord_url null until the Discord exists.
+  const invite = "https://discord.example/crossroads";
+  const withDiscord: Snapshot = { ...snapshot, airline: { ...snapshot.airline, discord_url: invite } };
+  const everyPage = (s: Snapshot) => [
+    ...[HomePage, FleetPage, RoutesPage, DestinationsPage, ServicesPage, PlanPage, LivePage, CareersPage, HandbookPage, ResourcesPage, StatsPage, CrewPage, NewsPage, AboutPage, PilotsPage, NotFoundPage].map((Page) => renderToString(<Page snapshot={s} />)),
+    renderToString(<AirportPage snapshot={s} icao="KIND" />),
+    renderToString(<TypePage snapshot={s} code="C510" />),
+    renderToString(<RoutePage snapshot={s} route={findRoute(s, "CRX115")} />),
+    renderToString(<Footer snapshot={s} />),
+  ];
+
+  it("shows nothing about Discord while discord_url is null", () => {
+    const config = JSON.parse(readFileSync(new URL("../../site.config.json", import.meta.url), "utf-8"));
+    expect(config.discord_url).toBeNull();
+    expect(snapshot.airline.discord_url).toBeNull();
+    for (const html of [...everyPage(snapshot), renderToString(<Footer snapshot={null} />)]) expect(html).not.toMatch(/discord/i);
+  });
+
+  it("links Join the Discord on the join page and in the footer once discord_url is set", () => {
+    expect(DISCORD_LABEL).toBe("Join the Discord");
+    const link = `href="${invite}" rel="noopener">${DISCORD_LABEL}</a>`;
+    expect(renderToString(<PilotsPage snapshot={withDiscord} />)).toContain(`<a class="button button--ghost" ${link}`);
+    expect(renderToString(<Footer snapshot={withDiscord} />)).toContain(`<li><a ${link}</li>`);
+    // Only those two places link it.
+    expect(everyPage(withDiscord).filter((html) => html.includes(invite))).toHaveLength(2);
   });
 });
 

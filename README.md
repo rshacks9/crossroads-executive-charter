@@ -101,6 +101,9 @@ and the run summary.
 4. **Pages.** Repository → Settings → Pages → Source: *GitHub Actions*. Run the workflow once from the
    Actions tab. Add a custom domain there if you have one.
 5. **Links.** Fill `pilot_login_url` and `discord_url` in `site.config.json` (https only).
+   `discord_url` stays `null` until the Crossroads Discord exists: while it is null nothing about
+   Discord shows, and once it holds the invite link a "Join the Discord" link appears on the Fly with
+   us page and in the footer.
    `join_url` says whether pilot registration is open. Set it to `https://vamsys.io/register/crossroads`
    once that page shows the vAMSYS sign-up form; every "Register on vAMSYS" button and the footer link
    then go straight to it. While it is unset the join buttons read "How to join" and open the Fly with

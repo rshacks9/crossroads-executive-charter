@@ -104,6 +104,8 @@ export function joinHref(snapshot: Pick<Snapshot, "airline">): { href: string; e
 }
 
 export const REGISTER_LABEL = "Register on vAMSYS";
+/** The Discord link on Fly with us and in the footer, shown only once discord_url is set in site.config.json. */
+export const DISCORD_LABEL = "Join the Discord";
 /** The label of the buttons that lead to the Fly-with-us page. */
 export const HOW_TO_JOIN = "How to join";
 
@@ -923,7 +925,7 @@ export function PilotsPage({ snapshot }: PageProps) {
         <div className="hero__actions">
           {open ? <JoinButton snapshot={snapshot} /> : null}
           {airline.pilot_login_url ? <a className="button button--ghost" href={airline.pilot_login_url} rel="noopener">Existing pilots: log in</a> : null}
-          {airline.discord_url ? <a className="button button--ghost" href={airline.discord_url} rel="noopener">Join our Discord</a> : null}
+          {airline.discord_url ? <a className="button button--ghost" href={airline.discord_url} rel="noopener">{DISCORD_LABEL}</a> : null}
         </div>
       </PageHeader>
 

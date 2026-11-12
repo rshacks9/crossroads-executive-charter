@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { type Snapshot, isStale, loadSnapshot, relativeAge } from "./data";
 import { CrewPage } from "./crew";
 import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./info";
-import { FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
+import { DISCORD_LABEL, FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
 import { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, SearchDialog, StatsPage, TypePage } from "./explore-pages";
 import type { Location } from "./explore";
 import { SEARCH_EVENT, findRoute, isSearchShortcut, parseLocation, setMeta } from "./explore";
@@ -126,6 +126,77 @@ function ThemeToggle() {
   );
 }
 
+/**
+ * The site footer. The Elsewhere links appear only for what site.config.json sets: the vAMSYS sign-up
+ * page while registration is open, the pilot login, the Discord once discord_url is set, and a contact.
+ */
+export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
+  const airline = snapshot?.airline;
+  return (
+    <footer className="footer">
+      <div className="footer__inner">
+        <div className="footer__brand">
+          <a className="wordmark" href="#/">
+            <Mark />
+            <span className="wordmark__text">
+              <strong>Crossroads</strong>{" "}
+              <small>Executive &amp; Charter</small>
+            </span>
+            <span className="visually-hidden">, home</span>
+          </a>
+          <p>Executive and charter flying from the Crossroads of America. Indianapolis Executive (KTYQ) and Indianapolis International (KIND).</p>
+        </div>
+        <nav className="footer__cols" aria-label="Footer">
+          <div>
+            <p className="footer__head">The airline</p>
+            <ul>
+              <li><a href="#/fleet">Fleet</a></li>
+              <li><a href="#/routes">Route network</a></li>
+              <li><a href="#/destinations">Destinations</a></li>
+              <li><a href="#/stats">Network stats</a></li>
+              <li><a href="#/plan">Plan a charter</a></li>
+              <li><a href="#/services">Divisions &amp; services</a></li>
+              <li><a href="#/about">About</a></li>
+              <li><a href="#/news">News &amp; NOTAMs</a></li>
+            </ul>
+          </div>
+          <div>
+            <p className="footer__head">Pilots</p>
+            <ul>
+              <li><a href="#/pilots">How to join</a></li>
+              <li><a href="#/careers">Career &amp; ranks</a></li>
+              <li><a href="#/handbook">Handbook &amp; SOPs</a></li>
+              <li><a href="#/resources">Pilot resources</a></li>
+              <li><a href="#/crew">Crew Tools</a></li>
+              <li><a href="#/live">Live flights</a></li>
+            </ul>
+          </div>
+          <div>
+            <p className="footer__head">Elsewhere</p>
+            <ul>
+              {/* Only while registration is open (pages.tsx registrationOpen). */}
+              {airline?.join_url ? <li><a href={airline.join_url} rel="noopener">Register on vAMSYS</a></li> : null}
+              {airline?.pilot_login_url ? <li><a href={airline.pilot_login_url} rel="noopener">Pilot login (vAMSYS)</a></li> : null}
+              {airline?.discord_url ? <li><a href={airline.discord_url} rel="noopener">{DISCORD_LABEL}</a></li> : null}
+              {airline?.contact_email ? <li><a href={`mailto:${airline.contact_email}`}>Contact</a></li> : null}
+            </ul>
+          </div>
+        </nav>
+        <p className="footer__disclaimer">{DISCLAIMER}</p>
+        <p className="footer__meta">
+          {snapshot ? (
+            <>
+              {snapshot.source === "vamsys" ? "Live data from vAMSYS" : snapshot.source === "preview" ? "Schedule as published in vAMSYS" : "Sample data only"} · updated{" "}
+              <time dateTime={snapshot.generated_at}>{relativeAge(snapshot.generated_at)}</time> ·{" "}
+            </>
+          ) : null}
+          Map data © OpenStreetMap contributors · Weather from aviationweather.gov · For flight simulation only, never for real-world navigation.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
 const REFRESH_MS = 60_000;
 
 export function App() {
@@ -220,7 +291,6 @@ export function App() {
     return () => observer.disconnect();
   }, []);
 
-  const airline = snapshot?.airline;
   // Every page but Home, in ROUTES order so "Fly with us" stays last. Pages without a place in the
   // desktop bar (nav: false) are listed in the menu only: .nav__extra is hidden from 1361 px.
   const navRoutes = ROUTES.filter((r) => r.path);
@@ -346,67 +416,7 @@ export function App() {
       </main>
       {snapshot ? <SearchDialog snapshot={snapshot} open={searchOpen} onClose={() => setSearchOpen(false)} /> : null}
 
-      <footer className="footer">
-        <div className="footer__inner">
-          <div className="footer__brand">
-            <a className="wordmark" href="#/">
-              <Mark />
-              <span className="wordmark__text">
-                <strong>Crossroads</strong>{" "}
-                <small>Executive &amp; Charter</small>
-              </span>
-              <span className="visually-hidden">, home</span>
-            </a>
-            <p>Executive and charter flying from the Crossroads of America. Indianapolis Executive (KTYQ) and Indianapolis International (KIND).</p>
-          </div>
-          <nav className="footer__cols" aria-label="Footer">
-            <div>
-              <p className="footer__head">The airline</p>
-              <ul>
-                <li><a href="#/fleet">Fleet</a></li>
-                <li><a href="#/routes">Route network</a></li>
-                <li><a href="#/destinations">Destinations</a></li>
-                <li><a href="#/stats">Network stats</a></li>
-                <li><a href="#/plan">Plan a charter</a></li>
-                <li><a href="#/services">Divisions &amp; services</a></li>
-                <li><a href="#/about">About</a></li>
-                <li><a href="#/news">News &amp; NOTAMs</a></li>
-              </ul>
-            </div>
-            <div>
-              <p className="footer__head">Pilots</p>
-              <ul>
-                <li><a href="#/pilots">How to join</a></li>
-                <li><a href="#/careers">Career &amp; ranks</a></li>
-                <li><a href="#/handbook">Handbook &amp; SOPs</a></li>
-                <li><a href="#/resources">Pilot resources</a></li>
-                <li><a href="#/crew">Crew Tools</a></li>
-                <li><a href="#/live">Live flights</a></li>
-              </ul>
-            </div>
-            <div>
-              <p className="footer__head">Elsewhere</p>
-              <ul>
-                {/* Only while registration is open (pages.tsx registrationOpen). */}
-                {airline?.join_url ? <li><a href={airline.join_url} rel="noopener">Register on vAMSYS</a></li> : null}
-                {airline?.pilot_login_url ? <li><a href={airline.pilot_login_url} rel="noopener">Pilot login (vAMSYS)</a></li> : null}
-                {airline?.discord_url ? <li><a href={airline.discord_url} rel="noopener">Discord</a></li> : null}
-                {airline?.contact_email ? <li><a href={`mailto:${airline.contact_email}`}>Contact</a></li> : null}
-              </ul>
-            </div>
-          </nav>
-          <p className="footer__disclaimer">{DISCLAIMER}</p>
-          <p className="footer__meta">
-            {snapshot ? (
-              <>
-                {snapshot.source === "vamsys" ? "Live data from vAMSYS" : snapshot.source === "preview" ? "Schedule as published in vAMSYS" : "Sample data only"} · updated{" "}
-                <time dateTime={snapshot.generated_at}>{relativeAge(snapshot.generated_at)}</time> ·{" "}
-              </>
-            ) : null}
-            Map data © OpenStreetMap contributors · Weather from aviationweather.gov · For flight simulation only, never for real-world navigation.
-          </p>
-        </div>
-      </footer>
+      <Footer snapshot={snapshot} />
     </div>
   );
 }
