@@ -239,6 +239,15 @@ class GroupFlightTests(unittest.TestCase):
         site = {**SITE, "group_flight": {"weekday": " sunday ", "utc": "20:00"}}
         self.assertEqual(build(site=site)["airline"]["group_flight"], {"weekday": "Sunday", "utc": "20:00"})
 
+    def test_the_first_date_is_kept_when_it_falls_on_that_weekday(self):
+        sunday = {"weekday": "Sunday", "utc": "20:00"}
+        site = {**SITE, "group_flight": {**sunday, "first": " 2026-11-22 "}}
+        self.assertEqual(build(site=site)["airline"]["group_flight"], {**sunday, "first": "2026-11-22"})
+        for first in ("2026-11-21", "22/11/2026", "2026-02-30", 20261122, None, ""):
+            with self.subTest(first=first):
+                site = {**SITE, "group_flight": {**sunday, "first": first}}
+                self.assertEqual(build(site=site)["airline"]["group_flight"], sunday)
+
     def test_none_unless_both_are_valid(self):
         self.assertIsNone(build()["airline"]["group_flight"])
         for value in (

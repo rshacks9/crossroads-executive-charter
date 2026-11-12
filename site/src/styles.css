@@ -351,6 +351,7 @@ main:focus { outline: none; }
 .steps p { color: var(--text-2); }
 
 .event-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.group-flight { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; margin: 0 0 28px; }
 .event { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
 .event__date { background: var(--ink); color: var(--on-ink); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 0; height: 72px; }
 .event__date span { font: 600 13px var(--body); text-transform: uppercase; letter-spacing: 0.1em; color: var(--signal); }

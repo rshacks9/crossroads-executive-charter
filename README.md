@@ -110,9 +110,13 @@ and the run summary.
    us page (`#/pilots`), which says registration isn't open yet. On 2026-11-12 the register page
    redirected to the vAMSYS sign-in page, so `join_url` stays unset until that changes.
 6. **Group flight.** `group_flight` holds the weekly group flight's weekday and UTC start time
-   (`{"weekday": "Sunday", "utc": "20:00"}`). The News page shows it in UTC and Indianapolis time
-   (15:00 in winter, 16:00 in summer) while vAMSYS lists no events, and until `join_url` is set it
-   says the group flight starts once registration opens. Remove the entry to show no group flight.
+   (`{"weekday": "Sunday", "utc": "20:00"}`) and, once it is decided, the date of the first one
+   (`"first": "2026-11-22"`, a date on that weekday; a date on another weekday is ignored). The News
+   page shows it under its own heading, above the vAMSYS events, in UTC and Indianapolis time (15:00
+   in winter, 16:00 in summer). Until the first one has started it is in the future tense: it starts
+   once registration opens while `join_url` is unset, "soon" once `join_url` is set, and on the
+   first date once that is set; after that, the founder flies it every week. Remove the entry to
+   show no group flight.
 7. **Flights flown by automation.** `automation_flights` lists the founder's own flights that his
    automation tools flew while he monitored them, by vAMSYS record: `{"booking_id": 4875826}` for the
    booking the flight was flown from, `{"pirep_id": 1234567}` for its PIREP, or both in one entry.

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
-import { formatDuration, formatNumber, hashParam, routeInDivision, weeklyTime } from "./data";
+import { firstWeekly, formatDuration, formatNumber, hashParam, routeInDivision, utcDayMonth, weeklyTime } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, KTYQ_JETS, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
 import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
 import { capital, countWords, numberWord } from "./html-facts";
@@ -414,19 +414,28 @@ export function AboutPage({ snapshot }: PageProps) {
 
 /**
  * The weekly group flight, from site.config.json (group_flight): its day and UTC time with the
- * Indianapolis time, and, until registration opens, that it starts then. Null when none is set.
+ * Indianapolis time. It is in the future tense until the first one has started: that starts on the
+ * first date once one is set, otherwise once registration opens, or "soon" once it is open, so the
+ * page never promises the very next Sunday. Null when none is set.
  */
 export function groupFlightNote(snapshot: Pick<Snapshot, "airline" | "generated_at">): string | null {
   const flight = snapshot.airline.group_flight;
+  if (!flight) return null;
   const generated = Date.parse(snapshot.generated_at);
-  const when = flight ? weeklyTime(flight, Number.isNaN(generated) ? new Date() : new Date(generated)) : null;
+  const now = Number.isNaN(generated) ? new Date() : new Date(generated);
+  const first = firstWeekly(flight);
+  const started = first !== null && first.getTime() <= now.getTime();
+  const when = weeklyTime(flight, first && !started ? first : now);
   if (!when) return null;
+  if (started) return `The weekly group flight is on ${when}, and the founder flies it every week.`;
+  if (first) return `A weekly group flight on ${when} starts on ${utcDayMonth(first)}, and the founder will fly it every week.`;
   return registrationOpen(snapshot)
-    ? `The weekly group flight is on ${when}, and the founder flies it every week.`
-    : `A weekly group flight on ${when} starts once registration opens, and the founder flies it every week.`;
+    ? `A weekly group flight on ${when} starts soon; its first date will be posted here, and the founder will fly it every week.`
+    : `A weekly group flight on ${when} starts once registration opens, and the founder will fly it every week.`;
 }
 
 export function NewsPage({ snapshot }: PageProps) {
+  const groupFlight = groupFlightNote(snapshot);
   const notams = NEWS.filter((n) => n.kind === "NOTAM");
   const news = NEWS.filter((n) => n.kind !== "NOTAM");
   return (
@@ -440,12 +449,19 @@ export function NewsPage({ snapshot }: PageProps) {
         <div>
           <SectionHead eyebrow="Standing notices" title="NOTAMs" />
           <ul className="news-list news-list--notam">{notams.map((item) => <NewsCard key={item.title} item={item} />)}</ul>
+          {/* From site.config.json, so not under the vAMSYS heading. */}
+          {groupFlight ? (
+            <>
+              <SectionHead eyebrow="Every week" title="Group flight" />
+              <p className="group-flight">{groupFlight}</p>
+            </>
+          ) : null}
           <SectionHead eyebrow="From vAMSYS" title="Events" />
           {snapshot.unavailable.includes("events") ? <p className="callout">Events could not be refreshed this time.</p> : null}
           {snapshot.events.length ? (
             <ul className="event-list">{snapshot.events.map((e) => <EventItem key={e.name + e.start} event={e} />)}</ul>
           ) : (
-            <p className="empty">{groupFlightNote(snapshot) ?? "No group flights are scheduled yet."} Open tours are on the <a href="#/careers">Careers page</a>.</p>
+            <p className="empty">No vAMSYS events are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>
           )}
         </div>
       </section>

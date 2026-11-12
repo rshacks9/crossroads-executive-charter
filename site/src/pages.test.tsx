@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import type { Crew, LiveFlight, RecentFlight, Snapshot } from "./data";
+import type { Crew, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./data";
 
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
@@ -13,7 +13,7 @@ const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, Fle
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
-const { formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, weatherBoard, weeklyTime } = await import("./data");
+const { firstWeekly, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
 const { CrewPage, WeatherBoard } = await import("./crew");
 const { Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
@@ -460,7 +460,7 @@ describe("texts follow the data", () => {
     for (const item of NEWS) expect(`${item.title} ${item.body}`).not.toMatch(/badge|under Activities/i);
     expect(careers.match(/<li class="tour">/g)).toHaveLength(TOURS.length);
     const news = text(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />));
-    expect(news).toContain("every week. Open tours are on the Careers page");
+    expect(news).toContain("No vAMSYS events are scheduled yet. Open tours are on the Careers page");
     expect(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />)).toContain('Open tours are on the <a href="#/careers">Careers page</a>.</p>');
   });
 
@@ -647,37 +647,57 @@ describe("the Discord link", () => {
 });
 
 describe("the weekly group flight", () => {
-  const sunday = { weekday: "Sunday", utc: "20:00" };
+  const sunday: GroupFlight = { weekday: "Sunday", utc: "20:00" };
+  const REGISTER = "https://vamsys.io/register/crossroads";
+  const at = (generated_at: string, group_flight: GroupFlight | null, join_url: string | null = null): Snapshot =>
+    ({ ...snapshot, generated_at, events: [], airline: { ...snapshot.airline, group_flight, join_url } });
 
   it("comes from one value in site.config.json, shown in UTC and Indianapolis time", () => {
     const config = JSON.parse(readFileSync(new URL("../../site.config.json", import.meta.url), "utf-8"));
     expect(config.group_flight).toEqual(sunday);
     expect(snapshot.airline.group_flight).toEqual(sunday);
     // Indianapolis keeps daylight saving, so 20:00Z is 15:00 there in winter and 16:00 in summer.
-    expect(weeklyTime(sunday, new Date("2026-11-12T12:00:00Z"))).toBe("Sundays at 20:00Z (15:00 Indianapolis)");
-    expect(weeklyTime(sunday, new Date("2027-07-01T12:00:00Z"))).toBe("Sundays at 20:00Z (16:00 Indianapolis)");
+    expect(weeklyTime(sunday, new Date("2026-11-12T12:00:00Z"))).toBe("Sundays at 20:00Z (15:00 in Indianapolis)");
+    expect(weeklyTime(sunday, new Date("2027-07-01T12:00:00Z"))).toBe("Sundays at 20:00Z (16:00 in Indianapolis)");
     // The next one: later the same Sunday, or the Sunday after once it has started.
     expect(nextWeekly(sunday, new Date("2026-11-12T12:00:00Z"))?.toISOString()).toBe("2026-11-15T20:00:00.000Z");
     expect(nextWeekly(sunday, new Date("2026-11-15T19:59:00Z"))?.toISOString()).toBe("2026-11-15T20:00:00.000Z");
     expect(nextWeekly(sunday, new Date("2026-11-15T20:01:00Z"))?.toISOString()).toBe("2026-11-22T20:00:00.000Z");
     // A UTC time that falls on another day in Indianapolis names that day.
-    expect(weeklyTime({ weekday: "Monday", utc: "02:00" }, new Date("2026-11-12T12:00:00Z"))).toBe("Mondays at 02:00Z (Sunday 21:00 Indianapolis)");
+    expect(weeklyTime({ weekday: "Monday", utc: "02:00" }, new Date("2026-11-12T12:00:00Z"))).toBe("Mondays at 02:00Z (Sunday 21:00 in Indianapolis)");
     for (const bad of [{ weekday: "Sun", utc: "20:00" }, { weekday: "Sunday", utc: "8pm" }, { weekday: "Sunday", utc: "24:00" }]) expect(weeklyTime(bad, new Date())).toBeNull();
+    // The first one, once its date is set.
+    expect(firstWeekly({ ...sunday, first: "2026-11-22" })?.toISOString()).toBe("2026-11-22T20:00:00.000Z");
+    expect(firstWeekly(sunday)).toBeNull();
+    expect(utcDayMonth(new Date("2026-11-22T20:00:00Z"))).toBe("Sunday 22 November");
   });
 
-  it("says on the News page that it starts once registration opens and that the founder flies it every week", () => {
-    const when = weeklyTime(sunday, new Date(snapshot.generated_at));
-    const closed = text(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />));
-    expect(closed).toContain(`A weekly group flight on ${when} starts once registration opens, and the founder flies it every week. Open tours are on the Careers page`);
-    expect(closed).toMatch(/on Sundays at 20:00Z [(]1[56]:00 Indianapolis[)] starts/);
-    expect(closed).not.toContain("No group flights are scheduled yet");
-    const open: Snapshot = { ...snapshot, events: [], airline: { ...snapshot.airline, join_url: "https://vamsys.io/register/crossroads" } };
-    expect(groupFlightNote(open)).toBe(`The weekly group flight is on ${when}, and the founder flies it every week.`);
-    expect(text(renderToString(<NewsPage snapshot={open} />))).not.toContain("once registration opens");
-    // With no group flight set, the box says so.
-    const none: Snapshot = { ...snapshot, events: [], airline: { ...snapshot.airline, group_flight: null } };
+  it("is in the future tense until the first one starts, and never promises the very next Sunday", () => {
+    const when = "Sundays at 20:00Z (15:00 in Indianapolis)";
+    expect(groupFlightNote(at("2026-11-12T19:00:00Z", sunday))).toBe(`A weekly group flight on ${when} starts once registration opens, and the founder will fly it every week.`);
+    // Registration open, no first date yet: soon, not next Sunday.
+    expect(groupFlightNote(at("2026-11-14T12:00:00Z", sunday, REGISTER))).toBe(`A weekly group flight on ${when} starts soon; its first date will be posted here, and the founder will fly it every week.`);
+    // A first date: that date until it starts, then the present tense.
+    const first: GroupFlight = { ...sunday, first: "2026-11-22" };
+    for (const join of [null, REGISTER]) {
+      expect(groupFlightNote(at("2026-11-14T12:00:00Z", first, join))).toBe(`A weekly group flight on ${when} starts on Sunday 22 November, and the founder will fly it every week.`);
+    }
+    expect(groupFlightNote(at("2026-11-22T19:59:00Z", first, REGISTER))).toContain("starts on Sunday 22 November");
+    expect(groupFlightNote(at("2026-11-22T20:00:00Z", first, REGISTER))).toBe(`The weekly group flight is on ${when}, and the founder flies it every week.`);
+    for (const s of [at("2026-11-12T19:00:00Z", sunday), at("2026-11-14T12:00:00Z", first, REGISTER)]) expect(groupFlightNote(s)).not.toMatch(/founder flies/);
+  });
+
+  it("has its own heading on the News page, above the vAMSYS events", () => {
+    const page = text(renderToString(<NewsPage snapshot={at(snapshot.generated_at, sunday)} />));
+    expect(page).toMatch(/Every week Group flight A weekly group flight on Sundays at 20:00Z [(]1[56]:00 in Indianapolis[)] starts once registration opens/);
+    const events = page.indexOf("From vAMSYS Events");
+    expect(events).toBeGreaterThan(page.indexOf("Every week Group flight"));
+    expect(page.slice(events)).not.toMatch(/group flight/i);
+    expect(page.slice(events)).toContain("No vAMSYS events are scheduled yet. Open tours are on the Careers page");
+    // With no group flight set, nothing about one.
+    const none = at(snapshot.generated_at, null);
     expect(groupFlightNote(none)).toBeNull();
-    expect(text(renderToString(<NewsPage snapshot={none} />))).toContain("No group flights are scheduled yet. Open tours are on the Careers page");
+    expect(text(renderToString(<NewsPage snapshot={none} />))).not.toContain("Every week Group flight");
   });
 });
 

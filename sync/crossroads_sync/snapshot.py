@@ -499,7 +499,9 @@ def _sim_aircraft(value: Any) -> dict[str, str]:
 
 
 def _group_flight(value: Any) -> dict[str, str] | None:
-    """The weekly group flight from site.config.json: a weekday and a UTC time, e.g. Sunday at 20:00."""
+    """The weekly group flight from site.config.json: a weekday and a UTC time, e.g. Sunday at 20:00,
+    and the date of the first one (``first``, YYYY-MM-DD) once it is set. A first date on another
+    weekday is left out."""
     if not isinstance(value, dict):
         return None
     day, utc = value.get("weekday"), value.get("utc")
@@ -508,7 +510,11 @@ def _group_flight(value: Any) -> dict[str, str] | None:
     weekday = next((d for d in WEEKDAYS if d.lower() == day.strip().lower()), None)
     if weekday is None or not _UTC_TIME.match(utc.strip()):
         return None
-    return {"weekday": weekday, "utc": utc.strip()}
+    flight = {"weekday": weekday, "utc": utc.strip()}
+    first = _day(value.get("first"))
+    if first is not None and WEEKDAYS[date.fromisoformat(first).weekday()] == weekday:
+        flight["first"] = first
+    return flight
 
 
 def site_settings(site: Mapping[str, Any]) -> dict[str, Any]:

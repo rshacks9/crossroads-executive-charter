@@ -7,10 +7,12 @@ export interface Division {
   fleets: string[];
 }
 
-/** A weekly group flight: the weekday and the UTC start time ("20:00"), from site.config.json. */
+/** A weekly group flight: the weekday, the UTC start time ("20:00") and, once set, the date of the first one, from site.config.json. */
 export interface GroupFlight {
   weekday: string;
   utc: string;
+  /** YYYY-MM-DD, on the weekday; missing until the first date is decided. */
+  first?: string;
 }
 
 export interface Airline {
@@ -257,7 +259,7 @@ export function nextWeekly(flight: GroupFlight, from: Date): Date | null {
 }
 
 /**
- * "Sundays at 20:00Z (15:00 Indianapolis)": the UTC time, and the Indianapolis time of the next one,
+ * "Sundays at 20:00Z (15:00 in Indianapolis)": the UTC time, and the Indianapolis time of the next one,
  * which moves with daylight saving. A local time on another day names that day.
  */
 export function weeklyTime(flight: GroupFlight, from: Date): string | null {
@@ -266,7 +268,23 @@ export function weeklyTime(flight: GroupFlight, from: Date): string | null {
   const parts = new Intl.DateTimeFormat("en-US", { timeZone: HOME_TIME_ZONE, weekday: "long", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(next);
   const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
   const day = part("weekday");
-  return `${flight.weekday}s at ${flight.utc}Z (${day === flight.weekday ? "" : `${day} `}${part("hour")}:${part("minute")} Indianapolis)`;
+  return `${flight.weekday}s at ${flight.utc}Z (${day === flight.weekday ? "" : `${day} `}${part("hour")}:${part("minute")} in Indianapolis)`;
+}
+
+/** The start of the first group flight, from its first date and UTC time, or null while no first date is set. */
+export function firstWeekly(flight: GroupFlight): Date | null {
+  const day = /^(\d{4})-(\d{2})-(\d{2})$/.exec(flight.first ?? "");
+  const time = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(flight.utc);
+  if (!day || !time) return null;
+  const start = new Date(Date.UTC(Number(day[1]), Number(day[2]) - 1, Number(day[3]), Number(time[1]), Number(time[2])));
+  return Number.isNaN(start.getTime()) ? null : start;
+}
+
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+/** "Sunday 22 November": the UTC weekday, day and month, the way the site's typed dates read. */
+export function utcDayMonth(date: Date): string {
+  return `${WEEKDAYS[date.getUTCDay()]} ${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]}`;
 }
 
 export function progressPercent(flight: Pick<LiveFlight, "route_nm" | "remaining_nm">): number | null {
