@@ -405,11 +405,15 @@ main:focus { outline: none; }
 .reasons p { color: var(--text-2); }
 
 .cta-band { background: var(--ink); color: var(--on-ink); margin-top: clamp(24px, 4vw, 48px); position: relative; overflow: hidden; }
-.cta-band::after { content: ""; position: absolute; right: -40px; top: 50%; width: 320px; height: 4px; background: var(--signal); transform: rotate(-12deg); opacity: .6; }
+/* The stroke starts at the content column's right edge, clear of the text and buttons: at 2560 px it
+   spans x 1880-2200, at 1366 a tip shows in the margin, and at 1,200 px and below it is clipped. */
+.cta-band::after { content: ""; position: absolute; right: calc(50% - var(--max) / 2 - 320px); top: 50%; width: 320px; height: 4px; background: var(--signal); transform: rotate(-12deg); opacity: .6; }
 .cta-band__inner { max-width: var(--max); margin: 0 auto; padding: clamp(36px, 6vw, 64px) var(--gutter); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; position: relative; z-index: 1; }
 .cta-band h2 { font-size: clamp(32px, 4.5vw, 48px); max-width: 18ch; }
 .cta-band p { color: var(--on-ink-2); margin-top: 8px; max-width: 48ch; }
 .cta-band .hero__actions { margin-top: 0; }
+/* A join band that ends the page meets the footer with no strip of page between (~ skips the search dialog). */
+main:has(> .cta-band:last-child) ~ .footer { margin-top: 0; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
 .chip-button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--field-line); background: var(--panel); font: 600 15px var(--body); color: var(--text); cursor: pointer; }
@@ -834,7 +838,12 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .footer__brand .wordmark { color: var(--on-ink); }
 .footer__brand p { max-width: 40ch; }
 .footer__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-@media (max-width: 560px) { .footer__cols { grid-template-columns: 1fr 1fr; } }
+/* Phones: "The airline" fills the left column, "Pilots" and "Elsewhere" stack on the right. */
+@media (max-width: 560px) {
+  .footer__cols { grid-template-columns: 1fr 1fr; }
+  .footer__cols > div:first-child { grid-row: span 2; }
+  .footer__brand p { max-width: none; }
+}
 .footer__head { font: 600 12px/1.3 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--signal); margin-bottom: 6px; }
 .footer__cols ul { list-style: none; margin: 0; padding: 0; }
 .footer__cols a { color: var(--on-ink); text-decoration: none; min-height: 36px; display: inline-flex; align-items: center; }
