@@ -14,7 +14,7 @@ const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { findRoute, onwardLegs, routeHref, suggestFleet } = await import("./explore");
 const { formatNumber, payloadTonnes, routeDivision } = await import("./data");
-const { FLEET_INFO } = await import("./content");
+const { FLEET_INFO, SERVICES } = await import("./content");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#x27;/g, "'").replace(/\s+/g, " ");
@@ -307,5 +307,18 @@ describe("pages render from the snapshot", () => {
     for (const href of pills) expect(href).toMatch(/^#[/]fleet[/][A-Z0-9]+$/);
     expect(pills).toContain("#/fleet/C510");
     expect(html).not.toContain('href="#/fleet"');
+  });
+
+  it("in-page jumps: Contents links carry their section's address, and the jump targets take focus", () => {
+    const html = renderToString(<HandbookPage snapshot={snapshot} />);
+    const links = [...html.matchAll(/<a href="#[/]handbook[?]s=([a-z]+)">/g)].map((m) => m[1]);
+    const sections = [...html.matchAll(/<section id="hb-([a-z]+)" class="hb-section" tabindex="-1">/g)].map((m) => m[1]);
+    expect(links).toHaveLength(7);
+    expect(links).toEqual(sections);
+    expect(html).not.toContain('href="#/handbook"');
+    const services = renderToString(<ServicesPage snapshot={snapshot} />);
+    const shown = SERVICES.filter((s) => snapshot.airline.divisions.some((d) => d.name === s.division));
+    expect(services.match(/<section id="service-[a-z-]+" class="page service" tabindex="-1"/g)).toHaveLength(shown.length);
+    for (const page of [html, services]) expect(page).not.toMatch(/href="#[^/]/);
   });
 });

@@ -14,6 +14,7 @@ import {
   findRoute,
   initialCourse,
   isSearchShortcut,
+  jumpTo,
   listJoin,
   mapLegendKeys,
   markerKeyAction,
@@ -551,5 +552,21 @@ describe("tours", () => {
     const { TOURS } = await import("./content");
     expect(TOURS.map((t) => t.legs.length)).toEqual([8, 6, 8]);
     for (const tour of TOURS) for (const [from, to] of tour.legs) expect(snapshot.routes.some((r) => r.from === from && r.to === to), `${tour.name} ${from}-${to}`).toBe(true);
+  });
+});
+
+describe("in-page jumps", () => {
+  it("scroll the target into view, then focus it without a second scroll", () => {
+    const calls: string[] = [];
+    jumpTo({
+      scrollIntoView: (options) => void calls.push(`scroll ${JSON.stringify(options)}`),
+      focus: (options) => void calls.push(`focus ${JSON.stringify(options)}`),
+    });
+    expect(calls).toEqual(['scroll {"block":"start"}', 'focus {"preventScroll":true}']);
+  });
+
+  it("do nothing when the target is not on the page", () => {
+    expect(() => jumpTo(null)).not.toThrow();
+    expect(() => jumpTo(undefined)).not.toThrow();
   });
 });

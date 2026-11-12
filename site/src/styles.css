@@ -113,6 +113,8 @@ abbr[title] { text-decoration: none; cursor: help; }
 .skip-link { position: absolute; left: -999px; top: 8px; z-index: 1100; padding: 10px 14px; background: var(--panel); color: var(--text); font-weight: 600; border-radius: var(--radius); box-shadow: var(--shadow); }
 .skip-link:focus { left: 8px; }
 main:focus { outline: none; }
+/* Sections that in-page jumps focus (tabIndex -1) take no ring either. */
+.hb-section:focus, .service:focus { outline: none; }
 
 /* ------------------------------------------------------------- masthead */
 .masthead { background: var(--ink); color: var(--on-ink); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--ink-line); }
@@ -460,7 +462,7 @@ main:focus { outline: none; }
 .briefing > *, .briefing__grid > *, .wx-panel > * { min-width: 0; }
 .briefing h3 { font-size: 26px; margin-bottom: 10px; }
 .briefing__foot { border-top: 1px solid var(--mist); padding-top: 16px; display: grid; gap: 12px; }
-.fineprint { font-size: 13px; color: var(--text-2); margin-top: 8px; }
+.fineprint { font-size: 13px; color: var(--text-2); margin-top: 8px; max-width: 90ch; }
 .fuel-table tr.sum td, .fuel-table tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
 .fuel-table tr.total td { background: var(--warn-bg); }
 .wx-panel { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 12px; background: var(--paper); }
@@ -765,7 +767,9 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .handbook__body { display: grid; gap: 40px; min-width: 0; }
 .hb-section { display: grid; gap: 12px; }
 .hb-section > h2 { font-size: clamp(28px, 3.5vw, 36px); padding-bottom: 8px; border-bottom: 2px solid var(--text); }
-.hb-section > p { max-width: 72ch; }
+/* Paragraphs and lists keep a reading measure. The landing-rate scale is a bordered box like the
+   tables beside it, so it keeps the full width. */
+.hb-section > :is(p, ul, ol):not(.rate-scale) { max-width: 72ch; }
 .hb-section .table-wrap { margin-top: 4px; }
 .callsign-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 0; }
 .callsign-card div { background: var(--ink); color: var(--on-ink); border-radius: var(--radius); padding: 12px 14px; border-bottom: 3px solid var(--signal); }
@@ -776,6 +780,8 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .mini-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
 .mini-card h3 { font-size: 22px; margin-bottom: 6px; }
 .mini-card p { color: var(--text-2); }
+/* A long link ("Pegasus ACARS guide (vAMSYS docs)") wraps inside its card. */
+.mini-card .text-link { white-space: normal; }
 .sop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 14px; }
 .rate-scale { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
 @media (max-width: 760px) { .rate-scale { grid-template-columns: 1fr 1fr; } }

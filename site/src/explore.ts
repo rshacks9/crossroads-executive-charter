@@ -736,3 +736,16 @@ export function download(filename: string, text: string, type = "text/plain"): v
   a.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+// ------------------------------------------------------------------ in-page jumps
+
+/**
+ * An in-page jump: scroll a section into view, then move keyboard focus to it (the target needs
+ * tabIndex -1), so the next Tab continues from there. Jumps are buttons or onClick handlers, never a
+ * bare #id link: the hash router reads that as a page.
+ */
+export function jumpTo(el: Pick<HTMLElement, "scrollIntoView" | "focus"> | null | undefined): void {
+  if (!el) return;
+  el.scrollIntoView({ block: "start" });
+  el.focus({ preventScroll: true });
+}

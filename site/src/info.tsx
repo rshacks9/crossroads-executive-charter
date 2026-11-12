@@ -2,18 +2,18 @@ import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
-import { divisionBaseLabel, routeHref, typeHref } from "./explore";
+import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
 import { divisionColor } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
-/** Scroll to an element named in the hash query (e.g. #/services?d=cargo) once the page renders. */
+/** Jump to the section named in the hash query (e.g. #/services?d=cargo) once the page renders. */
 function useScrollToParam(param: string, prefix: string) {
   useEffect(() => {
     const wanted = hashParam(param);
     if (!wanted) return;
     const el = document.getElementById(`${prefix}${wanted}`);
-    if (el) window.setTimeout(() => el.scrollIntoView({ block: "start" }), 50);
+    if (el) window.setTimeout(() => jumpTo(el), 50);
   }, [param, prefix]);
 }
 
@@ -59,7 +59,7 @@ export function ServicesPage({ snapshot }: PageProps) {
           return <a key={s.slug} href={`#/services?d=${s.slug}`} className="chip-button" onClick={(e) => {
             // Same page: scroll instead of re-routing (the hash change alone would not re-run the effect).
             e.preventDefault();
-            document.getElementById(`service-${s.slug}`)?.scrollIntoView({ block: "start" });
+            jumpTo(document.getElementById(`service-${s.slug}`));
             window.history.replaceState(null, "", `#/services?d=${s.slug}`);
           }}>{index >= 0 ? <DivisionDot index={index} /> : null}{s.division}</a>;
         })}
@@ -72,7 +72,7 @@ export function ServicesPage({ snapshot }: PageProps) {
         const routes = snapshot.routes.filter((r) => routeInDivision(r, division));
         const destinations = new Set(routes.flatMap((r) => [r.from, r.to]).filter((icao) => icao !== "KTYQ" && icao !== "KIND"));
         return (
-          <section key={service.slug} id={`service-${service.slug}`} className="page service" style={{ ["--accent" as string]: divisionColor(index) }}>
+          <section key={service.slug} id={`service-${service.slug}`} className="page service" tabIndex={-1} style={{ ["--accent" as string]: divisionColor(index) }}>
             <div className="service__grid">
               <div>
                 <p className="eyebrow">{divisionBaseLabel(division, snapshot.fleet)}</p>
@@ -218,7 +218,19 @@ export function CareersPage({ snapshot }: PageProps) {
 
 // ------------------------------------------------------------------ handbook
 
+/** The handbook's sections in order: Contents links to #/handbook?s={id}, and the section is hb-{id}. */
+const HANDBOOK_CONTENTS: [id: string, label: string][] = [
+  ["callsigns", "Callsigns"],
+  ["blocks", "Flight-number blocks"],
+  ["bases", "Bases"],
+  ["fuel", "Fuel policy"],
+  ["ci", "Cost index"],
+  ["landing", "Landing rates"],
+  ["sops", "Rules of the road"],
+];
+
 export function HandbookPage({ snapshot }: PageProps) {
+  useScrollToParam("s", "hb-");
   const ktyq = snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ").map((f) => shortName(f.name));
   return (
     <>
@@ -227,17 +239,23 @@ export function HandbookPage({ snapshot }: PageProps) {
         <nav className="toc" aria-label="Handbook contents">
           <p className="eyebrow">Contents</p>
           <ol>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-callsigns")?.scrollIntoView(); }}>Callsigns</a></li>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-blocks")?.scrollIntoView(); }}>Flight-number blocks</a></li>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-bases")?.scrollIntoView(); }}>Bases</a></li>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-fuel")?.scrollIntoView(); }}>Fuel policy</a></li>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-ci")?.scrollIntoView(); }}>Cost index</a></li>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-landing")?.scrollIntoView(); }}>Landing rates</a></li>
-            <li><a href="#/handbook" onClick={(e) => { e.preventDefault(); document.getElementById("hb-sops")?.scrollIntoView(); }}>Rules of the road</a></li>
+            {HANDBOOK_CONTENTS.map(([id, label]) => {
+              const href = `#/handbook?s=${id}`;
+              return (
+                <li key={id}>
+                  <a href={href} onClick={(e) => {
+                    // Same page: jump to the section and give the page its address.
+                    e.preventDefault();
+                    jumpTo(document.getElementById(`hb-${id}`));
+                    window.history.replaceState(null, "", href);
+                  }}>{label}</a>
+                </li>
+              );
+            })}
           </ol>
         </nav>
         <div className="handbook__body">
-          <section id="hb-callsigns" className="hb-section">
+          <section id="hb-callsigns" className="hb-section" tabIndex={-1}>
             <h2>1. Callsigns</h2>
             <p>Every Crossroads flight has two identifiers. The <strong>flight number</strong> (CX101) is what you see in the schedule. The <strong>ATC callsign</strong> (CRX101) goes in your flight plan and on the radio.</p>
             <dl className="callsign-card">
@@ -250,7 +268,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             <p className="fineprint">CRX and “Crossroads” are used inside this virtual airline for simulation only.</p>
           </section>
 
-          <section id="hb-blocks" className="hb-section">
+          <section id="hb-blocks" className="hb-section" tabIndex={-1}>
             <h2>2. Flight-number blocks</h2>
             <p>The first digit tells you what kind of flight it is. As a rule, odd numbers are outbound and even numbers are the return.</p>
             <div className="table-wrap">
@@ -279,7 +297,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             </div>
           </section>
 
-          <section id="hb-bases" className="hb-section">
+          <section id="hb-bases" className="hb-section" tabIndex={-1}>
             <h2>3. Bases</h2>
             <div className="two-up">
               <div className="mini-card">
@@ -294,12 +312,12 @@ export function HandbookPage({ snapshot }: PageProps) {
             <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton, Teterboro–Zurich, Shannon–London City, Van Nuys–Honolulu, and CRX701-series light-jet legs such as Teterboro–Miami Executive, Morristown–Nantucket and Santa Monica–Las Vegas). Fly them as positioning or one-way trips.</p>
           </section>
 
-          <section id="hb-fuel" className="hb-section">
+          <section id="hb-fuel" className="hb-section" tabIndex={-1}>
             <h2>4. Fuel policy</h2>
             <ul className="ticks">{FUEL_POLICY.map((f) => <li key={f}>{f}</li>)}</ul>
           </section>
 
-          <section id="hb-ci" className="hb-section">
+          <section id="hb-ci" className="hb-section" tabIndex={-1}>
             <h2>5. Cost index and cruise</h2>
             <div className="table-wrap">
               <table className="table" role="table">
@@ -314,7 +332,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             </div>
           </section>
 
-          <section id="hb-landing" className="hb-section">
+          <section id="hb-landing" className="hb-section" tabIndex={-1}>
             <h2>6. Landing-rate expectations</h2>
             <p>We care more about a stabilised approach and touching down in the zone than about a number. Still, here is what we expect:</p>
             <ul className="rate-scale">
@@ -325,7 +343,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             <p className="fineprint">A smooth landing beyond the touchdown zone is worse than a firm one on the aim point. On short runways at KTYQ and the ski fields, put it down firmly.</p>
           </section>
 
-          <section id="hb-sops" className="hb-section">
+          <section id="hb-sops" className="hb-section" tabIndex={-1}>
             <h2>7. Rules of the road</h2>
             <div className="sop-grid">
               {SOP_RULES.map((s) => (
