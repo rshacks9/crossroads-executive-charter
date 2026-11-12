@@ -496,6 +496,8 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
   }
   .masthead, .notice, .footer, .crew__pick, .crew__intro, .wx-board, .crew__credit, .briefing__foot .hero__actions { display: none !important; }
   body { background: #fff; font-size: 12px; }
+  /* Plain block flow on paper: some browsers do not break a flex item across pages. */
+  .shell { display: block; min-height: 0; }
   .page { padding: 0; }
   .briefing { border: 0; padding: 0; }
   .metar { background: #fff; color: #000; border: 1px solid #999; }
