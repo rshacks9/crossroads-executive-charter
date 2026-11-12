@@ -9,7 +9,7 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, LivePage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { DivisionDot, FleetPage, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { findRoute, onwardLegs, routeHref, suggestFleet } = await import("./explore");
@@ -266,5 +266,15 @@ describe("pages render from the snapshot", () => {
       expect(html).not.toMatch(/Applications open soon|Apply to fly with us|Apply on vAMSYS/);
     }
     expect(renderToString(<PilotsPage snapshot={snapshot} />)).toContain("Register on vAMSYS");
+  });
+
+  it("keeps the page-header text in one block, with the facts or buttons after it", () => {
+    expect(renderToString(<PageHeader eyebrow="Fleet" title="From Mustang to 777F" />)).toBe(
+      '<header class="page-header"><div class="page-header__inner"><div class="page-header__text"><p class="eyebrow eyebrow--on-ink">Fleet</p><h1 class="page-title">From Mustang to 777F</h1></div></div></header>',
+    );
+    for (const html of [renderToString(<FleetPage snapshot={snapshot} />), renderToString(<StatsPage snapshot={snapshot} />), renderToString(<AirportPage snapshot={snapshot} icao="KIND" />)]) {
+      expect(html).toMatch(/<p class="page-header__lede">[^<]*<[/]p><[/]div><dl class="header-facts">/);
+    }
+    expect(renderToString(<PilotsPage snapshot={snapshot} />)).toMatch(/<p class="page-header__lede">[^<]*<[/]p><[/]div><div class="hero__actions">/);
   });
 });

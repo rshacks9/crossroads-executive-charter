@@ -46,9 +46,12 @@ export function PageHeader({ eyebrow, title, lede, children }: { eyebrow: string
   return (
     <header className="page-header">
       <div className="page-header__inner">
-        <p className="eyebrow eyebrow--on-ink">{eyebrow}</p>
-        <h1 className="page-title">{title}</h1>
-        {lede ? <p className="page-header__lede">{lede}</p> : null}
+        {/* One block for the text, so from 1000 px the header facts can sit beside it (styles.css). */}
+        <div className="page-header__text">
+          <p className="eyebrow eyebrow--on-ink">{eyebrow}</p>
+          <h1 className="page-title">{title}</h1>
+          {lede ? <p className="page-header__lede">{lede}</p> : null}
+        </div>
         {children}
       </div>
     </header>
