@@ -74,16 +74,18 @@ committing, so the committed snapshot stays fictional.
 ## Screenshots and page checks
 
 `.github/workflows/screenshots.yml` builds the site from the schedule preview and never deploys. It
-captures every page at phone (390 px), desktop (1366 px) and wide-monitor (2560 px) widths, the main
-pages in dark mode too, and records sideways overflow, console errors, failed requests, broken images
-and axe accessibility findings. The result is the `screenshots` artifact (page slices, overview
-sheets, `report.json`, `summary.md`) and the run summary.
+runs the site and sync unit tests (the same ones as the deploy workflow), then captures every page at
+phone (390 px), desktop (1366 px) and wide-monitor (2560 px) widths, the main pages in dark mode too,
+and records sideways overflow (against the configured width, so a phone that widens its window to fit
+a page still counts), console errors, failed requests, broken images and axe accessibility findings.
+The result is the `screenshots` artifact (page slices, overview sheets, `report.json`, `summary.md`)
+and the run summary.
 
 - Run it by pushing a branch named `shots/<anything>`, or from the Actions tab (Run workflow). Give
   the `url` input the live address to check what is deployed instead of a fresh build.
-- Layout and accessibility findings are reported, not failed on. The job fails when a capture errors
-  or the page head is wrong: a placeholder left unfilled, a count that differs from the data, or a
-  title or description that changes once the app has loaded.
+- Layout and accessibility findings are reported, not failed on. The job fails when a unit test
+  fails, when a capture errors or when the page head is wrong: a placeholder left unfilled, a count
+  that differs from the data, or a title or description that changes once the app has loaded.
 - A second job renders the link-preview card and uploads it as the `share-image` artifact.
   `brand/README.md` says how to change the card.
 
