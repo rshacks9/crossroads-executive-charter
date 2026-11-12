@@ -18,6 +18,19 @@
   --ok: #2f7a55;
   --warn-bg: #fff3e8;
   --warn-line: #f0c29e;
+  /* Warning text, the cargo tag, field and button outlines, and the focus ring. --focus follows
+     --signal-ink in both themes; ink surfaces set it back to the brand orange (see :focus-visible). */
+  --status-danger: #b3261e;
+  --signal-ink-strong: #9c4116;
+  --field-line: #7f8d94;
+  --focus: var(--signal-ink);
+  /* Division colours for map lines, dots and accents (divisionColor in LiveMap.tsx). */
+  --div-0: #e8703a; --div-1: #2a6f97; --div-2: #2f7a55; --div-3: #7b4fa0; --div-4: #b0812a; --div-5: #55646c;
+  /* Flight categories on Crew Tools: chip text and fill, and the weather-tile edge. */
+  --cat-vfr: #1d6b41; --cat-vfr-bg: #dff1e6; --edge-vfr: #2f8a57;
+  --cat-mvfr: #1f4f8a; --cat-mvfr-bg: #dde9f7; --edge-mvfr: #2a6fb7;
+  --cat-ifr: #a3271b; --cat-ifr-bg: #f8dcd9; --edge-ifr: #c0392b;
+  --cat-lifr: #7a2a8a; --cat-lifr-bg: #f0dcf3; --edge-lifr: #8e44ad;
   --radius: 6px;
   --gutter: clamp(16px, 4vw, 40px);
   --max: 1200px;
@@ -44,6 +57,14 @@
   --ok: #5fbf8c;
   --warn-bg: #2d2219;
   --warn-line: #6b4528;
+  --status-danger: #ff8a80;
+  --signal-ink-strong: #f29a6c;
+  --field-line: #74858e;
+  --div-1: #5aa9d6; --div-2: #5fbf8c; --div-3: #b48be0; --div-4: #d9a94a; --div-5: #a3b2b9;
+  --cat-vfr: #8fdcae; --cat-vfr-bg: #173d2a; --edge-vfr: #5fbf8c;
+  --cat-mvfr: #9cc6f2; --cat-mvfr-bg: #16324f; --edge-mvfr: #5aa9d6;
+  --cat-ifr: #ffb0a6; --cat-ifr-bg: #4a1f1b; --edge-ifr: #ff8a80;
+  --cat-lifr: #e2b3ee; --cat-lifr-bg: #3d1f47; --edge-lifr: #b48be0;
   --shadow: 0 1px 0 rgba(0,0,0,.4);
   color-scheme: dark;
 }
@@ -62,6 +83,14 @@
     --ok: #5fbf8c;
     --warn-bg: #2d2219;
     --warn-line: #6b4528;
+    --status-danger: #ff8a80;
+    --signal-ink-strong: #f29a6c;
+    --field-line: #74858e;
+    --div-1: #5aa9d6; --div-2: #5fbf8c; --div-3: #b48be0; --div-4: #d9a94a; --div-5: #a3b2b9;
+    --cat-vfr: #8fdcae; --cat-vfr-bg: #173d2a; --edge-vfr: #5fbf8c;
+    --cat-mvfr: #9cc6f2; --cat-mvfr-bg: #16324f; --edge-mvfr: #5aa9d6;
+    --cat-ifr: #ffb0a6; --cat-ifr-bg: #4a1f1b; --edge-ifr: #ff8a80;
+    --cat-lifr: #e2b3ee; --cat-lifr-bg: #3d1f47; --edge-lifr: #b48be0;
     --shadow: 0 1px 0 rgba(0,0,0,.4);
     color-scheme: dark;
   }
@@ -77,7 +106,9 @@ a { color: inherit; }
 h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.05; margin: 0; letter-spacing: 0.005em; }
 p { margin: 0; }
 abbr[title] { text-decoration: none; cursor: help; }
-:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* On ink surfaces the ring keeps the brand orange, which reads on ink in both themes. */
+.masthead, .skip-link, .hero, .page-header, .stats, .livery-band, .cta-band, .footer, .notice--preview, .fleet-card__media, .ladder__step { --focus: var(--signal); }
 
 .skip-link { position: absolute; left: -999px; top: 8px; z-index: 1100; padding: 10px 14px; background: var(--panel); color: var(--text); font-weight: 600; border-radius: var(--radius); box-shadow: var(--shadow); }
 .skip-link:focus { left: 8px; }
@@ -135,7 +166,7 @@ main:focus { outline: none; }
 .button:hover { background: #f08550; }
 .button--ghost { background: transparent; color: var(--on-ink); box-shadow: inset 0 0 0 1.5px var(--ink-line); }
 .button--ghost:hover { background: var(--ink-2); }
-.button--quiet { background: var(--panel); color: var(--text); box-shadow: inset 0 0 0 1.5px var(--line); }
+.button--quiet { background: var(--panel); color: var(--text); box-shadow: inset 0 0 0 1.5px var(--field-line); }
 .button--quiet:hover { background: var(--mist); }
 
 .stats { background: var(--ink-2); color: var(--on-ink); border-top: 1px solid var(--ink-line); }
@@ -233,8 +264,8 @@ main:focus { outline: none; }
 /* ------------------------------------------------------------- filters */
 .filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; }
 .filters label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-2); flex: 1 1 220px; max-width: 320px; }
-.filters input, .filters select { min-height: 48px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--panel); font: 400 17px var(--body); color: var(--text); width: 100%; }
-.filters input:focus, .filters select:focus { border-color: var(--signal); outline: none; box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
+.filters input, .filters select { min-height: 48px; padding: 0 12px; border: 1.5px solid var(--field-line); border-radius: var(--radius); background: var(--panel); font: 400 17px var(--body); color: var(--text); width: 100%; }
+.filters input:focus, .filters select:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
 .filters__count { color: var(--text-2); padding-bottom: 12px; }
 
 /* ------------------------------------------------------------- fleet */
@@ -326,7 +357,7 @@ main:focus { outline: none; }
 .cta-band .hero__actions { margin-top: 0; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
-.chip-button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--panel); font: 600 15px var(--body); color: var(--text); cursor: pointer; }
+.chip-button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--field-line); background: var(--panel); font: 600 15px var(--body); color: var(--text); cursor: pointer; }
 .chip-button[aria-pressed="true"] { background: var(--text); color: var(--paper); border-color: var(--text); }
 .chip-button:hover { border-color: var(--text); }
 .page .filters { margin-top: 18px; }
@@ -359,7 +390,7 @@ main:focus { outline: none; }
 
 .sim-aircraft { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-left: 3px solid var(--signal); background: var(--paper); border-radius: 0 var(--radius) var(--radius) 0; font-weight: 600; }
 .sim-aircraft span { font: 600 11px var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
-.tag--cargo { margin-left: 8px; background: rgba(232,112,58,.16); color: var(--signal-ink); }
+.tag--cargo { margin-left: 8px; background: rgba(232,112,58,.16); color: var(--signal-ink-strong); }
 
 /* ------------------------------------------------------------- crew tools */
 .crew__pick { margin-bottom: 20px; }
@@ -386,13 +417,13 @@ main:focus { outline: none; }
 .wx-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin: 0; }
 .rwy-table tr.is-preferred td { background: var(--warn-bg); }
 .rwy-table .tag { margin-left: 8px; }
-td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
+td.tailwind { color: var(--status-danger); font-weight: 600; }
 .taf summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 .cat { font: 700 12px/1 var(--body); letter-spacing: .06em; padding: 6px 8px; border-radius: 4px; white-space: nowrap; text-transform: uppercase; }
-.cat--vfr { background: #dff1e6; color: #1d6b41; }
-.cat--mvfr { background: #dde9f7; color: #1f4f8a; }
-.cat--ifr { background: #f8dcd9; color: #a3271b; }
-.cat--lifr { background: #f0dcf3; color: #7a2a8a; }
+.cat--vfr { background: var(--cat-vfr-bg); color: var(--cat-vfr); }
+.cat--mvfr { background: var(--cat-mvfr-bg); color: var(--cat-mvfr); }
+.cat--ifr { background: var(--cat-ifr-bg); color: var(--cat-ifr); }
+.cat--lifr { background: var(--cat-lifr-bg); color: var(--cat-lifr); }
 .cat--none { background: var(--mist); color: var(--text-2); }
 .approach { display: grid; gap: 10px; }
 .approach__head h3 { margin-bottom: 2px; }
@@ -402,13 +433,27 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 .wx-tile { background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--line); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; font-size: 14px; }
 .wx-tile strong { font: 700 20px var(--display); letter-spacing: .04em; }
 .wx-tile .cat { justify-self: start; }
-.wx-tile--vfr { border-left-color: #2f8a57; }
-.wx-tile--mvfr { border-left-color: #2a6fb7; }
-.wx-tile--ifr { border-left-color: #c0392b; }
-.wx-tile--lifr { border-left-color: #8e44ad; }
+.wx-tile--vfr { border-left-color: var(--edge-vfr); }
+.wx-tile--mvfr { border-left-color: var(--edge-mvfr); }
+.wx-tile--ifr { border-left-color: var(--edge-ifr); }
+.wx-tile--lifr { border-left-color: var(--edge-lifr); }
 .crew__credit { margin-top: 24px; }
 
 @media print {
+  /* Paper is white in either theme: every colour token goes back to its light value. */
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    --ink: #1b2328; --ink-2: #263138; --ink-line: #39464e;
+    --paper: #fff; --panel: #fff; --mist: #e4eaec; --line: #c9d3d7;
+    --text: #1b2328; --text-2: #55646c; --signal-ink: #b9501f; --ok: #2f7a55;
+    --warn-bg: #fff3e8; --warn-line: #f0c29e; --shadow: none;
+    --status-danger: #b3261e; --signal-ink-strong: #9c4116; --field-line: #7f8d94;
+    --div-1: #2a6f97; --div-2: #2f7a55; --div-3: #7b4fa0; --div-4: #b0812a; --div-5: #55646c;
+    --cat-vfr: #1d6b41; --cat-vfr-bg: #dff1e6; --edge-vfr: #2f8a57;
+    --cat-mvfr: #1f4f8a; --cat-mvfr-bg: #dde9f7; --edge-mvfr: #2a6fb7;
+    --cat-ifr: #a3271b; --cat-ifr-bg: #f8dcd9; --edge-ifr: #c0392b;
+    --cat-lifr: #7a2a8a; --cat-lifr-bg: #f0dcf3; --edge-lifr: #8e44ad;
+    color-scheme: light;
+  }
   .masthead, .notice, .footer, .crew__pick, .crew__intro, .wx-board, .crew__credit, .briefing__foot .hero__actions { display: none !important; }
   body { background: #fff; font-size: 12px; }
   .page { padding: 0; }
@@ -714,8 +759,8 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 .search-dialog::backdrop { background: rgba(13,19,22,.55); }
 .search-dialog__box { display: flex; flex-direction: column; max-height: inherit; }
 .search-dialog__bar { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
-.search-dialog__bar input { flex: 1; min-width: 0; min-height: 48px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--text); font: 400 18px var(--body); }
-.search-dialog__bar input:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
+.search-dialog__bar input { flex: 1; min-width: 0; min-height: 48px; padding: 0 14px; border: 1.5px solid var(--field-line); border-radius: var(--radius); background: var(--paper); color: var(--text); font: 400 18px var(--body); }
+.search-dialog__bar input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
 .search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
 .search-results li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius); cursor: pointer; }
 .search-results li.is-active { background: var(--mist); box-shadow: inset 3px 0 0 var(--signal); }
@@ -729,7 +774,7 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 @media (max-width: 960px) { .explorer { grid-template-columns: 1fr; } }
 .explorer__panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 16px; max-height: 600px; overflow-y: auto; }
 .explorer__pick { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-2); }
-.explorer__pick select, .resource__pick select { min-height: 44px; padding: 0 10px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--panel); color: var(--text); font: 400 16px var(--body); width: 100%; }
+.explorer__pick select, .resource__pick select { min-height: 44px; padding: 0 10px; border: 1.5px solid var(--field-line); border-radius: var(--radius); background: var(--panel); color: var(--text); font: 400 16px var(--body); width: 100%; }
 .explorer__hint { color: var(--text-2); font-size: 15px; }
 .explorer__route { border-left: 4px solid var(--signal); padding-left: 12px; }
 .explorer__route h3, .explorer__airport h3 { font-size: 24px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
