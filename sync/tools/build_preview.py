@@ -17,8 +17,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 DATA = ROOT.parent / "vamsys-data"
-# Applied in order, exactly as they were imported into vAMSYS. Rows without an ID create a route; vAMSYS
-# numbered those sequentially from the first ID listed here.
+# Applied in order, exactly as they were imported into vAMSYS. Rows with an ID update that route; rows
+# without one create a route, and a file that creates routes must list a starting ID. That number is a
+# record only: it is Orwell's first new ID for the first import, updates 2 and 5 and round 13, and a
+# placeholder for updates 7, 8, 9 and 11. The preview numbers its routes by position (see build_raw); the
+# real Orwell IDs are in orwell-route-ids-2026-11-11.csv and route-ids-13.csv.
 ROUTES_CSV = [
     (DATA / "routes-import.csv", 14214036),
     (DATA / "routes-update-2.csv", 14214095),
@@ -210,6 +213,14 @@ def great_circle_nm(a: tuple[float, float], b: tuple[float, float]) -> int:
     return round(2 * 3440.065 * math.asin(math.sqrt(h)))
 
 
+def flag(row: dict[str, str], column: str, path: Path) -> bool:
+    """A TRUE/FALSE column of an import file. An empty cell is FALSE; anything else stops the build."""
+    value = (row.get(column) or "").strip().upper()
+    if value not in ("", "TRUE", "FALSE"):
+        raise SystemExit(f"{path.name}: {row['Callsign']} has {column} {value!r}")
+    return value == "TRUE"
+
+
 def final_routes() -> list[dict[str, str]]:
     """Apply the import files in order, the way vAMSYS did (rows with an ID update; others create)."""
     # Keyed by callsign (unique per route): from update 10 on the files carry the real Orwell IDs, which
@@ -219,6 +230,13 @@ def final_routes() -> list[dict[str, str]]:
         with path.open(encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
                 callsign = row["Callsign"]
+                # Hidden routes are mirrored (snapshot.py keeps them off the site). Deletions and service
+                # days are not, so a file that uses them stops the build instead of being published wrongly.
+                if flag(row, "_delete", path):
+                    raise SystemExit(f"{path.name}: {callsign} deletes a route, which the preview does not mirror")
+                if (row.get("Service Days") or "").strip():
+                    raise SystemExit(f"{path.name}: {callsign} has service days, which the preview does not mirror")
+                row["Is Hidden"] = "TRUE" if flag(row, "Is Hidden", path) else "FALSE"
                 if row["ID"]:
                     if callsign not in by_callsign:
                         raise SystemExit(f"{path.name}: update for unknown route {callsign}")
@@ -231,7 +249,8 @@ def final_routes() -> list[dict[str, str]]:
     return list(by_callsign.values())
 
 
-def main() -> None:
+def build_raw() -> dict:
+    """The preview mirror, built from the import files. Nothing is written."""
     airport_ids = {icao: i + 1 for i, (icao, *_rest) in enumerate(AIRPORTS)}
     coords = {icao: (lat, lon) for icao, _i, _n, _c, lat, lon, _b in AIRPORTS}
     speeds = {fid: kt for fid, *_rest, kt in FLEETS}
@@ -272,9 +291,15 @@ def main() -> None:
             "id": n, "type": row["Type"], "departure_id": airport_ids[dep], "arrival_id": airport_ids[arr],
             "callsign": row["Callsign"], "flight_number": row["Flight Number"], "flight_distance": distance,
             "flight_length": f"{minutes // 60:02d}:{minutes % 60:02d}:00", "fleet_ids": fleet_ids,
-            "tag": [t for t in row["Tags"].split(",") if t], "service_days": [], "hidden": False,
+            "tag": [t for t in row["Tags"].split(",") if t], "service_days": [],
+            "hidden": row["Is Hidden"] == "TRUE",
         })
-    OUT.write_text(json.dumps(raw, indent=1) + "\n", encoding="utf-8")
+    return raw
+
+
+def main() -> None:
+    raw = build_raw()
+    OUT.write_text(json.dumps(raw, indent=1) + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {OUT.name}: {len(raw['routes'])} routes, {len(raw['fleet'])} fleets, {len(raw['airports'])} airports")
 
 

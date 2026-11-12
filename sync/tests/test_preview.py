@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+import tempfile
 import unittest
+from unittest import mock
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -11,6 +14,11 @@ ROOT = Path(__file__).parents[1]
 PREVIEW = json.loads((ROOT / "crossroads_sync" / "preview_raw.json").read_text(encoding="utf-8"))
 SITE = json.loads((ROOT.parent / "site.config.json").read_text(encoding="utf-8"))
 NOW = datetime(2026, 11, 10, 18, 0, tzinfo=timezone.utc)
+
+# tools/ is not a package, so the builder is loaded from its file.
+_spec = importlib.util.spec_from_file_location("build_preview", ROOT / "tools" / "build_preview.py")
+build_preview = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(build_preview)
 
 
 class PreviewTests(unittest.TestCase):
@@ -75,6 +83,37 @@ class PreviewTests(unittest.TestCase):
         site = {**SITE, "divisions": [{"name": ""}, {"name": "X", "fleets": ["bad code!", "C510"], "base": "nope!"}, "junk"]}
         divisions = build_snapshot(PREVIEW, site, now=NOW, source="preview")["airline"]["divisions"]
         self.assertEqual(divisions, [{"name": "X", "summary": None, "base": None, "fleets": ["C510"]}])
+
+
+class BuilderTests(unittest.TestCase):
+    HEADER = ("ID,Departure Airport (ICAO/IATA),Arrival Airport (ICAO/IATA),Type,Callsign,Flight Number,"
+              "Fleet IDs,_delete,Service Days,Tags,Is Hidden\n")
+
+    def build(self, *rows: str) -> dict:
+        """Run the builder on one import file made of these rows (no file is written)."""
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "routes.csv"
+            path.write_text(self.HEADER + "".join(rows), encoding="utf-8")
+            with mock.patch.object(build_preview, "ROUTES_CSV", [(path, 1)]):
+                return build_preview.build_raw()
+
+    def test_committed_preview_matches_the_builder(self):
+        # Rebuild with: python -B tools/build_preview.py
+        self.assertEqual(build_preview.build_raw(), PREVIEW)
+
+    def test_hidden_routes_stay_hidden(self):
+        raw = self.build(",KTYQ,KTEB,scheduled,CRX101,CX101,32199,FALSE,,executive,TRUE\n",
+                         ",KTEB,KTYQ,scheduled,CRX102,CX102,32199,FALSE,,executive,\n")
+        self.assertEqual([(r["callsign"], r["hidden"]) for r in raw["routes"]], [("CRX101", True), ("CRX102", False)])
+        snapshot = build_snapshot(raw, SITE, now=NOW, source="preview")
+        self.assertEqual([r["callsign"] for r in snapshot["routes"]], ["CRX102"])
+
+    def test_rows_the_preview_cannot_mirror_stop_the_build(self):
+        for row in (",KTYQ,KTEB,scheduled,CRX101,CX101,32199,TRUE,,executive,FALSE\n",
+                    ",KTYQ,KTEB,scheduled,CRX101,CX101,32199,FALSE,\"1,2\",executive,FALSE\n",
+                    ",KTYQ,KTEB,scheduled,CRX101,CX101,32199,FALSE,,executive,maybe\n"):
+            with self.subTest(row=row), self.assertRaises(SystemExit):
+                self.build(row)
 
 
 class SimAircraftTests(unittest.TestCase):
