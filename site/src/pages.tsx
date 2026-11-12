@@ -286,7 +286,7 @@ export function HomePage({ snapshot }: PageProps) {
               <div className="stat"><span className="stat__value">{formatNumber(airframes(snapshot))}</span><span className="stat__label">Airframes</span></div>
               <div className="stat"><span className="stat__value">{facts.routes}</span><span className="stat__label">Scheduled routes</span></div>
               <div className="stat"><span className="stat__value">{facts.destinations}</span><span className="stat__label">Destinations</span></div>
-              <div className="stat"><span className="stat__value">{facts.countries}</span><span className="stat__label">Countries</span></div>
+              <div className="stat"><span className="stat__value">{facts.countries}</span><span className="stat__label">Countries and territories</span></div>
             </>
           )}
         </div>

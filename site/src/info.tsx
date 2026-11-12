@@ -386,7 +386,7 @@ export function AboutPage({ snapshot }: PageProps) {
                 <div><dt>Divisions</dt><dd>{snapshot.airline.divisions.length}</dd></div>
                 <div><dt>Aircraft types</dt><dd>{snapshot.fleet.length}</dd></div>
                 <div><dt>Routes</dt><dd>{snapshot.routes.length}</dd></div>
-                <div><dt>Countries served</dt><dd>{countries}</dd></div>
+                <div><dt>Countries and territories</dt><dd>{countries}</dd></div>
                 <div><dt>Callsign</dt><dd>CRX · “Crossroads”</dd></div>
               </dl>
             </div>

@@ -10,7 +10,7 @@ vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage, bases } = await import("./pages");
-const { HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
+const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, destinationGroups, findRoute, networkStats, onwardLegs, routeHref, routeKey, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
@@ -427,5 +427,17 @@ describe("texts follow the data", () => {
     const name = (icao: string) => snapshot.airports[icao]?.name ?? icao;
     const home = text(renderToString(<HomePage snapshot={snapshot} />));
     expect(home).toContain(`Longest leg ${routeKey(longest)} ${name(longest.from)} to ${name(longest.to)} · ${formatNumber(longest.distance_nm)} nm`);
+  });
+
+  it("labels the country figure 'Countries and territories' and defines international by the 50 states", () => {
+    const stats = networkStats(snapshot);
+    const countries = networkFacts(snapshot).countries;
+    expect(stats.countries).toBe(countries);
+    const page = renderToString(<StatsPage snapshot={snapshot} />);
+    expect(page).toContain(`<dt>Countries and territories</dt><dd>${countries}</dd>`);
+    expect(text(page)).toContain("International means at least one end outside the 50 states.");
+    const home = renderToString(<HomePage snapshot={{ ...snapshot, stats: { ...snapshot.stats, all_time: null } }} />);
+    expect(home).toContain(`<span class="stat__value">${countries}</span><span class="stat__label">Countries and territories</span>`);
+    expect(renderToString(<AboutPage snapshot={snapshot} />)).toContain(`<dt>Countries and territories</dt><dd>${countries}</dd>`);
   });
 });

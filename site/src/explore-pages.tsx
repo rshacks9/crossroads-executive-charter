@@ -870,7 +870,7 @@ export function StatsPage({ snapshot }: PageProps) {
           <div><dt>Routes</dt><dd>{stats.routes}</dd></div>
           <div><dt>Average leg</dt><dd>{formatNumber(stats.averageNm)} nm</dd></div>
           <div><dt>International</dt><dd>{stats.international}</dd></div>
-          <div><dt>Countries</dt><dd>{stats.countries}</dd></div>
+          <div><dt>Countries and territories</dt><dd>{stats.countries}</dd></div>
         </dl>
       </PageHeader>
       <section className="page">
@@ -900,7 +900,7 @@ export function StatsPage({ snapshot }: PageProps) {
         </div>
       </section>
       <section className="page">
-        <p className="fineprint">A route counts once per direction, and for every division whose aircraft can fly it, so the division bars add up to more than {stats.routes} routes. International means at least one end outside the United States.</p>
+        <p className="fineprint">A route counts once per direction, and for every division whose aircraft can fly it, so the division bars add up to more than {stats.routes} routes. International means at least one end outside the 50 states.</p>
       </section>
     </>
   );
