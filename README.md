@@ -114,12 +114,17 @@ and the run summary.
    (15:00 in winter, 16:00 in summer) while vAMSYS lists no events, and until `join_url` is set it
    says the group flight starts once registration opens. Remove the entry to show no group flight.
 7. **Flights flown by automation.** `automation_flights` lists the founder's own flights that his
-   automation tools flew while he monitored them. An entry is `{"pirep_id": 1234567}` for a filed
-   PIREP, or `{"callsign": "CRX115", "date": "2026-11-11"}` with the UTC date the flight took off or
-   landed (for a flight in the air: the date of the sync or of its ETA). Every listed flight on the
-   live board and in the latest flights carries a "Flown by automation" label, and the Live page
-   always says that some of the founder's own flights are flown this way. The three setup test
-   flights are listed. The snapshot gets only a yes or no per flight, never the list or the ids.
+   automation tools flew while he monitored them, by vAMSYS record: `{"booking_id": 4875826}` for the
+   booking the flight was flown from, `{"pirep_id": 1234567}` for its PIREP, or both in one entry.
+   A booking id labels the flight on the live board while it is in the air and its PIREP in the
+   latest flights; vAMSYS can leave a PIREP's booking empty, so add the `pirep_id` as well once the
+   PIREP is filed. For the label to show in the air, push the entry to `main` before take-off.
+   Callsigns and dates are never matched, because every pilot who flies a route uses its callsign;
+   an entry with only those labels nothing. `note` is free text for people reading the list. Every
+   listed flight carries a "Flown by automation" label, and the Live page always says that some of
+   the founder's own flights are flown this way. The three setup test flights are listed by
+   booking. The snapshot gets only a yes or no per flight, but this file is in the public
+   repository, so every id and note in it is public.
 
 ## Privacy and safety
 
@@ -142,8 +147,8 @@ them on the first live run:
 - `page[size]=100` is accepted (override with `CROSSROADS_PAGE_SIZE` if vAMSYS rejects it).
 - Route `departure_time` timezone (shown without a zone).
 - Empty `service_days` shown as "Daily".
-- Automation labels: PIREPs match on `id`, or on `callsign` and the date of `landing_time` (or
-  `on_blocks_time`) and of that time less `flight_length`; live flights on `booking.callsign`.
+- Automation labels: live flights match on the flight map's `bookingId`, PIREPs on `id` and on
+  `booking_id`, each a whole number.
 
 ## Map tiles
 

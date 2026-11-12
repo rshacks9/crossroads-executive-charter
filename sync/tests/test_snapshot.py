@@ -131,6 +131,14 @@ class AutomationTests(unittest.TestCase):
     def flagged(snapshot):
         return [f["callsign"] for f in snapshot["live"] + snapshot["recent_flights"] if f["automation"]]
 
+    @staticmethod
+    def with_bookings():
+        """The sample with PIREP booking ids as vAMSYS gives them: CXC102 was flown from booking 41, CXC700 has none."""
+        raw = copy.deepcopy(SAMPLE)
+        raw["pireps"][0]["booking_id"] = 41
+        raw["pireps"][1]["booking_id"] = None
+        return raw
+
     def test_nothing_is_flagged_without_a_list(self):
         snapshot = build()
         self.assertTrue(snapshot["live"] and snapshot["recent_flights"])
@@ -139,56 +147,90 @@ class AutomationTests(unittest.TestCase):
     def test_a_pirep_id_flags_that_pirep(self):
         self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": [{"pirep_id": 500}]})), ["CXC700"])
 
-    def test_a_callsign_and_date_flag_the_flight_of_that_day(self):
-        entries = [{"callsign": "cxc102", "date": "2026-11-10"}, {"callsign": "CXC930", "date": "2026-11-08"}, {"callsign": "CXC101", "date": "2026-11-10"}]
-        # CXC102 landed on the 10th; CXC930 flew on the 9th, not the 8th; CXC101 is in the air on the 10th (NOW).
-        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": entries})), ["CXC101", "CXC102"])
+    def test_a_booking_id_flags_the_flight_in_the_air_and_the_pirep_filed_from_it(self):
+        # Booking 1 is CXC101 in the air (the flight map's bookingId); booking 41 is CXC102's PIREP.
+        site = {**SITE, "automation_flights": [{"booking_id": 1}, {"booking_id": 41}]}
+        self.assertEqual(self.flagged(build(raw=self.with_bookings(), site=site)), ["CXC101", "CXC102"])
 
-    def test_a_flight_across_midnight_matches_its_take_off_or_landing_date(self):
+    def test_one_entry_can_give_both_ids(self):
+        site = {**SITE, "automation_flights": [{"booking_id": 2, "pirep_id": 500, "note": "CXC512 and a PIREP"}]}
+        self.assertEqual(self.flagged(build(site=site)), ["CXC512", "CXC700"])
+
+    def test_callsigns_and_dates_flag_nothing_because_every_pilot_shares_them(self):
+        # A route's callsign belongs to the route: another pilot's CXC102 on the same day.
         raw = copy.deepcopy(SAMPLE)
-        raw["pireps"][0].update({"landing_time": "2026-11-11T00:30:00Z", "flight_length": 7200})
-        raw["flight_map"]["data"][0]["progress"]["estimatedArrivalTime"] = "2026-11-11T01:00:00Z"
-        for day, flagged in (("2026-11-10", ["CXC101", "CXC102"]), ("2026-11-11", ["CXC101", "CXC102"]), ("2026-11-12", [])):
-            with self.subTest(day=day):
-                site = {**SITE, "automation_flights": [{"callsign": "CXC102", "date": day}, {"callsign": "CXC101", "date": day}]}
-                self.assertEqual(self.flagged(build(raw=raw, site=site)), flagged)
+        other = copy.deepcopy(raw["pireps"][0])
+        other.update({"id": 999001, "pilot_id": 424242})
+        raw["pireps"].append(other)
+        entries = [{"callsign": "CXC102", "date": "2026-11-10"}, {"callsign": "CXC101", "date": "2026-11-10"}]
+        self.assertEqual(self.flagged(build(raw=raw, site={**SITE, "automation_flights": entries})), [])
+        # Listed by its PIREP, the founder's CXC102 is labelled and the other pilot's is not.
+        recent = build(raw=raw, site={**SITE, "automation_flights": [{"pirep_id": 501}]})["recent_flights"]
+        self.assertEqual(sorted(r["automation"] for r in recent if r["callsign"] == "CXC102"), [False, True])
 
     def test_incomplete_or_malformed_entries_flag_nothing(self):
         entries = [
-            {"callsign": "CXC102"},
-            {"date": "2026-11-10"},
+            {"callsign": "CXC102", "date": "2026-11-10"},
+            {"note": "CXC101"},
+            {"booking_id": True},
+            {"booking_id": "1"},
+            {"booking_id": 1.0},
+            {"booking_id": 0},
+            {"booking_id": -41},
             {"pirep_id": True},
             {"pirep_id": "501"},
             {"pirep_id": 501.0},
             {"pirep_id": -501},
             "CXC102",
             None,
-            {"callsign": "CXC102", "date": "10/11/2026"},
-            {"callsign": "CXC102", "date": "2026-02-30"},
-            {"callsign": "CXC 102", "date": "2026-11-10"},
+            501,
         ]
-        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": entries})), [])
-        self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": "CXC102"})), [])
+        self.assertEqual(self.flagged(build(raw=self.with_bookings(), site={**SITE, "automation_flights": entries})), [])
+        for value in ("CXC102", {"booking_id": 1}, 501):
+            with self.subTest(value=value):
+                self.assertEqual(self.flagged(build(site={**SITE, "automation_flights": value})), [])
+
+    def test_ids_from_vamsys_must_be_whole_numbers_too(self):
+        raw = self.with_bookings()
+        raw["flight_map"]["data"][0]["bookingId"] = True
+        raw["flight_map"]["data"][1]["bookingId"] = "2"
+        raw["pireps"][0]["booking_id"] = "41"
+        site = {**SITE, "automation_flights": [{"booking_id": 1}, {"booking_id": 2}, {"booking_id": 41}]}
+        self.assertEqual(self.flagged(build(raw=raw, site=site)), [])
+
+    def test_a_nonsense_flight_length_does_not_stop_the_sync(self):
+        raw = copy.deepcopy(SAMPLE)
+        raw["pireps"][0]["flight_length"] = 10**11
+        self.assertEqual(self.flagged(build(raw=raw, site={**SITE, "automation_flights": [{"pirep_id": 501}]})), ["CXC102"])
 
     def test_the_list_and_the_ids_never_reach_the_snapshot(self):
-        raw = copy.deepcopy(SAMPLE)
-        raw["pireps"][0]["id"] = 987654
-        site = {**SITE, "automation_flights": [{"pirep_id": 987654}, {"callsign": "CXC700", "date": "2026-11-10"}]}
+        raw = self.with_bookings()
+        raw["pireps"][1]["id"] = 987654
+        raw["flight_map"]["data"][2]["bookingId"] = 4875999
+        site = {**SITE, "automation_flights": [{"pirep_id": 987654}, {"booking_id": 4875999, "note": "private-note"}]}
         snapshot = build(raw=raw, site=site)
-        self.assertEqual(self.flagged(snapshot), ["CXC102", "CXC700"])
+        self.assertEqual(self.flagged(snapshot), ["CXC815", "CXC700"])
         dumped = json.dumps(snapshot)
-        for leaked in ("automation_flights", "pirep_id", "987654"):
+        for leaked in ("automation_flights", "pirep_id", "booking_id", "bookingId", "987654", "4875999", "private-note"):
             self.assertNotIn(leaked, dumped)
 
-    def test_the_config_lists_the_three_setup_test_flights(self):
+    def test_the_config_lists_the_three_setup_test_flights_by_booking(self):
         config = json.loads((Path(__file__).parents[2] / "site.config.json").read_text(encoding="utf-8"))
-        setup = {("CRX115", "2026-11-11T03:00:00Z"), ("CRX116", "2026-11-11T03:55:00Z"), ("CRX121", "2026-11-11T05:55:00Z")}
+        setup = {4875826: "CRX115", 4875854: "CRX116", 4875919: "CRX121"}
+        entries = config["automation_flights"]
+        self.assertLessEqual(set(setup), {e.get("booking_id") for e in entries})
+        whole = lambda v: isinstance(v, int) and not isinstance(v, bool) and v > 0
+        for entry in entries:
+            with self.subTest(entry=entry):
+                self.assertTrue(whole(entry.get("booking_id")) or whole(entry.get("pirep_id")))
         pireps = [
-            {"id": n, "status": "accepted", "callsign": callsign, "departure_airport_id": 4, "arrival_airport_id": 2, "landing_time": landed, "flight_length": 2500}
-            for n, (callsign, landed) in enumerate(sorted(setup) + [("CRX115", "2026-11-12T03:00:00Z")], start=1)
+            {"id": n, "status": "accepted", "callsign": callsign, "booking_id": booking, "departure_airport_id": 4, "arrival_airport_id": 2, "landing_time": f"2026-11-11T0{n}:00:00Z", "flight_length": 2500}
+            for n, (booking, callsign) in enumerate(sorted(setup.items()), start=1)
         ]
+        # Someone else's CRX115 from another booking, the same day, stays unlabelled.
+        pireps.append({**pireps[0], "id": 9, "booking_id": 4879999, "landing_time": "2026-11-11T09:00:00Z"})
         recent = build(raw={**SAMPLE, "pireps": pireps}, site=config)["recent_flights"]
-        self.assertEqual(sorted((r["callsign"], r["landed"]) for r in recent if r["automation"]), sorted(setup))
+        self.assertEqual(sorted(r["callsign"] for r in recent if r["automation"]), ["CRX115", "CRX116", "CRX121"])
         self.assertEqual(len(recent), 4)
 
 

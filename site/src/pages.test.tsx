@@ -604,12 +604,16 @@ describe("flights flown by automation", () => {
     for (const s of [snapshot, busy]) expect(text(renderToString(<LivePage snapshot={s} />))).toContain(AUTOMATION_DISCLOSURE);
   });
 
-  it("lists the three setup test flights in automation_flights, so live data labels them too", () => {
+  it("lists the three setup test flights in automation_flights by booking, so live data labels them too", () => {
     const config = JSON.parse(readFileSync(new URL("../../site.config.json", import.meta.url), "utf-8"));
-    const listed: { callsign?: string; date?: string; pirep_id?: number }[] = config.automation_flights;
+    const listed: { booking_id?: unknown; pirep_id?: unknown; note?: string }[] = config.automation_flights;
     expect(SETUP_FLIGHTS.map((f) => f.callsign)).toEqual(["CRX115", "CRX116", "CRX121"]);
-    for (const flight of SETUP_FLIGHTS) expect(listed.filter((e) => e.callsign === flight.callsign && e.date === "2026-11-11"), flight.callsign).toHaveLength(1);
-    for (const entry of listed) expect(entry.pirep_id !== undefined || (entry.callsign !== undefined && /^\d{4}-\d{2}-\d{2}$/.test(entry.date ?? "")), JSON.stringify(entry)).toBe(true);
+    // Each by the booking it was flown from: a callsign is shared by every pilot on the route, so the sync never matches one.
+    for (const flight of SETUP_FLIGHTS) {
+      expect(listed.filter((e) => typeof e.booking_id === "number" && (e.note ?? "").startsWith(`${flight.callsign} `)), flight.callsign).toHaveLength(1);
+    }
+    const whole = (value: unknown) => typeof value === "number" && Number.isInteger(value) && value > 0;
+    for (const entry of listed) expect(whole(entry.booking_id) || whole(entry.pirep_id), JSON.stringify(entry)).toBe(true);
   });
 });
 

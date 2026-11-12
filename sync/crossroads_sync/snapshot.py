@@ -3,7 +3,8 @@
 Only fields on an explicit allowlist reach the snapshot. Internal remarks, pilot IDs, SimBrief
 settings, NOTAMs and anything else not listed below never leave this function. Pilot usernames are
 included only when the site config sets ``show_pilot_names`` to true. Flights the site config lists
-under ``automation_flights`` get ``automation: true``; the list and the PIREP ids stay here.
+under ``automation_flights`` get ``automation: true``. The snapshot carries only that flag, never the
+list or its ids; the ids are not secret either, since site.config.json is in the public repository.
 """
 
 from __future__ import annotations
@@ -11,7 +12,7 @@ from __future__ import annotations
 import html
 import math
 import re
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 from typing import Any, Iterable, Mapping
 
 from . import SCHEMA
@@ -31,7 +32,6 @@ _CODE = re.compile(r"^[A-Z0-9]{2,8}$")
 _HMS = re.compile(r"^(\d{1,3}):([0-5]\d)(?::([0-5]\d))?$")
 _UTC_TIME = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-_CALLSIGN = re.compile(r"^[A-Z0-9]{2,12}$")
 WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 ROUTE_KINDS = ("scheduled", "cargo", "charter", "training", "vfr", "repositioning", "jumpseat")
 SOURCES = ("vamsys", "preview", "sample")
@@ -121,13 +121,6 @@ def minutes_from_hms(value: Any) -> int | None:
     return int(hours) * 60 + int(minutes) + (1 if int(seconds) >= 30 else 0)
 
 
-def _callsign(value: Any) -> str | None:
-    if not isinstance(value, str):
-        return None
-    candidate = value.strip().upper()
-    return candidate if _CALLSIGN.match(candidate) else None
-
-
 def _day(value: Any) -> str | None:
     """A calendar date written YYYY-MM-DD, or None."""
     if not isinstance(value, str) or not _DATE.match(value.strip()):
@@ -156,29 +149,35 @@ def _data(payload: Any) -> Any:
     return payload.get("data") if isinstance(payload, dict) else None
 
 
+def _record_id(value: Any) -> int | None:
+    """A vAMSYS record id (a booking or a PIREP): a positive whole number, or None."""
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        return None
+    return value
+
+
 class _Automation:
     """The flights site.config.json lists under ``automation_flights``: flown with the founder's
-    automation tools, which he monitors. An entry gives a PIREP id (``pirep_id``), or a callsign and
-    the UTC date of the flight (``callsign``, ``date``), or both. The snapshot only says yes or no per
-    flight; the list and the ids never reach it."""
+    automation tools, which he monitors. An entry names the vAMSYS booking (``booking_id``), the filed
+    PIREP (``pirep_id``), or both. A booking id matches the flight in the air (the flight map's
+    ``bookingId``) and the PIREP filed from that booking (its ``booking_id``, which vAMSYS can leave
+    empty). Callsigns and dates are never matched: every pilot who flies a route uses its callsign, so
+    they would label other pilots' flights too. The snapshot only says yes or no per flight."""
 
     def __init__(self, entries: Any) -> None:
+        self.bookings: set[int] = set()
         self.pireps: set[int] = set()
-        self.dated: set[tuple[str, str]] = set()
         for entry in _dicts(entries)[:MAX_AUTOMATION]:
-            pirep = entry.get("pirep_id")
-            if isinstance(pirep, int) and not isinstance(pirep, bool) and pirep > 0:
+            booking, pirep = _record_id(entry.get("booking_id")), _record_id(entry.get("pirep_id"))
+            if booking is not None:
+                self.bookings.add(booking)
+            if pirep is not None:
                 self.pireps.add(pirep)
-            callsign, day = _callsign(entry.get("callsign")), _day(entry.get("date"))
-            if callsign and day:
-                self.dated.add((callsign, day))
 
-    def flags(self, *, pirep_id: Any = None, callsign: Any = None, days: Iterable[str] = ()) -> bool:
-        """True for a listed PIREP id, or a listed callsign on one of the flight's UTC dates."""
-        if isinstance(pirep_id, int) and not isinstance(pirep_id, bool) and pirep_id in self.pireps:
-            return True
-        sign = _callsign(callsign)
-        return sign is not None and any((sign, day) in self.dated for day in days)
+    def flags(self, *, booking_id: Any = None, pirep_id: Any = None) -> bool:
+        """True for a flight from a listed booking, or a listed PIREP."""
+        booking, pirep = _record_id(booking_id), _record_id(pirep_id)
+        return (booking is not None and booking in self.bookings) or (pirep is not None and pirep in self.pireps)
 
 
 # --------------------------------------------------------------------------- builder
@@ -394,8 +393,7 @@ def _events(raw_events: list[dict[str, Any]], now: datetime) -> list[dict[str, A
     return events[:MAX_EVENTS]
 
 
-def _live(raw_live: list[dict[str, Any]], airports: _Airports, show_pilots: bool, automation: _Automation, now: datetime) -> list[dict[str, Any]]:
-    today = now.astimezone(timezone.utc).strftime("%Y-%m-%d")
+def _live(raw_live: list[dict[str, Any]], airports: _Airports, show_pilots: bool, automation: _Automation) -> list[dict[str, Any]]:
     flights = []
     for item in raw_live[:MAX_LIVE]:
         origin = airports.add_live(item.get("departureAirport"))
@@ -414,8 +412,6 @@ def _live(raw_live: list[dict[str, Any]], airports: _Airports, show_pilots: bool
             lat, lon = _lat(location.get("lat")), _lon(location.get("lon"))
         callsign = text(booking.get("callsign"), 12)
         eta = timestamp(progress.get("estimatedArrivalTime")) or timestamp(progress.get("eta"))
-        # A flight in the air flies today (UTC); one that lands after midnight also matches its ETA date.
-        days = {today} | ({eta[:10]} if eta else set())
         flights.append(
             {
                 "callsign": callsign,
@@ -437,21 +433,10 @@ def _live(raw_live: list[dict[str, Any]], airports: _Airports, show_pilots: bool
                 "route_nm": integer(progress.get("routeDistance")),
                 "remaining_nm": integer(progress.get("distanceRemaining")),
                 "eta": eta,
-                "automation": automation.flags(callsign=callsign, days=days),
+                "automation": automation.flags(booking_id=item.get("bookingId")),
             }
         )
     return flights
-
-
-def _flight_days(landed: str | None, seconds: int | None) -> set[str]:
-    """The UTC dates a filed flight touched: the landing date, and the take-off date flight_length before."""
-    if landed is None:
-        return set()
-    days = {landed[:10]}
-    if seconds is not None and seconds >= 0:
-        took_off = datetime.strptime(landed, "%Y-%m-%dT%H:%M:%SZ") - timedelta(seconds=seconds)
-        days.add(took_off.strftime("%Y-%m-%d"))
-    return days
 
 
 def _recent(raw_pireps: list[dict[str, Any]], airports: _Airports, fleet_codes: Mapping[int, str], automation: _Automation) -> list[dict[str, Any]]:
@@ -475,7 +460,7 @@ def _recent(raw_pireps: list[dict[str, Any]], airports: _Airports, fleet_codes: 
                 "landing_rate": integer(item.get("landing_rate")),
                 "duration_min": round(seconds / 60) if seconds is not None and seconds >= 0 else None,
                 "landed": landed,
-                "automation": automation.flags(pirep_id=item.get("id"), callsign=item.get("callsign"), days=_flight_days(landed, seconds)),
+                "automation": automation.flags(booking_id=item.get("booking_id"), pirep_id=item.get("id")),
             }
         )
     recent.sort(key=lambda r: r["landed"] or "", reverse=True)
@@ -556,7 +541,7 @@ def build_snapshot(
     routes = _routes(_dicts(raw.get("routes")), airports, fleet_codes)
     hubs = _hubs(_dicts(raw.get("hubs")), airports)
     automation = _Automation(site.get("automation_flights"))
-    live = _live(_dicts(_data(raw.get("flight_map")) or raw.get("flight_map")), airports, site.get("show_pilot_names") is True, automation, now)
+    live = _live(_dicts(_data(raw.get("flight_map")) or raw.get("flight_map")), airports, site.get("show_pilot_names") is True, automation)
     recent = _recent(_dicts(raw.get("pireps")), airports, fleet_codes, automation)
     return {
         "schema": SCHEMA,

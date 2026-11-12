@@ -13,16 +13,16 @@
  },
  "automation_flights": [
   {
-   "callsign": "CRX115",
-   "date": "2026-11-11"
+   "booking_id": 4875826,
+   "note": "CRX115 KTYQ-KMDW, 11 Nov 2026, setup test flight"
   },
   {
-   "callsign": "CRX116",
-   "date": "2026-11-11"
+   "booking_id": 4875854,
+   "note": "CRX116 KMDW-KTYQ, 11 Nov 2026, setup test flight"
   },
   {
-   "callsign": "CRX121",
-   "date": "2026-11-11"
+   "booking_id": 4875919,
+   "note": "CRX121 KTYQ-KBDL, 11 Nov 2026, setup test flight"
   }
  ],
  "divisions": [
