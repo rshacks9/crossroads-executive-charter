@@ -19,6 +19,7 @@ import {
   markerKeyAction,
   markerLabel,
   markerOrder,
+  markerTabStop,
   moveIndex,
   moveSearchActive,
   wireMarker,
@@ -387,11 +388,11 @@ describe("keyboard map markers", () => {
     };
   }
 
-  it("makes a marker a named, focusable button", () => {
+  it("makes the tab-stop marker a named, focusable button", () => {
     const m = fakeMarker();
     const ktyq = snapshot.airports.KTYQ!;
     const count = snapshot.routes.filter((r) => r.from === "KTYQ" || r.to === "KTYQ").length;
-    wireMarker(m.el, "KTYQ", markerLabel("KTYQ", ktyq, count), false, { onSelect: () => {}, onMove: () => {}, onClear: () => {} });
+    wireMarker(m.el, "KTYQ", markerLabel("KTYQ", ktyq, count), false, { onSelect: () => {}, onMove: () => {}, onClear: () => {} }, { tabStop: true, role: "button" });
     expect(m.attrs.tabindex).toBe("0");
     expect(m.attrs.role).toBe("button");
     expect(m.attrs["aria-pressed"]).toBe("false");
@@ -406,7 +407,7 @@ describe("keyboard map markers", () => {
       onSelect: (icao) => calls.push(`select ${icao}`),
       onMove: (icao, action) => calls.push(`${action} ${icao}`),
       onClear: () => calls.push("clear"),
-    });
+    }, { tabStop: false, role: "button" });
     for (const key of ["Enter", " ", "ArrowRight", "ArrowDown", "ArrowLeft", "Home", "End", "Escape"]) {
       const e = m.press(key);
       expect(e.prevented, key).toBe(true);
@@ -420,8 +421,31 @@ describe("keyboard map markers", () => {
 
   it("leaves Escape alone when there is nothing to clear", () => {
     const m = fakeMarker();
-    wireMarker(m.el, "KASE", "KASE", false, { onSelect: () => {}, onMove: () => {} });
+    wireMarker(m.el, "KASE", "KASE", false, { onSelect: () => {}, onMove: () => {} }, { tabStop: false, role: "link" });
     expect(m.press("Escape").prevented).toBe(false);
+  });
+
+  it("makes markers that open a page links out of the tab order, with no pressed state", () => {
+    const m = fakeMarker();
+    const calls: string[] = [];
+    wireMarker(m.el, "KASE", "KASE Aspen/Pitkin County, 1 route", true, { onSelect: (icao) => calls.push(icao), onMove: () => {} }, { tabStop: false, role: "link" });
+    expect(m.attrs.tabindex).toBe("-1");
+    expect(m.attrs.role).toBe("link");
+    expect(m.attrs["aria-pressed"]).toBeUndefined();
+    expect(m.attrs["aria-label"]).toBe("KASE Aspen/Pitkin County, 1 route");
+    expect(m.attrs["data-icao"]).toBe("KASE");
+    m.press("Enter");
+    expect(calls).toEqual(["KASE"]);
+  });
+
+  it("gives a map one tab stop: the selected airport when drawn, else the refocused marker, else the first", () => {
+    const order = ["KTYQ", "KIND", "KASE"];
+    expect(markerTabStop(order, "KASE", "KIND")).toBe("KASE");
+    expect(markerTabStop(order, "EGLL", "KIND")).toBe("KIND");
+    expect(markerTabStop(order, null, "KASE")).toBe("KASE");
+    expect(markerTabStop(order, undefined, null)).toBe("KTYQ");
+    expect(markerTabStop(order, "EGLL", "LFPB")).toBe("KTYQ");
+    expect(markerTabStop([], "KASE", "KIND")).toBeUndefined();
   });
 
   it("orders markers bases first, then west to east, and wraps arrow moves", () => {

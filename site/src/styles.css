@@ -212,6 +212,9 @@ main:focus { outline: none; }
 /* ------------------------------------------------------------- live */
 .live-map { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); background: var(--mist); z-index: 0; }
 @media (max-width: 700px) { .live-map { height: min(360px, 55vh) !important; } }
+/* On touch screens one finger scrolls the page past a map (dragging is off there); MapHint says how to move it. */
+.map-hint { display: none; }
+@media (pointer: coarse) { .map-hint { display: block; margin: 6px 0 0; font-size: 13px; color: var(--text-2); } }
 .map-tiles { filter: grayscale(1) contrast(0.9) brightness(1.06); } /* calm basemap so flights read first */
 .plane-icon span { display: block; width: 26px; height: 26px; fill: var(--ink); filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 1px #fff); }
 .plane-icon svg { display: block; }
@@ -942,3 +945,5 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 .leaflet-container path.airport-marker:focus { outline: none; }
 .leaflet-container path.airport-marker:focus-visible { stroke: #e8703a; stroke-width: 5px; stroke-opacity: 1; paint-order: stroke; filter: drop-shadow(0 0 2px #1b2328) drop-shadow(0 0 4px #e8703a); }
 @media (forced-colors: active) { .leaflet-container path.airport-marker:focus-visible { stroke: Highlight; filter: none; } }
+/* Keyboard help is left out on touch-only screens: by input type, not width, so a desktop zoomed to 400% keeps it. */
+@media (hover: none) and (pointer: coarse) { .kbd-hint { display: none; } }

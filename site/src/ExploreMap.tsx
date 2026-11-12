@@ -3,8 +3,8 @@ import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import type { Airport, Division, Route } from "./data";
 import { greatCircle, routeDivision } from "./data";
-import { DIVISION_COLORS } from "./LiveMap";
-import { markerLabel, markerOrder, moveIndex, routeKey, wireMarker } from "./explore";
+import { DIVISION_COLORS, MapHint, touchFirst } from "./LiveMap";
+import { markerLabel, markerOrder, markerTabStop, moveIndex, routeKey, wireMarker } from "./explore";
 
 interface Props {
   routes: Route[];
@@ -25,6 +25,10 @@ interface Props {
   extraLeg?: [string, string] | null;
   height?: number;
   label: string;
+  /** What a marker is to assistive technology: a "link" where selecting it opens a page (the default), a "button" where it toggles a selection. */
+  markerRole?: "button" | "link";
+  /** Id of the text that explains the map's keys. */
+  describedBy?: string;
 }
 
 const has = (a: Airport | undefined): a is Airport & { lat: number; lon: number } => a?.lat != null && a.lon != null;
@@ -33,7 +37,7 @@ function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
 }
 
-export function ExploreMap({ routes, airports, bases, divisions, selectedAirport, selectedRoute, onAirportClick, onRouteClick, onClearSelection, ring, extraLeg, height = 460, label }: Props) {
+export function ExploreMap({ routes, airports, bases, divisions, selectedAirport, selectedRoute, onAirportClick, onRouteClick, onClearSelection, ring, extraLeg, height = 460, label, markerRole = "link", describedBy }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const layer = useRef<L.LayerGroup | null>(null);
@@ -43,7 +47,8 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
 
   useEffect(() => {
     if (!container.current || map.current) return;
-    const instance = L.map(container.current, { zoomControl: true, scrollWheelZoom: false, worldCopyJump: true }).setView([39.7, -86.3], 4);
+    // On touch screens one finger scrolls the page past the map; two fingers move and zoom it.
+    const instance = L.map(container.current, { zoomControl: true, scrollWheelZoom: false, worldCopyJump: true, dragging: !touchFirst() }).setView([39.7, -86.3], 4);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 12,
       className: "map-tiles",
@@ -138,12 +143,17 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
       }
     }
 
-    // Markers are added in keyboard order (bases, then west to east) so Tab follows the map.
+    // Markers are added in keyboard order (bases, then west to east). One of them is the map's tab
+    // stop and the arrow keys move between them, so the markers cost one Tab press, not one each.
     const order = markerOrder([...served].filter((icao) => has(airports[icao])), airports, bases);
+    const tabStop = markerTabStop(order, selectedAirport, refocus);
     const elements = new Map<string, HTMLElement | SVGElement>();
     const focusMarker = (icao: string | undefined) => {
       const el = icao ? elements.get(icao) : undefined;
-      if (el && "focus" in el) (el as HTMLElement).focus({ preventScroll: true });
+      if (!el) return;
+      for (const other of elements.values()) other.setAttribute("tabindex", "-1");
+      el.setAttribute("tabindex", "0");
+      if ("focus" in el) (el as HTMLElement).focus({ preventScroll: true });
     };
     for (const icao of order) {
       const airport = airports[icao] as Airport & { lat: number; lon: number };
@@ -169,7 +179,7 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
             onSelect: (code) => handlers.current.onAirportClick?.(code),
             onMove: (code, action) => focusMarker(order[moveIndex(order.indexOf(code), order.length, action)]),
             onClear: () => handlers.current.onClearSelection?.(),
-          });
+          }, { tabStop: icao === tabStop, role: markerRole });
           el.addEventListener("focus", () => marker.openTooltip());
           el.addEventListener("blur", () => marker.closeTooltip());
         }
@@ -184,7 +194,12 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
       if (bounds.current) instance.fitBounds(bounds.current, { padding: [28, 28], maxZoom: 7 });
       else if (points.length === 1) instance.setView(points[0]!, 6);
     }
-  }, [routes, airports, bases, divisions, selectedAirport, selectedRoute, ring, extraLeg, fitKey, onAirportClick, onRouteClick]);
+  }, [routes, airports, bases, divisions, selectedAirport, selectedRoute, ring, extraLeg, fitKey, onAirportClick, onRouteClick, markerRole]);
 
-  return <div ref={container} className="live-map" style={{ height }} role="region" aria-label={label} />;
+  return (
+    <>
+      <div ref={container} className="live-map" style={{ height }} role="region" aria-label={label} aria-describedby={describedBy} />
+      <MapHint />
+    </>
+  );
 }

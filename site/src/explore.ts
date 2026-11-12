@@ -552,7 +552,7 @@ export function scheduleCsv(snapshot: Pick<Snapshot, "routes" | "airports" | "ai
 
 // ------------------------------------------------------------------ keyboard map markers
 
-/** Tab and arrow order for airport markers: bases first, then west to east (ties by ICAO). */
+/** Arrow-key order for airport markers (the first is the default tab stop): bases first, then west to east (ties by ICAO). */
 export function markerOrder(icaos: Iterable<string>, airports: Record<string, Pick<Airport, "lon">>, bases: string[]): string[] {
   return [...new Set(icaos)].sort((a, b) => {
     const ba = bases.indexOf(a);
@@ -601,16 +601,34 @@ export interface MarkerElement {
   focus?(options?: { preventScroll?: boolean }): void;
 }
 
+export interface MarkerOptions {
+  /** The map's one tab stop (tabindex 0); the other markers take -1 and are reached with the arrow keys. */
+  tabStop: boolean;
+  /** "button" (with aria-pressed) where selecting toggles a selection, "link" where it opens a page. */
+  role: "button" | "link";
+}
+
 /**
- * Make one map marker a keyboard button: focusable, named, Enter/Space select it, arrows/Home/End
- * move focus through the ordered markers, Escape clears the selection. Keys are kept from Leaflet's
- * own keyboard panning.
+ * The marker that holds the map's tab stop (a roving tabindex): the selected airport when it is
+ * drawn, else the marker that had focus before a redraw, else the first in keyboard order.
  */
-export function wireMarker(el: MarkerElement, icao: string, label: string, pressed: boolean, handlers: { onSelect: (icao: string) => void; onMove: (icao: string, action: "next" | "prev" | "first" | "last") => void; onClear?: () => void }): void {
-  el.setAttribute("tabindex", "0");
-  el.setAttribute("role", "button");
+export function markerTabStop(order: readonly string[], selected?: string | null, refocus?: string | null): string | undefined {
+  if (selected && order.includes(selected)) return selected;
+  if (refocus && order.includes(refocus)) return refocus;
+  return order[0];
+}
+
+/**
+ * Make one map marker a keyboard button or link: named, Enter/Space select it, arrows/Home/End move
+ * focus through the ordered markers, Escape clears the selection. Only the tab-stop marker is in
+ * the tab order, so one Tab enters the markers and the next leaves them. Keys are kept from
+ * Leaflet's own keyboard panning.
+ */
+export function wireMarker(el: MarkerElement, icao: string, label: string, pressed: boolean, handlers: { onSelect: (icao: string) => void; onMove: (icao: string, action: "next" | "prev" | "first" | "last") => void; onClear?: () => void }, options: MarkerOptions): void {
+  el.setAttribute("tabindex", options.tabStop ? "0" : "-1");
+  el.setAttribute("role", options.role);
   el.setAttribute("aria-label", label);
-  el.setAttribute("aria-pressed", pressed ? "true" : "false");
+  if (options.role === "button") el.setAttribute("aria-pressed", pressed ? "true" : "false");
   el.setAttribute("data-icao", icao);
   el.addEventListener("keydown", (event) => {
     const action = markerKeyAction(event.key);

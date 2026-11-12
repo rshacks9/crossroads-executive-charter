@@ -8,8 +8,8 @@ import type { Snapshot } from "./data";
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
+const { DivisionDot, FleetPage, LivePage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { findRoute, routeHref } = await import("./explore");
@@ -103,8 +103,33 @@ describe("pages render from the snapshot", () => {
     expect(text(renderToString(<StatsPage snapshot={snapshot} />))).toContain(`add up to more than ${total} routes`);
   });
 
-  it("explains the explorer's keyboard controls", () => {
-    expect(text(renderToString(<RoutesPage snapshot={snapshot} />))).toContain("Escape to clear");
+  it("explains the explorer's keys to keyboards and the two-finger move to touch screens", () => {
+    const html = renderToString(<RoutesPage snapshot={snapshot} />);
+    expect(text(html)).toContain("Escape to clear");
+    expect(html).toContain('aria-label="Route explorer map" aria-describedby="explorer-keys"');
+    expect(html).toContain('<p class="fineprint kbd-hint" id="explorer-keys">Keyboard: Tab to the map, arrow keys to move between airports,');
+    expect(text(html)).toContain("Choose any airport on the map or in the list");
+    expect(text(html)).not.toMatch(/click/i);
+    for (const page of [html, renderToString(<DestinationsPage snapshot={snapshot} />), renderToString(<HomePage snapshot={snapshot} />), renderToString(<LivePage snapshot={snapshot} />)]) {
+      expect(page).toContain('<p class="map-hint">Use two fingers to move the map.</p>');
+    }
+    const airport = text(renderToString(<AirportPage snapshot={snapshot} icao="KIND" />));
+    expect(airport).toContain("Select a route line to highlight it, or another airport to open its page.");
+    expect(airport).not.toMatch(/click/i);
+  });
+
+  it("announces only the explorer's route count, not the whole panel", () => {
+    const noop = () => undefined;
+    const panel = renderToString(<ExplorerPanel snapshot={snapshot} routes={snapshot.routes} selected="KIND" onSelect={noop} selectedRoute={null} onRoute={noop} />);
+    expect(panel).toContain('<aside class="explorer__panel" aria-label="Route explorer">');
+    expect(panel).not.toContain("aria-live");
+    expect(panel.match(/role="status"/g)).toHaveLength(1);
+    const start = panel.indexOf('role="status">');
+    expect(text(panel.slice(start, panel.indexOf("</p>", start)))).toMatch(/[0-9]+ routes in this view/);
+    const empty = text(renderToString(<ExplorerPanel snapshot={snapshot} routes={snapshot.routes} selected={null} onSelect={noop} selectedRoute={null} onRoute={noop} />));
+    expect(empty).toContain("Choose an airport");
+    expect(empty).toContain("Pick an airport here or on the map");
+    expect(empty).not.toMatch(/click/i);
   });
 
   it("pages route lists 25 at a time, in a named table with sortable columns", () => {

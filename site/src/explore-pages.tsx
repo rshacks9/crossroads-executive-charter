@@ -248,11 +248,11 @@ export function ExplorerPanel({ snapshot, routes, selected, onSelect, selectedRo
   const route = selectedRoute ? routes.find((r) => routeKey(r) === selectedRoute) : undefined;
   const names = typeNames(snapshot);
   return (
-    <aside className="explorer__panel" aria-label="Route explorer" aria-live="polite">
+    <aside className="explorer__panel" aria-label="Route explorer">
       <label className="explorer__pick">
         <span>Airport</span>
         <select value={selected ?? ""} onChange={(e) => { onSelect(e.target.value || null); onRoute(null); }}>
-          <option value="">Choose an airport, or click one on the map</option>
+          <option value="">Choose an airport</option>
           {airports.map((a) => <option key={a.icao} value={a.icao}>{a.icao} · {a.airport?.name ?? a.icao} ({a.routes})</option>)}
         </select>
       </label>
@@ -276,7 +276,7 @@ export function ExplorerPanel({ snapshot, routes, selected, onSelect, selectedRo
         <div className="explorer__airport">
           <p className="eyebrow">{summary.isBase ? "Crossroads base" : summary.airport?.country ?? "Destination"}</p>
           <h3>{summary.icao} <span className="muted">{summary.airport?.name}</span></h3>
-          <p className="muted">{summary.routes.length} {summary.routes.length === 1 ? "route" : "routes"} in this view{summary.fromBase ? ` · ${formatNumber(summary.fromBase.nm)} nm from ${summary.fromBase.base}` : ""}</p>
+          <p className="muted" role="status">{summary.routes.length} {summary.routes.length === 1 ? "route" : "routes"} in this view{summary.fromBase ? ` · ${formatNumber(summary.fromBase.nm)} nm from ${summary.fromBase.base}` : ""}</p>
           <ul className="explorer__list">
             {summary.routes.sort((a, b) => (a.distance_nm ?? 0) - (b.distance_nm ?? 0)).map((r) => {
               const key = routeKey(r);
@@ -294,7 +294,7 @@ export function ExplorerPanel({ snapshot, routes, selected, onSelect, selectedRo
           <a className="text-link" href={airportHref(summary.icao)}>{summary.icao} destination page →</a>
         </div>
       ) : (
-        <p className="explorer__hint">Pick an airport to see every route from it, drawn as great circles. Click a route for distance, block time, the types that fly it and a booking link.</p>
+        <p className="explorer__hint">Pick an airport here or on the map to see every route from it, drawn as great circles. Choose a route for distance, block time, the types that fly it and a booking link.</p>
       )}
     </aside>
   );
@@ -376,7 +376,7 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
       <section className="page page--split page--split-wide">
         <div>
           <ExploreMap routes={summary.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} selectedAirport={icao} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onClearSelection={() => setSelectedRoute(null)} onAirportClick={(other) => { if (other !== icao) window.location.hash = airportHref(other); }} height={420} label={`Routes serving ${icao}`} />
-          <p className="fineprint">Click a route line to highlight it, or another airport to open its page.</p>
+          <p className="fineprint">Select a route line to highlight it, or another airport to open its page.</p>
           <MapLegend snapshot={snapshot} routes={summary.routes} />
         </div>
         <div>

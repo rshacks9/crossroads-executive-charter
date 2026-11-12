@@ -669,7 +669,7 @@ export function RoutesPage({ snapshot }: PageProps) {
 
   return (
     <>
-      <PageHeader eyebrow="Route explorer" title={`${snapshot.routes.length} routes from Indianapolis`} lede="Click any airport on the map to see its routes as great circles, then pick a route for distance, block time, the aircraft that fly it and a booking link. Every route can be booked in the vAMSYS pilot portal and has a Crew Tools briefing." />
+      <PageHeader eyebrow="Route explorer" title={`${snapshot.routes.length} routes from Indianapolis`} lede="Choose any airport on the map or in the list to see its routes as great circles, then pick a route for distance, block time, the aircraft that fly it and a booking link. Every route can be booked in the vAMSYS pilot portal and has a Crew Tools briefing." />
       <section className="page">
         {divisions.length ? (
           <div className="chips" role="group" aria-label="Filter by division">
@@ -722,10 +722,12 @@ export function RoutesPage({ snapshot }: PageProps) {
               onRouteClick={setSelectedRoute}
               onClearSelection={() => { setSelectedAirport(null); setSelectedRoute(null); }}
               height={520}
-              label="Route explorer map. Tab to an airport marker and press Enter to select it; arrow keys move between airports and Escape clears the selection. The airport picker beside the map does the same."
+              label="Route explorer map"
+              describedBy="explorer-keys"
+              markerRole="button"
             />
             <MapLegend snapshot={snapshot} routes={shown} />
-            <p className="fineprint">Keyboard: Tab to an airport, Enter or Space to select, arrow keys to move between airports, Escape to clear.</p>
+            <p className="fineprint kbd-hint" id="explorer-keys">Keyboard: Tab to the map, arrow keys to move between airports, Enter or Space to select, Escape to clear.</p>
           </div>
           <ExplorerPanel snapshot={snapshot} routes={shown} selected={airportInView} onSelect={setSelectedAirport} selectedRoute={selectedRoute} onRoute={setSelectedRoute} />
         </div>

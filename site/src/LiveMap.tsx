@@ -14,6 +14,20 @@ export function divisionColor(index: number): string {
   return `var(--div-${((index % n) + n) % n})`;
 }
 
+/**
+ * Touch-first screens, where a map leaves one finger to scroll the page and takes two to move or
+ * zoom (Leaflet then sets touch-action: pan-x pan-y): Leaflet's phone test, or a coarse primary
+ * pointer, the query that shows MapHint (.map-hint in styles.css).
+ */
+export function touchFirst(): boolean {
+  return L.Browser.mobile || (typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches);
+}
+
+/** Under every map; styles.css shows it on touch screens only. */
+export function MapHint() {
+  return <p className="map-hint">Use two fingers to move the map.</p>;
+}
+
 interface Props {
   flights: LiveFlight[];
   airports: Record<string, Airport>;
@@ -43,7 +57,8 @@ export function LiveMap({ flights, airports, bases, routes = [], divisions = [],
 
   useEffect(() => {
     if (!container.current || map.current) return;
-    const instance = L.map(container.current, { zoomControl: true, scrollWheelZoom: false, worldCopyJump: true }).setView([39.7, -86.3], 4);
+    // On touch screens one finger scrolls the page past the map; two fingers move and zoom it.
+    const instance = L.map(container.current, { zoomControl: true, scrollWheelZoom: false, worldCopyJump: true, dragging: !touchFirst() }).setView([39.7, -86.3], 4);
     // OpenStreetMap's standard tiles: free, no key, attribution required. A busy site should move to
     // a hosted tile provider (see README) to stay within the OSM tile usage policy.
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -137,5 +152,10 @@ export function LiveMap({ flights, airports, bases, routes = [], divisions = [],
     else if (points.length === 1) instance.setView(points[0]!, 6);
   }, [flights, airports, bases, routes, divisions, onSelect]);
 
-  return <div ref={container} className="live-map" style={{ height }} role="region" aria-label={label ?? "Map of flights and routes"} />;
+  return (
+    <>
+      <div ref={container} className="live-map" style={{ height }} role="region" aria-label={label ?? "Map of flights and routes"} />
+      <MapHint />
+    </>
+  );
 }
