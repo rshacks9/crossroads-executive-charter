@@ -268,10 +268,14 @@ export function routesForType(snapshot: Pick<Snapshot, "routes">, code: string):
 
 export const isFreighterType = (t: Pick<FleetType, "type">) => t.type === "cargo" || t.type === "cargo-containers";
 
-/** Types that come with MSFS 2024, as the simulator labels in site.config.json say ("MSFS 2024 default"). */
+/**
+ * Types that come with every edition of MSFS 2024: the Standard edition's aircraft, labelled
+ * "(MSFS 2024 Standard)" in site.config.json. Types that only the Premium Deluxe and Aviator editions
+ * include, such as the Citation Longitude, don't count: not every pilot has them.
+ */
 export function defaultSimTypes(snapshot: Pick<Snapshot, "airline" | "fleet">): FleetType[] {
   const labels = snapshot.airline.sim_aircraft ?? {};
-  return snapshot.fleet.filter((f) => /MSFS 2024 default/i.test(labels[f.code] ?? ""));
+  return snapshot.fleet.filter((f) => /[(]MSFS 2024 Standard[)]/i.test(labels[f.code] ?? ""));
 }
 
 /** Routes that at least one of `types` may fly. */

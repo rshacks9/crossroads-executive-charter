@@ -542,12 +542,17 @@ describe("joining", () => {
     expect(text(renderToString(<HomePage snapshot={snapshot} />))).toContain(`Start as a Cadet at KTYQ in the ${shortName(ktyq[0]!.name)}, which comes with MSFS 2024.`);
   });
 
-  it("counts the routes the MSFS 2024 default jets can fly instead of typing the number", () => {
+  it("counts the routes of the Standard-edition types only: the CJ4, not the Longitude (Premium Deluxe/Aviator)", () => {
     const defaults = defaultSimTypes(snapshot);
-    expect(defaults.map((f) => f.code)).toEqual(["C25C", "C700"]);
-    const count = snapshot.routes.filter((r) => r.types.includes("C25C") || r.types.includes("C700")).length;
+    expect(defaults.map((f) => f.code)).toEqual(["C25C"]);
+    expect(snapshot.airline.sim_aircraft?.C700).toBe("Cessna Citation Longitude (MSFS 2024 Premium Deluxe/Aviator)");
+    const count = snapshot.routes.filter((r) => r.types.includes("C25C")).length;
+    // Round 13 schedule: the CJ4 flies 150 of the 316 routes.
+    expect([count, snapshot.routes.length]).toEqual([150, 316]);
     expect(routesForTypes(snapshot, defaults)).toHaveLength(count);
-    expect(text(renderToString(<PilotsPage snapshot={snapshot} />))).toContain(`Do I need add-on aircraft? No. The Citation CJ4 and Citation Longitude come with MSFS 2024 and between them fly ${count} of our ${snapshot.routes.length} routes.`);
+    const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    expect(page).toContain(`Do I need add-on aircraft? Not to start. The Citation CJ4 comes with every edition of MSFS 2024 and flies ${count} of our ${snapshot.routes.length} routes.`);
+    expect(page).not.toMatch(/Longitude (comes|come) with/);
     const none: Snapshot = { ...snapshot, airline: { ...snapshot.airline, sim_aircraft: {} } };
     expect(text(renderToString(<PilotsPage snapshot={none} />))).not.toContain("Do I need add-on aircraft?");
   });

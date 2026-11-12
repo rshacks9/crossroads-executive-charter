@@ -598,9 +598,13 @@ describe("tours", () => {
 describe("first flight", () => {
   const starter = { name: "Starter", window: "", points: 0, summary: "", legs: [["KTYQ", "KSDF"], ["KSDF", "KTYQ"]] as [string, string][], starter: true };
 
-  it("reads the types that come with MSFS 2024 from the simulator labels", () => {
-    const fleet = snapshot.fleet.filter((f) => f.code === "C25C" || f.code === "C510");
-    const labels = { C25C: "Cessna Citation CJ4 (MSFS 2024 default)", C510: "Cockspur Citation Mustang (add-on)" };
+  it("reads the types in every edition of MSFS 2024 from the simulator labels: Standard only", () => {
+    const fleet = snapshot.fleet.filter((f) => f.code === "C25C" || f.code === "C510" || f.code === "C700");
+    const labels = {
+      C25C: "Cessna Citation CJ4 (MSFS 2024 Standard)",
+      C510: "Cockspur Citation Mustang (add-on)",
+      C700: "Cessna Citation Longitude (MSFS 2024 Premium Deluxe/Aviator)",
+    };
     expect(defaultSimTypes({ airline: { ...snapshot.airline, sim_aircraft: labels }, fleet }).map((f) => f.code)).toEqual(["C25C"]);
     expect(defaultSimTypes({ airline: { ...snapshot.airline, sim_aircraft: undefined }, fleet })).toEqual([]);
   });

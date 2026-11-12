@@ -845,12 +845,15 @@ export const NEW_AIRLINE =
 export const REGISTRATION_CLOSED =
   `Crossroads is brand new, and its sign-up page on vAMSYS isn't taking new pilots yet. When it opens, the ${REGISTER_LABEL} buttons on this site will go straight to it.`;
 
-/** FAQ answer: the types that come with MSFS 2024 and how many routes they fly, counted from the schedule. */
+/**
+ * FAQ answer: the types in every edition of MSFS 2024 (defaultSimTypes, the Standard edition's) and
+ * how many routes they fly, counted from the schedule.
+ */
 export function addOnAnswer(snapshot: Snapshot, defaults: FleetType[]): string {
   const names = listJoin(defaults.map((f) => shortName(f.name)));
   const routes = routesForTypes(snapshot, defaults).length;
   const one = defaults.length === 1;
-  return `No. The ${names} ${one ? "comes" : "come"} with MSFS 2024 and ${one ? "flies" : "between them fly"} ${routes} of our ${snapshot.routes.length} routes. For every other type, the fleet page names the add-on we use, and any model of the same type works.`;
+  return `Not to start. The ${names} ${one ? "comes" : "come"} with every edition of MSFS 2024 and ${one ? "flies" : "between them fly"} ${routes} of our ${snapshot.routes.length} routes. For every other type, the fleet page names the model we use, and any model of the same type works.`;
 }
 
 /** The suggested first flight (explore.ts firstFlight): the starter tour's first leg, from the schedule. */
