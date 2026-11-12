@@ -9,7 +9,7 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage, bases } = await import("./pages");
+const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, NewsCard, PageHeader, RoutesPage, HomePage, PilotsPage, bases } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, destinationGroups, findRoute, networkStats, onwardLegs, routeHref, routeKey, servedAirports, suggestFleet } = await import("./explore");
@@ -439,5 +439,16 @@ describe("texts follow the data", () => {
     const home = renderToString(<HomePage snapshot={{ ...snapshot, stats: { ...snapshot.stats, all_time: null } }} />);
     expect(home).toContain(`<span class="stat__value">${countries}</span><span class="stat__label">Countries and territories</span>`);
     expect(renderToString(<AboutPage snapshot={snapshot} />)).toContain(`<dt>Countries and territories</dt><dd>${countries}</dd>`);
+  });
+
+  it("dates news day first with the month in full; the type table says 'Type code'", () => {
+    const card = text(renderToString(<NewsCard item={{ date: "2026-11-11", kind: "News", title: "Title", body: "Body" }} />));
+    expect(card).toContain("11 November 2026");
+    expect(card).not.toContain("Nov 11");
+    for (const f of snapshot.fleet) {
+      const html = renderToString(<TypePage snapshot={snapshot} code={f.code} />);
+      expect(html).toContain(`<th scope="row">Type code</th><td>${f.code}</td>`);
+      expect(html).not.toContain("ICAO type");
+    }
   });
 });

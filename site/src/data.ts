@@ -218,9 +218,10 @@ export function formatDate(iso: string | null, withTime = false): string {
   if (!iso) return "—";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleString("en-US", {
-    month: "short",
+  // Day first, the way the site's typed dates read ("11 November 2026"); with a time the month is short.
+  return date.toLocaleString("en-GB", {
     day: "numeric",
+    month: withTime ? "short" : "long",
     year: withTime ? undefined : "numeric",
     hour: withTime ? "numeric" : undefined,
     minute: withTime ? "2-digit" : undefined,

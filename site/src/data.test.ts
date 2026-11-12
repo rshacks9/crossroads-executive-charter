@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   filterRoutes,
   formatCompact,
+  formatDate,
   formatDuration,
   formatFeet,
   formatWeight,
@@ -84,6 +85,18 @@ describe("formatting", () => {
     expect(payloadTonnes(225000, "lbs")).toBe(102);
     expect(payloadTonnes(91000, null)).toBe(91);
     expect(payloadTonnes(null, "kg")).toBeNull();
+  });
+
+  it("writes dates day first with the month in full, like the dates typed on the site", () => {
+    // Noon UTC is the same calendar day in any time zone the tests may run in.
+    expect(formatDate("2026-11-11T12:00:00Z")).toBe("11 November 2026");
+    expect(formatDate("2027-04-15T12:00:00Z")).toBe("15 April 2027");
+    const withTime = formatDate("2026-11-11T12:00:00Z", true);
+    expect(withTime).toMatch(/^11 Nov\b/);
+    expect(withTime).toMatch(/\d{1,2}:\d{2}/);
+    expect(withTime).not.toContain("November");
+    expect(withTime).not.toContain("2026");
+    for (const missing of [null, "", "not a date"]) expect(formatDate(missing)).toBe("—");
   });
 
   it("computes progress and age", () => {

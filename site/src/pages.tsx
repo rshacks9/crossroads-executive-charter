@@ -202,7 +202,7 @@ export function NewsCard({ item, compact = false }: { item: NewsItem; compact?: 
     <li className={`news-card news-card--${item.kind.toLowerCase()}`}>
       <p className="news-card__meta">
         <span className="news-card__kind">{item.kind}</span>
-        <time dateTime={item.date}>{date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}</time>
+        <time dateTime={item.date}>{date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}</time>
       </p>
       <h3>{item.title}</h3>
       {!compact ? <p>{item.body}</p> : null}

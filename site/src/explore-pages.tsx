@@ -475,7 +475,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
   const routes = useMemo(() => routesForType(snapshot, code), [snapshot, code]);
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const base = baseFor(code);
-  const desc = type ? `${type.name} (${code}) at Crossroads: ${info?.role ?? "fleet type"}, based ${base}, ${routes.length} routes${info ? `, ${info.range_nm} nm planning range` : ""}.` : "";
+  const desc = type ? `${type.name} (${code}) at Crossroads: ${info?.role ?? "fleet type"}, based ${base}, ${routes.length} routes${info ? `, ${formatNumber(info.range_nm)} nm planning range` : ""}.` : "";
   useEffect(() => {
     if (type) setMeta(`${type.name} · Fleet · ${SITE}`, desc);
   }, [type, desc]);
@@ -520,7 +520,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
           <table className="table table--compact spec-table">
             <caption className="visually-hidden">{`${type.name} at a glance`}</caption>
             <tbody>
-              <tr><th scope="row">ICAO type</th><td>{code}</td></tr>
+              <tr><th scope="row">Type code</th><td>{code}</td></tr>
               <tr><th scope="row">Role</th><td>{info?.role ?? "—"}</td></tr>
               <tr><th scope="row">Division</th><td>{divisionIndex >= 0 ? <a href={`#/routes?division=${encodeURIComponent(snapshot.airline.divisions[divisionIndex]!.name)}`}><DivisionDot index={divisionIndex} />{snapshot.airline.divisions[divisionIndex]!.name}</a> : "—"}</td></tr>
               <tr><th scope="row">Base</th><td><a href={airportHref(base)}>{base} · {snapshot.airports[base]?.name ?? base}</a></td></tr>
