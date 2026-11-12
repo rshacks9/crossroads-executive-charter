@@ -200,7 +200,8 @@ export function App() {
 
   return (
     <div className="shell">
-      <a className="skip-link" href="#main">Skip to content</a>
+      {/* The hash router would read "#main" as a page and show the 404, so the link moves focus itself. */}
+      <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>Skip to content</a>
       <header ref={masthead} className={"masthead" + (menuOpen ? " masthead--open" : "")}>
         <div className="masthead__inner">
           <a className="wordmark" href="#/" aria-label={`${airline?.name ?? "Crossroads Executive & Charter"} home`}>
