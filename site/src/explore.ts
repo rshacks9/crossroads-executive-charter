@@ -209,13 +209,20 @@ export function destinationBlurb(summary: AirportSummary, divisionNames: string[
     const flown = `the ${based} ${typeWord(based)} based here${visiting ? ` and ${visiting} visiting ${typeWord(visiting)}` : ""}`;
     return `${name} is a Crossroads base. ${summary.routes.length} scheduled routes start or end here, flown by ${flown}.`;
   }
-  const where = a?.country ? ` in ${a.country}` : "";
+  const where = a?.country ? ` in ${inCountry(a.country)}` : "";
   const dist = summary.fromBase ? ` It is ${summary.fromBase.nm.toLocaleString("en-US")} nm great-circle from ${summary.fromBase.base}.` : "";
   const divs = summary.divisions.map((i) => divisionNames[i]).filter((n): n is string => Boolean(n));
   const divText = divs.length ? ` Flights here belong to the ${listJoin(divs)} ${divs.length === 1 ? "division" : "divisions"}.` : "";
   const types = summary.types.map(typeName);
-  const typeText = types.length <= 3 ? listJoin(types) : `${types.length} types, from the ${types[0]} to the ${types[types.length - 1]}`;
+  // Not "from the X to the Y": the list is in schedule order, not by size.
+  const typeText = types.length <= 3 ? listJoin(types) : `${types.length} types, including the ${types[0]} and the ${types[1]}`;
   return `${name}${where} is on ${summary.routes.length} Crossroads ${summary.routes.length === 1 ? "route" : "routes"}.${dist}${divText} Bookable aircraft: ${typeText}.`;
+}
+
+/** A country as it reads after "in": "the United States", "the Bahamas", "France". */
+export function inCountry(country: string): string {
+  const the = /^(United |U\.S\. )|(Islands|Republic|Emirates)$/.test(country) || ["Bahamas", "Netherlands", "Philippines", "Gambia", "Maldives"].includes(country);
+  return the ? `the ${country}` : country;
 }
 
 export function listJoin(items: string[]): string {

@@ -562,12 +562,21 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
 
 // ------------------------------------------------------------------ one route
 
+/** A route page's meta description: "CRX445: Bradley International to Los Angeles International, 2,191 nm, about 5h 10m block. Bookable on vAMSYS in 3 aircraft types." */
+export function routeDescription(route: Route, snapshot: Pick<Snapshot, "airports">): string {
+  const a = snapshot.airports[route.from];
+  const b = snapshot.airports[route.to];
+  const distance = route.distance_nm != null ? `, ${formatNumber(route.distance_nm)} nm` : "";
+  const types = `${route.types.length} aircraft ${route.types.length === 1 ? "type" : "types"}`;
+  return `${routeKey(route)}: ${a?.name ?? route.from} to ${b?.name ?? route.to}${distance}, about ${formatDuration(route.duration_min)} block. Bookable on vAMSYS in ${types}.`;
+}
+
 export function RoutePage({ snapshot, route }: PageProps & { route: Route | undefined }) {
   const crew = useCrew();
   const key = route ? routeKey(route) : "";
   const a = route ? snapshot.airports[route.from] : undefined;
   const b = route ? snapshot.airports[route.to] : undefined;
-  const desc = route ? `${key}: ${a?.name ?? route.from} to ${b?.name ?? route.to}, ${route.distance_nm} nm, about ${formatDuration(route.duration_min)} block. Bookable on vAMSYS in ${route.types.length} aircraft types.` : "";
+  const desc = route ? routeDescription(route, snapshot) : "";
   useEffect(() => {
     if (route) setMeta(`${key} ${route.from}–${route.to} · ${SITE}`, desc);
   }, [route, key, desc]);

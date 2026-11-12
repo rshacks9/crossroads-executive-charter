@@ -8,7 +8,7 @@ import type { Crew, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./da
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
+const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, routeDescription, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
@@ -664,6 +664,19 @@ describe("the Discord link", () => {
     expect(renderToString(<Footer snapshot={withDiscord} />)).toContain(`<li><a ${link}</li>`);
     // Only those two places link it.
     expect(everyPage(withDiscord).filter((html) => html.includes(invite))).toHaveLength(2);
+  });
+});
+
+describe("route meta descriptions", () => {
+  it("count one aircraft type in the singular and put a comma in long distances", () => {
+    const short = findRoute(snapshot, "CRX751");
+    const long = findRoute(snapshot, "CRX445");
+    if (!short || !long) throw new Error("CRX751 or CRX445 is missing");
+    expect(routeDescription(short, snapshot)).toMatch(/Bookable on vAMSYS in 1 aircraft type[.]$/);
+    expect(routeDescription(long, snapshot)).toContain(`, ${formatNumber(long.distance_nm)} nm, about `);
+    expect(long.distance_nm).toBeGreaterThanOrEqual(1000);
+    expect(routeDescription(long, snapshot)).toMatch(/\d,\d{3} nm/);
+    expect(routeDescription(long, snapshot)).toMatch(/in \d+ aircraft types[.]$/);
   });
 });
 

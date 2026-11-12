@@ -17,6 +17,7 @@ import {
   divisionBaseLabel,
   findRoute,
   firstFlight,
+  inCountry,
   initialCourse,
   isSearchShortcut,
   jumpTo,
@@ -133,6 +134,21 @@ describe("airports", () => {
     expect(text).toContain(`${s.routes.length} Crossroads`);
     expect(text).not.toMatch(/best|famous|popular|luxury/i);
     expect(listJoin(["a", "b", "c"])).toBe("a, b and c");
+  });
+
+  it("puts the article before a country that takes one, and never words the types as a size range", () => {
+    for (const [name, reads] of [
+      ["United States", "the United States"], ["United Kingdom", "the United Kingdom"], ["Bahamas", "the Bahamas"],
+      ["Turks and Caicos Islands", "the Turks and Caicos Islands"], ["U.S. Virgin Islands", "the U.S. Virgin Islands"],
+      ["Dominican Republic", "the Dominican Republic"], ["France", "France"], ["Puerto Rico", "Puerto Rico"], ["Sint Maarten", "Sint Maarten"],
+    ]) expect(inCountry(name!), name).toBe(reads);
+    const names = snapshot.airline.divisions.map((d) => d.name);
+    expect(destinationBlurb(airportSummary(snapshot, "KBAF"), names, (c) => c)).toContain("Westfield-Barnes Regional in the United States is on");
+    const busy = servedAirports(snapshot).map((a) => airportSummary(snapshot, a.icao)).find((s) => !s.isBase && s.types.length > 3);
+    if (!busy) throw new Error("no destination with more than three types");
+    const blurb = destinationBlurb(busy, names, (c) => c);
+    expect(blurb).toMatch(/Bookable aircraft: \d+ types, including the [A-Z0-9]+ and the [A-Z0-9]+[.]$/);
+    expect(blurb).not.toMatch(/types, from the/);
   });
 
   it("splits a base's types into those based there and visiting ones", () => {

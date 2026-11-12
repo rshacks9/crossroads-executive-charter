@@ -839,7 +839,8 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .sop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 14px; }
 .rate-scale { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
 @media (max-width: 760px) { .rate-scale { grid-template-columns: 1fr 1fr; } }
-.rate { padding: 14px 16px; display: grid; gap: 4px; background: var(--panel); border-top: 6px solid; }
+/* align-content: start keeps every band's text at the top when one band's longer label makes the row taller. */
+.rate { padding: 14px 16px; display: grid; gap: 4px; align-content: start; background: var(--panel); border-top: 6px solid; }
 .rate strong { font: 700 22px var(--display); }
 .rate span { font-size: 14px; color: var(--text-2); }
 .rate--good { border-top-color: var(--rate-good); }
