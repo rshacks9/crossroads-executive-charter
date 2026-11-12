@@ -325,6 +325,25 @@ main:focus { outline: none; }
 /* Leaflet tooltips in the site's type */
 .leaflet-container { font: 400 14px var(--body); }
 .leaflet-tooltip { font: 400 14px/1.4 var(--body); }
+/* Leaflet's zoom buttons, attribution strip and tooltips in the theme's colours. Scoped to .live-map,
+   the class both map components put on the Leaflet container, so these win whichever stylesheet
+   loads first. */
+.live-map .leaflet-bar a { background-color: var(--panel); color: var(--text); border-bottom-color: var(--line); }
+.live-map .leaflet-bar a:hover, .live-map .leaflet-bar a:focus { background-color: var(--mist); }
+.live-map .leaflet-bar a.leaflet-disabled { background-color: var(--mist); color: var(--text-2); }
+.live-map.leaflet-touch .leaflet-bar { border-color: var(--line); }
+.live-map.leaflet-container .leaflet-control-attribution { background: var(--panel); background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--text-2); }
+.live-map.leaflet-container .leaflet-control-attribution a { color: var(--signal-ink); }
+.live-map .leaflet-tooltip { background-color: var(--panel); border-color: var(--line); color: var(--text); }
+.live-map .leaflet-tooltip-top::before { border-top-color: var(--panel); }
+.live-map .leaflet-tooltip-bottom::before { border-bottom-color: var(--panel); }
+.live-map .leaflet-tooltip-left::before { border-left-color: var(--panel); }
+.live-map .leaflet-tooltip-right::before { border-right-color: var(--panel); }
+/* Ink blocks keep an edge where the dark page is nearly the same colour as they are. */
+.footer { border-top: 1px solid var(--ink-line); }
+.cta-band { border-top: 1px solid var(--ink-line); }
+:root[data-theme="dark"] :is(.metar, .callsign-card div, .event__date, .ladder__step) { box-shadow: inset 0 0 0 1px var(--line); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.metar, .callsign-card div, .event__date, .ladder__step) { box-shadow: inset 0 0 0 1px var(--line); } }
 
 /* ------------------------------------------------------------- pass 1: recruiting content */
 .notice--preview { background: var(--ink-2); color: var(--on-ink-2); border-bottom: 1px solid var(--ink-line); }
