@@ -126,6 +126,33 @@ export function servedAirports(snapshot: Pick<Snapshot, "routes" | "airports">):
     .sort((a, b) => b.routes - a.routes || a.icao.localeCompare(b.icao));
 }
 
+/** The Destinations heading for countries with too few airports for a group of their own. */
+export const MORE_COUNTRIES = "More countries";
+
+/**
+ * The Destinations index in groups: the United States first, then each country with at least `min`
+ * airports on the whole list (`all`), alphabetical, then MORE_COUNTRIES with the rest, by country and
+ * then ICAO. Groups are decided on `all`, so an airport keeps its heading while a filter narrows
+ * `shown`; within a group `shown`'s order is kept, and empty groups are left out.
+ */
+export function destinationGroups<T extends { icao: string; airport?: Pick<Airport, "country"> | undefined }>(all: readonly T[], shown: readonly T[], min = 3): { title: string; items: T[] }[] {
+  const us = "United States";
+  const country = (item: T) => item.airport?.country ?? "Other";
+  const counts = new Map<string, number>();
+  for (const item of all) counts.set(country(item), (counts.get(country(item)) ?? 0) + 1);
+  const groups = new Map<string, T[]>();
+  const more: T[] = [];
+  for (const item of shown) {
+    const c = country(item);
+    if (c === us || (counts.get(c) ?? 0) >= min) groups.set(c, [...(groups.get(c) ?? []), item]);
+    else more.push(item);
+  }
+  const titles = [...groups.keys()].sort((a, b) => (a === us ? -1 : b === us ? 1 : a.localeCompare(b)));
+  const result = titles.map((title) => ({ title, items: groups.get(title) ?? [] }));
+  if (more.length) result.push({ title: MORE_COUNTRIES, items: more.sort((a, b) => country(a).localeCompare(country(b)) || a.icao.localeCompare(b.icao)) });
+  return result;
+}
+
 /** One runway strip, built from the two ends that crew.json lists for it. */
 export interface RunwayStrip {
   /** The sorted pair of end names, e.g. "05R/23L". */

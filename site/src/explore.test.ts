@@ -5,10 +5,12 @@ import { routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL } from "./content";
 import {
   COMFORT_SHARE,
+  MORE_COUNTRIES,
   airportSummary,
   briefingCard,
   buildSearchIndex,
   destinationBlurb,
+  destinationGroups,
   distanceNm,
   divisionBaseLabel,
   findRoute,
@@ -568,5 +570,45 @@ describe("in-page jumps", () => {
   it("do nothing when the target is not on the page", () => {
     expect(() => jumpTo(null)).not.toThrow();
     expect(() => jumpTo(undefined)).not.toThrow();
+  });
+});
+
+describe("destination groups", () => {
+  const at = (icao: string, country: string | null) => ({ icao, airport: { country } });
+  const all = [
+    at("KIND", "United States"), at("KTYQ", "United States"),
+    at("MMUN", "Mexico"), at("MMMX", "Mexico"), at("MMSD", "Mexico"),
+    at("LFPB", "France"), at("LFMN", "France"),
+    at("EGLL", "United Kingdom"), at("EGLC", "United Kingdom"), at("EGGW", "United Kingdom"),
+    at("CYYZ", "Canada"), at("ZZZZ", null),
+  ];
+
+  it("puts the United States first, then countries with three or more airports, then the rest by country and ICAO", () => {
+    const groups = destinationGroups(all, all);
+    expect(groups.map((g) => g.title)).toEqual(["United States", "Mexico", "United Kingdom", MORE_COUNTRIES]);
+    expect(groups[0]!.items.map((a) => a.icao)).toEqual(["KIND", "KTYQ"]);
+    expect(groups[3]!.items.map((a) => a.icao)).toEqual(["CYYZ", "LFMN", "LFPB", "ZZZZ"]);
+    expect(destinationGroups(all, all, 4).map((g) => g.title)).toEqual(["United States", MORE_COUNTRIES]);
+  });
+
+  it("keeps an airport under its heading while a filter narrows the list, and leaves out empty groups", () => {
+    const cancun = all.filter((a) => a.icao === "MMUN");
+    expect(destinationGroups(all, cancun)).toEqual([{ title: "Mexico", items: cancun }]);
+    const france = all.filter((a) => a.airport.country === "France");
+    expect(destinationGroups(all, france)).toEqual([{ title: MORE_COUNTRIES, items: [france[1], france[0]] }]);
+    expect(destinationGroups(all, [])).toEqual([]);
+  });
+
+  it("files every airport on the schedule once", () => {
+    const list = servedAirports(snapshot);
+    const groups = destinationGroups(list, list);
+    expect(groups[0]?.title).toBe("United States");
+    expect(groups.flatMap((g) => g.items.map((a) => a.icao)).sort()).toEqual(list.map((a) => a.icao).sort());
+    const countryOf = (a: (typeof list)[number]) => a.airport?.country ?? "Other";
+    const size = (country: string) => list.filter((a) => countryOf(a) === country).length;
+    for (const g of groups.slice(1)) {
+      if (g.title === MORE_COUNTRIES) for (const a of g.items) expect(size(countryOf(a)), a.icao).toBeLessThan(3);
+      else expect(size(g.title), g.title).toBeGreaterThanOrEqual(3);
+    }
   });
 });

@@ -6,16 +6,19 @@ import { ExploreMap } from "./ExploreMap";
 import { divisionColor } from "./LiveMap";
 import type { Bar, FitStatus, FleetSuggestion, RouteSortKey, SearchEntry } from "./explore";
 import {
+  MORE_COUNTRIES,
   SEARCH_EVENT,
   airportHref,
   airportSummary,
   briefingCard,
   buildSearchIndex,
   destinationBlurb,
+  destinationGroups,
   distanceNm,
   download,
   initialCourse,
   isFreighterType,
+  jumpTo,
   moveSearchActive,
   networkStats,
   onwardLegs,
@@ -304,18 +307,28 @@ export function ExplorerPanel({ snapshot, routes, selected, onSelect, selectedRo
 
 // ------------------------------------------------------------------ destinations index
 
+/** On phones, with no filter, the United States group opens with its busiest airports. */
+const US_FIRST = 12;
+
+const destGroupId = (title: string) => `dest-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
 export function DestinationsPage({ snapshot }: PageProps) {
   const [query, setQuery] = useState("");
+  const [usExpanded, setUsExpanded] = useState(false);
+  const narrow = useMediaQuery("(max-width: 700px)");
+  const usList = useRef<HTMLUListElement>(null);
+  const focusAdded = useRef(false);
   const list = useMemo(() => servedAirports(snapshot), [snapshot]);
   const q = query.trim().toLowerCase();
   const shown = list.filter(({ icao, airport }) => !q || [icao, airport?.iata, airport?.name, airport?.country].some((v) => v?.toLowerCase().includes(q)));
-  const byCountry = new Map<string, typeof shown>();
-  for (const item of shown) {
-    const country = item.airport?.country ?? "Other";
-    byCountry.set(country, [...(byCountry.get(country) ?? []), item]);
-  }
-  const countries = [...byCountry.keys()].sort((a, b) => (a === "United States" ? -1 : b === "United States" ? 1 : a.localeCompare(b)));
+  const groups = destinationGroups(list, shown);
   useEffect(() => setMeta(`Destinations · ${SITE}`, `All ${list.length} airports on the Crossroads schedule, with runways, routes and the aircraft that fly them.`), [list.length]);
+  // After "Show all", focus moves to the first airport that was added.
+  useEffect(() => {
+    if (!focusAdded.current) return;
+    focusAdded.current = false;
+    usList.current?.querySelectorAll<HTMLElement>("a")[US_FIRST]?.focus();
+  }, [usExpanded]);
   return (
     <>
       <PageHeader eyebrow="Destinations" title={`${list.length} airports on the schedule`} lede="Every airport Crossroads flies to, built from the published schedule. Each one has a page with its runways, every route that serves it and the aircraft you can book." />
@@ -326,24 +339,41 @@ export function DestinationsPage({ snapshot }: PageProps) {
             <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="ICAO, IATA, name or country" autoComplete="off" />
           </label>
         </form>
+        <p className="filters__count" role="status">{`${shown.length} of ${list.length} airports`}</p>
+        {/* Jumps to the group headings: buttons, not #id links, which the hash router would read as pages. */}
+        {groups.length ? (
+          <div className="chips" role="group" aria-label="Jump to">
+            {groups.map((g) => <button key={g.title} type="button" className="chip-button" onClick={() => jumpTo(document.getElementById(destGroupId(g.title)))}>{g.title}</button>)}
+          </div>
+        ) : null}
         <ExploreMap routes={snapshot.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={380} label="Map of destinations; select an airport to open its page" />
         <MapLegend snapshot={snapshot} routes={snapshot.routes} />
-        {countries.length ? countries.map((country) => (
-          <div key={country} className="dest-group">
-            <h2>{country} <span className="tag">{byCountry.get(country)!.length}</span></h2>
-            <ul className="dest-grid">
-              {byCountry.get(country)!.map(({ icao, airport, routes }) => (
-                <li key={icao}>
-                  <a className="dest-card" href={airportHref(icao)}>
-                    <strong>{icao}{airport?.iata ? <span className="muted"> / {airport.iata}</span> : null}</strong>
-                    <span>{airport?.name ?? icao}</span>
-                    <span className="dest-card__meta">{routes} {routes === 1 ? "route" : "routes"}{airport?.base ? " · base" : ""}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )) : <p className="empty">No airports match “{query}”.</p>}
+        {groups.length ? groups.map((group) => {
+          const us = group.title === "United States";
+          const more = group.title === MORE_COUNTRIES;
+          const cut = us && narrow && !q && !usExpanded && group.items.length > US_FIRST;
+          return (
+            <div key={group.title} className="dest-group">
+              <h2 id={destGroupId(group.title)} tabIndex={-1}>{group.title} <span className="tag">{group.items.length}</span></h2>
+              <ul className="dest-grid" ref={us ? usList : undefined}>
+                {(cut ? group.items.slice(0, US_FIRST) : group.items).map(({ icao, airport, routes }) => (
+                  <li key={icao}>
+                    <a className="dest-card" href={airportHref(icao)}>
+                      <strong>{icao}{airport?.iata ? <span className="muted"> / {airport.iata}</span> : null}</strong>
+                      <span>{airport?.name ?? icao}</span>
+                      <span className="dest-card__meta">{`${more ? `${airport?.country ?? "Other"} · ` : ""}${routes} ${routes === 1 ? "route" : "routes"}${airport?.base ? " · base" : ""}`}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              {cut ? (
+                <p className="dest-more">
+                  <button type="button" className="button button--quiet" onClick={() => { focusAdded.current = true; setUsExpanded(true); }}>{`Show all ${group.items.length}`}</button>
+                </p>
+              ) : null}
+            </div>
+          );
+        }) : <p className="empty">No airports match “{query}”.</p>}
       </section>
     </>
   );

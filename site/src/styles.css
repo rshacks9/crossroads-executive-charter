@@ -910,6 +910,17 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .dest-card:hover { border-color: var(--signal); box-shadow: var(--shadow); }
 .dest-card strong { font: 700 22px/1.1 var(--display); }
 .dest-card__meta { font-size: 13px; color: var(--text-2); }
+.dest-more { margin-top: 12px; }
+/* Phones: one bordered list of two-line rows per group (ICAO / IATA with the route count, then the
+   name), in one column because many names are long. */
+@media (max-width: 700px) {
+  .dest-grid { grid-template-columns: minmax(0, 1fr); gap: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+  .dest-grid li + li { border-top: 1px solid var(--line); }
+  .dest-card { grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; padding: 8px 14px; min-height: 58px; border: 0; border-radius: 0; background: none; }
+  .dest-card strong { font-size: 19px; }
+  .dest-card__meta { grid-column: 2; grid-row: 1; align-self: center; }
+  .dest-card > span:not(.dest-card__meta) { grid-column: 1 / -1; }
+}
 
 /* detail pages */
 .spec-table th { text-align: left; font-weight: 600; color: var(--text-2); width: 40%; }

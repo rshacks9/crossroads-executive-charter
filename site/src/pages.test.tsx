@@ -12,7 +12,7 @@ const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, Re
 const { DivisionDot, FleetPage, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
-const { findRoute, onwardLegs, routeHref, suggestFleet } = await import("./explore");
+const { MORE_COUNTRIES, destinationGroups, findRoute, onwardLegs, routeHref, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, payloadTonnes, routeDivision } = await import("./data");
 const { FLEET_INFO, SERVICES } = await import("./content");
 
@@ -320,5 +320,40 @@ describe("pages render from the snapshot", () => {
     const shown = SERVICES.filter((s) => snapshot.airline.divisions.some((d) => d.name === s.division));
     expect(services.match(/<section id="service-[a-z-]+" class="page service" tabindex="-1"/g)).toHaveLength(shown.length);
     for (const page of [html, services]) expect(page).not.toMatch(/href="#[^/]/);
+  });
+
+  it("destinations: a group per big country and More countries, a jump button each, an announced count", () => {
+    const list = servedAirports(snapshot);
+    const groups = destinationGroups(list, list);
+    const html = renderToString(<DestinationsPage snapshot={snapshot} />);
+    expect(html).toContain(`<p class="filters__count" role="status">${list.length} of ${list.length} airports</p>`);
+    const headings = [...html.matchAll(/<h2 id="dest-[a-z0-9-]+" tabindex="-1">([^<]*)/g)].map((m) => m[1]?.trim());
+    expect(headings).toEqual(groups.map((g) => g.title));
+    const buttons = [...html.matchAll(/<button type="button" class="chip-button">([^<]*)<[/]button>/g)].map((m) => m[1]);
+    expect(buttons).toEqual(groups.map((g) => g.title));
+    expect(html).not.toMatch(/href="#[^/]/);
+    expect(html.match(/class="dest-card"/g)).toHaveLength(list.length);
+    const more = groups.find((g) => g.title === MORE_COUNTRIES);
+    expect(more?.items.length).toBeGreaterThan(0);
+    const page = text(html);
+    for (const a of more?.items ?? []) expect(page).toContain(` ${a.airport?.country ?? "Other"} · ${a.routes} ${a.routes === 1 ? "route" : "routes"} `);
+  });
+
+  it("destinations on phones: the United States opens with its 12 busiest airports and a Show all button", () => {
+    const list = servedAirports(snapshot);
+    const us = destinationGroups(list, list)[0]!;
+    expect(us.items.length).toBeGreaterThan(12);
+    vi.stubGlobal("window", { matchMedia: () => ({ matches: true, addEventListener: () => undefined, removeEventListener: () => undefined }) });
+    try {
+      const html = renderToString(<DestinationsPage snapshot={snapshot} />);
+      const start = html.indexOf('<h2 id="dest-united-states"');
+      const group = html.slice(start, html.indexOf("</div>", start));
+      expect(group.match(/class="dest-card"/g)).toHaveLength(12);
+      for (const a of us.items.slice(0, 12)) expect(group).toContain(`href="#/airport/${a.icao}"`);
+      expect(group).toContain(`>Show all ${us.items.length}</button>`);
+      expect(html.match(/class="dest-card"/g)).toHaveLength(list.length - us.items.length + 12);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
