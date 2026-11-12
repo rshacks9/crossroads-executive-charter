@@ -31,10 +31,10 @@ const html = `<!doctype html><style>
 html,body{margin:0}
 .card{width:1200px;height:630px;box-sizing:border-box;padding:70px 80px;background:radial-gradient(120% 120% at 75% 40%,#2a3740,#141b20);color:#f2f5f6;font-family:BC;position:relative;overflow:hidden}
 .card::before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:60px 60px}
-.route{position:absolute;right:-60px;top:286px;width:580px;height:5px;background:#e8703a;opacity:.55;transform:rotate(-14deg)}
+.route{position:absolute;left:793px;top:271px;width:474px;height:5px;background:#e8703a;opacity:.55;transform:rotate(-14deg)}
 .route2{position:absolute;right:250px;top:-40px;width:5px;height:720px;background:#f2f5f6;opacity:.10}
 .node{position:absolute;left:935px;top:282px;width:25px;height:25px;border-radius:3px;background:#e8703a;transform:rotate(45deg)}
-.end{position:absolute;left:679px;top:349px;width:20px;height:20px;border-radius:50%;background:#e8703a}
+.end{position:absolute;left:790px;top:321px;width:20px;height:20px;border-radius:50%;background:#e8703a}
 .row{display:flex;align-items:center;gap:40px;position:relative}
 h1{font-weight:700;font-size:118px;line-height:.9;margin:0;letter-spacing:2px}
 .sub{font-weight:600;font-size:40px;letter-spacing:10px;color:#a9b6bc;margin-top:14px}
