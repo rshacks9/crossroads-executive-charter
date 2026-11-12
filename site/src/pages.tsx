@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import type { AirlineEvent, Division, FleetType, LiveFlight, Route, Snapshot } from "./data";
+import type { AirlineEvent, Division, FleetType, LiveFlight, Rank, Route, Snapshot } from "./data";
 import {
   POINT_TO_POINT,
   filterRoutes,
@@ -24,7 +24,7 @@ import { ExploreMap } from "./ExploreMap";
 import { ExplorerPanel, RouteTable } from "./explore-pages";
 import { airportHref, defaultSimTypes, divisionBaseLabel, firstFlight, jumpTo, listJoin, mapLegendKeys, networkStats, routeHref, routesForTypes, typeHref } from "./explore";
 import type { FirstFlight } from "./explore";
-import { numberWord } from "./html-facts";
+import { capital, countWords, numberWord } from "./html-facts";
 
 export interface PageProps {
   snapshot: Snapshot;
@@ -131,6 +131,19 @@ export function foundingLine(snapshot: Pick<Snapshot, "airline" | "fleet">): str
     ? `Start as a Cadet at KTYQ in the ${listJoin(starters)}, which ${starters.length === 1 ? "comes" : "come"} with MSFS 2024.`
     : "Start as a Cadet at KTYQ.";
   return `Crossroads opened on vAMSYS in November 2026 and is just getting started, so you could be one of the first. ${JOIN_TERMS} ${start}`;
+}
+
+/** The ranks a pilot earns in order, without the honorary ones. */
+export function rankLadder(snapshot: Pick<Snapshot, "ranks">): Rank[] {
+  return snapshot.ranks.filter((r) => !r.honorary);
+}
+
+/** "Six ranks from Cadet to Chief Pilot": counted and named from the ladder in vAMSYS. */
+export function ladderPhrase(ladder: readonly Rank[]): string {
+  const first = ladder[0];
+  const last = ladder[ladder.length - 1];
+  if (!first || !last || ladder.length < 2) return "Ranks";
+  return `${capital(countWords(ladder.length, "rank", "ranks"))} from ${first.name} to ${last.name}`;
 }
 
 function divisionFor(snapshot: Snapshot, code: string): { division: Division; index: number } | null {
@@ -260,6 +273,7 @@ export function HomePage({ snapshot }: PageProps) {
   const month = stats.last_30_days;
   const baseList = bases(snapshot);
   const e190 = FLEET_INFO.E190?.livery;
+  const divisionCount = airline.divisions.length;
 
   return (
     <>
@@ -279,8 +293,8 @@ export function HomePage({ snapshot }: PageProps) {
               </a>
             </div>
           </div>
-          <aside className="hero__panel" aria-label="Our two bases">
-            <p className="hero__panel-title">Two bases, one airline</p>
+          <aside className="hero__panel" aria-label={baseList.length === 1 ? "Our base" : `Our ${countWords(baseList.length, "base", "bases")}`}>
+            <p className="hero__panel-title">{`${capital(countWords(baseList.length, "base", "bases"))}, one airline`}</p>
             {baseList.map((icao) => {
               const airport = snapshot.airports[icao];
               // Every route that starts or ends here, as on the destinations card (the KTYQ-KIND legs count for both).
@@ -326,16 +340,16 @@ export function HomePage({ snapshot }: PageProps) {
         <SectionHead eyebrow="Why Crossroads" title="An airline built like a real charter operator" />
         <ul className="reasons">
           <li>
-            <h3>Two airports, real logic</h3>
+            <h3>{`${capital(countWords(baseList.length, "airport", "airports"))}, real logic`}</h3>
             <p>Light and mid-size aircraft, from the Piper M600 to the Citation X, work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
           </li>
           <li>
             <h3>Business jet to freighter</h3>
-            <p>{facts.aircraftTypes} types across {airline.divisions.length || "four"} divisions on one schedule. Fly a 47-minute hop to Midway in the morning and a 777F to Leipzig at night.</p>
+            <p>{`${facts.aircraftTypes} types${divisionCount ? ` across ${countWords(divisionCount, "division", "divisions")}` : ""} on one schedule.`} Fly a 47-minute hop to Midway in the morning and a 777F to Leipzig at night.</p>
           </li>
           <li>
             <h3>A career you can see</h3>
-            <p>Six ranks from Cadet to Chief Pilot, earned with hours and accepted PIREPs. One logbook covers every aircraft you fly.</p>
+            <p>{`${ladderPhrase(rankLadder(snapshot))}, earned with hours and accepted PIREPs.`} One logbook covers every aircraft you fly.</p>
           </li>
           <li>
             <h3>Briefed before you board</h3>
@@ -346,7 +360,7 @@ export function HomePage({ snapshot }: PageProps) {
 
       {airline.divisions.length ? (
         <section className="page">
-          <SectionHead eyebrow="Four divisions" title="Pick your flying" intro={`Every pilot can fly every division. Each route only offers the aircraft that suit it. Divisions share routes, so the counts add up to more than ${snapshot.routes.length}.`} action={{ href: "#/services", label: "Divisions and services" }} />
+          <SectionHead eyebrow={capital(countWords(divisionCount, "division", "divisions"))} title="Pick your flying" intro={`Every pilot can fly every division. Each route only offers the aircraft that suit it. Divisions share routes, so the counts add up to more than ${snapshot.routes.length}.`} action={{ href: "#/services", label: "Divisions and services" }} />
           <ul className="division-grid">
             {airline.divisions.map((division, i) => {
               const types = fleet.filter((f) => division.fleets.includes(f.code));
@@ -730,7 +744,7 @@ export function RoutesPage({ snapshot }: PageProps) {
           <label>
             <span>Base</span>
             <select value={base} onChange={(e) => setBase(e.target.value)}>
-              <option value="">Both bases and point-to-point</option>
+              <option value="">{`${baseList.length === 2 ? "Both bases" : "All bases"} and point-to-point`}</option>
               {baseList.map((b) => <option key={b} value={b}>{b} · {snapshot.airports[b]?.name ?? b}</option>)}
               <option value={POINT_TO_POINT}>Point-to-point (away from base)</option>
             </select>
@@ -787,7 +801,7 @@ export function RoutesPage({ snapshot }: PageProps) {
 // ------------------------------------------------------------------ fly with us (walkthrough)
 
 /**
- * The six steps from sign-up to accepted PIREP, as the vAMSYS pilot docs give them (How to Register,
+ * The steps from sign-up to accepted PIREP, as the vAMSYS pilot docs give them (How to Register,
  * Pegasus ACARS, How to Book a Flight, SimBrief Integration; read 2026-11-12) and the Crossroads rules
  * on vAMSYS say. `join` marks the step that carries the registration status.
  */
@@ -905,7 +919,7 @@ export function PilotsPage({ snapshot }: PageProps) {
 
   return (
     <>
-      <PageHeader eyebrow="Fly with us" title="How to join and fly" lede={`Six steps from vAMSYS sign-up to your first accepted PIREP. Fly our ${facts.routes}-route schedule from home and build your logbook from Cadet to Chief Pilot.`}>
+      <PageHeader eyebrow="Fly with us" title="How to join and fly" lede={`${capital(numberWord(WALKTHROUGH.length))} steps from vAMSYS sign-up to your first accepted PIREP. Fly our ${facts.routes}-route schedule from home and build your logbook from Cadet to Chief Pilot.`}>
         <div className="hero__actions">
           {open ? <JoinButton snapshot={snapshot} /> : null}
           {airline.pilot_login_url ? <a className="button button--ghost" href={airline.pilot_login_url} rel="noopener">Existing pilots: log in</a> : null}
@@ -953,7 +967,7 @@ export function PilotsPage({ snapshot }: PageProps) {
 
       {snapshot.hubs.length ? (
         <section className="page">
-          <SectionHead eyebrow="Home base" title="Indianapolis, two airports" />
+          <SectionHead eyebrow="Home base" title={`Indianapolis, ${countWords(bases(snapshot).length, "airport", "airports")}`} />
           <ul className="hub-list">
             {bases(snapshot).map((icao) => {
               const airport = snapshot.airports[icao];

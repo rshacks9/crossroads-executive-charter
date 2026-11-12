@@ -462,6 +462,50 @@ describe("texts follow the data", () => {
     expect(news).toContain('<p class="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>');
   });
 
+  it("counts the bases, ranks and divisions it names from the data, and words them as the copy did", () => {
+    const ladder = snapshot.ranks.filter((r) => !r.honorary);
+    // The airline as it is: the words the copy used to type by hand.
+    expect([bases(snapshot).length, ladder.length, snapshot.airline.divisions.length]).toEqual([2, 6, 4]);
+    const homeHtml = renderToString(<HomePage snapshot={snapshot} />);
+    const home = text(homeHtml);
+    for (const phrase of ["Two bases, one airline", "Two airports, real logic", "Six ranks from Cadet to Chief Pilot, earned", "Four divisions Pick your flying", "types across four divisions on one schedule."]) expect(home).toContain(phrase);
+    expect(homeHtml).toContain('aria-label="Our two bases"');
+    expect(text(renderToString(<CareersPage snapshot={snapshot} />))).toContain("Six ranks, earned with flight hours and accepted PIREPs.");
+    expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain("Four kinds of flying, one airline");
+    expect(text(renderToString(<PilotsPage snapshot={snapshot} />))).toContain("Indianapolis, two airports");
+    expect(text(renderToString(<RoutesPage snapshot={snapshot} />))).toContain("Both bases and point-to-point");
+
+    // Another airline: three bases, four ranks and three divisions. Every count follows the data.
+    const hub = snapshot.hubs[0]!;
+    const other: Snapshot = {
+      ...snapshot,
+      hubs: [{ ...hub, airports: [...hub.airports, "KBAF"] }, ...snapshot.hubs.slice(1)],
+      ranks: ladder.slice(0, 4),
+      airline: { ...snapshot.airline, divisions: snapshot.airline.divisions.slice(0, 3) },
+    };
+    const pages = [HomePage, CareersPage, ServicesPage, PilotsPage, RoutesPage].map((Page) => renderToString(<Page snapshot={other} />));
+    const all = pages.map(text).join(" ");
+    for (const phrase of [
+      "Three bases, one airline", "Three airports, real logic", "Four ranks from Cadet to Senior Captain, earned", "Three divisions Pick your flying",
+      "types across three divisions on one schedule.", "Four ranks, earned with flight hours", "Three kinds of flying, one airline",
+      "Indianapolis, three airports", "All bases and point-to-point",
+    ]) expect(all).toContain(phrase);
+    expect(pages[0]).toContain('aria-label="Our three bases"');
+    expect(all).not.toMatch(/\b(two bases|two airports|six ranks|four divisions|four kinds|both bases)\b/i);
+  });
+
+  it("counts the walkthrough steps and the SOP rules it lists", () => {
+    const pilots = renderToString(<PilotsPage snapshot={snapshot} />);
+    const steps = pilots.match(/<li class="walkthrough__step">/g)?.length ?? 0;
+    expect(steps).toBeGreaterThan(1);
+    expect(text(pilots)).toContain(`${capital(numberWord(steps))} steps from vAMSYS sign-up to your first accepted PIREP.`);
+    const resources = renderToString(<ResourcesPage snapshot={snapshot} />);
+    const start = resources.indexOf('<ol class="sop-brief">');
+    const rules = resources.slice(start, resources.indexOf("</ol>", start)).match(/<li>/g)?.length ?? 0;
+    expect(rules).toBeGreaterThan(1);
+    expect(text(resources)).toContain(`SOPs in brief The ${numberWord(rules)} rules`);
+  });
+
   it("counts a base's routes as its destinations card does, and the destinations apart from the bases", () => {
     const baseList = bases(snapshot);
     const list = servedAirports(snapshot);

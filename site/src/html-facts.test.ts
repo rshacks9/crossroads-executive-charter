@@ -172,6 +172,33 @@ describe("the real index.html", () => {
   });
 });
 
+describe("counts in page copy", () => {
+  // The pages count their bases, ranks, divisions, walkthrough steps and SOP rules from the lists they
+  // show (pages.test.tsx renders them with other data). This scan reads the page modules, so a count
+  // typed into their copy fails here.
+  const PAGE_COUNT =
+    /\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)[\s-]+(?:[a-z]+\s+)?(aircraft|types?|routes?|bases?|hubs?|divisions?|ranks?|destinations?|airports?|pilots?|steps?|rules|kinds)\b/i;
+  // The numbers in these phrases count nothing in the data: the two routes of the logo and the
+  // planner's two airports.
+  const NOT_COUNTS = /two (straight )?routes meeting|[Pp]ick two (different )?airports/g;
+  const copyOf = (file: string): string =>
+    read(`./${file}`).replace(/[/][*][\s\S]*?[*][/]/g, " ").replace(/^\s*[/][/].*$/gm, " ").replace(NOT_COUNTS, " ");
+
+  it("recognises the counts it is there to catch", () => {
+    const typed = ["Two bases, one airline", "Two airports, real logic", "Six ranks from Cadet to Chief Pilot", "Four divisions", "Four kinds of flying, one airline", "Six steps from vAMSYS sign-up", "The six rules", "Indianapolis, two airports"];
+    for (const phrase of typed) expect(phrase).toMatch(PAGE_COUNT);
+    // The phrases that count nothing would match too, so they are taken out before the scan.
+    expect("Pick two different airports.").toMatch(PAGE_COUNT);
+    expect("Pick two different airports.".replace(NOT_COUNTS, " ")).not.toMatch(PAGE_COUNT);
+  });
+
+  it("finds none typed into the page modules", () => {
+    for (const file of ["pages.tsx", "info.tsx", "explore-pages.tsx", "crew.tsx", "App.tsx"]) {
+      expect(PAGE_COUNT.exec(copyOf(file))?.[0] ?? null, file).toBeNull();
+    }
+  });
+});
+
 describe("the link-preview card", () => {
   // brand/render-share-image.mjs draws site/public/og.png. Sites that show link previews keep the image
   // for days or weeks, so the card may only say things that stay true, and the data must still back them.

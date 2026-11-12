@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import type { Crew, CrewRunway, Route, Snapshot } from "./data";
 import { formatDuration, formatNumber, formatWeight, loadCrew, routeDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
@@ -785,6 +786,16 @@ AFTER LANDING
 [ ] Note diversions, go-arounds or firm landings in comments
 `;
 
+/** The handbook in brief on Resources. The section heading counts this list. */
+const SOP_BRIEF: ReactNode[] = [
+  <><strong>Right base, right aircraft.</strong> Light and mid-size aircraft at KTYQ, everything larger at KIND.</>,
+  <><strong>Gate to gate with <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</strong> No slew, time acceleration or in-flight refuelling.</>,
+  <><strong>45 minutes final reserve</strong> on every flight. Dispatch with SimBrief.</>,
+  <><strong>Stabilised or go around:</strong> 1,000 ft in cloud, 500 ft visual.</>,
+  <><strong>250 kt below 10,000 ft</strong> in the US unless ATC says otherwise.</>,
+  <><strong>Write it up.</strong> Diversions, go-arounds and firm landings go in the PIREP comments.</>,
+];
+
 export function ResourcesPage({ snapshot }: PageProps) {
   const crew = useCrew();
   const [pick, setPick] = useState(() => snapshot.routes[0] ? routeKey(snapshot.routes[0]) : "");
@@ -835,14 +846,9 @@ export function ResourcesPage({ snapshot }: PageProps) {
         </ul>
       </section>
       <section className="page">
-        <SectionHead eyebrow="SOPs in brief" title="The six rules" action={{ href: "#/handbook", label: "Full handbook" }} />
+        <SectionHead eyebrow="SOPs in brief" title={`The ${numberWord(SOP_BRIEF.length)} rules`} action={{ href: "#/handbook", label: "Full handbook" }} />
         <ol className="sop-brief">
-          <li><strong>Right base, right aircraft.</strong> Light and mid-size aircraft at KTYQ, everything larger at KIND.</li>
-          <li><strong>Gate to gate with <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</strong> No slew, time acceleration or in-flight refuelling.</li>
-          <li><strong>45 minutes final reserve</strong> on every flight. Dispatch with SimBrief.</li>
-          <li><strong>Stabilised or go around:</strong> 1,000 ft in cloud, 500 ft visual.</li>
-          <li><strong>250 kt below 10,000 ft</strong> in the US unless ATC says otherwise.</li>
-          <li><strong>Write it up.</strong> Diversions, go-arounds and firm landings go in the PIREP comments.</li>
+          {SOP_BRIEF.map((rule, i) => <li key={i}>{rule}</li>)}
         </ol>
         <p className="callout">New here? Start with <a href="#/pilots">how to join and fly</a>, then the <a href="#/careers">career ladder</a>.{registrationOpen(snapshot) ? <> <JoinButton snapshot={snapshot} quiet /></> : null}</p>
       </section>

@@ -3,7 +3,7 @@ import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
 import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
-import { capital, numberWord } from "./html-facts";
+import { capital, countWords, numberWord } from "./html-facts";
 import { divisionColor } from "./LiveMap";
 import { DivisionDot, EventItem, HOW_TO_JOIN, JoinButton, Leg, NewsCard, PageHeader, SectionHead, registrationOpen, shortName } from "./pages";
 import type { PageProps } from "./pages";
@@ -52,9 +52,11 @@ function Itinerary({ snapshot, legs }: { snapshot: Snapshot; legs: (typeof SERVI
 export function ServicesPage({ snapshot }: PageProps) {
   useScrollToParam("d", "service-");
   const divisions = snapshot.airline.divisions;
+  // One section per division that has a service; the title counts them.
+  const kinds = SERVICES.filter((s) => divisions.some((d) => d.name === s.division)).length;
   return (
     <>
-      <PageHeader eyebrow="Divisions & services" title="Four kinds of flying, one airline" lede="Each division has its own aircraft, routes and character. They share a logbook, a career ladder and an Indianapolis home. The itineraries below are fictional trips built from routes on our real schedule." />
+      <PageHeader eyebrow="Divisions & services" title={kinds ? `${capital(countWords(kinds, "kind", "kinds"))} of flying, one airline` : "Divisions and services"} lede="Each division has its own aircraft, routes and character. They share a logbook, a career ladder and an Indianapolis home. The itineraries below are fictional trips built from routes on our real schedule." />
       <nav className="page subnav" aria-label="Divisions">
         {SERVICES.map((s) => {
           const index = divisions.findIndex((d) => d.name === s.division);
@@ -137,7 +139,7 @@ export function CareersPage({ snapshot }: PageProps) {
   const top = ladder[ladder.length - 1];
   return (
     <>
-      <PageHeader eyebrow="Pilot career" title="From Cadet to Chief Pilot" lede="Six ranks, earned with flight hours and accepted PIREPs. Promotions happen automatically in vAMSYS as your logbook grows. Ranks recognise experience and never lock you out of an aircraft." />
+      <PageHeader eyebrow="Pilot career" title="From Cadet to Chief Pilot" lede={`${ladder.length ? capital(countWords(ladder.length, "rank", "ranks")) : "Ranks"}, earned with flight hours and accepted PIREPs. Promotions happen automatically in vAMSYS as your logbook grows. Ranks recognise experience and never lock you out of an aircraft.`} />
       <section className="page">
         {ladder.length ? (
           <ol className="rank-list">

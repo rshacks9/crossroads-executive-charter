@@ -55,6 +55,11 @@ export const capital = (s: string): string => s.charAt(0).toUpperCase() + s.slic
 const plural = (n: number, one: string, many: string): string => (n === 1 ? one : many);
 const digits = (n: number, one: string, many: string): string => `${n.toLocaleString("en-US")} ${plural(n, one, many)}`;
 
+/** A count and its noun, the way the site copy writes them: "two bases", "one rank", "13 routes". */
+export function countWords(n: number, one: string, many: string): string {
+  return `${numberWord(n)} ${plural(n, one, many)}`;
+}
+
 /** Title of the home page. The other pages put their own name in front of the airline name. */
 export function homeTitle(name?: string | null): string {
   const shown = typeof name === "string" && name.trim() ? name.trim() : DEFAULT_AIRLINE_NAME;
