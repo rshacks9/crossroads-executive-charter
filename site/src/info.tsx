@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
-import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
+import { formatDuration, formatNumber, hashParam, routeInDivision, weeklyTime } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
 import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
 import { capital, countWords, numberWord } from "./html-facts";
@@ -412,6 +412,20 @@ export function AboutPage({ snapshot }: PageProps) {
 
 // ------------------------------------------------------------------ news
 
+/**
+ * The weekly group flight, from site.config.json (group_flight): its day and UTC time with the
+ * Indianapolis time, and, until registration opens, that it starts then. Null when none is set.
+ */
+export function groupFlightNote(snapshot: Pick<Snapshot, "airline" | "generated_at">): string | null {
+  const flight = snapshot.airline.group_flight;
+  const generated = Date.parse(snapshot.generated_at);
+  const when = flight ? weeklyTime(flight, Number.isNaN(generated) ? new Date() : new Date(generated)) : null;
+  if (!when) return null;
+  return registrationOpen(snapshot)
+    ? `The weekly group flight is on ${when}, and the founder flies it every week.`
+    : `A weekly group flight on ${when} starts once registration opens, and the founder flies it every week.`;
+}
+
 export function NewsPage({ snapshot }: PageProps) {
   const notams = NEWS.filter((n) => n.kind === "NOTAM");
   const news = NEWS.filter((n) => n.kind !== "NOTAM");
@@ -431,7 +445,7 @@ export function NewsPage({ snapshot }: PageProps) {
           {snapshot.events.length ? (
             <ul className="event-list">{snapshot.events.map((e) => <EventItem key={e.name + e.start} event={e} />)}</ul>
           ) : (
-            <p className="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>
+            <p className="empty">{groupFlightNote(snapshot) ?? "No group flights are scheduled yet."} Open tours are on the <a href="#/careers">Careers page</a>.</p>
           )}
         </div>
       </section>

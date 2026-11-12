@@ -7,6 +7,12 @@ export interface Division {
   fleets: string[];
 }
 
+/** A weekly group flight: the weekday and the UTC start time ("20:00"), from site.config.json. */
+export interface GroupFlight {
+  weekday: string;
+  utc: string;
+}
+
 export interface Airline {
   divisions: Division[];
   /** Simulator aircraft each fleet type is flown in, keyed by ICAO type code. */
@@ -18,6 +24,8 @@ export interface Airline {
   pilot_login_url: string | null;
   discord_url: string | null;
   contact_email: string | null;
+  /** Missing in snapshots written before the group flight was configured. */
+  group_flight?: GroupFlight | null;
 }
 
 export interface Stats {
@@ -227,6 +235,34 @@ export function formatDate(iso: string | null, withTime = false): string {
     minute: withTime ? "2-digit" : undefined,
     timeZoneName: withTime ? "short" : undefined,
   });
+}
+
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+/** The airline's home time zone, for times shown beside UTC. */
+export const HOME_TIME_ZONE = "America/Indiana/Indianapolis";
+
+/** The next start of a weekly flight at or after `from`, or null when its weekday or time is not valid. */
+export function nextWeekly(flight: GroupFlight, from: Date): Date | null {
+  const day = WEEKDAYS.indexOf(flight.weekday);
+  const time = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(flight.utc);
+  if (day < 0 || !time || Number.isNaN(from.getTime())) return null;
+  const start = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate(), Number(time[1]), Number(time[2])));
+  start.setUTCDate(start.getUTCDate() + ((day - start.getUTCDay() + 7) % 7));
+  if (start.getTime() < from.getTime()) start.setUTCDate(start.getUTCDate() + 7);
+  return start;
+}
+
+/**
+ * "Sundays at 20:00Z (15:00 Indianapolis)": the UTC time, and the Indianapolis time of the next one,
+ * which moves with daylight saving. A local time on another day names that day.
+ */
+export function weeklyTime(flight: GroupFlight, from: Date): string | null {
+  const next = nextWeekly(flight, from);
+  if (!next) return null;
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: HOME_TIME_ZONE, weekday: "long", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(next);
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
+  const day = part("weekday");
+  return `${flight.weekday}s at ${flight.utc}Z (${day === flight.weekday ? "" : `${day} `}${part("hour")}:${part("minute")} Indianapolis)`;
 }
 
 export function progressPercent(flight: Pick<LiveFlight, "route_nm" | "remaining_nm">): number | null {

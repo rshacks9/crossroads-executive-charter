@@ -7,6 +7,10 @@
  "discord_url": null,
  "contact_email": null,
  "show_pilot_names": false,
+ "group_flight": {
+  "weekday": "Sunday",
+  "utc": "20:00"
+ },
  "divisions": [
   {
    "name": "Executive",

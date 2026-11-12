@@ -10,10 +10,10 @@ vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
-const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
+const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
-const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
+const { formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, weatherBoard, weeklyTime } = await import("./data");
 const { WeatherBoard } = await import("./crew");
 const { FLEET_INFO, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
@@ -448,7 +448,7 @@ describe("pages render from the snapshot", () => {
 });
 
 describe("texts follow the data", () => {
-  it("counts the KTYQ types and the tours instead of typing them; the empty Events box points to the tours", () => {
+  it("counts the KTYQ types and the tours instead of typing them; the empty Events box points to the tours too", () => {
     expect(snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ")).toHaveLength(KTYQ_TYPES.length);
     expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Piper M600 to the Citation`);
     const careers = renderToString(<CareersPage snapshot={snapshot} />);
@@ -458,8 +458,9 @@ describe("texts follow the data", () => {
     expect(text(careers)).not.toMatch(/badge|Activities/i);
     for (const item of NEWS) expect(`${item.title} ${item.body}`).not.toMatch(/badge|under Activities/i);
     expect(careers.match(/<li class="tour">/g)).toHaveLength(TOURS.length);
-    const news = renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />);
-    expect(news).toContain('<p class="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>');
+    const news = text(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />));
+    expect(news).toContain("every week. Open tours are on the Careers page");
+    expect(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />)).toContain('Open tours are on the <a href="#/careers">Careers page</a>.</p>');
   });
 
   it("counts the bases, ranks and divisions it names from the data, and words them as the copy did", () => {
@@ -555,6 +556,41 @@ describe("texts follow the data", () => {
 
   it("says 'fictional' in the first screen", () => {
     expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
+  });
+});
+
+describe("the weekly group flight", () => {
+  const sunday = { weekday: "Sunday", utc: "20:00" };
+
+  it("comes from one value in site.config.json, shown in UTC and Indianapolis time", () => {
+    const config = JSON.parse(readFileSync(new URL("../../site.config.json", import.meta.url), "utf-8"));
+    expect(config.group_flight).toEqual(sunday);
+    expect(snapshot.airline.group_flight).toEqual(sunday);
+    // Indianapolis keeps daylight saving, so 20:00Z is 15:00 there in winter and 16:00 in summer.
+    expect(weeklyTime(sunday, new Date("2026-11-12T12:00:00Z"))).toBe("Sundays at 20:00Z (15:00 Indianapolis)");
+    expect(weeklyTime(sunday, new Date("2027-07-01T12:00:00Z"))).toBe("Sundays at 20:00Z (16:00 Indianapolis)");
+    // The next one: later the same Sunday, or the Sunday after once it has started.
+    expect(nextWeekly(sunday, new Date("2026-11-12T12:00:00Z"))?.toISOString()).toBe("2026-11-15T20:00:00.000Z");
+    expect(nextWeekly(sunday, new Date("2026-11-15T19:59:00Z"))?.toISOString()).toBe("2026-11-15T20:00:00.000Z");
+    expect(nextWeekly(sunday, new Date("2026-11-15T20:01:00Z"))?.toISOString()).toBe("2026-11-22T20:00:00.000Z");
+    // A UTC time that falls on another day in Indianapolis names that day.
+    expect(weeklyTime({ weekday: "Monday", utc: "02:00" }, new Date("2026-11-12T12:00:00Z"))).toBe("Mondays at 02:00Z (Sunday 21:00 Indianapolis)");
+    for (const bad of [{ weekday: "Sun", utc: "20:00" }, { weekday: "Sunday", utc: "8pm" }, { weekday: "Sunday", utc: "24:00" }]) expect(weeklyTime(bad, new Date())).toBeNull();
+  });
+
+  it("says on the News page that it starts once registration opens and that the founder flies it every week", () => {
+    const when = weeklyTime(sunday, new Date(snapshot.generated_at));
+    const closed = text(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />));
+    expect(closed).toContain(`A weekly group flight on ${when} starts once registration opens, and the founder flies it every week. Open tours are on the Careers page`);
+    expect(closed).toMatch(/on Sundays at 20:00Z [(]1[56]:00 Indianapolis[)] starts/);
+    expect(closed).not.toContain("No group flights are scheduled yet");
+    const open: Snapshot = { ...snapshot, events: [], airline: { ...snapshot.airline, join_url: "https://vamsys.io/register/crossroads" } };
+    expect(groupFlightNote(open)).toBe(`The weekly group flight is on ${when}, and the founder flies it every week.`);
+    expect(text(renderToString(<NewsPage snapshot={open} />))).not.toContain("once registration opens");
+    // With no group flight set, the box says so.
+    const none: Snapshot = { ...snapshot, events: [], airline: { ...snapshot.airline, group_flight: null } };
+    expect(groupFlightNote(none)).toBeNull();
+    expect(text(renderToString(<NewsPage snapshot={none} />))).toContain("No group flights are scheduled yet. Open tours are on the Careers page");
   });
 });
 

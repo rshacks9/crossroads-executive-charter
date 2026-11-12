@@ -53,6 +53,10 @@ class PreviewTests(unittest.TestCase):
             if "KIND" in ends:
                 self.assertTrue(set(route["types"]).isdisjoint(small), route)
 
+    def test_weekly_group_flight_from_the_config(self):
+        # Sundays at 20:00 UTC, starting once registration opens (set 12 November 2026).
+        self.assertEqual(self.snapshot["airline"]["group_flight"], {"weekday": "Sunday", "utc": "20:00"})
+
     def test_new_jets_and_registrations(self):
         regs = {f["code"]: f["registrations"] for f in self.snapshot["fleet"]}
         self.assertEqual(regs["PRM1"], ["N390CR"])

@@ -23,7 +23,7 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 
 | Path | What it is |
 | --- | --- |
-| `site.config.json` | Airline name, tagline, join/login/Discord links, `show_pilot_names` |
+| `site.config.json` | Airline name, tagline, join/login/Discord links, `show_pilot_names`, the weekly group flight |
 | `sync/crossroads_sync/` | Builds the snapshot. `snapshot.py` is the allowlist; `fetch.py` makes the GET calls |
 | `sync/vamsys/` | Kimi's read-only vAMSYS client, vendored unchanged from `va-website/infrastructure/vamsys` |
 | `site/` | Vite + React + TypeScript static site; Leaflet map on OpenStreetMap tiles |
@@ -106,6 +106,10 @@ and the run summary.
    then go straight to it. While it is unset the join buttons read "How to join" and open the Fly with
    us page (`#/pilots`), which says registration isn't open yet. On 2026-11-12 the register page
    redirected to the vAMSYS sign-in page, so `join_url` stays unset until that changes.
+6. **Group flight.** `group_flight` holds the weekly group flight's weekday and UTC start time
+   (`{"weekday": "Sunday", "utc": "20:00"}`). The News page shows it in UTC and Indianapolis time
+   (15:00 in winter, 16:00 in summer) while vAMSYS lists no events, and until `join_url` is set it
+   says the group flight starts once registration opens. Remove the entry to show no group flight.
 
 ## Privacy and safety
 

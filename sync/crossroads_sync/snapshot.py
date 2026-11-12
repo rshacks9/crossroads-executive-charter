@@ -27,6 +27,8 @@ _TAG = re.compile(r"<[^>]*>")
 _SPACE = re.compile(r"\s+")
 _CODE = re.compile(r"^[A-Z0-9]{2,8}$")
 _HMS = re.compile(r"^(\d{1,3}):([0-5]\d)(?::([0-5]\d))?$")
+_UTC_TIME = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 ROUTE_KINDS = ("scheduled", "cargo", "charter", "training", "vfr", "repositioning", "jumpseat")
 SOURCES = ("vamsys", "preview", "sample")
 
@@ -446,6 +448,19 @@ def _sim_aircraft(value: Any) -> dict[str, str]:
     return result
 
 
+def _group_flight(value: Any) -> dict[str, str] | None:
+    """The weekly group flight from site.config.json: a weekday and a UTC time, e.g. Sunday at 20:00."""
+    if not isinstance(value, dict):
+        return None
+    day, utc = value.get("weekday"), value.get("utc")
+    if not isinstance(day, str) or not isinstance(utc, str):
+        return None
+    weekday = next((d for d in WEEKDAYS if d.lower() == day.strip().lower()), None)
+    if weekday is None or not _UTC_TIME.match(utc.strip()):
+        return None
+    return {"weekday": weekday, "utc": utc.strip()}
+
+
 def site_settings(site: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "divisions": _divisions(site.get("divisions")),
@@ -457,6 +472,7 @@ def site_settings(site: Mapping[str, Any]) -> dict[str, Any]:
         "pilot_login_url": https_url(site.get("pilot_login_url")),
         "discord_url": https_url(site.get("discord_url")),
         "contact_email": text(site.get("contact_email"), 120),
+        "group_flight": _group_flight(site.get("group_flight")),
     }
 
 

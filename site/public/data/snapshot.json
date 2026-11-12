@@ -82,7 +82,11 @@
   "join_url": null,
   "pilot_login_url": "https://vamsys.io/login/crossroads",
   "discord_url": null,
-  "contact_email": null
+  "contact_email": null,
+  "group_flight": {
+   "weekday": "Sunday",
+   "utc": "20:00"
+  }
  },
  "stats": {
   "all_time": null,

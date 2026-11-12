@@ -124,6 +124,28 @@ class RobustnessTests(unittest.TestCase):
         self.assertEqual(build(unavailable=["events", "flight_map", "events"])["unavailable"], ["events", "flight_map"])
 
 
+class GroupFlightTests(unittest.TestCase):
+    def test_weekday_and_utc_time_are_kept(self):
+        site = {**SITE, "group_flight": {"weekday": " sunday ", "utc": "20:00"}}
+        self.assertEqual(build(site=site)["airline"]["group_flight"], {"weekday": "Sunday", "utc": "20:00"})
+
+    def test_none_unless_both_are_valid(self):
+        self.assertIsNone(build()["airline"]["group_flight"])
+        for value in (
+            None,
+            "Sunday 20:00",
+            {"weekday": "Sun", "utc": "20:00"},
+            {"weekday": "Sunday", "utc": "8pm"},
+            {"weekday": "Sunday", "utc": "24:00"},
+            {"weekday": "Sunday", "utc": "20:00:00"},
+            {"weekday": "Sunday"},
+            {"utc": "20:00"},
+            {"weekday": 7, "utc": "20:00"},
+        ):
+            with self.subTest(value=value):
+                self.assertIsNone(build(site={**SITE, "group_flight": value})["airline"]["group_flight"])
+
+
 class HelperTests(unittest.TestCase):
     def test_minutes_from_hms(self):
         self.assertEqual(minutes_from_hms("01:55:00"), 115)
