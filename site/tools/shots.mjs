@@ -12,6 +12,7 @@ const AXE_PATH = require.resolve("axe-core/axe.min.js");
 const [rawBase = "http://127.0.0.1:4180/", OUT = "shots"] = process.argv.slice(2);
 const BASE = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
 const MAX_SLICES = 10;
+const AXE_NODES = 12; // elements listed for each failed rule in a capture
 const JPEG = { type: "jpeg", quality: 64 };
 
 const VIEWPORTS = [
@@ -72,7 +73,7 @@ function pageChecks() {
 }
 
 /** Runs in the page after axe-core is injected. */
-async function runAxe() {
+async function runAxe(maxNodes) {
   const result = await window.axe.run(document, {
     runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"] },
     resultTypes: ["violations"],
@@ -82,7 +83,7 @@ async function runAxe() {
     impact: v.impact,
     help: v.help,
     count: v.nodes.length,
-    nodes: v.nodes.slice(0, 4).map((n) => ({
+    nodes: v.nodes.slice(0, maxNodes).map((n) => ({
       target: n.target.join(" "),
       html: n.html.slice(0, 160),
       summary: (n.failureSummary || "").slice(0, 300),
@@ -98,18 +99,22 @@ async function settle(page, rec) {
 
 async function capture(context, vp, theme, [name, hash]) {
   const id = `${vp.key}-${theme}-${name}`;
-  const rec = { id, viewport: vp.key, theme, page: name, url: `${BASE}#/${hash}`, console: [], failed: [], http: [] };
+  const rec = { id, viewport: vp.key, theme, page: name, url: `${BASE}#/${hash}`, console: [], failed: [], aborted: [], http: [] };
   const page = await context.newPage();
   page.on("console", (m) => { if (["error", "warning"].includes(m.type())) rec.console.push(`${m.type()}: ${m.text().slice(0, 300)}`); });
   page.on("pageerror", (e) => rec.console.push(`pageerror: ${String(e).slice(0, 300)}`));
-  page.on("requestfailed", (r) => rec.failed.push(`${r.url().slice(0, 160)} ${r.failure()?.errorText ?? ""}`));
+  // A request the page itself cancels (a map tile still loading when the view changes or the page closes) is not a failure.
+  page.on("requestfailed", (r) => {
+    const reason = r.failure()?.errorText ?? "";
+    (reason.includes("ERR_ABORTED") ? rec.aborted : rec.failed).push(`${r.url().slice(0, 160)} ${reason}`);
+  });
   page.on("response", (r) => { if (r.status() >= 400) rec.http.push(`${r.status()} ${r.url().slice(0, 160)}`); });
   try {
     await page.goto(rec.url, { waitUntil: "load", timeout: 30000 });
     await settle(page, rec);
     Object.assign(rec, await page.evaluate(pageChecks));
     await page.addScriptTag({ path: AXE_PATH });
-    rec.axe = await page.evaluate(runAxe);
+    rec.axe = await page.evaluate(runAxe, AXE_NODES);
     const needed = Math.ceil(rec.pageHeight / vp.height);
     rec.slices = Math.min(MAX_SLICES, needed);
     rec.truncated = needed > MAX_SLICES;
@@ -156,21 +161,109 @@ async function interactions(context, vp) {
   return rec;
 }
 
-function summarize(results) {
-  const rows = results.filter((r) => r.axe || r.error).map((r) => {
-    const by = (impact) => (r.axe || []).filter((v) => v.impact === impact).reduce((n, v) => n + v.count, 0);
-    return `| ${r.id} | ${r.error ? "ERROR" : r.overflowX > 1 ? `+${r.overflowX}px` : "ok"} | ${by("critical")} | ${by("serious")} | ${by("moderate") + by("minor")} | ${r.console.length} | ${r.failed.length + r.http.length} | ${(r.brokenImages || []).length} | ${r.pageHeight ?? ""} | ${r.transferKb ?? ""} |`;
-  });
+/**
+ * The page head as a crawler that runs no JavaScript reads it: every placeholder filled in at build time,
+ * the counts equal to the data, and the same title and description that the app sets once it has loaded.
+ */
+async function headCheck(browser, loadedHome, snapshot) {
+  const head = { url: BASE, problems: [], matchesLoaded: null };
+  try {
+    const raw = await (await fetch(BASE)).text();
+    head.placeholdersLeft = [...raw.matchAll(/\{\{\s*[A-Za-z0-9_.-]+\s*\}\}/g)].map((m) => m[0]);
+    if (head.placeholdersLeft.length) head.problems.push(`placeholders were not filled in: ${head.placeholdersLeft.join(", ")}`);
+    const image = await fetch(new URL("og.png", BASE));
+    const bytes = (await image.arrayBuffer()).byteLength;
+    head.shareImage = { status: image.status, type: image.headers.get("content-type"), kb: Math.round(bytes / 1024) };
+    if (image.status !== 200 || !String(head.shareImage.type).startsWith("image/png")) {
+      head.problems.push(`og.png did not load as a PNG image (${image.status}, ${head.shareImage.type})`);
+    }
+  } catch (e) {
+    head.problems.push(`could not fetch the page or its share image: ${String(e).slice(0, 300)}`);
+  }
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1366, height: 768 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(BASE, { waitUntil: "load", timeout: 30000 });
+    const content = (selector) => page.locator(selector).first().getAttribute("content", { timeout: 2000 }).catch(() => null);
+    head.title = await page.title();
+    head.description = await content('meta[name="description"]');
+    head.ogTitle = await content('meta[property="og:title"]');
+    head.ogDescription = await content('meta[property="og:description"]');
+    head.ogImage = await content('meta[property="og:image"]');
+    await page.screenshot({ path: path.join(OUT, "nojs-home.jpg"), ...JPEG });
+  } catch (e) {
+    head.problems.push(`could not read the page without JavaScript: ${String(e).slice(0, 300)}`);
+  }
+  await context.close();
+
+  for (const [name, value] of [["title", head.title], ["description", head.description], ["link-preview description", head.ogDescription]]) {
+    if (!value || !value.trim()) head.problems.push(`the ${name} is missing`);
+  }
+  if ((head.description || "").length > 160) {
+    head.problems.push(`the description is ${head.description.length} characters; search results cut it at about 160`);
+  }
+  // A count in a description must be the count in the data.
+  const stated = (text, pattern) => { const m = pattern.exec(text || ""); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  for (const [name, text] of [["description", head.description], ["link-preview description", head.ogDescription]]) {
+    const types = stated(text, /(\d[\d,]*) aircraft types?/);
+    const routes = stated(text, /(\d[\d,]*) routes?/);
+    if (types !== null && types !== snapshot.fleet.length) head.problems.push(`the ${name} says ${types} aircraft types; the data has ${snapshot.fleet.length}`);
+    if (routes !== null && routes !== snapshot.routes.length) head.problems.push(`the ${name} says ${routes} routes; the data has ${snapshot.routes.length}`);
+  }
+  if (loadedHome) {
+    head.matchesLoaded = loadedHome.title === head.title && loadedHome.description === head.description;
+    if (loadedHome.title !== head.title) head.problems.push(`the title changes when the app loads: "${head.title}" becomes "${loadedHome.title}"`);
+    if (loadedHome.description !== head.description) head.problems.push(`the description changes when the app loads: "${head.description}" becomes "${loadedHome.description}"`);
+  }
+  return head;
+}
+
+/** Text for one table cell: no pipes or line breaks. */
+const cell = (text) => String(text ?? "").replace(/\|/g, "/").replace(/\s+/g, " ").trim();
+
+function summarize(results, head) {
+  const pages = results.filter((r) => r.axe || r.error);
+  const count = (list) => (list || []).length;
+  const by = (r, impact) => (r.axe || []).filter((v) => v.impact === impact).reduce((n, v) => n + v.count, 0);
+  const sum = (f) => pages.reduce((n, r) => n + f(r), 0);
+  const rows = pages.map((r) =>
+    `| ${r.id} | ${r.error ? "ERROR" : r.overflowX > 1 ? `+${r.overflowX}px` : "ok"} | ${by(r, "critical")} | ${by(r, "serious")} | ${by(r, "moderate") + by(r, "minor")} | ${count(r.console)} | ${count(r.failed) + count(r.http)} | ${count(r.aborted)} | ${count(r.brokenImages)} | ${r.pageHeight ?? ""} | ${r.transferKb ?? ""} |`);
+  const totals = [
+    `${pages.length} captures`,
+    `${pages.filter((r) => r.error).length} errors`,
+    `${pages.filter((r) => r.overflowX > 1).length} with sideways overflow`,
+    `${sum((r) => by(r, "critical"))} critical and ${sum((r) => by(r, "serious"))} serious accessibility findings`,
+    `${sum((r) => count(r.console))} console messages`,
+    `${sum((r) => count(r.failed) + count(r.http))} failed requests`,
+    `${sum((r) => count(r.brokenImages))} broken images`,
+    `${pages.filter((r) => r.truncated).length} pages longer than ${MAX_SLICES} screens`,
+  ].join(", ");
   const rules = new Map();
   for (const r of results) for (const v of r.axe || []) {
     const cur = rules.get(v.id) || { impact: v.impact, help: v.help, nodes: 0, captures: 0 };
     cur.nodes += v.count; cur.captures += 1; rules.set(v.id, cur);
   }
   const ruleRows = [...rules].sort((a, b) => b[1].nodes - a[1].nodes).map(([id, v]) => `| ${id} | ${v.impact} | ${v.nodes} | ${v.captures} | ${v.help} |`);
+  const image = head?.shareImage ? `${head.shareImage.status}, ${head.shareImage.type}, ${head.shareImage.kb} KB` : "not fetched";
+  const headLines = head ? [
+    "## Page head, read without JavaScript", "",
+    "| Item | Value |", "| --- | --- |",
+    `| Title | ${cell(head.title)} |`,
+    `| Description, ${(head.description || "").length} characters | ${cell(head.description)} |`,
+    `| Link-preview title | ${cell(head.ogTitle)} |`,
+    `| Link-preview description | ${cell(head.ogDescription)} |`,
+    `| Link-preview image | ${cell(head.ogImage)} (og.png of this site: ${cell(image)}) |`,
+    `| Same title and description once the app has loaded | ${head.matchesLoaded === null ? "not compared" : head.matchesLoaded ? "yes" : "NO"} |`,
+    "",
+    ...(head.problems.length ? ["Problems:", "", ...head.problems.map((p) => `- ${cell(p)}`), ""] : ["No problems found in the page head.", ""]),
+  ] : [];
   return [
-    "## Page checks", "",
-    "| Capture | Sideways overflow | Critical | Serious | Moderate or minor | Console | Failed requests | Broken images | Height px | Transfer KB |",
-    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |", ...rows, "",
+    "## Page checks", "", `Totals: ${totals}.`, "",
+    "| Capture | Sideways overflow | Critical | Serious | Moderate or minor | Console | Failed requests | Cancelled requests | Broken images | Height px | Transfer KB |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |", ...rows, "",
+    "Cancelled requests are ones the page itself dropped (map tiles still loading when the view changed or the page closed); they are not failures.",
+    "Transfer KB: the home page is the first page of each group and loads with an empty cache; the pages after it reuse cached files.", "",
+    ...headLines,
     "## Accessibility rules that failed", "",
     "| Rule | Impact | Elements | Captures | What it means |", "| --- | --- | --- | --- | --- |", ...ruleRows, "",
   ].join("\n");
@@ -232,11 +325,13 @@ async function main() {
     }
   }
   await sheets(browser, results).catch((e) => console.error(`sheets failed: ${e}`));
+  const head = await headCheck(browser, results.find((r) => r.page === "home" && r.theme === "light" && !r.error), snapshot);
   await browser.close();
-  await writeFile(path.join(OUT, "report.json"), JSON.stringify({ base: BASE, generated: new Date().toISOString(), results }, null, 1));
-  await writeFile(path.join(OUT, "summary.md"), summarize(results));
+  await writeFile(path.join(OUT, "report.json"), JSON.stringify({ base: BASE, generated: new Date().toISOString(), head, results }, null, 1));
+  await writeFile(path.join(OUT, "summary.md"), summarize(results, head));
   const errors = results.filter((r) => r.error);
   if (errors.length) { console.error(`${errors.length} capture(s) failed`); process.exitCode = 1; }
+  if (head.problems.length) { console.error(`page head: ${head.problems.join("; ")}`); process.exitCode = 1; }
 }
 
 await main();

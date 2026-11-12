@@ -31,6 +31,10 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 | `sync/crossroads_sync/crew.py` | Builds `crew.json` for the Crew Tools page (see below) |
 | `sync/kimi_tools/` | Kimi's Jumpseat calculation modules (weather, fuel, performance, approach), vendored unchanged |
 | `.github/workflows/sync-deploy.yml` | Test → pull vAMSYS → build → deploy to GitHub Pages, on a schedule |
+| `site/src/html-facts.ts` | The page title and descriptions, written from the snapshot's counts. `site/vite.config.ts` fills them into `site/index.html` at build time and the app uses the same functions, so no count is typed by hand |
+| `.github/workflows/screenshots.yml` | Screenshots and page checks at phone, desktop and wide-monitor sizes, plus the link-preview card. Never deploys (see below) |
+| `site/tools/shots.mjs` | The capture script that job runs |
+| `brand/` | Logo, rank, tour and link-preview artwork, with the scripts that draw it |
 
 ## Crew Tools (`#/crew`)
 
@@ -66,6 +70,22 @@ npm run dev        # http://localhost:5180
 Live data locally: set `VAMSYS_CLIENT_ID` and `VAMSYS_CLIENT_SECRET` in your shell (never in a file
 here), then run the same command without `--sample`. Re-run the `--sample` command before
 committing, so the committed snapshot stays fictional.
+
+## Screenshots and page checks
+
+`.github/workflows/screenshots.yml` builds the site from the schedule preview and never deploys. It
+captures every page at phone (390 px), desktop (1366 px) and wide-monitor (2560 px) widths, the main
+pages in dark mode too, and records sideways overflow, console errors, failed requests, broken images
+and axe accessibility findings. The result is the `screenshots` artifact (page slices, overview
+sheets, `report.json`, `summary.md`) and the run summary.
+
+- Run it by pushing a branch named `shots/<anything>`, or from the Actions tab (Run workflow). Give
+  the `url` input the live address to check what is deployed instead of a fresh build.
+- Layout and accessibility findings are reported, not failed on. The job fails when a capture errors
+  or the page head is wrong: a placeholder left unfilled, a count that differs from the data, or a
+  title or description that changes once the app has loaded.
+- A second job renders the link-preview card and uploads it as the `share-image` artifact.
+  `brand/README.md` says how to change the card.
 
 ## Go live (one-time)
 

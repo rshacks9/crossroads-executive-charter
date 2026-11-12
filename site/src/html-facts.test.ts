@@ -154,3 +154,25 @@ describe("the real index.html", () => {
     expect(notFound).not.toMatch(TYPED_COUNT);
   });
 });
+
+describe("the link-preview card", () => {
+  // brand/render-share-image.mjs draws site/public/og.png. Sites that show link previews keep the image
+  // for days or weeks, so the card may only say things that stay true, and the data must still back them.
+  const generator = (): string => read("../../brand/render-share-image.mjs");
+  const withoutTags = (source: string): string => source.replace(/<[/]?[a-z][^>]*>/gi, " ");
+
+  it("has no count typed on it", () => {
+    // The card this one replaced had these tiles; the pattern must catch them once the tags are gone.
+    expect(withoutTags("<div><b>18</b>aircraft types</div><div><b>292</b>routes</div>")).toMatch(TYPED_COUNT);
+    expect(withoutTags(generator())).not.toMatch(TYPED_COUNT);
+  });
+
+  it("names only aircraft and kinds of flying the airline still has", () => {
+    const card = generator();
+    expect(card).toContain("LIGHT JETS TO THE A380 AND 777F");
+    expect(card).toContain("EXECUTIVE · CHARTER · SPORTS · CARGO");
+    expect(snapshot.fleet.map((f) => f.code)).toEqual(expect.arrayContaining(["C510", "A388", "B77L"]));
+    const divisions = snapshot.airline.divisions.map((d) => d.name).join(" ").toLowerCase();
+    for (const word of ["executive", "charter", "sports", "cargo"]) expect(divisions).toContain(word);
+  });
+});

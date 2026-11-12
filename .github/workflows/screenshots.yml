@@ -3,7 +3,11 @@ name: Screenshots and page checks
 # Builds the site from the schedule preview (no vAMSYS credentials, no deploy), then captures every
 # page at phone, desktop and wide-monitor sizes and records layout, console, request and
 # accessibility findings. The result is the "screenshots" artifact and the run summary.
-# It reports; it does not fail on findings. Run it by hand, or push a branch named shots/<anything>.
+# Layout and accessibility findings are reported, not failed on. The job fails only when a capture
+# errors or the page head is wrong: a placeholder left unfilled, a count that differs from the data,
+# or a title or description that changes once the app has loaded.
+# A second job renders the link-preview card (artifact "share-image").
+# Run it by hand, or push a branch named shots/<anything>.
 
 on:
   workflow_dispatch:
@@ -80,4 +84,42 @@ jobs:
           name: screenshots
           path: ${{ runner.temp }}/shots
           if-no-files-found: warn
+          retention-days: 7
+
+  # Renders the link-preview card with the same pinned browser. The image in the repository
+  # (site/public/og.png) is replaced by hand from this job's artifact when the card changes.
+  share-image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install the fonts and the browser
+        working-directory: site
+        run: |
+          npm ci --no-audit --no-fund
+          npm install --no-save --no-audit --no-fund playwright@1.64.1
+          npx playwright install --with-deps chromium
+
+      - name: Render
+        run: |
+          mkdir -p "$RUNNER_TEMP/share"
+          node brand/render-share-image.mjs site/node_modules site/node_modules/@fontsource/barlow-condensed/files "$RUNNER_TEMP/share/og.png"
+          if cmp -s "$RUNNER_TEMP/share/og.png" site/public/og.png; then
+            echo "Share image: the committed site/public/og.png is identical to this render." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Share image: the committed site/public/og.png differs from this render. That is expected when the card has changed or the browser was updated; copy the image from the share-image artifact if the card changed." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: share-image
+          path: ${{ runner.temp }}/share
+          if-no-files-found: error
           retention-days: 7
