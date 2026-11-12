@@ -211,6 +211,25 @@ main:focus { outline: none; }
   .table-wrap .table .num { text-align: left; }
 }
 
+/* Route lists (RouteTable): two-line rows on phones; on wider screens a table with the airport name
+   on the code's line and, from 1200 px, a heading row that sticks under the masthead. */
+.route-rows { list-style: none; margin: 20px 0 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.route-rows li + li { border-top: 1px solid var(--line); }
+.route-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; min-height: 64px; padding: 10px 14px; text-decoration: none; }
+.route-row__name, .route-row__division { font-size: 14px; color: var(--text-2); }
+.route-row__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.route-row__facts, .route-row__division { text-align: right; white-space: nowrap; }
+.route-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; }
+@media (min-width: 1000px) {
+  .table--routes .sub { display: inline; margin-left: 8px; }
+  .table--routes td { padding: 10px 14px; vertical-align: middle; }
+  .table--routes td:is([data-label="From"], [data-label="To"]) .sub { display: inline-block; max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+}
+@media (min-width: 1200px) {
+  .table-wrap--routes { overflow: visible; }
+  .table--routes thead th { position: sticky; top: var(--sticky-top); z-index: 1; }
+}
+
 /* ------------------------------------------------------------- filters */
 .filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; }
 .filters label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-2); flex: 1 1 220px; max-width: 320px; }
@@ -681,6 +700,9 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 .row-actions .text-link + .text-link { margin-left: 12px; }
 .table-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
 .table-title .button { margin-left: auto; }
+.table-title .h3 { margin: 0; }
+.th-sort, .text-link--button { background: none; border: 0; padding: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.text-link--button { font-weight: 600; color: var(--signal-ink); }
 .table td a strong { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 
 /* search */

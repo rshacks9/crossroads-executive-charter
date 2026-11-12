@@ -8,10 +8,11 @@ import type { Snapshot } from "./data";
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, StatsPage, TypePage } = await import("./explore-pages");
+const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, StatsPage, TypePage } = await import("./explore-pages");
 const { FleetPage, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage } = await import("./info");
-const { findRoute } = await import("./explore");
+const { findRoute, routeHref } = await import("./explore");
+const { routeDivision } = await import("./data");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#x27;/g, "'").replace(/\s+/g, " ");
@@ -75,6 +76,35 @@ describe("pages render from the snapshot", () => {
 
   it("explains the explorer's keyboard controls", () => {
     expect(text(renderToString(<RoutesPage snapshot={snapshot} />))).toContain("Escape to clear");
+  });
+
+  it("pages route lists 25 at a time, in a named table with sortable columns", () => {
+    const total = snapshot.routes.length;
+    const html = renderToString(<RoutesPage snapshot={snapshot} />);
+    const body = html.slice(html.indexOf("<tbody>"), html.indexOf("</tbody>"));
+    expect(body.match(/<tr>/g)).toHaveLength(25);
+    const page = text(html);
+    expect(page).toContain(`Showing 25 of ${total}`);
+    expect(page).toContain("Show 25 more");
+    expect(page).toContain(`Show all ${total}`);
+    expect(page).toContain(`${total} routes shown`);
+    expect(page).toContain(`Jump to the ${total} routes`);
+    expect(page).toMatch(/Details for CRX\d+/);
+    expect(html).toContain('<caption class="visually-hidden">Routes shown</caption>');
+    expect(html.match(/class="th-sort"/g)).toHaveLength(5);
+    expect(html).not.toContain("aria-sort");
+    expect(renderToString(<AirportPage snapshot={snapshot} icao="KIND" />)).toContain('<caption class="visually-hidden">Routes serving KIND</caption>');
+    expect(text(renderToString(<TypePage snapshot={snapshot} code="C25C" />))).toContain("Other aircraft");
+  });
+
+  it("lists routes on phones as one two-line link per route", () => {
+    const divisions = snapshot.airline.divisions;
+    const routes = snapshot.routes.filter((r) => routeDivision(r, divisions) >= 0).slice(0, 4);
+    const html = renderToString(<RouteRows routes={routes} snapshot={snapshot} />);
+    expect(html.match(/<a /g)).toHaveLength(routes.length);
+    for (const r of routes) expect(html).toContain(`href="${routeHref(r)}"`);
+    expect(text(html)).toContain(divisions[routeDivision(routes[0]!, divisions)]!.name);
+    expect(html).toContain('<span class="visually-hidden">to </span>');
   });
 
   it("register buttons go to the airline's vAMSYS sign-in page while join_url is unset", async () => {

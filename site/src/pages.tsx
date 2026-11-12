@@ -646,6 +646,14 @@ export function RoutesPage({ snapshot }: PageProps) {
   const airportInView = selectedAirport && shown.some((r) => r.from === selectedAirport || r.to === selectedAirport) ? selectedAirport : null;
   const tableRoutes = airportInView ? shown.filter((r) => r.from === airportInView || r.to === airportInView) : shown;
   const airportsServed = new Set(shown.flatMap((r) => [r.from, r.to])).size;
+  const listCount = `${tableRoutes.length} ${tableRoutes.length === 1 ? "route" : "routes"}`;
+
+  // The list sits below the map: a button jumps there and moves focus to its heading.
+  const jumpToList = () => {
+    const heading = document.getElementById("route-list");
+    heading?.scrollIntoView({ block: "start" });
+    heading?.focus({ preventScroll: true });
+  };
 
   const chooseDivision = (name: string) => {
     setDivisionName(name);
@@ -694,6 +702,8 @@ export function RoutesPage({ snapshot }: PageProps) {
           <div><dt>Airports</dt><dd>{airportsServed}</dd></div>
           <div><dt>Longest</dt><dd>{longest ? `${formatNumber(longest)} nm` : "—"}</dd></div>
         </dl>
+        <button type="button" className="text-link text-link--button" onClick={jumpToList}>{`Jump to the ${listCount}`}</button>
+        <h2 className="visually-hidden">Route explorer</h2>
         <div className="explorer">
           <div className="explorer__map">
             <ExploreMap
@@ -714,8 +724,11 @@ export function RoutesPage({ snapshot }: PageProps) {
           </div>
           <ExplorerPanel snapshot={snapshot} routes={shown} selected={airportInView} onSelect={setSelectedAirport} selectedRoute={selectedRoute} onRoute={setSelectedRoute} />
         </div>
-        <h2 className="h3 table-title">{airportInView ? `Routes serving ${airportInView}` : "All routes shown"} <span className="tag">{tableRoutes.length}</span>{airportInView ? <button type="button" className="button button--small button--quiet" onClick={() => { setSelectedAirport(null); setSelectedRoute(null); }}>Show all</button> : null}</h2>
-        <RouteTable routes={tableRoutes} snapshot={snapshot} />
+        <div className="table-title">
+          <h2 className="h3" id="route-list" tabIndex={-1}>{airportInView ? `${listCount} serving ${airportInView}` : `${listCount} shown`}</h2>
+          {airportInView ? <button type="button" className="button button--small button--quiet" onClick={() => { setSelectedAirport(null); setSelectedRoute(null); }}>Show all</button> : null}
+        </div>
+        <RouteTable routes={tableRoutes} snapshot={snapshot} caption={airportInView ? `Routes serving ${airportInView}` : "Routes shown"} />
         <p className="fineprint">Distances are great-circle. Block times are schedule estimates; your SimBrief OFP has the real figure for the day's winds.</p>
       </section>
     </>

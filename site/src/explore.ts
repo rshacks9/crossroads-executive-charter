@@ -159,6 +159,54 @@ export function routesForType(snapshot: Pick<Snapshot, "routes">, code: string):
 
 export const isFreighterType = (t: Pick<FleetType, "type">) => t.type === "cargo" || t.type === "cargo-containers";
 
+// ------------------------------------------------------------------ route lists
+
+const byFlight = (a: Route, b: Route) => routeKey(a).localeCompare(routeKey(b), "en", { numeric: true });
+const orLast = (value: number | null) => value ?? Number.MAX_SAFE_INTEGER;
+
+/**
+ * The one default order for route lists: routes that depart one of `from` (the airport a page is
+ * about, or the bases) first, then shortest first, then by flight. Returns a new array.
+ */
+export function sortRoutes(routes: readonly Route[], from: readonly string[]): Route[] {
+  const group = (r: Route) => (from.includes(r.from) ? 0 : 1);
+  return [...routes].sort((a, b) => group(a) - group(b) || orLast(a.distance_nm) - orLast(b.distance_nm) || byFlight(a, b));
+}
+
+export type RouteSortKey = "flight" | "from" | "to" | "distance" | "block";
+
+/**
+ * Reorder a route list by one column, either way. Missing figures go last both ways; equal values
+ * keep the order they came in (the sort is stable).
+ */
+export function sortRoutesBy(routes: readonly Route[], key: RouteSortKey, dir: "asc" | "desc"): Route[] {
+  const sign = dir === "asc" ? 1 : -1;
+  const text = (get: (r: Route) => string) => (a: Route, b: Route) => sign * get(a).localeCompare(get(b), "en", { numeric: true });
+  const figure = (get: (r: Route) => number | null) => (a: Route, b: Route) => {
+    const x = get(a);
+    const y = get(b);
+    if (x == null || y == null) return (x == null ? 1 : 0) - (y == null ? 1 : 0);
+    return sign * (x - y);
+  };
+  const compare: Record<RouteSortKey, (a: Route, b: Route) => number> = {
+    flight: text(routeKey),
+    from: text((r) => r.from),
+    to: text((r) => r.to),
+    distance: figure((r) => r.distance_nm),
+    block: figure((r) => r.duration_min),
+  };
+  return [...routes].sort(compare[key]);
+}
+
+/**
+ * The airport a route row names under its codes: the end that is not `focus` on that airport's
+ * page; elsewhere the end that is not a base, or the destination when neither or both ends are.
+ */
+export function routeOtherEnd(route: Pick<Route, "from" | "to">, focus: string | undefined, bases: readonly string[]): string {
+  if (focus) return route.from === focus ? route.to : route.from;
+  return bases.includes(route.to) && !bases.includes(route.from) ? route.from : route.to;
+}
+
 // ------------------------------------------------------------------ charter planner
 
 export type FitStatus = "fits" | "tight" | "short-range" | "too-small" | "wrong-role";

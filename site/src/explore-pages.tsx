@@ -4,7 +4,7 @@ import { formatDuration, formatNumber, formatWeight, loadCrew, routeDivision } f
 import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import { ExploreMap } from "./ExploreMap";
 import { DIVISION_COLORS } from "./LiveMap";
-import type { Bar, FitStatus, SearchEntry } from "./explore";
+import type { Bar, FitStatus, RouteSortKey, SearchEntry } from "./explore";
 import {
   airportHref,
   airportSummary,
@@ -18,12 +18,15 @@ import {
   networkStats,
   routeHref,
   routeKey,
+  routeOtherEnd,
   routesForType,
   scheduleCsv,
   search,
   servedAirports,
   setMeta,
   simbriefUrl,
+  sortRoutes,
+  sortRoutesBy,
   suggestFleet,
   typeHref,
 } from "./explore";
@@ -53,6 +56,23 @@ export function useCrew(): Crew | null {
   return crew;
 }
 
+/**
+ * Whether a media query matches, kept up to date. The first render already has the answer, so a
+ * phone gets its layout without a flash; with no window (the server-rendered page tests) it is false.
+ */
+export function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(() => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(query).matches);
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const list = window.matchMedia(query);
+    const update = () => setMatches(list.matches);
+    update();
+    list.addEventListener("change", update);
+    return () => list.removeEventListener("change", update);
+  }, [query]);
+  return matches;
+}
+
 function bookUrl(snapshot: Snapshot): string {
   return snapshot.airline.pilot_login_url ?? snapshot.airline.join_url ?? "https://vamsys.io/login/crossroads";
 }
@@ -70,44 +90,142 @@ function TypeLinks({ codes, snapshot }: { codes: string[]; snapshot: Snapshot })
   );
 }
 
-export function RouteTable({ routes, snapshot, focus, limit = 400 }: { routes: Route[]; snapshot: Snapshot; focus?: string; limit?: number }) {
+/** The phone view of a route list: one two-line link per route; its page has booking, briefing and SimBrief. */
+export function RouteRows({ routes, snapshot, focus }: { routes: Route[]; snapshot: Snapshot; focus?: string }) {
   const divisions = snapshot.airline.divisions;
-  if (!routes.length) return <p className="empty">No routes match.</p>;
+  const baseList = bases(snapshot);
   return (
-    <div className="table-wrap">
-      <table className="table">
-        <thead>
-          <tr><th scope="col">Flight</th><th scope="col">From</th><th scope="col">To</th><th scope="col" className="num">Distance</th><th scope="col" className="num">Block</th><th scope="col">Aircraft</th><th scope="col"><span className="visually-hidden">Actions</span></th></tr>
-        </thead>
-        <tbody>
-          {routes.slice(0, limit).map((r) => {
-            const d = routeDivision(r, divisions);
-            return (
-              <tr key={routeKey(r)}>
-                <td data-label="Flight">
-                  <a className="row-link" href={routeHref(r)}>{d >= 0 ? <DivisionDot index={d} /> : null}{routeKey(r)}</a>
-                  <span className="sub">{d >= 0 ? divisions[d]!.name : ""}</span>
-                  {r.kind === "cargo" ? <span className="tag tag--cargo">Cargo</span> : null}
-                </td>
-                {[r.from, r.to].map((icao, i) => (
-                  <td key={i} data-label={i ? "To" : "From"}>
-                    {icao === focus ? <strong>{icao}</strong> : <a href={airportHref(icao)}><strong>{icao}</strong></a>}
-                    <span className="sub">{snapshot.airports[icao]?.name}</span>
-                  </td>
-                ))}
-                <td data-label="Distance" className="num">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"}</td>
-                <td data-label="Block" className="num">{formatDuration(r.duration_min)}</td>
-                <td data-label="Aircraft"><TypeLinks codes={r.types} snapshot={snapshot} /></td>
-                <td data-label="Actions" className="row-actions">
-                  <a className="text-link" href={routeHref(r)}>Details</a>
-                  {r.callsign ? <a className="text-link" href={`#/crew?route=${encodeURIComponent(r.callsign)}`}>Brief</a> : null}
-                </td>
+    <ol className="route-rows">
+      {routes.map((r) => {
+        const d = routeDivision(r, divisions);
+        const key = routeKey(r);
+        const other = routeOtherEnd(r, focus, baseList);
+        return (
+          <li key={key}>
+            <a className="route-row" href={routeHref(r)} data-row-link="">
+              <span>{d >= 0 ? <DivisionDot index={d} /> : null}<strong>{key}</strong> {r.from} <span aria-hidden="true">→</span> <span className="visually-hidden">to </span>{r.to}</span>
+              <span className="route-row__facts">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"} · {formatDuration(r.duration_min)}</span>
+              <span className="route-row__name">{snapshot.airports[other]?.name ?? other}</span>
+              <span className="route-row__division">{d >= 0 ? divisions[d]!.name : ""}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+const ROUTE_PAGE = 25;
+
+const SORT_COLUMNS: { key: RouteSortKey; label: string; num?: boolean }[] = [
+  { key: "flight", label: "Flight" },
+  { key: "from", label: "From" },
+  { key: "to", label: "To" },
+  { key: "distance", label: "Distance", num: true },
+  { key: "block", label: "Block", num: true },
+];
+
+/**
+ * A route list in one default order (departures from the page's airport, or from the bases, first;
+ * then shortest first), 25 at a time. Phones get two-line rows, wider screens a table whose columns
+ * sort. The count starts again at 25 whenever the set of routes changes.
+ */
+export function RouteTable({ routes, snapshot, caption, focus, omitType }: { routes: Route[]; snapshot: Snapshot; caption: string; focus?: string; omitType?: string }) {
+  const divisions = snapshot.airline.divisions;
+  const narrow = useMediaQuery("(max-width: 700px)");
+  const [sort, setSort] = useState<{ key: RouteSortKey | "default"; dir: "asc" | "desc" }>({ key: "default", dir: "asc" });
+  // Keyed on the routes themselves, not the array: callers filter afresh on every render.
+  const setKey = routes.map(routeKey).join();
+  const [paging, setPaging] = useState({ key: setKey, count: ROUTE_PAGE });
+  const wrap = useRef<HTMLDivElement>(null);
+  const focusRow = useRef<number | null>(null);
+  const ordered = useMemo(() => {
+    const byDefault = sortRoutes(routes, focus ? [focus] : bases(snapshot));
+    return sort.key === "default" ? byDefault : sortRoutesBy(byDefault, sort.key, sort.dir);
+  }, [routes, focus, snapshot, sort]);
+  const total = ordered.length;
+  const shown = Math.min(total, paging.key === setKey ? paging.count : ROUTE_PAGE);
+  // After "Show more" or "Show all", focus moves to the first row that was added.
+  useEffect(() => {
+    const index = focusRow.current;
+    if (index === null) return;
+    focusRow.current = null;
+    wrap.current?.querySelectorAll<HTMLElement>("[data-row-link]")[index]?.focus();
+  }, [shown]);
+  if (!total) return <p className="empty">No routes match.</p>;
+  const showUpTo = (count: number) => {
+    focusRow.current = shown;
+    setPaging({ key: setKey, count });
+  };
+  const sortBy = (key: RouteSortKey) => setSort((cur) => ({ key, dir: cur.key === key && cur.dir === "asc" ? "desc" : "asc" }));
+  const visible = ordered.slice(0, shown);
+  const aircraftLabel = omitType ? "Other aircraft" : "Aircraft";
+  return (
+    <div ref={wrap}>
+      {narrow ? <RouteRows routes={visible} snapshot={snapshot} focus={focus} /> : (
+        <div className="table-wrap table-wrap--routes">
+          <table className="table table--routes">
+            <caption className="visually-hidden">{caption}</caption>
+            <thead>
+              <tr>
+                {SORT_COLUMNS.map((c) => {
+                  const active = sort.key === c.key;
+                  return (
+                    <th key={c.key} scope="col" className={c.num ? "num" : undefined} aria-sort={active ? (sort.dir === "asc" ? "ascending" : "descending") : undefined}>
+                      <button type="button" className="th-sort" onClick={() => sortBy(c.key)}>{c.label}{active ? <span aria-hidden="true">{sort.dir === "asc" ? " ↑" : " ↓"}</span> : null}</button>
+                    </th>
+                  );
+                })}
+                <th scope="col">{aircraftLabel}</th>
+                <th scope="col"><span className="visually-hidden">Actions</span></th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      {routes.length > limit ? <p className="muted">Showing the first {limit} of {routes.length}.</p> : null}
+            </thead>
+            <tbody>
+              {visible.map((r) => {
+                const d = routeDivision(r, divisions);
+                const key = routeKey(r);
+                const types = omitType ? r.types.filter((t) => t !== omitType) : r.types;
+                return (
+                  <tr key={key}>
+                    <td data-label="Flight">
+                      <a className="row-link" href={routeHref(r)} data-row-link="">{d >= 0 ? <DivisionDot index={d} /> : null}{key}</a>
+                      <span className="sub">{d >= 0 ? divisions[d]!.name : ""}</span>
+                      {r.kind === "cargo" ? <span className="tag tag--cargo">Cargo</span> : null}
+                    </td>
+                    {[r.from, r.to].map((icao, i) => {
+                      const name = snapshot.airports[icao]?.name;
+                      return (
+                        <td key={i} data-label={i ? "To" : "From"}>
+                          {icao === focus ? <strong>{icao}</strong> : <a href={airportHref(icao)}><strong>{icao}</strong></a>}
+                          <span className="sub" title={name}>{name}</span>
+                        </td>
+                      );
+                    })}
+                    <td data-label="Distance" className="num">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"}</td>
+                    <td data-label="Block" className="num">{formatDuration(r.duration_min)}</td>
+                    <td data-label={aircraftLabel}>{types.length ? <TypeLinks codes={types} snapshot={snapshot} /> : "—"}</td>
+                    <td data-label="Actions" className="row-actions">
+                      <span>
+                        <a className="text-link" href={routeHref(r)}>Details<span className="visually-hidden"> for {key}</span></a>
+                        {r.callsign ? <a className="text-link" href={`#/crew?route=${encodeURIComponent(r.callsign)}`}>Brief<span className="visually-hidden"> {r.callsign}</span></a> : null}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <div className="route-more">
+        <p>{`Showing ${shown} of ${total}`}</p>
+        {shown < total ? (
+          <>
+            <button type="button" className="button button--quiet" onClick={() => showUpTo(shown + ROUTE_PAGE)}>{`Show ${Math.min(ROUTE_PAGE, total - shown)} more`}</button>
+            <button type="button" className="button button--quiet" onClick={() => showUpTo(total)}>{`Show all ${total}`}</button>
+          </>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -241,7 +359,6 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
   if (!summary.routes.length) return <NotFoundPage snapshot={snapshot} what={`airport ${icao}`} />;
   const wx = crew?.airports[icao];
   const runways = wx?.runways ?? [];
-  const sorted = [...summary.routes].sort((x, y) => (x.distance_nm ?? 0) - (y.distance_nm ?? 0));
   return (
     <>
       <PageHeader eyebrow={summary.isBase ? "Crossroads base" : `Destination · ${a?.country ?? ""}`} title={`${icao} · ${a?.name ?? icao}`} lede={blurb}>
@@ -288,7 +405,7 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
       </section>
       <section className="page">
         <SectionHead eyebrow="Schedule" title={`Routes serving ${icao}`} action={{ href: `#/routes`, label: "Whole network" }} />
-        <RouteTable routes={sorted} snapshot={snapshot} focus={icao} />
+        <RouteTable routes={summary.routes} snapshot={snapshot} focus={icao} caption={`Routes serving ${icao}`} />
       </section>
     </>
   );
@@ -373,7 +490,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
       </section>
       <section className="page">
         <SectionHead eyebrow="Schedule" title={`Routes for the ${shortName(type.name)}`} action={{ href: `#/routes?type=${encodeURIComponent(code)}`, label: "Filter on the network map" }} />
-        <RouteTable routes={routes} snapshot={snapshot} />
+        <RouteTable routes={routes} snapshot={snapshot} caption={`Routes for the ${shortName(type.name)}`} omitType={code} />
         <nav className="pager" aria-label="Other aircraft">
           <a href={typeHref(prev.code)}>← {prev.name}</a>
           <a href="#/fleet">All fleet</a>

@@ -21,11 +21,14 @@ import {
   parseLocation,
   routeHref,
   routeKey,
+  routeOtherEnd,
   routesForType,
   scheduleCsv,
   search,
   servedAirports,
   simbriefUrl,
+  sortRoutes,
+  sortRoutesBy,
   suggestFleet,
 } from "./explore";
 
@@ -127,6 +130,57 @@ describe("fleet", () => {
 
   it("has planning figures for every fleet type", () => {
     for (const f of snapshot.fleet) expect(FLEET_INFO[f.code], f.code).toBeDefined();
+  });
+});
+
+describe("route lists", () => {
+  const bases = ["KTYQ", "KIND"];
+  const sorted = sortRoutes(snapshot.routes, bases);
+  const nm = (r: { distance_nm: number | null }) => r.distance_nm ?? Infinity;
+
+  it("lists departures from the bases first, shortest first within each group", () => {
+    expect(sorted.map(routeKey).sort()).toEqual(snapshot.routes.map(routeKey).sort());
+    const split = sorted.findIndex((r) => !bases.includes(r.from));
+    expect(split).toBeGreaterThan(0);
+    expect(sorted.slice(0, split).every((r) => bases.includes(r.from))).toBe(true);
+    expect(sorted.slice(split).every((r) => !bases.includes(r.from))).toBe(true);
+    for (const group of [sorted.slice(0, split), sorted.slice(split)]) {
+      for (let i = 1; i < group.length; i++) expect(nm(group[i]!)).toBeGreaterThanOrEqual(nm(group[i - 1]!));
+    }
+  });
+
+  it("puts an airport's own departures first on its page and leaves the input alone", () => {
+    const kase = snapshot.routes.filter((r) => r.from === "KASE" || r.to === "KASE");
+    const before = kase.map(routeKey);
+    const list = sortRoutes(kase, ["KASE"]);
+    expect(list[0]!.from).toBe("KASE");
+    expect(list[list.length - 1]!.to).toBe("KASE");
+    expect(kase.map(routeKey)).toEqual(before);
+    expect(sortRoutes([], bases)).toEqual([]);
+  });
+
+  it("sorts by a column either way and keeps the default order for ties", () => {
+    expect(nm(sortRoutesBy(sorted, "distance", "desc")[0]!)).toBe(Math.max(...snapshot.routes.map((r) => r.distance_nm ?? 0)));
+    const blocks = sortRoutesBy(sorted, "block", "asc").map((r) => r.duration_min ?? Infinity);
+    for (let i = 1; i < blocks.length; i++) expect(blocks[i]).toBeGreaterThanOrEqual(blocks[i - 1]!);
+    const byFrom = sortRoutesBy(sorted, "from", "asc");
+    for (let i = 1; i < byFrom.length; i++) expect(byFrom[i - 1]!.from.localeCompare(byFrom[i]!.from)).toBeLessThanOrEqual(0);
+    const fromKind = byFrom.filter((r) => r.from === "KIND");
+    for (let i = 1; i < fromKind.length; i++) expect(nm(fromKind[i]!)).toBeGreaterThanOrEqual(nm(fromKind[i - 1]!));
+    const flights = sortRoutesBy(sorted, "flight", "desc").map(routeKey);
+    expect(flights).toEqual([...flights].sort((a, b) => b.localeCompare(a, "en", { numeric: true })));
+    const lastTo = snapshot.routes.map((r) => r.to).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).pop();
+    expect(sortRoutesBy(sorted, "to", "desc")[0]!.to).toBe(lastTo);
+    const unknown = { ...sorted[0]!, callsign: "CRX999", distance_nm: null };
+    for (const dir of ["asc", "desc"] as const) expect(sortRoutesBy([unknown, ...sorted], "distance", dir).pop()).toBe(unknown);
+  });
+
+  it("names the far end of a row: not the page's airport, else not a base", () => {
+    expect(routeOtherEnd({ from: "KTYQ", to: "KASE" }, undefined, bases)).toBe("KASE");
+    expect(routeOtherEnd({ from: "KASE", to: "KTYQ" }, undefined, bases)).toBe("KASE");
+    expect(routeOtherEnd({ from: "EGGW", to: "KTEB" }, undefined, bases)).toBe("KTEB");
+    expect(routeOtherEnd({ from: "KTYQ", to: "KASE" }, "KASE", bases)).toBe("KTYQ");
+    expect(routeOtherEnd({ from: "KTYQ", to: "KASE" }, "KTYQ", bases)).toBe("KASE");
   });
 });
 
