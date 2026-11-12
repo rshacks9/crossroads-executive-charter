@@ -813,7 +813,7 @@ export function ResourcesPage({ snapshot }: PageProps) {
         <ul className="resource-grid">
           {LINKS.map((l) => (
             <li key={l.title} className="resource">
-              <h2 className="h3"><a href={l.href} rel="noopener" target="_blank">{l.title}<span className="visually-hidden"> (opens in a new tab)</span> ↗</a></h2>
+              <h3 className="h3"><a href={l.href} rel="noopener" target="_blank">{l.title}<span className="visually-hidden"> (opens in a new tab)</span> ↗</a></h3>
               <p>{l.body}</p>
             </li>
           ))}

@@ -208,7 +208,9 @@ main:focus { outline: none; }
 .page .section-head:not(:first-child) { margin-top: 44px; }
 /* Phones: the action link drops below the title instead of squeezing it into three lines. */
 @media (max-width: 560px) { .section-head { flex-wrap: wrap; gap: 4px 16px; } .section-head > div { flex: 1 1 100%; } }
-.text-link { font-weight: 600; color: var(--signal-ink); text-decoration: none; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; }
+/* The column gap stands in for the space a flex container drops between a link's words and an
+   aria-hidden arrow that follows a visually hidden suffix. */
+.text-link { font-weight: 600; color: var(--signal-ink); text-decoration: none; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; column-gap: .25em; }
 .text-link:hover { text-decoration: underline; }
 .muted { color: var(--text-2); }
 .sub { display: block; color: var(--text-2); font-size: 14px; font-weight: 400; }
@@ -1002,8 +1004,8 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .resource-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .resource { display: flex; flex-direction: column; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
 .resource .button { align-self: flex-start; margin-top: auto; }
-.resource h2 a { text-decoration: none; }
-.resource h2 a:hover { text-decoration: underline; }
+.resource h3 a { text-decoration: none; }
+.resource h3 a:hover { text-decoration: underline; }
 .resource__pick { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-2); }
 .sop-brief { margin: 0 0 20px; padding-left: 22px; display: grid; gap: 8px; }
 .callout .button { margin-left: 8px; min-height: 40px; color: var(--text); }

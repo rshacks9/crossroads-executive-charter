@@ -38,7 +38,7 @@ function Itinerary({ snapshot, legs }: { snapshot: Snapshot; legs: (typeof SERVI
               <span className="itinerary__facts">{shortName(names[leg.aircraft] ?? leg.aircraft)} · {formatNumber(route!.distance_nm)} nm · {formatDuration(route!.duration_min)}</span>
             </div>
             <p>{leg.note}</p>
-            <a className="text-link" href={`#/crew?route=${encodeURIComponent(leg.callsign)}&aircraft=${encodeURIComponent(leg.aircraft)}`}>Open the briefing →</a>
+            <a className="text-link" href={`#/crew?route=${encodeURIComponent(leg.callsign)}&aircraft=${encodeURIComponent(leg.aircraft)}`}>Open the briefing<span className="visually-hidden"> for {leg.callsign}</span> <span aria-hidden="true">→</span></a>
           </li>
         ))}
       </ol>

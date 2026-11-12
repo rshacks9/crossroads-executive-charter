@@ -64,7 +64,7 @@ export function Leg({ from, to, snapshot }: { from: string; to: string; snapshot
   return (
     <span className="leg">
       <abbr title={a?.name ?? from}>{from}</abbr>
-      <span className="leg__arrow" aria-label="to">→</span>
+      <span className="leg__arrow" aria-hidden="true">→</span><span className="visually-hidden"> to </span>
       <abbr title={b?.name ?? to}>{to}</abbr>
     </span>
   );
@@ -327,7 +327,7 @@ export function HomePage({ snapshot }: PageProps) {
                   <h3>{division.name}</h3>
                   {division.summary ? <p className="division__summary">{division.summary}</p> : null}
                   <p className="division__types">{types.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
-                  <a className="text-link" href={service ? `#/services?d=${service.slug}` : `#/routes?division=${encodeURIComponent(division.name)}`}>Sample itinerary →</a>
+                  <a className="text-link" href={service ? `#/services?d=${service.slug}` : `#/routes?division=${encodeURIComponent(division.name)}`}>Sample itinerary<span className="visually-hidden">: {division.name}</span> <span aria-hidden="true">→</span></a>
                 </li>
               );
             })}
@@ -554,8 +554,8 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
         </p>
         {sim ? <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{sim}</p> : null}
         <p className="fleet-card__links">
-          <a className="text-link" href={typeHref(type.code)}>Specs and routes →</a>
-          <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>On the map →</a>
+          <a className="text-link" href={typeHref(type.code)}>Specs and routes<span className="visually-hidden"> for the {type.name}</span> <span aria-hidden="true">→</span></a>
+          <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>On the map<span className="visually-hidden">: {type.name} routes</span> <span aria-hidden="true">→</span></a>
         </p>
         {type.image && type.image_attribution && !info?.livery ? (
           <p className="credit">Photo: {type.image_link ? <a href={type.image_link} rel="noopener">{type.image_attribution}</a> : type.image_attribution}</p>

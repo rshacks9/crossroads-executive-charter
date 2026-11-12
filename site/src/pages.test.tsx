@@ -9,7 +9,7 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, destinationGroups, findRoute, onwardLegs, routeHref, servedAirports, suggestFleet } = await import("./explore");
@@ -366,5 +366,28 @@ describe("pages render from the snapshot", () => {
     expect(html.match(/<li class="wx-tile /g) ?? []).toHaveLength(board.first.length);
     for (const [icao] of board.vfr) expect(html).not.toContain(`<strong>${icao}</strong>`);
     if (board.vfr.length) expect(html).toContain(`aria-expanded="false" aria-controls="wx-tiles">Show all ${board.first.length + board.vfr.length} airports</button>`);
+  });
+
+  it("names repeated links by where they go, hides the arrows, and reads a leg as 'to'", () => {
+    // Markup as served, without the comments React puts between adjacent text nodes.
+    const render = (node: Parameters<typeof renderToString>[0]) => renderToString(node).replace(/<!-- -->/g, "");
+    const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/'/g, "&#x27;");
+    const leg = render(<Leg from="KIND" to="KLAS" snapshot={snapshot} />);
+    expect(leg).toContain('<span class="leg__arrow" aria-hidden="true">→</span><span class="visually-hidden"> to </span>');
+    expect(leg).not.toContain('aria-label="to"');
+    const home = render(<HomePage snapshot={snapshot} />);
+    for (const d of snapshot.airline.divisions) expect(home).toContain(`Sample itinerary<span class="visually-hidden">: ${esc(d.name)}</span> <span aria-hidden="true">→</span>`);
+    const fleet = render(<FleetPage snapshot={snapshot} />);
+    for (const f of snapshot.fleet) {
+      expect(fleet).toContain(`Specs and routes<span class="visually-hidden"> for the ${esc(f.name)}</span> <span aria-hidden="true">→</span>`);
+      expect(fleet).toContain(`On the map<span class="visually-hidden">: ${esc(f.name)} routes</span> <span aria-hidden="true">→</span>`);
+    }
+    const services = render(<ServicesPage snapshot={snapshot} />);
+    const briefings = services.match(/Open the briefing<span class="visually-hidden"> for CRX[0-9]+<[/]span> <span aria-hidden="true">→<[/]span>/g) ?? [];
+    expect(briefings.length).toBeGreaterThan(0);
+    expect(briefings).toHaveLength((services.match(/Open the briefing/g) ?? []).length);
+    const resources = render(<ResourcesPage snapshot={snapshot} />);
+    expect(resources.match(/<h3 class="h3"><a href="https:/g)).toHaveLength(3);
+    expect(resources).not.toMatch(/<h2 class="h3"><a /);
   });
 });
