@@ -10,8 +10,8 @@ tests in `explore.test.ts` and `pages.test.tsx`): an interactive route explorer 
 airport for its great circles), a page per destination (`#/airport/KASE`, runways from `crew.json`), a
 page per aircraft type with a planning-range ring (`#/fleet/C750`), a page per route with SimBrief and
 vAMSYS links (`#/route/CRX101`), a charter planning tool (`#/plan`), pilot resources with generated
-briefing cards and a schedule CSV (`#/resources`), network stats (`#/stats`), site search (`/` or
-Ctrl+K) and a 404 page. Its data comes from vAMSYS, so the site updates itself as pilots
+briefing cards and a schedule CSV (`#/resources`), network stats (`#/stats`), site search (Ctrl+K or
+Cmd+K) and a 404 page. Its data comes from vAMSYS, so the site updates itself as pilots
 fly. Joining, booking and PIREPs stay in vAMSYS. This site links there and never duplicates them.
 
 ```
