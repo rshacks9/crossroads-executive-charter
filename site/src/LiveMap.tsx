@@ -4,7 +4,15 @@ import { useEffect, useRef } from "react";
 import type { Airport, Division, LiveFlight, Route } from "./data";
 import { formatFeet, greatCircle, routeDivision } from "./data";
 
+/** Division colours as Leaflet writes them on each line: a fallback under the `.route--dN` classes,
+ *  which take the theme's `--div-N` tokens (styles.css). */
 export const DIVISION_COLORS = ["#e8703a", "#2a6f97", "#2f7a55", "#7b4fa0", "#b0812a", "#55646c"];
+
+/** A division's colour as a theme token, for dots, accents and bars, so it follows the light/dark toggle. */
+export function divisionColor(index: number): string {
+  const n = DIVISION_COLORS.length;
+  return `var(--div-${((index % n) + n) % n})`;
+}
 
 interface Props {
   flights: LiveFlight[];
@@ -76,8 +84,8 @@ export function LiveMap({ flights, airports, bases, routes = [], divisions = [],
       const a = airports[route.from];
       const b = airports[route.to];
       if (!has(a) || !has(b)) continue;
-      const color = DIVISION_COLORS[Math.max(0, routeDivision(route, divisions)) % DIVISION_COLORS.length];
-      L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon]), { color, weight: 2, opacity: 0.75, dashArray: route.kind === "cargo" ? "6 6" : undefined, interactive: false }).addTo(group);
+      const division = Math.max(0, routeDivision(route, divisions)) % DIVISION_COLORS.length;
+      L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon]), { color: DIVISION_COLORS[division], className: `route route--d${division}`, weight: 2, opacity: 0.85, dashArray: route.kind === "cargo" ? "6 6" : undefined, interactive: false }).addTo(group);
       served.add(route.from).add(route.to);
     }
     for (const icao of served) {
@@ -104,7 +112,7 @@ export function LiveMap({ flights, airports, bases, routes = [], divisions = [],
       const here = flight.lat != null && flight.lon != null ? ([flight.lat, flight.lon] as [number, number]) : null;
       if (has(from) && here) L.polyline([[from.lat, from.lon], here], { color: "#e8703a", weight: 3 }).addTo(group);
       if (has(to) && (here || has(from))) {
-        L.polyline([here ?? [from!.lat!, from!.lon!], [to.lat, to.lon]], { color: "#1b2328", weight: 1.5, dashArray: "4 6", opacity: 0.6 }).addTo(group);
+        L.polyline([here ?? [from!.lat!, from!.lon!], [to.lat, to.lon]], { color: "#1b2328", className: "route-remaining", weight: 1.5, dashArray: "4 6", opacity: 0.6 }).addTo(group);
       }
       for (const airport of [from, to]) {
         if (!has(airport)) continue;

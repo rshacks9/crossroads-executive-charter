@@ -103,9 +103,11 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
       const b = airports[route.to];
       if (!has(a) || !has(b)) continue;
       const touches = !selectedAirport || route.from === selectedAirport || route.to === selectedAirport;
-      const color = DIVISION_COLORS[Math.max(0, routeDivision(route, divisions)) % DIVISION_COLORS.length];
+      // The class gives the line its theme colour (styles.css .route--dN); `color` is the fallback.
+      const division = Math.max(0, routeDivision(route, divisions)) % DIVISION_COLORS.length;
       const line = L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon], 48), {
-        color,
+        color: DIVISION_COLORS[division],
+        className: `route route--d${division}`,
         weight: selectedAirport && touches ? 3.5 : 2,
         opacity: touches ? 0.85 : 0.15,
         dashArray: route.kind === "cargo" ? "6 6" : undefined,
@@ -122,7 +124,7 @@ export function ExploreMap({ routes, airports, bases, divisions, selectedAirport
       const a = airports[highlight.from];
       const b = airports[highlight.to];
       if (has(a) && has(b)) {
-        L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon], 64), { color: "#1b2328", weight: 7, opacity: 0.35, interactive: false }).addTo(group);
+        L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon], 64), { color: "#1b2328", className: "route-casing", weight: 7, opacity: 0.35, interactive: false }).addTo(group);
         L.polyline(greatCircle([a.lat, a.lon], [b.lat, b.lon], 64), { color: "#e8703a", weight: 4, opacity: 1, interactive: false }).addTo(group);
       }
     }

@@ -3,7 +3,7 @@ import type { Crew, Route, Snapshot } from "./data";
 import { formatDuration, formatNumber, formatWeight, loadCrew, routeDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import { ExploreMap } from "./ExploreMap";
-import { DIVISION_COLORS } from "./LiveMap";
+import { divisionColor } from "./LiveMap";
 import type { Bar, FitStatus, RouteSortKey, SearchEntry } from "./explore";
 import {
   airportHref,
@@ -441,7 +441,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
   const sim = snapshot.airline.sim_aircraft?.[code];
   const destinations = new Set(routes.flatMap((r) => [r.from, r.to]));
   const longest = routes[0];
-  const accent = DIVISION_COLORS[Math.max(0, divisionIndex) % DIVISION_COLORS.length];
+  const accent = divisionColor(Math.max(0, divisionIndex));
   const fleetOrder = snapshot.fleet.map((f) => f.code);
   const idx = fleetOrder.indexOf(code);
   const prev = snapshot.fleet[(idx - 1 + fleetOrder.length) % fleetOrder.length]!;
@@ -820,7 +820,7 @@ export function StatsPage({ snapshot }: PageProps) {
       <section className="page stats-grid">
         <div className="stats-card">
           <h2 className="h3">Routes by division</h2>
-          <BarList bars={stats.byDivision} label="Routes by division" colorFor={(b) => DIVISION_COLORS[(b.index ?? 0) % DIVISION_COLORS.length]!} />
+          <BarList bars={stats.byDivision} label="Routes by division" colorFor={(b) => divisionColor(b.index ?? 0)} />
         </div>
         <div className="stats-card">
           <h2 className="h3">Routes by distance</h2>

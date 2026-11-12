@@ -18,7 +18,7 @@ import {
 } from "./data";
 import { FLEET_INFO, NEWS, PEGASUS_URL, SERVICES, baseFor } from "./content";
 import type { NewsItem } from "./content";
-import { DIVISION_COLORS, LiveMap } from "./LiveMap";
+import { LiveMap, divisionColor } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
 import { ExplorerPanel, RouteTable } from "./explore-pages";
 import { airportHref, divisionBaseLabel, mapLegendKeys, networkStats, routeHref, typeHref } from "./explore";
@@ -109,7 +109,7 @@ function divisionFor(snapshot: Snapshot, code: string): { division: Division; in
 }
 
 export function DivisionDot({ index }: { index: number }) {
-  return <span className="division-dot" style={{ background: DIVISION_COLORS[index % DIVISION_COLORS.length] }} aria-hidden="true" />;
+  return <span className="division-dot" style={{ background: divisionColor(index) }} aria-hidden="true" />;
 }
 
 export function shortName(name: string): string {
@@ -319,7 +319,7 @@ export function HomePage({ snapshot }: PageProps) {
               const routeCount = snapshot.routes.filter((r) => routeInDivision(r, division)).length;
               const service = SERVICES.find((s) => s.division === division.name);
               return (
-                <li key={division.name} className="division" style={{ ["--accent" as string]: DIVISION_COLORS[i % DIVISION_COLORS.length] }}>
+                <li key={division.name} className="division" style={{ ["--accent" as string]: divisionColor(i) }}>
                   <p className="division__base">{divisionBaseLabel(division, fleet)} · {routeCount} of {snapshot.routes.length} routes</p>
                   <h3>{division.name}</h3>
                   {division.summary ? <p className="division__summary">{division.summary}</p> : null}
@@ -593,7 +593,7 @@ export function FleetPage({ snapshot }: PageProps) {
         {groups.map((group) => {
           const types = group.types.filter((t) => !baseFilter || baseFor(t.code) === baseFilter);
           if (!types.length) return null;
-          const accent = DIVISION_COLORS[group.index % DIVISION_COLORS.length]!;
+          const accent = divisionColor(group.index);
           return (
             <div key={group.title} className="fleet-group">
               <div className="fleet-group__head">

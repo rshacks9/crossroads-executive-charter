@@ -3,7 +3,7 @@ import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
 import { divisionBaseLabel, routeHref } from "./explore";
-import { DIVISION_COLORS } from "./LiveMap";
+import { divisionColor } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
@@ -72,7 +72,7 @@ export function ServicesPage({ snapshot }: PageProps) {
         const routes = snapshot.routes.filter((r) => routeInDivision(r, division));
         const destinations = new Set(routes.flatMap((r) => [r.from, r.to]).filter((icao) => icao !== "KTYQ" && icao !== "KIND"));
         return (
-          <section key={service.slug} id={`service-${service.slug}`} className="page service" style={{ ["--accent" as string]: DIVISION_COLORS[index % DIVISION_COLORS.length] }}>
+          <section key={service.slug} id={`service-${service.slug}`} className="page service" style={{ ["--accent" as string]: divisionColor(index) }}>
             <div className="service__grid">
               <div>
                 <p className="eyebrow">{divisionBaseLabel(division, snapshot.fleet)}</p>

@@ -345,6 +345,15 @@ main:focus { outline: none; }
 .legend { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--text-2); }
 .legend li { display: inline-flex; align-items: center; }
 .legend__dash { display: inline-block; width: 22px; border-top: 2px dashed var(--text-2); margin-right: 8px; }
+/* Route lines on the maps take their division colour from the theme. A CSS stroke beats the
+   attribute Leaflet writes, so switching the theme recolours them without a redraw. */
+.route--d0 { stroke: var(--div-0); }
+.route--d1 { stroke: var(--div-1); }
+.route--d2 { stroke: var(--div-2); }
+.route--d3 { stroke: var(--div-3); }
+.route--d4 { stroke: var(--div-4); }
+.route--d5 { stroke: var(--div-5); }
+.route-remaining, .route-casing { stroke: var(--text); }
 
 .reasons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 18px; counter-reset: reason; }
 .reasons li { counter-increment: reason; padding: 18px 0 0; border-top: 2px solid var(--text); }

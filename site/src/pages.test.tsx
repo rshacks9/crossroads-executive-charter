@@ -9,8 +9,9 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, StatsPage, TypePage } = await import("./explore-pages");
-const { FleetPage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
-const { HandbookPage, CareersPage } = await import("./info");
+const { DivisionDot, FleetPage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
+const { divisionColor } = await import("./LiveMap");
 const { findRoute, routeHref } = await import("./explore");
 const { routeDivision } = await import("./data");
 
@@ -133,6 +134,18 @@ describe("pages render from the snapshot", () => {
     for (const r of routes) expect(html).toContain(`href="${routeHref(r)}"`);
     expect(text(html)).toContain(divisions[routeDivision(routes[0]!, divisions)]!.name);
     expect(html).toContain('<span class="visually-hidden">to </span>');
+  });
+
+  it("takes division colours from the theme, so dots, accents and bars follow the toggle", () => {
+    expect([0, 1, 5, 6, 7, -1].map(divisionColor)).toEqual(["var(--div-0)", "var(--div-1)", "var(--div-5)", "var(--div-0)", "var(--div-1)", "var(--div-5)"]);
+    expect(renderToString(<DivisionDot index={2} />)).toContain('style="background:var(--div-2)"');
+    expect(renderToString(<HomePage snapshot={snapshot} />)).toContain("--accent:var(--div-0)");
+    for (const html of [
+      renderToString(<FleetPage snapshot={snapshot} />),
+      renderToString(<ServicesPage snapshot={snapshot} />),
+      renderToString(<TypePage snapshot={snapshot} code="C510" />),
+    ]) expect(html).toContain("--accent:var(--div-");
+    expect(renderToString(<StatsPage snapshot={snapshot} />)).toMatch(/background:var[(]--div-[0-5][)]/);
   });
 
   it("register buttons go to the airline's vAMSYS sign-in page while join_url is unset", async () => {
