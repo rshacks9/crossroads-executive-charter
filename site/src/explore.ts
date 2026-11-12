@@ -147,7 +147,7 @@ const trueHeading = (deg: number | null) => (deg == null ? "—" : `${String(Mat
  * the sorted id/reciprocal pair; strips keep the order of the end listed first.
  */
 export function runwayStrips(runways: readonly CrewRunway[]): RunwayStrip[] {
-  const byId = new Map(runways.map((r) => [r.id, r]));
+  const byId = new Map(runways.map((r): [string, CrewRunway] => [r.id, r]));
   const strips = new Map<string, RunwayStrip>();
   for (const r of runways) {
     const key = r.reciprocal ? [r.id, r.reciprocal].sort().join("/") : r.id;
