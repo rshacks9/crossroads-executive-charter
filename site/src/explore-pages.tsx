@@ -12,6 +12,7 @@ import {
   airportHref,
   airportSummary,
   briefingCard,
+  briefingRunways,
   buildSearchIndex,
   destinationBlurb,
   destinationGroups,
@@ -579,7 +580,7 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
   const onward = onwardLegs(snapshot.routes, route, reverse);
   const runwaysFor = (icao: string) => crew?.airports[icao]?.runways ?? [];
   const longestRunway = (icao: string) => runwaysFor(icao).reduce((m, r) => Math.max(m, r.length_ft ?? 0), 0);
-  const cardRunways = crew ? Object.fromEntries([route.from, route.to].map((i) => [i, runwaysFor(i).map((r) => ({ id: r.reciprocal ? `${r.id}/${r.reciprocal}` : r.id, length_ft: r.length_ft }))])) : undefined;
+  const cardRunways = briefingRunways(crew?.airports, [route.from, route.to]);
   return (
     <>
       <PageHeader eyebrow={`Route · ${d >= 0 ? divisions[d]!.name : "Schedule"}${route.kind === "cargo" ? " · cargo" : ""}`} title={`${key} · ${route.from} to ${route.to}`} lede={`${a?.name ?? route.from} to ${b?.name ?? route.to}. ${formatNumber(route.distance_nm)} nm great-circle, about ${formatDuration(route.duration_min)} block.`}>
@@ -802,7 +803,7 @@ export function ResourcesPage({ snapshot }: PageProps) {
   useEffect(() => setMeta(`Pilot resources · ${SITE}`, "Downloads for Crossroads pilots: route briefing cards, a generic flow card, the full schedule as CSV and links to vAMSYS, Pegasus and SimBrief."), []);
   const route = snapshot.routes.find((r) => routeKey(r) === pick);
   const sorted = useMemo(() => [...snapshot.routes].sort((a, b) => routeKey(a).localeCompare(routeKey(b), "en", { numeric: true })), [snapshot.routes]);
-  const cardRunways = crew && route ? Object.fromEntries([route.from, route.to].map((i) => [i, (crew.airports[i]?.runways ?? []).map((r) => ({ id: r.reciprocal ? `${r.id}/${r.reciprocal}` : r.id, length_ft: r.length_ft }))])) : undefined;
+  const cardRunways = route ? briefingRunways(crew?.airports, [route.from, route.to]) : undefined;
   return (
     <>
       <PageHeader eyebrow="Pilot resources" title="Everything for the flight deck" lede="Briefing cards built from the schedule, a generic flow card, the schedule as a spreadsheet and the tools we fly with. All of it is for flight simulation only." />

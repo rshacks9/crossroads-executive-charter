@@ -8,6 +8,7 @@ import {
   MORE_COUNTRIES,
   airportSummary,
   briefingCard,
+  briefingRunways,
   buildSearchIndex,
   defaultSimTypes,
   destinationBlurb,
@@ -477,6 +478,24 @@ describe("downloads and links", () => {
     expect(card).toContain("Fictional virtual airline");
     expect(card).toContain("18/36 (7,001 ft)");
     expect(card).toContain(`Runways ${route.to}: see charts`);
+  });
+
+  it("lists each runway once on the briefing card, lower-numbered end first, as the runway table does", () => {
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    const leg = snapshot.routes.find((r) => r.from === "KIND" && crew.airports[r.to]?.runways.length) ?? snapshot.routes.find((r) => r.from === "KIND")!;
+    const card = briefingCard(snapshot, leg, briefingRunways(crew.airports, [leg.from, leg.to]));
+    const line = card.split("\n").find((l) => l.startsWith("Runways KIND: ")) ?? "";
+    const strips = runwayStrips(crew.airports.KIND!.runways);
+    // crew.json has each KIND strip twice, once from each end; the card names it once.
+    expect(crew.airports.KIND!.runways.length).toBe(2 * strips.length);
+    expect(line.replace("Runways KIND: ", "").split(", ").map((s) => s.split(" ")[0])).toEqual(["05L/23R", "05R/23L", "14/32"]);
+    expect(line).not.toMatch(/23L[/]05R|23R[/]05L|32[/]14/);
+    for (const s of strips) expect(line).toContain(`${s.label} (${Math.round(s.length_ft!).toLocaleString("en-US")} ft)`);
+    for (const [icao, airport] of Object.entries(crew.airports)) {
+      expect(briefingRunways(crew.airports, [icao])?.[icao], icao).toHaveLength(runwayStrips(airport.runways).length);
+    }
+    expect(briefingRunways(null, ["KIND"])).toBeUndefined();
+    expect(briefingRunways(crew.airports, ["ZZZZ"])).toEqual({ ZZZZ: [] });
   });
 
   it("exports the schedule as CSV", () => {

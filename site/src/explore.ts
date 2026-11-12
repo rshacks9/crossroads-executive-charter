@@ -2,7 +2,7 @@
 // stats pages. Everything here is computed from snapshot.json plus the planning figures in
 // content.ts; nothing invents activity, members or real-world facts.
 
-import type { Airport, CrewRunway, Division, FleetType, Route, Snapshot } from "./data";
+import type { Airport, Crew, CrewRunway, Division, FleetType, Route, Snapshot } from "./data";
 import { formatDuration, formatNumber, routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, TOURS, baseFor } from "./content";
 import type { Tour } from "./content";
@@ -621,6 +621,15 @@ export function simbriefUrl(route: Pick<Route, "from" | "to" | "flight_number" |
   const number = (route.callsign ?? route.flight_number ?? "").replace(/^[A-Z]+/, "");
   const params = new URLSearchParams({ airline: "CRX", fltnum: number, type, orig: route.from, dest: route.to });
   return `https://www.simbrief.com/system/dispatch.php?${params.toString()}`;
+}
+
+/**
+ * The runways a briefing card lists at each airport: one entry per strip ("05R/23L") with its length,
+ * as the runway table shows them, although crew.json lists every strip once from each end.
+ */
+export function briefingRunways(airports: Crew["airports"] | null | undefined, icaos: readonly string[]): Record<string, { id: string; length_ft: number | null }[]> | undefined {
+  if (!airports) return undefined;
+  return Object.fromEntries(icaos.map((icao) => [icao, runwayStrips(airports[icao]?.runways ?? []).map((s) => ({ id: s.label, length_ft: s.length_ft }))]));
 }
 
 /** A plain-text briefing card for one route, for printing or keeping next to the simulator. */
