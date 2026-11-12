@@ -27,8 +27,9 @@ describe("theme toggle", () => {
     expect(html.match(/<meta name="theme-color"/g)).toHaveLength(2);
     expect(html).toContain(`<meta name="theme-color" media="(prefers-color-scheme: light)" content="${THEME_COLORS.light}" />`);
     expect(html).toContain(`<meta name="theme-color" media="(prefers-color-scheme: dark)" content="${THEME_COLORS.dark}" />`);
+    // Each value from its own block: the print reset repeats the light values, so a bare search would pass anyway.
     const css = read("./styles.css");
-    expect(css).toContain(`--ink: ${THEME_COLORS.light};`);
-    expect(css).toContain(`--ink: ${THEME_COLORS.dark};`);
+    expect(css.match(/^:root [{][^}]*?--ink: (#[0-9a-f]{6});/m)?.[1]).toBe(THEME_COLORS.light);
+    expect(css.match(/^:root\[data-theme="dark"\] [{][^}]*?--ink: (#[0-9a-f]{6});/m)?.[1]).toBe(THEME_COLORS.dark);
   });
 });

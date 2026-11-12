@@ -3,7 +3,7 @@
 // content.ts; nothing invents activity, members or real-world facts.
 
 import type { Airport, CrewRunway, Division, FleetType, Route, Snapshot } from "./data";
-import { formatDuration, routeDivision, routeInDivision } from "./data";
+import { formatDuration, formatNumber, routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, baseFor } from "./content";
 
 // ------------------------------------------------------------------ routing
@@ -127,7 +127,7 @@ export function servedAirports(snapshot: Pick<Snapshot, "routes" | "airports">):
 }
 
 /** The Destinations heading for countries with too few airports for a group of their own. */
-export const MORE_COUNTRIES = "More countries";
+export const MORE_COUNTRIES = "More countries and territories";
 
 /**
  * The Destinations index in groups: the United States first, then each country with at least `min`
@@ -459,7 +459,8 @@ export function buildSearchIndex(snapshot: Pick<Snapshot, "routes" | "airports" 
     entries.push({
       kind: "Route",
       title: `${routeKey(route)} ${route.from} → ${route.to}`,
-      subtitle: `${a?.name ?? route.from} to ${b?.name ?? route.to} · ${route.distance_nm ?? "?"} nm · ${formatDuration(route.duration_min)}`,
+      // No-break spaces keep "3,977 nm" and "2h 27m" whole when a phone wraps the line.
+      subtitle: `${a?.name ?? route.from} to ${b?.name ?? route.to} · ${route.distance_nm != null ? formatNumber(route.distance_nm) : "?"}\u00a0nm · ${formatDuration(route.duration_min).replace(" ", "\u00a0")}`,
       href: routeHref(route),
       terms: [route.callsign, route.flight_number, route.from, route.to, a?.name, b?.name, a?.iata, b?.iata, ...route.types, ...route.tags].filter(Boolean).join(" "),
     });

@@ -39,7 +39,8 @@ function Itinerary({ snapshot, legs }: { snapshot: Snapshot; legs: (typeof SERVI
               <span className="itinerary__facts">{shortName(names[leg.aircraft] ?? leg.aircraft)} · {formatNumber(route!.distance_nm)} nm · {formatDuration(route!.duration_min)}</span>
             </div>
             <p>{leg.note}</p>
-            <a className="text-link" href={`#/crew?route=${encodeURIComponent(leg.callsign)}&aircraft=${encodeURIComponent(leg.aircraft)}`}>Open the briefing<span className="visually-hidden"> for {leg.callsign}</span> <span aria-hidden="true">→</span></a>
+            {/* One inner span, so the flex link sets one ordinary space before the arrow. */}
+            <a className="text-link" href={`#/crew?route=${encodeURIComponent(leg.callsign)}&aircraft=${encodeURIComponent(leg.aircraft)}`}><span>Open the briefing<span className="visually-hidden"> for {leg.callsign}</span> <span aria-hidden="true">→</span></span></a>
           </li>
         ))}
       </ol>
@@ -348,7 +349,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             <h2>7. Rules of the road</h2>
             <div className="sop-grid">
               {SOP_RULES.map((s) => (
-                <div key={s.title} className="mini-card"><h3>{s.title}</h3><p>{s.body}</p>{s.link ? <p><a className="text-link" href={s.link.href} rel="noopener" target="_blank">{s.link.label}<span className="visually-hidden"> (opens in a new tab)</span> ↗</a></p> : null}</div>
+                <div key={s.title} className="mini-card"><h3>{s.title}</h3><p>{s.body}</p>{s.link ? <p><a className="text-link" href={s.link.href} rel="noopener" target="_blank">{s.link.label}&nbsp;↗<span className="visually-hidden"> (opens in a new tab)</span></a></p> : null}</div>
               ))}
             </div>
           </section>

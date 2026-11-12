@@ -13,7 +13,7 @@ import { themeColor, themeOverride } from "./theme";
 export const ROUTES = [
   { path: "", label: "Home", nav: false, description: "" },
   { path: "fleet", label: "Fleet", nav: true, description: "The whole Crossroads fleet, from the Citation Mustang to the A380 and 777F: planning range, seats, base and the simulator model for every type." },
-  { path: "routes", label: "Network", nav: true, description: "Interactive route explorer: click an airport to see its routes as great circles, with distance, block time and the aircraft that fly them." },
+  { path: "routes", label: "Network", nav: true, description: "Interactive route explorer: choose an airport to see its routes as great circles, with distance, block time and the aircraft that fly them." },
   { path: "destinations", label: "Destinations", nav: true, description: "Every airport on the Crossroads schedule." },
   { path: "services", label: "Services", nav: true, description: "Executive, Executive Charter, Group & Sports Charter and Cargo Charter divisions, with sample itineraries on real Crossroads routes." },
   { path: "plan", label: "Plan a charter", nav: true, description: "Flight-sim charter planning tool." },

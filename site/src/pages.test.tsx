@@ -111,7 +111,7 @@ describe("pages render from the snapshot", () => {
     const html = renderToString(<RoutesPage snapshot={snapshot} />);
     expect(text(html)).toContain("Escape to clear");
     expect(html).toContain('aria-label="Route explorer map" aria-describedby="explorer-keys"');
-    expect(html).toContain('<p class="fineprint kbd-hint" id="explorer-keys">Keyboard: Tab to the map, arrow keys to move between airports,');
+    expect(html).toContain('<p class="fineprint kbd-hint" id="explorer-keys">Keyboard: Tab to an airport on the map, arrow keys to move between airports,');
     expect(text(html)).toContain("Choose any airport on the map or in the list");
     expect(text(html)).not.toMatch(/click/i);
     for (const page of [html, renderToString(<DestinationsPage snapshot={snapshot} />), renderToString(<HomePage snapshot={snapshot} />), renderToString(<LivePage snapshot={snapshot} />)]) {

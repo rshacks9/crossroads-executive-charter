@@ -164,7 +164,7 @@ export const SERVICES: Service[] = [
     headline: "Executive: the light-jet heart of the airline",
     pitch: "Short-notice business flying from Indianapolis Executive, the way a Part 135 operator would run it: small jets, short taxis and a schedule built around meetings.",
     points: [
-      `${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Mustang to the Citation X`,
+      `${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Mustang to the Citation\u00a0X`,
       "Longitude, G650 and G700 at KIND for coast-to-coast and transatlantic trips",
       "Ski fields (Aspen, Vail) are off-limits to the Mustang and Premier",
       "Short hops under an hour for when you have one evening to fly",

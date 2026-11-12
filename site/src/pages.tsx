@@ -21,7 +21,7 @@ import type { NewsItem } from "./content";
 import { LiveMap, divisionColor } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
 import { ExplorerPanel, RouteTable } from "./explore-pages";
-import { airportHref, divisionBaseLabel, mapLegendKeys, networkStats, routeHref, typeHref } from "./explore";
+import { airportHref, divisionBaseLabel, jumpTo, mapLegendKeys, networkStats, routeHref, typeHref } from "./explore";
 import { numberWord } from "./html-facts";
 
 export interface PageProps {
@@ -329,7 +329,7 @@ export function HomePage({ snapshot }: PageProps) {
                   <h3>{division.name}</h3>
                   {division.summary ? <p className="division__summary">{division.summary}</p> : null}
                   <p className="division__types">{types.map((t) => <span key={t.code} className="chip">{shortName(t.name)}</span>)}</p>
-                  <a className="text-link" href={service ? `#/services?d=${service.slug}` : `#/routes?division=${encodeURIComponent(division.name)}`}>Sample itinerary<span className="visually-hidden">: {division.name}</span> <span aria-hidden="true">→</span></a>
+                  <a className="text-link" href={service ? `#/services?d=${service.slug}` : `#/routes?division=${encodeURIComponent(division.name)}`}><span>Sample itinerary<span className="visually-hidden">: {division.name}</span> <span aria-hidden="true">→</span></span></a>
                 </li>
               );
             })}
@@ -559,8 +559,9 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
         </p>
         {sim ? <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{sim}</p> : null}
         <p className="fleet-card__links">
-          <a className="text-link" href={typeHref(type.code)}>Specs and routes<span className="visually-hidden"> for the {type.name}</span> <span aria-hidden="true">→</span></a>
-          <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>On the map<span className="visually-hidden">: {type.name} routes</span> <span aria-hidden="true">→</span></a>
+          {/* Label, hidden words and arrow share one inner span, so the flex link sets one ordinary space before the arrow. */}
+          <a className="text-link" href={typeHref(type.code)}><span>Specs and routes<span className="visually-hidden"> for the {type.name}</span> <span aria-hidden="true">→</span></span></a>
+          <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}><span>On the map<span className="visually-hidden">: {type.name} routes</span> <span aria-hidden="true">→</span></span></a>
         </p>
         {type.image && type.image_attribution && !info?.livery ? (
           <p className="credit">Photo: {type.image_link ? <a href={type.image_link} rel="noopener">{type.image_attribution}</a> : type.image_attribution}</p>
@@ -669,13 +670,6 @@ export function RoutesPage({ snapshot }: PageProps) {
   const airportsServed = new Set(shown.flatMap((r) => [r.from, r.to])).size;
   const listCount = `${tableRoutes.length} ${tableRoutes.length === 1 ? "route" : "routes"}`;
 
-  // The list sits below the map: a button jumps there and moves focus to its heading.
-  const jumpToList = () => {
-    const heading = document.getElementById("route-list");
-    heading?.scrollIntoView({ block: "start" });
-    heading?.focus({ preventScroll: true });
-  };
-
   const chooseDivision = (name: string) => {
     setDivisionName(name);
     if (type && !snapshot.routes.some((r) => r.types.includes(type) && routeInDivision(r, divisions.find((d) => d.name === name)))) setType("");
@@ -723,7 +717,8 @@ export function RoutesPage({ snapshot }: PageProps) {
           <div><dt>Airports</dt><dd>{airportsServed}</dd></div>
           <div><dt>Longest</dt><dd>{longest ? `${formatNumber(longest)} nm` : "—"}</dd></div>
         </dl>
-        <button type="button" className="text-link text-link--button" onClick={jumpToList}>{`Jump to the ${listCount}`}</button>
+        {/* The list sits below the map: the button jumps there and moves focus to its heading. */}
+        <button type="button" className="text-link text-link--button" onClick={() => jumpTo(document.getElementById("route-list"))}>{`Jump to the ${listCount}`}</button>
         <h2 className="visually-hidden">Route explorer</h2>
         <div className="explorer">
           <div className="explorer__map">
@@ -743,7 +738,7 @@ export function RoutesPage({ snapshot }: PageProps) {
               markerRole="button"
             />
             <MapLegend snapshot={snapshot} routes={shown} />
-            <p className="fineprint kbd-hint" id="explorer-keys">Keyboard: Tab to the map, arrow keys to move between airports, Enter or Space to select, Escape to clear.</p>
+            <p className="fineprint kbd-hint" id="explorer-keys">Keyboard: Tab to an airport on the map, arrow keys to move between airports, Enter or Space to select, Escape to clear.</p>
           </div>
           <ExplorerPanel snapshot={snapshot} routes={shown} selected={airportInView} onSelect={setSelectedAirport} selectedRoute={selectedRoute} onRoute={setSelectedRoute} />
         </div>
@@ -832,7 +827,7 @@ export function PilotsPage({ snapshot }: PageProps) {
                 <h2>{step.title}</h2>
                 <p>{step.body}</p>
                 <ul className="ticks">{step.tips.map((t) => <li key={t}>{t}</li>)}</ul>
-                {step.link ? <a className="text-link" href={step.link.href} rel="noopener" target="_blank">{step.link.label}<span className="visually-hidden"> (opens in a new tab)</span> ↗</a> : null}
+                {step.link ? <a className="text-link" href={step.link.href} rel="noopener" target="_blank">{step.link.label}&nbsp;↗<span className="visually-hidden"> (opens in a new tab)</span></a> : null}
               </div>
             </li>
           ))}

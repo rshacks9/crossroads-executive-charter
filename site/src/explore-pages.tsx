@@ -146,6 +146,8 @@ export function RouteTable({ routes, snapshot, caption, focus, omitType }: { rou
   // Keyed on the routes themselves, not the array: callers filter afresh on every render.
   const setKey = routes.map(routeKey).join();
   const [paging, setPaging] = useState({ key: setKey, count: ROUTE_PAGE });
+  // A different set starts again at 25, also when an earlier set comes back (state adjusted in render).
+  if (paging.key !== setKey) setPaging({ key: setKey, count: ROUTE_PAGE });
   const wrap = useRef<HTMLDivElement>(null);
   const focusRow = useRef<number | null>(null);
   const ordered = useMemo(() => {

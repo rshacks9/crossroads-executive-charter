@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Crew, CrewRunway, Route, Snapshot } from "./data";
-import { routeDivision, routeInDivision } from "./data";
+import { formatNumber, routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import {
   COMFORT_SHARE,
@@ -330,6 +330,13 @@ describe("search", () => {
     const kinds = new Set(index.map((e) => e.kind));
     expect([...kinds].sort()).toEqual(["Aircraft", "Airport", "Page", "Route"]);
     expect(index.filter((e) => e.kind === "Route").length).toBe(snapshot.routes.length);
+  });
+
+  it("writes a route's distance in the pages' number style and keeps it and the block time whole", () => {
+    const route = snapshot.routes.find((r) => (r.distance_nm ?? 0) >= 1000 && (r.duration_min ?? 0) >= 60)!;
+    const entry = index.find((e) => e.href === routeHref(route))!;
+    expect(entry.subtitle).toContain(` · ${formatNumber(route.distance_nm)}\u00a0nm · `);
+    expect(entry.subtitle).toMatch(/ · [0-9]+h\u00a0[0-9]{2}m$/);
   });
 
   it("puts the airport first for an ICAO code", () => {
