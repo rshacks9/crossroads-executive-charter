@@ -482,7 +482,8 @@ export interface FuelPlan {
 
 export interface ApproachCard {
   runway: { identifier?: string; orientation?: { heading_true_deg?: number }; threshold_elevation_ft?: number; length_ft?: number; glide_path_deg?: number };
-  wind?: { wind_direction_true_deg: number; wind_speed_kt: number; components: WindComponents };
+  /** components is {"status": "unavailable"} when the METAR wind is variable or missing. */
+  wind?: { wind_direction_true_deg?: number; wind_speed_kt?: number; components: WindComponents | { status: string } };
   aircraft: { approach_speed_kt?: number; threshold_crossing_height_ft?: number };
   target_gates: { distance_to_threshold_nm: number; target_speed_kt?: number; height_above_threshold_ft?: number; altitude_ft_msl?: number }[];
 }
@@ -524,11 +525,29 @@ export function windText(wind: CrewMetar["wind"] | undefined): string {
   return `${dir} ${Math.round(wind.speed_kt)} kt${wind.gust_kt ? ` gusting ${Math.round(wind.gust_kt)}` : ""}`;
 }
 
-export function componentText(c: WindComponents | null | undefined): string {
-  if (!c) return "—";
+/** Components with numbers. crew.json writes {"status": "unavailable"} instead when the wind is variable or missing. */
+export function hasComponents(c: unknown): c is WindComponents {
+  if (!c || typeof c !== "object") return false;
+  const w = c as Partial<WindComponents>;
+  return typeof w.headwind_kt === "number" && typeof w.tailwind_kt === "number" && typeof w.crosswind_kt === "number";
+}
+
+export function componentText(c: WindComponents | { status: string } | null | undefined): string {
+  if (!hasComponents(c)) return "—";
   const along = c.tailwind_kt > 0 ? `${c.tailwind_kt} kt tail` : `${Math.max(0, c.headwind_kt)} kt head`;
   const across = c.crosswind_kt > 0 ? `${c.crosswind_kt} kt cross from ${c.crosswind_from}` : "no crosswind";
   return `${along}, ${across}`;
+}
+
+/**
+ * The wind on the approach runway: head or tail and cross components, or, when crew.json has none
+ * because the arrival's METAR wind is variable or missing, that said in words (never NaN).
+ */
+export function approachWindText(card: Pick<ApproachCard, "wind">, metarWind?: CrewMetar["wind"] | null): string {
+  if (card.wind && hasComponents(card.wind.components)) return componentText(card.wind.components);
+  if (metarWind && metarWind.speed_kt === 0) return "Calm";
+  if (metarWind?.variable) return `${windText(metarWind)}, no steady runway component`;
+  return "No wind data";
 }
 
 /** Weather-board order of the airports that are not VFR; anything else counts as no report. */

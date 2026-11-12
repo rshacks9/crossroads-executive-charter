@@ -241,7 +241,7 @@ def build_crew(
         "plans": plans,
         "approaches": approaches,
         "notes": {
-            "fuel": "Quick-look estimate from Kimi's fuel_planner with Crossroads planning profiles. Dispatch with SimBrief for real figures.",
+            "fuel": "Quick-look estimate from the Crossroads planning profiles. Dispatch with SimBrief for real figures.",
             "approach": f"{GLIDE_PATH_DEG:.0f}° glide path, {THRESHOLD_CROSSING_FT} ft threshold crossing, Vref + 5 kt. Simulation use only.",
             "runways": "Runway data from OurAirports (public domain). Preferred runway = most headwind, avoiding tailwind; longest runway when calm.",
         },

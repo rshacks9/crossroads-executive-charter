@@ -20,12 +20,14 @@ import {
   POINT_TO_POINT,
   progressPercent,
   relativeAge,
+  approachWindText,
   componentText,
   isCrew,
   kgToLb,
   loadCrew,
   weatherBoard,
   windText,
+  type ApproachCard,
   type Crew,
   type CrewAirport,
   type FuelPlan,
@@ -222,6 +224,22 @@ describe("crew briefings", () => {
       .toBe("9 kt head, 3 kt cross from left");
     expect(componentText({ headwind_kt: -5, tailwind_kt: 5, crosswind_kt: 0, crosswind_from: null } as unknown as WindComponents))
       .toBe("5 kt tail, no crosswind");
+  });
+
+  it("words the approach wind when crew.json has no runway components, never NaN", () => {
+    const none = { components: { status: "unavailable" } };
+    expect(componentText({ status: "unavailable" })).toBe("—");
+    expect(approachWindText({ wind: none }, { direction_deg: null, speed_kt: 5, variable: true })).toBe("VRB 5 kt, no steady runway component");
+    expect(approachWindText({ wind: none }, { direction_deg: null, speed_kt: 0, variable: true })).toBe("Calm");
+    expect(approachWindText({ wind: none }, null)).toBe("No wind data");
+    expect(approachWindText({}, undefined)).toBe("No wind data");
+    const steady: ApproachCard["wind"] = { wind_direction_true_deg: 230, wind_speed_kt: 10, components: { headwind_kt: 9, tailwind_kt: 0, crosswind_kt: 3, crosswind_from: "left" } };
+    expect(approachWindText({ wind: steady }, undefined)).toBe("9 kt head, 3 kt cross from left");
+    // Every approach card in crew.json reads as words or numbers.
+    const c = crew as Crew;
+    for (const [icao, cards] of Object.entries(c.approaches)) {
+      for (const card of Object.values(cards)) expect(approachWindText(card, c.airports[icao]?.metar?.wind), icao).not.toMatch(/NaN|undefined/);
+    }
   });
 
   it("puts the weather board's non-VFR airports first, worst first, and counts every airport once", () => {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import type { ApproachCard, Crew, CrewAirport, FuelPlan, Route, Snapshot } from "./data";
-import { componentText, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, weatherBoard, windText } from "./data";
+import type { ApproachCard, Crew, CrewAirport, CrewMetar, FuelPlan, Route, Snapshot } from "./data";
+import { approachWindText, componentText, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, weatherBoard, windText } from "./data";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -92,7 +92,7 @@ function FuelTable({ plan }: { plan: FuelPlan }) {
   );
 }
 
-function Approach({ card, icao }: { card: ApproachCard; icao: string }) {
+function Approach({ card, icao, wind }: { card: ApproachCard; icao: string; wind?: CrewMetar["wind"] | null }) {
   const rw = card.runway;
   return (
     <section className="approach">
@@ -107,7 +107,7 @@ function Approach({ card, icao }: { card: ApproachCard; icao: string }) {
       </div>
       <dl className="wx-facts">
         <div><dt>Approach speed</dt><dd>{card.aircraft.approach_speed_kt ? `${card.aircraft.approach_speed_kt} kt` : "—"}</dd></div>
-        <div><dt>Wind on runway</dt><dd>{card.wind ? componentText(card.wind.components) : "No wind data"}</dd></div>
+        <div><dt>Wind on runway</dt><dd>{approachWindText(card, wind)}</dd></div>
         <div><dt>Descent rate</dt><dd>{card.aircraft.approach_speed_kt ? `≈${formatNumber(Math.round(card.aircraft.approach_speed_kt * 5.3 / 10) * 10)} fpm (no wind)` : "—"}</dd></div>
       </dl>
       {card.target_gates.length ? (
@@ -256,7 +256,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
               <p className="fineprint">{crew.notes.fuel}</p>
             </section>
             <section>
-              {approach ? <Approach card={approach} icao={route.to} /> : <p className="muted">No approach card for this arrival.</p>}
+              {approach ? <Approach card={approach} icao={route.to} wind={crew.airports[route.to]?.metar?.wind} /> : <p className="muted">No approach card for this arrival.</p>}
               <p className="fineprint">{crew.notes.approach}</p>
             </section>
           </div>

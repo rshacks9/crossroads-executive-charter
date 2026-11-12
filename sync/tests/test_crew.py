@@ -55,6 +55,12 @@ class CrewBuildTests(unittest.TestCase):
         self.assertTrue(all(r["wind"] is None for r in kase["runways"]))
         self.assertIsNotNone(kase["preferred_runway"])
 
+    def test_public_notes_name_no_internal_tools(self):
+        notes = " ".join(self.crew["notes"].values())
+        self.assertIn("Crossroads planning profiles", self.crew["notes"]["fuel"])
+        for internal in ("Kimi", "kimi", "fuel_planner", "Jumpseat"):
+            self.assertNotIn(internal, notes)
+
     def test_approach_cards_have_glide_path_gates(self):
         card = self.crew["approaches"]["KTEB"]["C25C"]
         self.assertEqual(card["runway"]["identifier"], "24")
