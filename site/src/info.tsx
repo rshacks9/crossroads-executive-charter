@@ -3,6 +3,7 @@ import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision } from "./data";
 import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
 import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
+import { capital, numberWord } from "./html-facts";
 import { divisionColor } from "./LiveMap";
 import { DivisionDot, EventItem, JoinButton, Leg, NewsCard, PageHeader, SectionHead, shortName } from "./pages";
 import type { PageProps } from "./pages";
@@ -186,7 +187,7 @@ export function CareersPage({ snapshot }: PageProps) {
             </ol>
           </div>
         </div>
-        <SectionHead eyebrow="Tours & badges" title="Two tours in vAMSYS Activities" intro="Register for a tour under Activities in the vAMSYS pilot portal, then fly the legs in order. Finishing a tour earns its badge and bonus points." />
+        <SectionHead eyebrow="Tours & badges" title={`${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} in vAMSYS Activities`} intro="Register for a tour under Activities in the vAMSYS pilot portal, then fly the legs in order. Finishing a tour earns its badge and bonus points." />
         <ul className="tour-list">
           {TOURS.map((tour) => (
             <li key={tour.name} className="tour">
@@ -427,7 +428,7 @@ export function NewsPage({ snapshot }: PageProps) {
           {snapshot.events.length ? (
             <ul className="event-list">{snapshot.events.map((e) => <EventItem key={e.name + e.start} event={e} />)}</ul>
           ) : (
-            <p className="empty">No events are scheduled yet. Group flights and tours published in vAMSYS will show up here.</p>
+            <p className="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>
           )}
         </div>
       </section>

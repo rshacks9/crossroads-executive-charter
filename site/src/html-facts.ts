@@ -50,7 +50,8 @@ export function numberWord(n: number): string {
   return WORDS[n] ?? n.toLocaleString("en-US");
 }
 
-const capital = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
+/** The text with a capital first letter, for a number word that starts a sentence ("seven" becomes "Seven"). */
+export const capital = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 const plural = (n: number, one: string, many: string): string => (n === 1 ? one : many);
 const digits = (n: number, one: string, many: string): string => `${n.toLocaleString("en-US")} ${plural(n, one, many)}`;
 

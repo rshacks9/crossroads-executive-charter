@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { Snapshot } from "./data";
 import {
   DEFAULT_AIRLINE_NAME,
+  capital,
   countsFromSnapshot,
   escapeHtml,
   fillHtmlFacts,
@@ -57,6 +58,13 @@ describe("wording", () => {
   it("writes whole numbers up to twelve as words and larger ones as digits", () => {
     expect([0, 1, 4, 12].map(numberWord)).toEqual(["zero", "one", "four", "twelve"]);
     expect([13, 310, 1250].map(numberWord)).toEqual(["13", "310", "1,250"]);
+  });
+
+  it("capitalises a number word that starts a sentence", () => {
+    expect(capital(numberWord(7))).toBe("Seven");
+    expect(capital(numberWord(13))).toBe("13");
+    expect(capital("Two")).toBe("Two");
+    expect(capital("")).toBe("");
   });
 
   it("describes the site with the numbers it is given", () => {

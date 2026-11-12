@@ -10,12 +10,13 @@ vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage } = await import("./pages");
-const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
+const { HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, destinationGroups, findRoute, onwardLegs, routeHref, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, payloadTonnes, routeDivision, weatherBoard } = await import("./data");
 const { WeatherBoard } = await import("./crew");
-const { FLEET_INFO, SERVICES } = await import("./content");
+const { FLEET_INFO, KTYQ_TYPES, SERVICES, TOURS, baseFor } = await import("./content");
+const { capital, numberWord } = await import("./html-facts");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#x27;/g, "'").replace(/\s+/g, " ");
@@ -389,5 +390,17 @@ describe("pages render from the snapshot", () => {
     const resources = render(<ResourcesPage snapshot={snapshot} />);
     expect(resources.match(/<h3 class="h3"><a href="https:/g)).toHaveLength(3);
     expect(resources).not.toMatch(/<h2 class="h3"><a /);
+  });
+});
+
+describe("texts follow the data", () => {
+  it("counts the KTYQ types and the tours instead of typing them; the empty Events box points to the tours", () => {
+    expect(snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ")).toHaveLength(KTYQ_TYPES.length);
+    expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Mustang`);
+    const careers = renderToString(<CareersPage snapshot={snapshot} />);
+    expect(careers).toContain(`<h2>${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} in vAMSYS Activities</h2>`);
+    expect(careers.match(/<li class="tour">/g)).toHaveLength(TOURS.length);
+    const news = renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />);
+    expect(news).toContain('<p class="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>');
   });
 });
