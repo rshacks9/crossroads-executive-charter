@@ -1038,8 +1038,8 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 .tour { padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--signal); border-radius: var(--radius); background: var(--panel); display: grid; gap: 8px; }
 .tour h3 { font-size: 24px; }
 .tour__legs { margin: 4px 0 0; padding-left: 22px; display: grid; gap: 4px; font-size: 15px; }
-.tour__legs a { text-decoration: none; }
-.tour__legs a:hover { text-decoration: underline; }
+/* Tour legs are links, and look like it. */
+.tour__legs a { text-decoration: underline; }
 
 /* keyboard-focusable airport markers on explorer maps */
 .leaflet-container path.airport-marker:focus { outline: none; }
@@ -1047,3 +1047,14 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 @media (forced-colors: active) { .leaflet-container path.airport-marker:focus-visible { stroke: Highlight; filter: none; } }
 /* Keyboard help is left out on touch-only screens: by input type, not width, so a desktop zoomed to 400% keeps it. */
 @media (hover: none) and (pointer: coarse) { .kbd-hint { display: none; } }
+
+/* Touch targets on touch screens, by input type so narrow desktop windows keep their density: chips
+   of 36 px with an 8 px gap (a 44 px pitch), and 44 px for text links in lists and small buttons. */
+@media (pointer: coarse) {
+  .type-list, .explorer__types, .division__types { gap: 8px; }
+  .type-list a, .explorer__types .chip, a.chip--link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 10px; }
+  .suggestion__routes a, .home-numbers a, .tour__legs a { display: inline-flex; align-items: center; min-height: 44px; }
+  /* As a flex container the leg drops the space after its flight number; the gap stands in for it. */
+  .tour__legs a { column-gap: .25em; }
+  .toc a, .footer__cols a, .itinerary__leg .text-link, .button--small, .callout .button { min-height: 44px; }
+}
