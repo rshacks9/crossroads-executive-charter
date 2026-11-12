@@ -16,7 +16,7 @@ const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlig
 const { formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, weatherBoard, weeklyTime } = await import("./data");
 const { CrewPage, WeatherBoard } = await import("./crew");
 const { Footer } = await import("./App");
-const { FLEET_INFO, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
+const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -451,7 +451,7 @@ describe("pages render from the snapshot", () => {
 describe("texts follow the data", () => {
   it("counts the KTYQ types and the tours instead of typing them; the empty Events box points to the tours too", () => {
     expect(snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ")).toHaveLength(KTYQ_TYPES.length);
-    expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Piper M600 to the Citation`);
+    expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_JETS.length))} light and mid-size jets at KTYQ, from the Mustang to the Citation`);
     const careers = renderToString(<CareersPage snapshot={snapshot} />);
     expect(careers).toContain(`<h2>${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} to fly</h2>`);
     // One name for where the tours are (Events in Phoenix), and no badges: the vAMSYS Badges module is off.
@@ -682,22 +682,33 @@ describe("the weekly group flight", () => {
 });
 
 describe("the KTYQ base rule", () => {
-  // The Piper M600, a single-engine turboprop, is based at KTYQ. Copy that says what works from KTYQ
-  // says "light and mid-size aircraft" or names the M600; it never says "jets".
-  const JETS = /\bjets\b/i;
+  // KTYQ is where the light and mid-size jets fly from. The Piper M600 is listed there with the
+  // Executive division, but its only routes are its own hop between Westfield-Barnes and Hartford,
+  // so no sentence that says what works from KTYQ names it: the M600 gets a sentence of its own.
+  const M600 = /\bM600\b/;
   const KTYQ = /\b(KTYQ|Indianapolis Executive)\b/;
   // How the site words the base rule: what KTYQ takes, what works, lives or starts there, and
   // everything larger at KIND.
   const RULE = /everything (larger|bigger)|larger aircraft|base rules?|right base|\btakes\b|sized for|\b(work|works|live|lives|start|starts)\b/i;
-  const ruleSentences = (page: string) => page.split(/(?<=[.!?])\s+/).filter((s) => KTYQ.test(s) && RULE.test(s));
+  // Sentences within each block (paragraph, list item, cell, heading), so neighbouring cards never run into one sentence.
+  const BLOCK_END = /<\/(?:p|li|h[1-6]|dd|dt|td|th|caption|figcaption|summary|div|section|article|aside|header|footer|nav|ul|ol|dl|table|tr|blockquote)>/i;
+  const ruleSentences = (html: string) =>
+    html.split(BLOCK_END).flatMap((block) => text(block).trim().split(/(?<=[.!?])\s+/)).filter((s) => KTYQ.test(s) && RULE.test(s));
+  const touchesKtyq = (code: string) => snapshot.routes.filter((r) => r.types.includes(code) && (r.from === "KTYQ" || r.to === "KTYQ"));
 
-  it("is the base of the M600, which is not a jet", () => {
+  it("is where the jets fly from; the M600 listed there flies only its own hop", () => {
     expect(baseFor("M600")).toBe("KTYQ");
-    expect(KTYQ_TYPES).toContain("M600");
+    expect([...KTYQ_JETS]).toEqual(KTYQ_TYPES.filter((code) => code !== "M600"));
+    for (const code of KTYQ_JETS) {
+      expect(touchesKtyq(code).length, code).toBeGreaterThan(0);
+      expect(FLEET_INFO[code]?.role, code).not.toMatch(/turboprop/i);
+    }
+    expect(touchesKtyq("M600")).toHaveLength(0);
+    expect(snapshot.routes.filter((r) => r.types.includes("M600")).map((r) => `${r.callsign} ${r.from}-${r.to}`)).toEqual(["CRX751 KBAF-KBDL", "CRX752 KBDL-KBAF"]);
     expect(FLEET_INFO.M600!.role).toMatch(/turboprop/i);
   });
 
-  it("never says jets where a page says what works from KTYQ", () => {
+  it("never names the M600 where a page says what works from KTYQ", () => {
     const pages: [string, string][] = [
       ["home", renderToString(<HomePage snapshot={snapshot} />)],
       ["fleet", renderToString(<FleetPage snapshot={snapshot} />)],
@@ -713,33 +724,34 @@ describe("the KTYQ base rule", () => {
     ];
     const stating: string[] = [];
     for (const [name, html] of pages) {
-      for (const sentence of ruleSentences(text(html))) {
+      for (const sentence of ruleSentences(html)) {
         stating.push(name);
-        expect(sentence, name).not.toMatch(JETS);
+        expect(sentence, name).not.toMatch(M600);
       }
     }
     // The scan finds the rule wherever the site states it, so a page cannot pass by saying it differently.
     for (const name of ["home", "fleet", "pilots", "handbook", "about", "news", "resources", "plan"]) expect(stating, name).toContain(name);
     // It catches the wording it replaced.
     for (const old of [
-      "Light and mid-size jets (up to Citation X size) start and end at Indianapolis Executive, KTYQ.",
-      "KTYQ takes jets up to Citation X size.",
-      "Light and mid-size jets live at Indianapolis Executive, everything larger at Indianapolis International.",
-      "Base rules still apply when booking: light and mid jets from KTYQ, larger aircraft from KIND.",
-      "Indianapolis Executive (KTYQ), north of the city, is a business-aviation field sized for light and mid-size jets.",
-    ]) expect(ruleSentences(old).some((s) => JETS.test(s)), old).toBe(true);
+      "Light and mid-size aircraft, from the Piper M600 to the Citation X, start and end at Indianapolis Executive, KTYQ.",
+      "KTYQ takes light and mid-size aircraft, from the Piper M600 to the Citation X.",
+      "Light and mid-size aircraft (Piper M600, Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ.",
+    ]) expect(ruleSentences(`<p>${old}</p>`).some((s) => M600.test(s)), old).toBe(true);
   });
 
-  it("names the M600 or says light and mid-size aircraft in the rule, its NOTAM and the Executive copy", () => {
+  it("says where the M600 flies wherever the rule is set out in full", () => {
     const rule = SOP_RULES.find((r) => r.title === "Right base, right aircraft");
     const notam = NEWS.find((n) => n.kind === "NOTAM" && n.title.startsWith("Base rule"));
     const executive = snapshot.airline.divisions.find((d) => d.base === "KTYQ");
     const service = SERVICES.find((s) => s.division === executive?.name);
     if (!rule || !notam || !executive || !service) throw new Error("the base rule, its NOTAM or the Executive division is missing");
-    const copy = [rule.body, notam.title, notam.body, executive.summary ?? "", service.pitch, ...service.points.filter((p) => KTYQ.test(p))];
-    for (const line of copy) expect(line).not.toMatch(JETS);
-    for (const line of [rule.body, notam.title, notam.body]) expect(line).toMatch(/light and mid-size aircraft/i);
-    for (const line of [rule.body, notam.body, executive.summary ?? ""]) expect(line).toContain("Piper M600");
+    const faq = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    const handbook = text(renderToString(<HandbookPage snapshot={snapshot} />));
+    for (const copy of [rule.body, notam.body, executive.summary ?? "", service.points.join(" | "), faq, handbook]) {
+      expect(copy).toMatch(/Piper M600[^.|]* between Westfield-Barnes and Hartford/);
+    }
+    expect(handbook).toContain("The Piper M600 flies only its own pair, CRX751/752 between Westfield-Barnes and Hartford");
+    for (const line of [notam.title, service.pitch]) expect(line).toMatch(/\bjets\b/);
   });
 });
 

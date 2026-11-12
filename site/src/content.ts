@@ -4,8 +4,15 @@
 
 import { capital, numberWord } from "./html-facts";
 
-/** Aircraft that work out of Indianapolis Executive (KTYQ). Everything else is based at KIND. */
+/**
+ * The types based at Indianapolis Executive (KTYQ): the light and mid-size jets that fly from it, and
+ * the Piper M600, listed there with the Executive division although its only routes are its own hop
+ * between Westfield-Barnes (KBAF) and Hartford (KBDL), CRX751/752. Everything else is based at KIND.
+ */
 export const KTYQ_TYPES = ["M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"] as const;
+
+/** The KTYQ types that fly from KTYQ: all but the Piper M600. Copy that says what works from KTYQ means these. */
+export const KTYQ_JETS: readonly string[] = KTYQ_TYPES.filter((code) => code !== "M600");
 
 export function baseFor(code: string): "KTYQ" | "KIND" {
   return (KTYQ_TYPES as readonly string[]).includes(code) ? "KTYQ" : "KIND";
@@ -168,10 +175,11 @@ export const SERVICES: Service[] = [
     division: "Executive",
     slug: "executive",
     headline: "Executive: the light-jet heart of the airline",
-    pitch: "Short-notice business flying from Indianapolis Executive, the way a Part 135 operator would run it: light aircraft, short taxis and a schedule built around meetings.",
+    pitch: "Short-notice business flying from Indianapolis Executive, the way a Part 135 operator would run it: light jets, short taxis and a schedule built around meetings.",
     points: [
-      `${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Piper M600 to the Citation\u00a0X`,
+      `${capital(numberWord(KTYQ_JETS.length))} light and mid-size jets at KTYQ, from the Mustang to the Citation\u00a0X`,
       "Longitude, G650 and G700 at KIND for coast-to-coast and transatlantic trips",
+      "The Piper M600 turboprop on its own hop between Westfield-Barnes and Hartford",
       "Ski fields (Aspen, Vail) are off-limits to the Mustang and Premier",
       "Short hops under an hour for when you have one evening to fly",
     ],
@@ -267,7 +275,7 @@ export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[
   { block: "CRX401–499", use: "Executive, large-cabin jets (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX501–599", use: "International and long-range (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX601–699", use: "Cargo charter", base: "KIND" },
-  { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs); CRX751/752 is the Piper M600's", base: "KTYQ" },
+  { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs), and CRX751/752, the Piper M600's own hop between Westfield-Barnes and Hartford", base: "KTYQ" },
 ];
 
 export const COST_INDEX: { group: string; types: string; guidance: string }[] = [
@@ -295,7 +303,7 @@ export const LANDING_RATES: { band: string; label: string; tone: "good" | "ok" |
 ];
 
 export const SOP_RULES: { title: string; body: string; link?: { href: string; label: string } }[] = [
-  { title: "Right base, right aircraft", body: "Light and mid-size aircraft, from the Piper M600 to the Citation X, start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. Book a route that matches the aircraft." },
+  { title: "Right base, right aircraft", body: "Light and mid-size jets, from the Mustang to the Citation X, start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. The Piper M600 turboprop flies only its own hop, between Westfield-Barnes and Hartford. Book a route that matches the aircraft." },
   { title: "Gate to gate with Pegasus", link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" }, body: "Start Pegasus before engine start and leave it running until the engines are off at the gate. No slew, no time acceleration, no in-flight refuelling. If real life calls, pause and say so in your PIREP comments." },
   { title: "Stabilised or go around", body: "On speed, on path and configured by 1,000 ft above the airport in cloud and 500 ft in visual conditions. If you aren't, go around. Nobody is penalised for a go-around." },
   { title: "Speed and altitude discipline", body: "250 kt below 10,000 ft in the US unless ATC says otherwise. Respect published SID and STAR restrictions and any noise abatement procedure published for the airport." },
@@ -418,8 +426,8 @@ export const NEWS: NewsItem[] = [
   {
     date: "2026-11-10",
     kind: "NOTAM",
-    title: "Base rule: KTYQ for light and mid-size aircraft, KIND for everything larger",
-    body: "Light and mid-size aircraft, from the Piper M600 to the Citation X, work from Indianapolis Executive (KTYQ). The Longitude, Gulfstreams, airliners and freighters work from Indianapolis International (KIND). Routes in vAMSYS only offer the aircraft that fit.",
+    title: "Base rule: KTYQ for light and mid-size jets, KIND for everything larger",
+    body: "Light and mid-size jets, from the Mustang to the Citation X, work from Indianapolis Executive (KTYQ). The Longitude, Gulfstreams, airliners and freighters work from Indianapolis International (KIND). The Piper M600 turboprop flies only its own hop, between Westfield-Barnes and Hartford. Routes in vAMSYS only offer the aircraft that fit.",
     link: { href: "#/handbook", label: "Read the handbook" },
   },
   {

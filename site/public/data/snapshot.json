@@ -1,13 +1,13 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-12T14:52:02Z",
+ "generated_at": "2026-11-12T19:14:15Z",
  "unavailable": [],
  "airline": {
   "divisions": [
    {
     "name": "Executive",
-    "summary": "Light and mid-size aircraft from Indianapolis Executive, from the Piper M600 turboprop to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
+    "summary": "Light and mid-size jets from Indianapolis Executive, Mustang to Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget. The Piper M600 flies its own hop between Westfield-Barnes and Hartford.",
     "base": "KTYQ",
     "fleets": [
      "M600",

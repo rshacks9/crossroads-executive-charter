@@ -360,7 +360,7 @@ export function HomePage({ snapshot }: PageProps) {
         <ul className="reasons">
           <li>
             <h3>{`${capital(countWords(baseList.length, "airport", "airports"))}, real logic`}</h3>
-            <p>Light and mid-size aircraft, from the Piper M600 to the Citation X, work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
+            <p>Light and mid-size jets, from the Mustang to the Citation X, work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
           </li>
           <li>
             <h3>Business jet to freighter</h3>
@@ -513,7 +513,7 @@ function routeKey(route: { callsign: string | null; flight_number: string | null
 
 function icaoNote(baseList: string[]): string {
   return baseList.includes("KTYQ") && baseList.includes("KIND")
-    ? "KTYQ takes light and mid-size aircraft, from the Piper M600 to the Citation X. KIND takes the Longitude, Gulfstreams, airliners and freighters."
+    ? "KTYQ takes light and mid-size jets, from the Mustang to the Citation X. KIND takes the Longitude, Gulfstreams, airliners and freighters."
     : "All operations from Indianapolis.";
 }
 
@@ -852,7 +852,7 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
   {
     title: "Book a route",
     tool: "vAMSYS Phoenix",
-    body: "In Phoenix, book a route that departs from your current airport and lists your aircraft. Light and mid-size aircraft fly from KTYQ, everything larger from KIND. To start somewhere else, use Jumpseat in Phoenix first. Never reposition the aircraft in the simulator.",
+    body: "In Phoenix, book a route that departs from your current airport and lists your aircraft. Light and mid-size jets fly from KTYQ, everything larger from KIND. The Piper M600 flies only its own hop, between Westfield-Barnes (KBAF) and Hartford (KBDL). To start somewhere else, use Jumpseat in Phoenix first. Never reposition the aircraft in the simulator.",
     tips: [
       "Book before you fly: without a booking, a flight can't be added to your logbook afterwards",
       "A booking stays valid for 24 hours",
@@ -932,7 +932,7 @@ export function PilotsPage({ snapshot }: PageProps) {
     ...(defaults.length ? [{ q: "Do I need add-on aircraft?", a: addOnAnswer(snapshot, defaults) }] : []),
     { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, which works with MSFS 2020 and 2024, X-Plane 10, 11 and 12, Prepar3D, FSX and FS2004 (the vAMSYS Pegasus guide keeps the current list). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
     { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },
-    { q: "Where does each flight start?", a: "Light and mid-size aircraft (Piper M600, Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
+    { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. The Piper M600 flies only its own hop, between Westfield-Barnes and Hartford." },
     { q: "Do I have to fly on VATSIM?", a: `Online or offline, your choice. If you fly online, use your CRX callsign, put ${VATSIM_REMARKS} in your flight plan remarks and follow the VATSIM Code of Conduct. Among other things it says “Pilots shall monitor their flights at all times” (B3(a)) and “Only unaltered speech is permitted to be transmitted” (A14(d)).` },
     { q: "Is this a real airline?", a: "No. Crossroads Executive & Charter is a fictional virtual airline for flight simulation. It doesn't sell flights and isn't connected to any real operator." },
   ];

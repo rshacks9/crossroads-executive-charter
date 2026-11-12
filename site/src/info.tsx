@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { Rank, Snapshot } from "./data";
 import { formatDuration, formatNumber, hashParam, routeInDivision, weeklyTime } from "./data";
-import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
+import { COST_INDEX, FLEET_INFO, FLIGHT_NUMBER_BLOCKS, FUEL_POLICY, KTYQ_JETS, LANDING_RATES, NEWS, PEGASUS_URL, SERVICES, SOP_RULES, TOURS, baseFor } from "./content";
 import { divisionBaseLabel, jumpTo, routeHref, typeHref } from "./explore";
 import { capital, countWords, numberWord } from "./html-facts";
 import { divisionColor } from "./LiveMap";
@@ -235,7 +235,7 @@ const HANDBOOK_CONTENTS: [id: string, label: string][] = [
 
 export function HandbookPage({ snapshot }: PageProps) {
   useScrollToParam("s", "hb-");
-  const ktyq = snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ").map((f) => shortName(f.name));
+  const ktyq = snapshot.fleet.filter((f) => KTYQ_JETS.includes(f.code)).map((f) => shortName(f.name));
   return (
     <>
       <PageHeader eyebrow="Pilot handbook" title="Standard operating procedures" lede="How we fly at Crossroads. It's short on purpose: the aircraft manuals and SimBrief cover the rest. A shorter version is in the vAMSYS pilot portal under Documents." />
@@ -306,14 +306,14 @@ export function HandbookPage({ snapshot }: PageProps) {
             <div className="two-up">
               <div className="mini-card">
                 <h3>KTYQ · Indianapolis Executive</h3>
-                <p>Light and mid-size aircraft up to Citation X size: {ktyq.join(", ")}.</p>
+                <p>Light and mid-size jets up to Citation X size: {ktyq.join(", ")}.</p>
               </div>
               <div className="mini-card">
                 <h3>KIND · Indianapolis International</h3>
                 <p>Everything bigger: the Longitude, Gulfstreams, E-Jets, 757, Airbus VIP jets and all freighters.</p>
               </div>
             </div>
-            <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton, Teterboro–Zurich, Shannon–London City, Van Nuys–Honolulu, and CRX701-series light-jet legs such as Teterboro–Miami Executive, Morristown–Nantucket and Santa Monica–Las Vegas). Fly them as positioning or one-way trips.</p>
+            <p>A few executive legs run point-to-point away from base (Teterboro–Boca Raton, Hanscom–Nantucket, Dallas–Van Nuys, Teterboro–Luton, Teterboro–Zurich, Shannon–London City, Van Nuys–Honolulu, and CRX701-series light-jet legs such as Teterboro–Miami Executive, Morristown–Nantucket and Santa Monica–Las Vegas). Fly them as positioning or one-way trips. The Piper M600 flies only its own pair, CRX751/752 between Westfield-Barnes and Hartford: jumpseat to Westfield-Barnes (KBAF) or Hartford (KBDL) in Phoenix to fly it.</p>
           </section>
 
           <section id="hb-fuel" className="hb-section" tabIndex={-1}>
@@ -374,7 +374,7 @@ export function AboutPage({ snapshot }: PageProps) {
             <h2>The idea</h2>
             <p>Most virtual airlines copy a real carrier's schedule. We wanted something sim pilots rarely get: the variety of a charter operator. One week you're in a Citation Mustang taking a client to Teterboro. The next you're in a 757 with a team bound for a playoff game, or in a 777F heading for Leipzig overnight.</p>
             <h2>Why Indianapolis</h2>
-            <p>Indianapolis suits both halves of the operation. Indianapolis Executive (KTYQ), north of the city, is a business-aviation field sized for light and mid-size aircraft. Indianapolis International (KIND), south-west of downtown, has the long runways and the air-cargo heritage for widebodies and freighters. Splitting the fleet between them is how a real operator would do it, and it makes every flight start somewhere sensible.</p>
+            <p>Indianapolis suits both halves of the operation. Indianapolis Executive (KTYQ), north of the city, is a business-aviation field sized for light and mid-size jets. Indianapolis International (KIND), south-west of downtown, has the long runways and the air-cargo heritage for widebodies and freighters. Splitting the fleet between them is how a real operator would do it, and it makes every flight start somewhere sensible.</p>
             <h2>What we are, and aren't</h2>
             <p>Crossroads Executive & Charter is a <strong>fictional virtual airline</strong> for flight simulation. It opened on vAMSYS in November 2026. We don't sell flights, we aren't an air carrier or charter operator, and we have no connection to any real company. The aircraft types are named only so pilots know which simulator model to fly.</p>
             <h2>How the site works</h2>

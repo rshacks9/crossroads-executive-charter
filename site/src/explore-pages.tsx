@@ -739,7 +739,7 @@ export function PlanPage({ snapshot }: PageProps) {
                 {!anyScheduled && pair.length ? <p className="fineprint">The scheduled routes above are flown by other types than the best match.</p> : null}
               </div>
             </div>
-            <p className="fineprint">Matches use rounded Crossroads planning ranges and the seat or payload figures in vAMSYS. Block estimates are still-air (cruise speed plus 25 minutes). Base rules still apply when booking: light and mid-size aircraft from KTYQ, everything larger from KIND. Always dispatch with SimBrief.</p>
+            <p className="fineprint">Matches use rounded Crossroads planning ranges and the seat or payload figures in vAMSYS. Block estimates are still-air (cruise speed plus 25 minutes). Base rules still apply when booking: light and mid-size jets from KTYQ, everything larger from KIND. The Piper M600 flies only its own hop, between Westfield-Barnes and Hartford. Always dispatch with SimBrief.</p>
           </>
         )}
       </section>
@@ -789,7 +789,7 @@ AFTER LANDING
 
 /** The handbook in brief on Resources. The section heading counts this list. */
 const SOP_BRIEF: ReactNode[] = [
-  <><strong>Right base, right aircraft.</strong> Light and mid-size aircraft at KTYQ, everything larger at KIND.</>,
+  <><strong>Right base, right aircraft.</strong> Light and mid-size jets at KTYQ, everything larger at KIND. The Piper M600 flies only its own hop, between Westfield-Barnes and Hartford.</>,
   <><strong>Gate to gate with <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</strong> No slew, time acceleration or in-flight refuelling.</>,
   <><strong>45 minutes final reserve</strong> on every flight. Dispatch with SimBrief.</>,
   <><strong>Stabilised or go around:</strong> 1,000 ft in cloud, 500 ft visual.</>,
