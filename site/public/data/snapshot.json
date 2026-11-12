@@ -1,7 +1,7 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-12T04:30:40Z",
+ "generated_at": "2026-11-12T05:49:32Z",
  "unavailable": [],
  "airline": {
   "divisions": [
@@ -66,7 +66,7 @@
    "GA7C": "Gulfstream G700 (community mod)",
    "BCS3": "Synaptic Simulations A220 (add-on)",
    "A346": "Aerosoft A340-600 Professional (add-on)",
-   "A388": "iniBuilds A380",
+   "A388": "iniBuilds A380 (add-on)",
    "E175": "FlightSim Studio E175 (add-on)",
    "E190": "FlightSim Studio E190 (add-on)",
    "B752": "Bluebird Simulations 757-200 (add-on)",
