@@ -313,7 +313,8 @@ main:focus { outline: none; }
 .credit { font-size: 13px; color: var(--text-2); }
 
 /* ------------------------------------------------------------- hubs, steps, events, tags */
-.hub-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+/* auto-fit: two hub cards share the column instead of leaving an empty third track. */
+.hub-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
 .hub { background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--signal); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 6px; }
 .hub h3 { font-size: 28px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .hub__airports { font-weight: 600; }
@@ -1013,7 +1014,8 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .stat-tiles__label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); }
 .stat-tiles__value { font: 700 36px/1.05 var(--display); text-decoration: none; font-variant-numeric: tabular-nums; }
 a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: var(--signal); }
-.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+/* Each card keeps its own height, so a short one does not open with a blank area beside a tall one. */
+.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
 @media (max-width: 900px) { .stats-grid { grid-template-columns: 1fr; } }
 .stats-card { padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
 .bars { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
@@ -1035,9 +1037,10 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 
 /* tours */
 .tour-list { list-style: none; margin: 0 0 24px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-.tour { padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--signal); border-radius: var(--radius); background: var(--panel); display: grid; gap: 8px; }
+/* Rows stay packed at the top when a card is stretched to its row, so legs keep one spacing. */
+.tour { padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--signal); border-radius: var(--radius); background: var(--panel); display: grid; gap: 8px; align-content: start; }
 .tour h3 { font-size: 24px; }
-.tour__legs { margin: 4px 0 0; padding-left: 22px; display: grid; gap: 4px; font-size: 15px; }
+.tour__legs { margin: 4px 0 0; padding-left: 22px; display: grid; gap: 4px; font-size: 15px; align-content: start; }
 /* Tour legs are links, and look like it. */
 .tour__legs a { text-decoration: underline; }
 
