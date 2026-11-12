@@ -33,8 +33,39 @@ const PAGES = [
   ["airport-new", "airport/KBAF"], ["route-new", "route/CRX749"], ["route-p2p", "route/CRX445"],
   ["type-new", "fleet/M600"], ["route-short", "route/CRX751"],
 ];
-// The dark theme is checked on the pages with the most distinct components, at phone and desktop widths.
-const DARK = new Set(["home", "fleet", "type", "routes", "airport", "crew", "handbook"]);
+// The dark theme is checked on the pages with the most distinct components, at phone and desktop widths,
+// including News (the NOTAM and news kind chips) and Plan (the fit chips).
+const DARK = new Set(["home", "fleet", "type", "routes", "airport", "crew", "handbook", "news", "plan"]);
+
+// The preview has no flights in the air or landed, so the "Flown by automation" label would never be
+// seen. Home and Live are captured once more, at phone and desktop widths in both themes, with two
+// flights in the air and two landed (one of each labelled) put into the snapshot the page loads.
+// Test data for these captures only; nothing here is deployed.
+const LABELLED = [["home-labelled", ""], ["live-labelled", "live"]];
+const SNAPSHOT_REQUEST = /\/data\/snapshot\.json(\?.*)?$/;
+
+function withLabelledFlights(snapshot) {
+  const at = (minutes) => new Date(Date.now() + minutes * 60000).toISOString().replace(/\.\d{3}Z$/, "Z");
+  const inAir = (callsign, automation, to, aircraft, lat, lon) => ({
+    callsign, flight_number: callsign.slice(3), from: "KTYQ", to, phase: "Cruise", aircraft, aircraft_name: null,
+    registration: null, pilot: null, rank: null, network: "OFFLINE", lat, lon, altitude_ft: 24000, groundspeed_kt: 410,
+    heading: 300, route_nm: 150, remaining_nm: 60, eta: at(12), automation,
+  });
+  const landed = (callsign, automation, from, to, aircraft, minutes) => ({
+    callsign, flight_number: callsign.slice(3), from, to, aircraft, landing_rate: -97, duration_min: 40, landed: at(-minutes), automation,
+  });
+  return {
+    ...snapshot,
+    generated_at: at(0),
+    live: [inAir("CRX115", true, "KMDW", "PRM1", 41.3, -87.2), inAir("CRX101", false, "KTEB", "C25C", 40.9, -80.4)],
+    recent_flights: [landed("CRX116", true, "KMDW", "KTYQ", "C510", 35), landed("CRX121", false, "KTYQ", "KBDL", "C750", 120)],
+  };
+}
+
+async function injectLabelledFlights(route) {
+  const response = await route.fetch();
+  await route.fulfill({ response, json: withLabelledFlights(await response.json()) });
+}
 
 /**
  * Runs in the page: layout facts that a screenshot review can miss. Overflow is measured against
@@ -321,11 +352,12 @@ async function main() {
   for (const vp of VIEWPORTS) {
     for (const theme of ["light", "dark"]) {
       if (theme === "dark" && vp.key === "wide") continue;
-      const context = await browser.newContext({
+      const options = {
         viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.deviceScaleFactor,
         isMobile: !!vp.isMobile, hasTouch: !!vp.hasTouch, colorScheme: theme, reducedMotion: "reduce",
         locale: "en-US", timezoneId: "America/Indiana/Indianapolis",
-      });
+      };
+      const context = await browser.newContext(options);
       for (const p of pages) {
         if (theme === "dark" && !DARK.has(p[0])) continue;
         const rec = await capture(context, vp, theme, p);
@@ -334,6 +366,15 @@ async function main() {
       }
       if (theme === "light") results.push(await interactions(context, vp));
       await context.close();
+      if (vp.key === "wide") continue;
+      const labelled = await browser.newContext(options);
+      await labelled.route(SNAPSHOT_REQUEST, injectLabelledFlights);
+      for (const p of LABELLED) {
+        const rec = await capture(labelled, vp, theme, p);
+        results.push(rec);
+        console.log(`${rec.id}: ${rec.error ? "ERROR " + rec.error : `${rec.slices} slices, overflow ${rec.overflowX}, axe ${rec.axe.length}`}`);
+      }
+      await labelled.close();
     }
   }
   await sheets(browser, results).catch((e) => console.error(`sheets failed: ${e}`));
