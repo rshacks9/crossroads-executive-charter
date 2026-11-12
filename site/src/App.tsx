@@ -204,12 +204,14 @@ export function App() {
       <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>Skip to content</a>
       <header ref={masthead} className={"masthead" + (menuOpen ? " masthead--open" : "")}>
         <div className="masthead__inner">
-          <a className="wordmark" href="#/" aria-label={`${airline?.name ?? "Crossroads Executive & Charter"} home`}>
+          {/* Named by its visible text, with "home" for screen readers ("Crossroads Executive & Charter, home"). */}
+          <a className="wordmark" href="#/">
             <Mark />
             <span className="wordmark__text">
-              <strong>Crossroads</strong>
+              <strong>Crossroads</strong>{" "}
               <small>Executive &amp; Charter</small>
             </span>
+            <span className="visually-hidden">, home</span>
           </a>
           <div className="masthead__tools">
             <button type="button" className="search-button" onClick={() => setSearchOpen(true)} aria-label="Search routes, airports and aircraft" aria-keyshortcuts="/ Control+K" disabled={!snapshot}>
@@ -318,12 +320,13 @@ export function App() {
       <footer className="footer">
         <div className="footer__inner">
           <div className="footer__brand">
-            <a className="wordmark" href="#/" aria-label="Home">
+            <a className="wordmark" href="#/">
               <Mark />
               <span className="wordmark__text">
-                <strong>Crossroads</strong>
+                <strong>Crossroads</strong>{" "}
                 <small>Executive &amp; Charter</small>
               </span>
+              <span className="visually-hidden">, home</span>
             </a>
             <p>Executive and charter flying from the Crossroads of America. Indianapolis Executive (KTYQ) and Indianapolis International (KIND).</p>
           </div>
