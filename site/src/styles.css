@@ -267,6 +267,8 @@ main:focus { outline: none; }
 .filters input, .filters select { min-height: 48px; padding: 0 12px; border: 1.5px solid var(--field-line); border-radius: var(--radius); background: var(--panel); font: 400 17px var(--body); color: var(--text); width: 100%; }
 .filters input:focus, .filters select:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
 .filters__count { color: var(--text-2); padding-bottom: 12px; }
+/* Placeholders in every field at full secondary-text strength (browsers fade them by default). */
+::placeholder { color: var(--text-2); opacity: 1; }
 
 /* ------------------------------------------------------------- fleet */
 .fleet-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 20px; }
@@ -295,7 +297,7 @@ main:focus { outline: none; }
 .steps { list-style: none; counter-reset: step; margin: 0 0 28px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
 .steps li { counter-increment: step; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
-.steps li::before { content: counter(step, decimal-leading-zero); display: block; font: 700 34px/1 var(--display); color: var(--signal); margin-bottom: 8px; }
+.steps li::before { content: counter(step, decimal-leading-zero); display: block; font: 700 34px/1 var(--display); color: var(--signal-ink); margin-bottom: 8px; }
 .steps h2 { font-size: 26px; margin-bottom: 4px; }
 .steps p { color: var(--text-2); }
 
@@ -326,7 +328,8 @@ main:focus { outline: none; }
 
 /* ------------------------------------------------------------- pass 1: recruiting content */
 .notice--preview { background: var(--ink-2); color: var(--on-ink-2); border-bottom: 1px solid var(--ink-line); }
-.notice--preview strong { color: var(--signal); font-weight: 600; margin-right: 4px; }
+/* The band is --ink-2 in both themes, so its lead-in is a light orange (--signal-ink is dark in light). */
+.notice--preview strong { color: #f29a6c; font-weight: 600; margin-right: 4px; }
 .hero__pitch { margin-top: 14px; font-size: 17px; color: var(--on-ink); max-width: 52ch; border-left: 3px solid var(--signal); padding-left: 14px; }
 .section-intro { color: var(--text-2); margin-top: 8px; max-width: 64ch; }
 
@@ -607,7 +610,7 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .walkthrough { list-style: none; margin: 0 0 28px; padding: 0; display: grid; }
 .walkthrough__step { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line); }
 .walkthrough__step:last-child { border-bottom: 0; }
-.walkthrough__num { font: 700 48px/1 var(--display); color: var(--signal); }
+.walkthrough__num { font: 700 48px/1 var(--display); color: var(--signal-ink); }
 .walkthrough__step h2 { font-size: clamp(26px, 3vw, 32px); margin-bottom: 6px; }
 .walkthrough__step p { color: var(--text-2); max-width: 68ch; }
 @media (max-width: 600px) { .walkthrough__step { grid-template-columns: 1fr; gap: 6px; } }
@@ -643,7 +646,7 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 /* careers */
 .rank-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .rank { display: grid; grid-template-columns: 48px 108px minmax(0, 1fr) minmax(120px, 220px); gap: 16px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
-.rank__level { font: 700 32px/1 var(--display); color: var(--signal); }
+.rank__level { font: 700 32px/1 var(--display); color: var(--signal-ink); }
 .rank-badge { width: 96px; height: 36px; object-fit: contain; background: #1b2328; border-radius: 6px; padding: 2px 4px; }
 .rank-badge--plain { display: inline-grid; place-items: center; color: #eef2f3; font: 700 16px/1 var(--display); letter-spacing: .08em; border: 1px dashed #55646c; }
 .rank__body h2 { font-size: 28px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
@@ -831,7 +834,9 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .suggestion { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
 .suggestion--fits { border-left: 4px solid var(--ok); }
 .suggestion--tight { border-left: 4px solid #b0812a; }
-.suggestion--short-range, .suggestion--too-small { opacity: .8; }
+/* Types that do not fit are set apart by a grey edge and the page tint, not by fading their text;
+   the fit chip says why in words. */
+.suggestion--short-range, .suggestion--too-small { background: var(--paper); border-left: 4px solid var(--line); }
 .suggestion__head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .suggestion__head a { text-decoration: none; }
 .suggestion__routes { font-size: 14px; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
