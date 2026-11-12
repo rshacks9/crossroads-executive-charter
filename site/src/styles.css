@@ -279,6 +279,8 @@ main:focus { outline: none; }
 /* ------------------------------------------------------------- filters */
 .filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; }
 .filters label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-2); flex: 1 1 220px; max-width: 320px; }
+/* Phones: fields run to the column's edge, so a long airport name fits. */
+@media (max-width: 560px) { .filters label { max-width: none; } }
 .filters input, .filters select { min-height: 48px; padding: 0 12px; border: 1.5px solid var(--field-line); border-radius: var(--radius); background: var(--panel); font: 400 17px var(--body); color: var(--text); width: 100%; }
 .filters input:focus, .filters select:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
 .filters__count { color: var(--text-2); padding-bottom: 12px; }
@@ -879,9 +881,16 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 
 /* planner */
 .planner { align-items: end; }
+/* One row from 901 px: the airport selects take the room ("KIND · Indianapolis International" in full). */
+@media (min-width: 901px) {
+  .planner { display: grid; grid-template-columns: minmax(0, 1.7fr) auto minmax(0, 1.7fr) auto minmax(96px, .4fr); align-items: end; }
+  .planner label { max-width: none; }
+}
 .planner__swap { align-self: end; font-size: 20px; }
-.planner__mode { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; min-height: 48px; }
+.planner__mode { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
 .planner__mode legend { font-size: 14px; font-weight: 600; color: var(--text-2); padding: 0; margin-bottom: 6px; }
+/* The radios sit in a 48 px row like the fields, so "Load" lines up with "From" and "To". */
+.planner__options { min-height: 48px; display: flex; gap: 14px; align-items: center; }
 .filters .planner__mode label { display: inline-flex; gap: 6px; align-items: center; font-size: 16px; font-weight: 400; color: var(--text); flex: none; }
 .filters .planner__mode input { width: auto; min-height: 0; }
 .planner__grid { display: grid; margin-top: 8px; }
@@ -896,6 +905,10 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .suggestion__head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .suggestion__head a { text-decoration: none; }
 .suggestion__routes { font-size: 14px; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+/* Types that do not fit, folded under the ones that do. The summary keeps its native disclosure marker. */
+.suggestions-more { margin-top: 12px; }
+.suggestions-more > summary { cursor: pointer; font-weight: 600; padding: 10px 0; }
+.suggestions-more[open] > summary { margin-bottom: 8px; }
 .fit { flex: none; font: 600 12px/1 var(--body); text-transform: uppercase; letter-spacing: .06em; padding: 5px 8px; border-radius: 4px; background: var(--mist); }
 .fit--fits { background: #2f7a55; color: #fff; }
 .fit--tight { background: #f3dfb4; color: #5a3f06; }

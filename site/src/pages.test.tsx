@@ -12,7 +12,7 @@ const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, Re
 const { DivisionDot, FleetPage, LivePage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
-const { findRoute, onwardLegs, routeHref } = await import("./explore");
+const { findRoute, onwardLegs, routeHref, suggestFleet } = await import("./explore");
 const { routeDivision } = await import("./data");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -156,6 +156,28 @@ describe("pages render from the snapshot", () => {
       expect(text(list)).toContain(`${leg.to} ${snapshot.airports[leg.to]!.name} · `);
       expect(text(list)).toContain(` nm · ${shared.join(", ")}`);
     }
+  });
+
+  it("planner: radios in one box, an announced same-airport message, types that do not fit folded away", () => {
+    const html = renderToString(<PlanPage snapshot={snapshot} />);
+    expect(html).toMatch(/<legend>Load<[/]legend><div class="planner__options"><label>/);
+    expect(html).toContain('<div role="status"></div>');
+    const { suggestions } = suggestFleet(snapshot, { from: "KIND", to: "KLAS", load: 12, cargo: false });
+    const fitting = suggestions.filter((s) => s.status === "fits" || s.status === "tight");
+    const misfits = suggestions.filter((s) => s.status === "short-range" || s.status === "too-small");
+    expect(fitting.length).toBeGreaterThan(0);
+    expect(misfits.length).toBeGreaterThan(0);
+    const fold = html.indexOf('<details class="suggestions-more">');
+    expect(fold).toBeGreaterThan(0);
+    expect(text(html.slice(fold))).toContain(`${misfits.length} ${misfits.length === 1 ? "type that does" : "types that do"} not fit`);
+    for (const s of fitting) {
+      const at = html.indexOf(`href="#/fleet/${s.type.code}"`);
+      expect(at, s.type.code).toBeGreaterThan(-1);
+      expect(at, s.type.code).toBeLessThan(fold);
+    }
+    for (const s of misfits) expect(html.indexOf(`href="#/fleet/${s.type.code}"`), s.type.code).toBeGreaterThan(fold);
+    expect(html.slice(0, fold)).not.toMatch(/suggestion--(short-range|too-small)/);
+    expect(html).not.toContain("suggestion--wrong-role");
   });
 
   it("pages route lists 25 at a time, in a named table with sortable columns", () => {

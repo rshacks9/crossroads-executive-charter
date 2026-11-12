@@ -4,7 +4,7 @@ import { formatDuration, formatNumber, formatWeight, loadCrew, routeDivision } f
 import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import { ExploreMap } from "./ExploreMap";
 import { divisionColor } from "./LiveMap";
-import type { Bar, FitStatus, RouteSortKey, SearchEntry } from "./explore";
+import type { Bar, FitStatus, FleetSuggestion, RouteSortKey, SearchEntry } from "./explore";
 import {
   SEARCH_EVENT,
   airportHref,
@@ -607,10 +607,24 @@ export function PlanPage({ snapshot }: PageProps) {
   useEffect(() => setMeta(`Plan a charter · ${SITE}`, "A flight-simulation planning tool: pick two airports and a load and see which Crossroads aircraft suit the trip and which scheduled routes to book."), []);
   const { distance, suggestions } = useMemo(() => suggestFleet(snapshot, { from, to, load, cargo }), [snapshot, from, to, load, cargo]);
   const relevant = suggestions.filter((s) => s.status !== "wrong-role");
+  // The types that can fly the trip are listed; the rest fold away under them.
+  const fits = (s: FleetSuggestion) => s.status === "fits" || s.status === "tight";
+  const fitting = relevant.filter(fits);
+  const misfits = relevant.filter((s) => !fits(s));
   const anyScheduled = relevant.some((s) => s.scheduled.length);
   const pair = snapshot.routes.filter((r) => (r.from === from && r.to === to) || (r.from === to && r.to === from));
   const same = from === to;
   const block = (kt: number) => (distance ? formatDuration(Math.round((distance / kt) * 60 + 25)) : "—");
+  const suggestion = (s: FleetSuggestion) => (
+    <li key={s.type.code} className={`suggestion suggestion--${s.status}`}>
+      <div className="suggestion__head">
+        <a href={typeHref(s.type.code)}><strong>{shortName(s.type.name)}</strong> <span className="muted">{s.type.code}</span></a>
+        <span className={`fit fit--${s.status}`}>{STATUS_LABEL[s.status]}</span>
+      </div>
+      <p className="sub">{s.reason}. {cargo ? formatWeight(s.capacity, s.type.weight_unit) : `${s.capacity ?? "—"} seats`} · base {baseFor(s.type.code)}{FLEET_INFO[s.type.code] && fits(s) ? ` · about ${block(FLEET_INFO[s.type.code]!.cruise_kt)} block` : ""}</p>
+      {s.scheduled.length ? <p className="suggestion__routes">Scheduled: {s.scheduled.map((r) => <a key={routeKey(r)} href={routeHref(r)}>{routeKey(r)}</a>)}</p> : null}
+    </li>
+  );
   return (
     <>
       <PageHeader eyebrow="Simulation planning tool" title="Plan a charter" lede="Pick two airports and your load. We'll match it against the Crossroads fleet by planning range and capacity and point you at the routes you can book. This is a flight-sim planning aid: Crossroads is a virtual airline and doesn't sell real flights." />
@@ -631,19 +645,23 @@ export function PlanPage({ snapshot }: PageProps) {
           </label>
           <fieldset className="planner__mode">
             <legend>Load</legend>
-            <label><input type="radio" name="mode" checked={!cargo} onChange={() => { setCargo(false); setLoad(12); }} /> Passengers</label>
-            <label><input type="radio" name="mode" checked={cargo} onChange={() => { setCargo(true); setLoad(30000); }} /> Cargo (kg)</label>
+            <div className="planner__options">
+              <label><input type="radio" name="mode" checked={!cargo} onChange={() => { setCargo(false); setLoad(12); }} /> Passengers</label>
+              <label><input type="radio" name="mode" checked={cargo} onChange={() => { setCargo(true); setLoad(30000); }} /> Cargo (kg)</label>
+            </div>
           </fieldset>
           <label>
             <span>{cargo ? "Cargo, kg" : "Passengers"}</span>
             <input type="number" min={cargo ? 100 : 1} max={cargo ? 200000 : 400} step={cargo ? 500 : 1} value={load} onChange={(e) => setLoad(Math.max(0, Number(e.target.value) || 0))} />
           </label>
         </form>
-        {same ? <p className="callout">Pick two different airports.</p> : (
+        {/* Always in the page, so the message is announced when it appears. */}
+        <div role="status">{same ? <p className="callout">Pick two different airports.</p> : null}</div>
+        {same ? null : (
           <>
             <dl className="route-summary" aria-live="polite">
               <div><dt>Great-circle</dt><dd>{distance != null ? `${formatNumber(distance)} nm` : "—"}</dd></div>
-              <div><dt>Suitable types</dt><dd>{relevant.filter((s) => s.status === "fits" || s.status === "tight").length}</dd></div>
+              <div><dt>Suitable types</dt><dd>{fitting.length}</dd></div>
               <div><dt>Scheduled routes</dt><dd>{pair.length}</dd></div>
             </dl>
             <div className="page--split page--split-wide planner__grid">
@@ -662,18 +680,13 @@ export function PlanPage({ snapshot }: PageProps) {
               </div>
               <div>
                 <h2 className="h3">Fleet match</h2>
-                <ol className="suggestions">
-                  {relevant.map((s) => (
-                    <li key={s.type.code} className={`suggestion suggestion--${s.status}`}>
-                      <div className="suggestion__head">
-                        <a href={typeHref(s.type.code)}><strong>{shortName(s.type.name)}</strong> <span className="muted">{s.type.code}</span></a>
-                        <span className={`fit fit--${s.status}`}>{STATUS_LABEL[s.status]}</span>
-                      </div>
-                      <p className="sub">{s.reason}. {cargo ? formatWeight(s.capacity, s.type.weight_unit) : `${s.capacity ?? "—"} seats`} · base {baseFor(s.type.code)}{FLEET_INFO[s.type.code] && (s.status === "fits" || s.status === "tight") ? ` · about ${block(FLEET_INFO[s.type.code]!.cruise_kt)} block` : ""}</p>
-                      {s.scheduled.length ? <p className="suggestion__routes">Scheduled: {s.scheduled.map((r) => <a key={routeKey(r)} href={routeHref(r)}>{routeKey(r)}</a>)}</p> : null}
-                    </li>
-                  ))}
-                </ol>
+                {fitting.length ? <ol className="suggestions">{fitting.map(suggestion)}</ol> : null}
+                {misfits.length ? (
+                  <details className="suggestions-more">
+                    <summary>{`${misfits.length} ${misfits.length === 1 ? "type that does" : "types that do"} not fit`}</summary>
+                    <ol className="suggestions">{misfits.map(suggestion)}</ol>
+                  </details>
+                ) : null}
                 {!anyScheduled && pair.length ? <p className="fineprint">The scheduled routes above are flown by other types than the best match.</p> : null}
               </div>
             </div>
