@@ -1,5 +1,5 @@
 // Server-render the site shell before any data has loaded: catches render-time crashes in the header,
-// menu and footer, and checks their link names without a browser.
+// menu and footer, and checks their link names and the search shortcut without a browser.
 import { renderToString } from "react-dom/server";
 import { afterAll, describe, expect, it, vi } from "vitest";
 
@@ -25,5 +25,12 @@ describe("site shell", () => {
       expect(link).not.toContain("aria-label");
       expect(textOf(link)).toBe("Crossroads Executive & Charter, home");
     }
+  });
+
+  it("offers Ctrl/Cmd+K for search and no single-key shortcut", () => {
+    const html = shell();
+    expect(html).toContain('aria-keyshortcuts="Control+K Meta+K"');
+    expect(html).toContain('<kbd aria-hidden="true">Ctrl K</kbd>');
+    expect(html).not.toContain("<kbd>/</kbd>");
   });
 });

@@ -6,6 +6,7 @@ import { ExploreMap } from "./ExploreMap";
 import { divisionColor } from "./LiveMap";
 import type { Bar, FitStatus, RouteSortKey, SearchEntry } from "./explore";
 import {
+  SEARCH_EVENT,
   airportHref,
   airportSummary,
   briefingCard,
@@ -15,6 +16,7 @@ import {
   download,
   initialCourse,
   isFreighterType,
+  moveSearchActive,
   networkStats,
   routeHref,
   routeKey,
@@ -22,6 +24,7 @@ import {
   routesForType,
   scheduleCsv,
   search,
+  searchStatus,
   servedAirports,
   setMeta,
   simbriefUrl,
@@ -857,7 +860,11 @@ export function NotFoundPage({ snapshot, what }: PageProps & { what?: string }) 
         <a className="button button--quiet" href="#/destinations">Destinations</a>
         <a className="button button--quiet" href="#/fleet">Fleet</a>
       </p>
-      <p className="fineprint">{snapshot.routes.length} routes and {snapshot.fleet.length} aircraft types are on the schedule. Press / to search them.</p>
+      <p className="fineprint">{snapshot.routes.length} routes and {snapshot.fleet.length} aircraft types are on the schedule.</p>
+      <p className="hero__actions">
+        {/* An event, not a prop: the airport, type and route pages render this page for unknown ids too. */}
+        <button type="button" className="button button--quiet" onClick={() => window.dispatchEvent(new Event(SEARCH_EVENT))}>Search the site</button>
+      </p>
     </section>
   );
 }
@@ -868,7 +875,8 @@ export function SearchDialog({ snapshot, open, onClose }: { snapshot: Snapshot; 
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
+  // No result is active until an arrow key picks one; Enter then opens the first result.
+  const [active, setActive] = useState(-1);
   const index = useMemo(() => buildSearchIndex(snapshot), [snapshot]);
   const results: SearchEntry[] = useMemo(() => search(index, query, 12), [index, query]);
 
@@ -878,10 +886,15 @@ export function SearchDialog({ snapshot, open, onClose }: { snapshot: Snapshot; 
     if (open && !el.open) {
       el.showModal();
       setQuery("");
-      setActive(0);
+      setActive(-1);
       window.setTimeout(() => input.current?.focus(), 0);
     } else if (!open && el.open) el.close();
   }, [open]);
+
+  // Keep the highlighted result in view when the arrow keys move past the rows on screen.
+  useEffect(() => {
+    if (active >= 0) document.getElementById(`sr-${active}`)?.scrollIntoView({ block: "nearest" });
+  }, [active, results]);
 
   const go = (entry: SearchEntry | undefined) => {
     if (!entry) return;
@@ -902,18 +915,20 @@ export function SearchDialog({ snapshot, open, onClose }: { snapshot: Snapshot; 
             placeholder="Search routes, airports, aircraft… (e.g. KASE, G650, CRX511)"
             autoComplete="off"
             role="combobox"
+            aria-autocomplete="list"
             aria-expanded={results.length > 0}
             aria-controls="site-search-results"
-            aria-activedescendant={results[active] ? `sr-${active}` : undefined}
-            onChange={(e) => { setQuery(e.target.value); setActive(0); }}
+            aria-activedescendant={active >= 0 && results[active] ? `sr-${active}` : undefined}
+            onChange={(e) => { setQuery(e.target.value); setActive(-1); }}
             onKeyDown={(e) => {
-              if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => Math.min(results.length - 1, i + 1)); }
-              else if (e.key === "ArrowUp") { e.preventDefault(); setActive((i) => Math.max(0, i - 1)); }
-              else if (e.key === "Enter") { e.preventDefault(); go(results[active]); }
+              const key = e.key;
+              if (key === "ArrowDown" || key === "ArrowUp") { e.preventDefault(); setActive((i) => moveSearchActive(i, results.length, key)); }
+              else if (key === "Enter") { e.preventDefault(); go(results[active] ?? results[0]); }
             }}
           />
           <button type="button" className="button button--small button--quiet" onClick={onClose}>Close</button>
         </div>
+        <p className="search-dialog__status" role="status">{searchStatus(query, results.length)}</p>
         <ul id="site-search-results" role="listbox" className="search-results" aria-label="Results">
           {results.map((r, i) => (
             <li key={`${r.kind}-${r.href}`} id={`sr-${i}`} role="option" aria-selected={i === active} className={i === active ? "is-active" : undefined} onMouseEnter={() => setActive(i)} onClick={() => go(r)}>
@@ -922,8 +937,6 @@ export function SearchDialog({ snapshot, open, onClose }: { snapshot: Snapshot; 
             </li>
           ))}
         </ul>
-        {query && !results.length ? <p className="search-dialog__empty">Nothing matches “{query}”.</p> : null}
-        {!query ? <p className="search-dialog__empty">Type an ICAO or IATA code, a city, a callsign or an aircraft. ↑ ↓ to move, Enter to open, Esc to close.</p> : null}
       </div>
     </dialog>
   );

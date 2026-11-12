@@ -797,11 +797,22 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .search-dialog__bar input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(232,112,58,.25); }
 .search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
 .search-results li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius); cursor: pointer; }
-.search-results li.is-active { background: var(--mist); box-shadow: inset 3px 0 0 var(--signal); }
+.search-results li.is-active { background: var(--mist); box-shadow: inset 4px 0 0 var(--signal-ink); }
 .search-results__text { min-width: 0; }
 .search-results__text strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .search-kind { flex: none; width: 74px; font: 600 11px/1 var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); }
-.search-dialog__empty { padding: 16px 18px; color: var(--text-2); font-size: 15px; }
+.search-dialog__status { padding: 16px 18px; color: var(--text-2); font-size: 15px; }
+/* One control beside the field, the site's Close button, without the browser's own clear cross. */
+.search-dialog__bar input::-webkit-search-cancel-button { display: none; }
+/* Phones: the kind label sits at the end of the title line and the subtitle takes the full width. */
+@media (max-width: 560px) {
+  .search-dialog { margin-top: 8px; }
+  .search-results li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; align-items: baseline; }
+  .search-results__text { display: contents; }
+  .search-results__text strong { grid-area: 1 / 1; }
+  .search-kind { grid-area: 1 / 2; width: auto; }
+  .search-results__text .sub { grid-column: 1 / -1; }
+}
 
 /* route explorer */
 .explorer { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }

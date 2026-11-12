@@ -13,12 +13,14 @@ import {
   divisionBaseLabel,
   findRoute,
   initialCourse,
+  isSearchShortcut,
   listJoin,
   mapLegendKeys,
   markerKeyAction,
   markerLabel,
   markerOrder,
   moveIndex,
+  moveSearchActive,
   wireMarker,
   networkStats,
   parseLocation,
@@ -28,6 +30,7 @@ import {
   routesForType,
   scheduleCsv,
   search,
+  searchStatus,
   servedAirports,
   simbriefUrl,
   sortRoutes,
@@ -245,6 +248,35 @@ describe("search", () => {
     expect(search(index, "plan charter")[0]!.href).toBe("#/plan");
     expect(search(index, "zzzz-nothing")).toEqual([]);
     expect(search(index, "   ")).toEqual([]);
+  });
+
+  it("opens on Ctrl+K or Cmd+K, never on a key pressed alone", () => {
+    const press = (key: string, ctrlKey = false, metaKey = false, altKey = false) => ({ key, ctrlKey, metaKey, altKey });
+    expect(isSearchShortcut(press("k", true))).toBe(true);
+    expect(isSearchShortcut(press("k", false, true))).toBe(true);
+    expect(isSearchShortcut(press("K", true))).toBe(true);
+    expect(isSearchShortcut(press("/"))).toBe(false);
+    expect(isSearchShortcut(press("k"))).toBe(false);
+    expect(isSearchShortcut(press("/", true))).toBe(false);
+    expect(isSearchShortcut(press("k", true, false, true))).toBe(false);
+  });
+
+  it("states how many results there are, or why there are none", () => {
+    expect(searchStatus("", 0)).toMatch(/^Type an ICAO or IATA code/);
+    expect(searchStatus("   ", 0)).toMatch(/^Type an ICAO or IATA code/);
+    expect(searchStatus("aspen", 9)).toBe("9 results. ↑ ↓ to choose, Enter to open.");
+    expect(searchStatus("kase", 1)).toBe("1 result. ↑ ↓ to choose, Enter to open.");
+    expect(searchStatus(" zzzz ", 0)).toBe("Nothing matches “zzzz”.");
+  });
+
+  it("starts with no result active; the first ArrowDown lands on the first result", () => {
+    expect(moveSearchActive(-1, 9, "ArrowDown")).toBe(0);
+    expect(moveSearchActive(0, 9, "ArrowDown")).toBe(1);
+    expect(moveSearchActive(8, 9, "ArrowDown")).toBe(8);
+    expect(moveSearchActive(3, 9, "ArrowUp")).toBe(2);
+    expect(moveSearchActive(0, 9, "ArrowUp")).toBe(0);
+    expect(moveSearchActive(12, 5, "ArrowUp")).toBe(4);
+    expect(moveSearchActive(-1, 0, "ArrowDown")).toBe(-1);
   });
 });
 

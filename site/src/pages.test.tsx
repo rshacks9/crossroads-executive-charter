@@ -8,7 +8,7 @@ import type { Snapshot } from "./data";
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, StatsPage, TypePage } = await import("./explore-pages");
+const { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { DivisionDot, FleetPage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
@@ -134,6 +134,17 @@ describe("pages render from the snapshot", () => {
     for (const r of routes) expect(html).toContain(`href="${routeHref(r)}"`);
     expect(text(html)).toContain(divisions[routeDivision(routes[0]!, divisions)]!.name);
     expect(html).toContain('<span class="visually-hidden">to </span>');
+  });
+
+  it("search announces its count in one status line, and the 404 offers a search button", () => {
+    const html = renderToString(<SearchDialog snapshot={snapshot} open={false} onClose={() => undefined} />);
+    expect(html).toContain('<p class="search-dialog__status" role="status">Type an ICAO or IATA code');
+    expect(html).toContain('aria-autocomplete="list"');
+    expect(html).not.toContain("aria-activedescendant");
+    expect(html).not.toContain("search-dialog__empty");
+    const notFound = renderToString(<NotFoundPage snapshot={snapshot} />);
+    expect(notFound).toMatch(/<button type="button" class="button button--quiet">Search the site<[/]button>/);
+    expect(text(notFound)).not.toContain("Press /");
   });
 
   it("takes division colours from the theme, so dots, accents and bars follow the toggle", () => {

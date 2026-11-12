@@ -398,6 +398,31 @@ export function search(index: SearchEntry[], query: string, limit = 12): SearchE
   return scored.sort((a, b) => b.score - a.score || a.entry.title.localeCompare(b.entry.title)).slice(0, limit).map((s) => s.entry);
 }
 
+/** Window event that opens the search dialog (App.tsx listens; the 404 page's search button sends it). */
+export const SEARCH_EVENT = "crossroads:search";
+
+/** Ctrl+K, or Cmd+K on a Mac, opens search. There is deliberately no single-key shortcut such as "/":
+ *  it can fire while speech-input users dictate, and it could not be turned off (WCAG 2.1.4). */
+export function isSearchShortcut(e: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaKey" | "altKey">): boolean {
+  return (e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === "k";
+}
+
+/** The search dialog's status line, announced as it changes: a hint while the field is empty, then
+ *  how many results there are, or that nothing matches. */
+export function searchStatus(query: string, count: number): string {
+  const q = query.trim();
+  if (!q) return "Type an ICAO or IATA code, a city, a callsign or an aircraft. ↑ ↓ to move, Enter to open, Esc to close.";
+  if (count <= 0) return `Nothing matches “${q}”.`;
+  return `${count} ${count === 1 ? "result" : "results"}. ↑ ↓ to choose, Enter to open.`;
+}
+
+/** The result an arrow key moves to. -1 means none is active: the dialog opens that way (Enter then
+ *  opens the first result), and the first ArrowDown lands on the first result. */
+export function moveSearchActive(active: number, count: number, key: "ArrowDown" | "ArrowUp"): number {
+  if (count <= 0) return -1;
+  return Math.max(0, Math.min(count - 1, key === "ArrowDown" ? active + 1 : active - 1));
+}
+
 // ------------------------------------------------------------------ network stats
 
 export interface Bar { label: string; value: number; index?: number; href?: string }

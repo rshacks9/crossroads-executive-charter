@@ -5,7 +5,7 @@ import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./
 import { FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
 import { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, SearchDialog, StatsPage, TypePage } from "./explore-pages";
 import type { Location } from "./explore";
-import { findRoute, parseLocation, setMeta } from "./explore";
+import { SEARCH_EVENT, findRoute, isSearchShortcut, parseLocation, setMeta } from "./explore";
 import { DEFAULT_AIRLINE_NAME, countsFromSnapshot, homeTitle, siteDescription } from "./html-facts";
 
 export const ROUTES = [
@@ -159,8 +159,9 @@ export function App() {
     );
   }, [loc, snapshot]);
 
-  // "/" or Ctrl/Cmd+K opens search, unless the user is typing in a field. Escape closes the menu and
-  // returns focus to the Menu button; while the search dialog is open, Escape is the dialog's.
+  // Ctrl/Cmd+K opens search, from a field too; there is no single-key shortcut (WCAG 2.1.4). Escape
+  // closes the menu and returns focus to the Menu button; while the search dialog is open, Escape is
+  // the dialog's.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && menuOpen && !searchOpen) {
@@ -168,9 +169,7 @@ export function App() {
         menuButton.current?.focus();
         return;
       }
-      const target = e.target as HTMLElement | null;
-      const typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
-      if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !typing)) {
+      if (isSearchShortcut(e)) {
         e.preventDefault();
         setSearchOpen(true);
       }
@@ -178,6 +177,13 @@ export function App() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen, searchOpen]);
+
+  // The 404 page's "Search the site" button opens search with an event (explore.ts SEARCH_EVENT).
+  useEffect(() => {
+    const openSearch = () => setSearchOpen(true);
+    window.addEventListener(SEARCH_EVENT, openSearch);
+    return () => window.removeEventListener(SEARCH_EVENT, openSearch);
+  }, []);
 
   // Publish the masthead's height as --header-h on <html> for sticky offsets and scroll padding
   // (styles.css --sticky-top). Measured only while the menu is closed: an open menu must not move
@@ -214,10 +220,12 @@ export function App() {
             <span className="visually-hidden">, home</span>
           </a>
           <div className="masthead__tools">
-            <button type="button" className="search-button" onClick={() => setSearchOpen(true)} aria-label="Search routes, airports and aircraft" aria-keyshortcuts="/ Control+K" disabled={!snapshot}>
+            <button type="button" className="search-button" onClick={() => setSearchOpen(true)} aria-label="Search routes, airports and aircraft" aria-keyshortcuts="Control+K Meta+K" disabled={!snapshot}>
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" strokeWidth="2.2" /><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
               <span className="search-button__label">Search</span>
-              <kbd>/</kbd>
+              {/* aria-hidden: the shortcut is announced through aria-keyshortcuts, and the hint stays out
+                  of the visible text that the button's name has to contain. */}
+              <kbd aria-hidden="true">Ctrl K</kbd>
             </button>
             <ThemeToggle />
             <button
