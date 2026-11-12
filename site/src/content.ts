@@ -258,11 +258,12 @@ export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[
   { block: "CRX401–499", use: "Executive, large-cabin jets (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX501–599", use: "International and long-range (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX601–699", use: "Cargo charter", base: "KIND" },
-  { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs)", base: "KTYQ" },
+  { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs); CRX751/752 is the Piper M600's", base: "KTYQ" },
 ];
 
 export const COST_INDEX: { group: string; types: string; guidance: string }[] = [
   { group: "Light and mid-size jets", types: "Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X", guidance: "No cost index. Fly the type's normal (long-range) cruise schedule. High-speed cruise is fine on short hops." },
+  { group: "Turboprop", types: "Piper M600", guidance: "No cost index. Fly the normal cruise power setting; it is a 13 nm hop, so expect to level off low." },
   { group: "Large-cabin business jets", types: "Longitude, G650, G700", guidance: "Normal cruise Mach. Long-range cruise on transatlantic legs." },
   { group: "Passenger airliners", types: "E175, E190, A220, 757, A340, A380", guidance: "CI 30–50. Up to CI 80 to make up a late departure on a group or sports charter." },
   { group: "Freighters", types: "A300-600F, MD-11F, 777F", guidance: "CI 20–40. Lower on long overwater legs." },
