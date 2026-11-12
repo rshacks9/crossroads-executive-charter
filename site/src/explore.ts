@@ -2,7 +2,7 @@
 // stats pages. Everything here is computed from snapshot.json plus the planning figures in
 // content.ts; nothing invents activity, members or real-world facts.
 
-import type { Airport, Division, FleetType, Route, Snapshot } from "./data";
+import type { Airport, CrewRunway, Division, FleetType, Route, Snapshot } from "./data";
 import { formatDuration, routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, baseFor } from "./content";
 
@@ -126,6 +126,46 @@ export function servedAirports(snapshot: Pick<Snapshot, "routes" | "airports">):
     .sort((a, b) => b.routes - a.routes || a.icao.localeCompare(b.icao));
 }
 
+/** One runway strip, built from the two ends that crew.json lists for it. */
+export interface RunwayStrip {
+  /** The sorted pair of end names, e.g. "05R/23L". */
+  key: string;
+  /** "05R/23L", the lower-numbered end first; an end without a reciprocal stands alone. */
+  label: string;
+  /** "045°/225° true": each end's heading from its own row, in the label's order; one heading when the other end is missing. */
+  headings: string | null;
+  length_ft: number | null;
+  width_ft: number | null;
+  surface: string | null;
+}
+
+const runwayNumber = (id: string) => Number.parseInt(id, 10);
+const trueHeading = (deg: number | null) => (deg == null ? "—" : `${String(Math.round(deg)).padStart(3, "0")}°`);
+
+/**
+ * One row per runway strip: crew.json lists every strip twice, once from each end. Ends pair up on
+ * the sorted id/reciprocal pair; strips keep the order of the end listed first.
+ */
+export function runwayStrips(runways: readonly CrewRunway[]): RunwayStrip[] {
+  const byId = new Map(runways.map((r) => [r.id, r]));
+  const strips = new Map<string, RunwayStrip>();
+  for (const r of runways) {
+    const key = r.reciprocal ? [r.id, r.reciprocal].sort().join("/") : r.id;
+    if (strips.has(key)) continue;
+    const other = r.reciprocal ? byId.get(r.reciprocal) : undefined;
+    const ends = other ? (runwayNumber(other.id) < runwayNumber(r.id) ? [other, r] : [r, other]) : [r];
+    strips.set(key, {
+      key,
+      label: other ? ends.map((e) => e.id).join("/") : r.reciprocal ? `${r.id}/${r.reciprocal}` : r.id,
+      headings: ends.some((e) => e.heading_true_deg != null) ? `${ends.map((e) => trueHeading(e.heading_true_deg)).join("/")} true` : null,
+      length_ft: ends.map((e) => e.length_ft).find((v) => v != null) ?? null,
+      width_ft: ends.map((e) => e.width_ft).find((v) => v != null) ?? null,
+      surface: ends.map((e) => e.surface).find((v) => v != null) ?? null,
+    });
+  }
+  return [...strips.values()];
+}
+
 /**
  * A short destination note built only from schedule data, so it is always factual: where the
  * airport is, how far it is from Indianapolis and what Crossroads flies there.
@@ -241,6 +281,27 @@ export function sortRoutesBy(routes: readonly Route[], key: RouteSortKey, dir: "
 export function routeOtherEnd(route: Pick<Route, "from" | "to">, focus: string | undefined, bases: readonly string[]): string {
   if (focus) return route.from === focus ? route.to : route.from;
   return bases.includes(route.to) && !bases.includes(route.from) ? route.from : route.to;
+}
+
+/** A leg onward from a route's arrival, with the aircraft types it shares with that route. */
+export interface OnwardLeg<R> {
+  route: R;
+  shared: string[];
+}
+
+/**
+ * Legs onward from a route's arrival airport: the departures from there (other than `except`, the
+ * return leg) that share an aircraft type with the route, most shared types first, then shortest.
+ * With fewer than three such legs, the nearest departures instead. At most `limit` legs.
+ */
+export function onwardLegs<R extends Pick<Route, "from" | "types" | "distance_nm">>(routes: readonly R[], route: Pick<Route, "to" | "types">, except?: R, limit = 7): OnwardLeg<R>[] {
+  const nearest = (a: OnwardLeg<R>, b: OnwardLeg<R>) => orLast(a.route.distance_nm) - orLast(b.route.distance_nm);
+  const departures = routes
+    .filter((r) => r.from === route.to && r !== except)
+    .map((r): OnwardLeg<R> => ({ route: r, shared: r.types.filter((t) => route.types.includes(t)) }));
+  const sharing = departures.filter((leg) => leg.shared.length > 0);
+  if (sharing.length < 3) return departures.sort(nearest).slice(0, limit);
+  return sharing.sort((a, b) => b.shared.length - a.shared.length || nearest(a, b)).slice(0, limit);
 }
 
 // ------------------------------------------------------------------ charter planner

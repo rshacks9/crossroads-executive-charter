@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Crew, Route, Snapshot } from "./data";
+import type { Crew, CrewRunway, Route, Snapshot } from "./data";
 import { formatDuration, formatNumber, formatWeight, loadCrew, routeDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import { ExploreMap } from "./ExploreMap";
@@ -18,10 +18,12 @@ import {
   isFreighterType,
   moveSearchActive,
   networkStats,
+  onwardLegs,
   routeHref,
   routeKey,
   routeOtherEnd,
   routesForType,
+  runwayStrips,
   scheduleCsv,
   search,
   searchStatus,
@@ -374,28 +376,14 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
         </dl>
       </PageHeader>
       <section className="page page--split page--split-wide">
-        <div>
+        <div className="split__aside">
           <ExploreMap routes={summary.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} selectedAirport={icao} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onClearSelection={() => setSelectedRoute(null)} onAirportClick={(other) => { if (other !== icao) window.location.hash = airportHref(other); }} height={420} label={`Routes serving ${icao}`} />
           <p className="fineprint">Select a route line to highlight it, or another airport to open its page.</p>
           <MapLegend snapshot={snapshot} routes={summary.routes} />
         </div>
         <div>
           <SectionHead eyebrow="Airfield" title="Runways" />
-          {runways.length ? (
-            <div className="table-scroll"><table className="table table--compact">
-              <thead><tr><th scope="col">Runway</th><th scope="col" className="num">Length</th><th scope="col" className="num">Width</th><th scope="col">Surface</th></tr></thead>
-              <tbody>
-                {runways.map((r) => (
-                  <tr key={r.id}>
-                    <td><strong>{r.id}{r.reciprocal ? `/${r.reciprocal}` : ""}</strong>{r.heading_true_deg != null ? <span className="sub">{String(Math.round(r.heading_true_deg)).padStart(3, "0")}° true</span> : null}</td>
-                    <td className="num">{r.length_ft ? `${formatNumber(Math.round(r.length_ft))} ft` : "—"}</td>
-                    <td className="num">{r.width_ft ? `${formatNumber(Math.round(r.width_ft))} ft` : "—"}</td>
-                    <td>{surfaceName(r.surface)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table></div>
-          ) : <p className="muted">{crew ? "No runway data on file for this airport." : "Loading runway data…"}</p>}
+          {runways.length ? <RunwayTable icao={icao} runways={runways} /> : <p className="muted">{crew ? "No runway data on file for this airport." : "Loading runway data…"}</p>}
           {runways[0]?.elevation_ft != null ? <p className="fineprint">Field elevation about {formatNumber(Math.round(runways[0].elevation_ft))} ft. Runway data from OurAirports (public domain); always use current charts in the simulator.</p> : null}
           {wx?.metar ? (
             <>
@@ -413,6 +401,26 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
         <RouteTable routes={summary.routes} snapshot={snapshot} focus={icao} caption={`Routes serving ${icao}`} />
       </section>
     </>
+  );
+}
+
+/** An airport's runways: one row per strip ("05R/23L"), each end's true heading under the name. */
+export function RunwayTable({ icao, runways }: { icao: string; runways: CrewRunway[] }) {
+  return (
+    <div className="table-scroll"><table className="table table--compact">
+      <caption className="visually-hidden">{`Runways at ${icao}`}</caption>
+      <thead><tr><th scope="col">Runway</th><th scope="col" className="num">Length</th><th scope="col" className="num">Width</th><th scope="col">Surface</th></tr></thead>
+      <tbody>
+        {runwayStrips(runways).map((s) => (
+          <tr key={s.key}>
+            <td><strong>{s.label}</strong>{s.headings ? <span className="sub">{s.headings}</span> : null}</td>
+            <td className="num">{s.length_ft ? `${formatNumber(Math.round(s.length_ft))} ft` : "—"}</td>
+            <td className="num">{s.width_ft ? `${formatNumber(Math.round(s.width_ft))} ft` : "—"}</td>
+            <td>{surfaceName(s.surface)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table></div>
   );
 }
 
@@ -468,7 +476,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
         </section>
       ) : null}
       <section className="page page--split page--split-wide">
-        <div>
+        <div className="split__aside">
           <SectionHead eyebrow="Reach" title={info ? `${formatNumber(info.range_nm)} nm from ${base}` : "Routes flown"} />
           <ExploreMap routes={routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} ring={info ? { icao: base, nm: info.range_nm, label: `${shortName(type.name)} planning range from ${base}: ${formatNumber(info.range_nm)} nm` } : null} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={440} label={`Planning range ring and routes for the ${type.name}`} />
           <MapLegend snapshot={snapshot} routes={routes} />
@@ -524,7 +532,7 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
   const names = typeNames(snapshot);
   const course = a && b ? initialCourse(a, b) : null;
   const reverse = snapshot.routes.find((r) => r.from === route.to && r.to === route.from);
-  const fromOrigin = snapshot.routes.filter((r) => r.from === route.to && r !== reverse).slice(0, 6);
+  const onward = onwardLegs(snapshot.routes, route, reverse);
   const runwaysFor = (icao: string) => crew?.airports[icao]?.runways ?? [];
   const longestRunway = (icao: string) => runwaysFor(icao).reduce((m, r) => Math.max(m, r.length_ft ?? 0), 0);
   const cardRunways = crew ? Object.fromEntries([route.from, route.to].map((i) => [i, runwaysFor(i).map((r) => ({ id: r.reciprocal ? `${r.id}/${r.reciprocal}` : r.id, length_ft: r.length_ft }))])) : undefined;
@@ -538,7 +546,7 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
         </div>
       </PageHeader>
       <section className="page page--split page--split-wide">
-        <div>
+        <div className="split__aside">
           <ExploreMap routes={[route]} airports={snapshot.airports} bases={bases(snapshot)} divisions={divisions} selectedRoute={key} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={400} label={`Great-circle track for ${key}`} />
         </div>
         <div>
@@ -573,7 +581,12 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
         <SectionHead eyebrow="Keep going" title="Onward from here" />
         <ul className="onward">
           {reverse ? <li><a href={routeHref(reverse)}><strong>{routeKey(reverse)}</strong> return leg {reverse.from} → {reverse.to}</a></li> : null}
-          {fromOrigin.map((r) => <li key={routeKey(r)}><a href={routeHref(r)}><strong>{routeKey(r)}</strong> {r.from} → {r.to} · {formatNumber(r.distance_nm)} nm</a></li>)}
+          {onward.map(({ route: r, shared }) => {
+            // The types this leg shares with the route just flown; a leg that shares none lists its own.
+            const types = shared.length ? shared : r.types;
+            const name = snapshot.airports[r.to]?.name;
+            return <li key={routeKey(r)}><a href={routeHref(r)}><strong>{routeKey(r)}</strong> {r.from} → {r.to}{name ? ` ${name}` : ""} · {formatNumber(r.distance_nm)} nm{types.length ? ` · ${types.join(", ")}` : ""}</a></li>;
+          })}
         </ul>
         <p className="fineprint">Distances are great-circle; block times are schedule estimates. Your SimBrief OFP has the real figures for the day's winds. Simulation use only.</p>
       </section>
@@ -634,7 +647,7 @@ export function PlanPage({ snapshot }: PageProps) {
               <div><dt>Scheduled routes</dt><dd>{pair.length}</dd></div>
             </dl>
             <div className="page--split page--split-wide planner__grid">
-              <div>
+              <div className="split__aside">
                 <ExploreMap routes={pair} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} extraLeg={[from, to]} height={360} label={`Great circle from ${from} to ${to}`} />
                 {pair.length ? (
                   <div className="planner__routes">

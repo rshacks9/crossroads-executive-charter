@@ -196,6 +196,9 @@ main:focus { outline: none; }
 .page--narrow > * { max-width: 740px; }
 .page--split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); }
 @media (max-width: 900px) { .page--split { grid-template-columns: 1fr; } }
+/* Detail pages: the map column stays in view beside a longer column, on windows tall enough to show
+   all of it (the tallest, on the type page, is about 580 px). */
+@media (min-width: 901px) and (min-height: 700px) { .split__aside { position: sticky; top: calc(var(--sticky-top) + 16px); align-self: start; } }
 .page-title { font-size: clamp(40px, 6vw, 64px); }
 .lede { font-size: 19px; color: var(--text-2); margin: 10px 0 28px; max-width: 62ch; }
 .section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 0 0 18px; }

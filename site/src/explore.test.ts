@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import type { Snapshot } from "./data";
+import type { Crew, CrewRunway, Route, Snapshot } from "./data";
 import { routeDivision, routeInDivision } from "./data";
 import { FLEET_INFO, PEGASUS_URL } from "./content";
 import {
@@ -24,11 +24,13 @@ import {
   moveSearchActive,
   wireMarker,
   networkStats,
+  onwardLegs,
   parseLocation,
   routeHref,
   routeKey,
   routeOtherEnd,
   routesForType,
+  runwayStrips,
   scheduleCsv,
   search,
   searchStatus,
@@ -188,6 +190,81 @@ describe("route lists", () => {
     expect(routeOtherEnd({ from: "EGGW", to: "KTEB" }, undefined, bases)).toBe("KTEB");
     expect(routeOtherEnd({ from: "KTYQ", to: "KASE" }, "KASE", bases)).toBe("KTYQ");
     expect(routeOtherEnd({ from: "KTYQ", to: "KASE" }, "KTYQ", bases)).toBe("KASE");
+  });
+});
+
+describe("onward legs", () => {
+  const nm = (r: { distance_nm: number | null }) => r.distance_nm ?? Infinity;
+
+  it("keeps departures that share a type with the route: most shared first, then shortest, seven at most", () => {
+    for (const route of snapshot.routes) {
+      const key = routeKey(route);
+      const back = snapshot.routes.find((r) => r.from === route.to && r.to === route.from);
+      const departures = snapshot.routes.filter((r) => r.from === route.to && r !== back);
+      const sharing = departures.filter((r) => r.types.some((t) => route.types.includes(t)));
+      const legs = onwardLegs(snapshot.routes, route, back);
+      expect(legs.length, key).toBe(Math.min(7, sharing.length >= 3 ? sharing.length : departures.length));
+      for (const leg of legs) {
+        expect(leg.route.from, key).toBe(route.to);
+        expect(leg.route, key).not.toBe(back);
+        expect(leg.shared, key).toEqual(leg.route.types.filter((t) => route.types.includes(t)));
+        if (sharing.length >= 3) expect(leg.shared.length, key).toBeGreaterThan(0);
+      }
+      for (let i = 1; i < legs.length; i++) {
+        const a = legs[i - 1]!;
+        const b = legs[i]!;
+        if (sharing.length < 3 || b.shared.length === a.shared.length) expect(nm(b.route), key).toBeGreaterThanOrEqual(nm(a.route));
+        else expect(b.shared.length, key).toBeLessThan(a.shared.length);
+      }
+    }
+  });
+
+  it("offers the CRX524 crew at KIND only legs their aircraft can fly", () => {
+    const route = findRoute(snapshot, "CRX524")!;
+    const legs = onwardLegs(snapshot.routes, route, snapshot.routes.find((r) => r.from === route.to && r.to === route.from));
+    expect(legs).toHaveLength(7);
+    for (const leg of legs) expect(leg.route.types.some((t) => route.types.includes(t))).toBe(true);
+    expect(legs.some((leg) => leg.route.types.every((t) => t === "B77L" || t === "MD11"))).toBe(false);
+  });
+
+  it("falls back to the nearest departures when fewer than three share a type", () => {
+    const mk = (callsign: string, from: string, to: string, types: string[], distance_nm: number | null): Route => ({ ...snapshot.routes[0]!, callsign, from, to, types, distance_nm });
+    const inbound = mk("CRX901", "AAAA", "BBBB", ["E175", "C25C"], 300);
+    const back = mk("CRX902", "BBBB", "AAAA", ["E175"], 300);
+    const routes = [inbound, back, mk("CRX903", "BBBB", "CCCC", ["B77L"], 900), mk("CRX905", "BBBB", "DDDD", ["E175", "C25C", "B752"], 400), mk("CRX907", "BBBB", "EEEE", ["C25C"], null), mk("CRX909", "BBBB", "FFFF", ["MD11"], 120)];
+    const fallback = onwardLegs(routes, inbound, back);
+    expect(fallback.map((leg) => leg.route.callsign)).toEqual(["CRX909", "CRX905", "CRX903", "CRX907"]);
+    expect(fallback.map((leg) => leg.shared)).toEqual([[], ["E175", "C25C"], [], ["C25C"]]);
+    const more = [...routes, mk("CRX911", "BBBB", "GGGG", ["E175"], 100), mk("CRX913", "BBBB", "HHHH", ["C25C", "E175"], 650)];
+    expect(onwardLegs(more, inbound, back).map((leg) => leg.route.callsign)).toEqual(["CRX905", "CRX913", "CRX911", "CRX907"]);
+    expect(onwardLegs(more, inbound, back, 2).map((leg) => leg.route.callsign)).toEqual(["CRX905", "CRX913"]);
+    expect(onwardLegs(more, inbound).map((leg) => leg.route.callsign)).toContain("CRX902");
+  });
+});
+
+describe("runway strips", () => {
+  const end = (id: string, reciprocal: string | null, heading: number | null): CrewRunway => ({ id, reciprocal, heading_true_deg: heading, length_ft: 9000, width_ft: 150, surface: "CON", elevation_ft: 700, wind: null });
+
+  it("lists each strip once, lower-numbered end first, with both ends' true headings", () => {
+    const strips = runwayStrips([end("05L", "23R", 44.5), end("23R", "05L", 224.5), end("19L", "01R", 205), end("01R", "19L", 25)]);
+    expect(strips.map((s) => s.label)).toEqual(["05L/23R", "01R/19L"]);
+    expect(strips.map((s) => s.key)).toEqual(["05L/23R", "01R/19L"]);
+    expect(strips.map((s) => s.headings)).toEqual(["045°/225° true", "025°/205° true"]);
+    expect(strips[0]).toMatchObject({ length_ft: 9000, width_ft: 150, surface: "CON" });
+  });
+
+  it("shows one heading when the other end is missing, and none when no heading is known", () => {
+    const strips = runwayStrips([end("09", "27", 92), end("18", null, 180), end("H1", null, null)]);
+    expect(strips.map((s) => [s.label, s.headings])).toEqual([["09/27", "092° true"], ["18", "180° true"], ["H1", null]]);
+  });
+
+  it("gives every airport in crew.json one row per strip; KIND has three", () => {
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    expect(runwayStrips(crew.airports.KIND!.runways).map((s) => s.label)).toEqual(["05L/23R", "05R/23L", "14/32"]);
+    for (const [icao, airport] of Object.entries(crew.airports)) {
+      const pairs = new Set(airport.runways.map((r) => [r.id, r.reciprocal ?? ""].sort().join("/")));
+      expect(runwayStrips(airport.runways), icao).toHaveLength(pairs.size);
+    }
   });
 });
 

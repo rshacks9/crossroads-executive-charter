@@ -3,16 +3,16 @@
 import { readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import type { Snapshot } from "./data";
+import type { Crew, Snapshot } from "./data";
 
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
+const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
 const { DivisionDot, FleetPage, LivePage, MapLegend, RoutesPage, HomePage, PilotsPage } = await import("./pages");
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
-const { findRoute, routeHref } = await import("./explore");
+const { findRoute, onwardLegs, routeHref } = await import("./explore");
 const { routeDivision } = await import("./data");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -130,6 +130,32 @@ describe("pages render from the snapshot", () => {
     expect(empty).toContain("Choose an airport");
     expect(empty).toContain("Pick an airport here or on the map");
     expect(empty).not.toMatch(/click/i);
+  });
+
+  it("lists each runway strip once, with both ends' true headings", () => {
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    const html = renderToString(<RunwayTable icao="KIND" runways={crew.airports.KIND!.runways} />);
+    const body = html.slice(html.indexOf("<tbody>"), html.indexOf("</tbody>"));
+    expect(body.match(/<tr>/g)).toHaveLength(3);
+    expect(html).toContain("<strong>05R/23L</strong>");
+    expect(html).not.toContain("23L/05R");
+    expect(html).toContain('<span class="sub">135°/315° true</span>');
+  });
+
+  it("offers onward legs that share an aircraft type, with the airport name and the shared types", () => {
+    const route = findRoute(snapshot, "CRX524")!;
+    const back = snapshot.routes.find((r) => r.from === route.to && r.to === route.from);
+    const legs = onwardLegs(snapshot.routes, route, back);
+    const html = renderToString(<RoutePage snapshot={snapshot} route={route} />);
+    const start = html.indexOf('<ul class="onward">');
+    const list = html.slice(start, html.indexOf("</ul>", start));
+    expect(list.match(/<li>/g)).toHaveLength(legs.length + (back ? 1 : 0));
+    for (const { route: leg, shared } of legs) {
+      expect(shared.length).toBeGreaterThan(0);
+      expect(list).toContain(`href="${routeHref(leg)}"`);
+      expect(text(list)).toContain(`${leg.to} ${snapshot.airports[leg.to]!.name} · `);
+      expect(text(list)).toContain(` nm · ${shared.join(", ")}`);
+    }
   });
 
   it("pages route lists 25 at a time, in a named table with sortable columns", () => {
