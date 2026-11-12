@@ -1,0 +1,7 @@
+ID,Departure Airport (ICAO/IATA),Arrival Airport (ICAO/IATA),Type,Callsign,Flight Number,Fleet IDs,_delete,Service Days,Tags,Is Hidden
+,KTYQ,KBAF,scheduled,CRX749,CX749,"32199,32200,32201,32215,32220,32217,32216",FALSE,,executive,FALSE
+,KBAF,KTYQ,scheduled,CRX750,CX750,"32199,32200,32201,32215,32220,32217,32216",FALSE,,executive,FALSE
+,KBAF,KBDL,scheduled,CRX751,CX751,32230,FALSE,,"executive,short-hop",FALSE
+,KBDL,KBAF,scheduled,CRX752,CX752,32230,FALSE,,"executive,short-hop",FALSE
+,KBDL,KLAX,scheduled,CRX445,CX445,"32208,32205,32206",FALSE,,executive,FALSE
+,KLAX,KBDL,scheduled,CRX446,CX446,"32208,32205,32206",FALSE,,executive,FALSE

@@ -76,3 +76,13 @@ airports** (KMVY added), 19 fleets with the Phenom 300E (32220, E55P, N300CR). A
 Routes, tour 66748 Crossroads Circuit, alert 4543, NOTAMs 6293-6295, brand colours and a new Phoenix
 dashboard (hero banner, link tiles, full-width globe map). Details and the FedEx Virtual comparison are in
 `ORWELL-CHANGES-11.md`. Real Orwell route IDs: `orwell-route-ids-2026-11-11.csv` (do not derive IDs).
+
+## Round 13 (2026-11-12)
+
+Import #30364 (6/6): CRX749/750 KTYQ-KBAF for the seven KTYQ jets, CRX751/752 KBAF-KBDL for the Piper M600
+only, and CRX445/446 KBDL-KLAX for the A340-600, G650 and G700. Network now **316 routes, 113 airports** (KBAF
+Westfield-Barnes Regional added, Orwell airport 907144), 20 fleets with the Piper M600 (32230, M600, 5 seats,
+N600CR = aircraft 304909). The fleet form has no base field; the website puts the M600 in the Executive
+division at KTYQ. Also alert 4542 corrected and Charter of the Week alerts 4544 and 4545. The operator's step
+log stays private this round; the import file is `routes-update-13-import.csv`. Real Orwell route IDs of the six new
+routes, and of CRX739-748: `route-ids-13.csv`.
