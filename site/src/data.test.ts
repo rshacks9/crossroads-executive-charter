@@ -23,8 +23,10 @@ import {
   isCrew,
   kgToLb,
   loadCrew,
+  weatherBoard,
   windText,
   type Crew,
+  type CrewAirport,
   type FuelPlan,
   type Route,
   type WindComponents,
@@ -207,5 +209,21 @@ describe("crew briefings", () => {
       .toBe("9 kt head, 3 kt cross from left");
     expect(componentText({ headwind_kt: -5, tailwind_kt: 5, crosswind_kt: 0, crosswind_from: null } as unknown as WindComponents))
       .toBe("5 kt tail, no crosswind");
+  });
+
+  it("puts the weather board's non-VFR airports first, worst first, and counts every airport once", () => {
+    const at = (flight_category: CrewAirport["flight_category"]) => ({ flight_category });
+    const board = weatherBoard({ KAAA: at("VFR"), KBBB: at("MVFR"), KCCC: at("IFR"), KDDD: at(null), KEEE: at("LIFR"), KFFF: at("VFR"), KGGG: at("MVFR") });
+    expect(board.first.map(([icao]) => icao)).toEqual(["KEEE", "KCCC", "KBBB", "KGGG", "KDDD"]);
+    expect(board.vfr.map(([icao]) => icao)).toEqual(["KAAA", "KFFF"]);
+    expect(board.summary).toBe("2 VFR, 2 MVFR, 2 IFR or lower, 1 no report");
+    expect(weatherBoard({ KAAA: at("VFR"), KBBB: at("IFR") }).summary).toBe("1 VFR, 1 IFR or lower");
+    expect(weatherBoard({}).summary).toBe("");
+    // crew.json carries live weather, so only the invariants are checked against it.
+    const airports = (crew as Crew).airports;
+    const live = weatherBoard(airports);
+    expect(live.first.length + live.vfr.length).toBe(Object.keys(airports).length);
+    expect(live.summary.split(", ").reduce((sum, part) => sum + Number(part.split(" ")[0]), 0)).toBe(Object.keys(airports).length);
+    expect(live.first.some(([, a]) => a.flight_category === "VFR")).toBe(false);
   });
 });

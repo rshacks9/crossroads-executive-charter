@@ -471,3 +471,22 @@ export function componentText(c: WindComponents | null | undefined): string {
   const across = c.crosswind_kt > 0 ? `${c.crosswind_kt} kt cross from ${c.crosswind_from}` : "no crosswind";
   return `${along}, ${across}`;
 }
+
+/** Weather-board order of the airports that are not VFR; anything else counts as no report. */
+const BOARD_RANK: Record<string, number> = { LIFR: 0, IFR: 1, MVFR: 2 };
+
+/**
+ * The network weather board: the airports that are not VFR, worst first (LIFR, IFR, MVFR, then no
+ * report; crew.json order within each), the VFR ones apart, and a summary counted from the same data
+ * ("99 VFR, 8 MVFR, 4 IFR or lower, 1 no report", leaving out the parts that are zero).
+ */
+export function weatherBoard<T extends Pick<CrewAirport, "flight_category">>(airports: Record<string, T>): { first: [string, T][]; vfr: [string, T][]; summary: string } {
+  const entries = Object.entries(airports);
+  const rank = (a: T) => BOARD_RANK[a.flight_category ?? ""] ?? 3;
+  const vfr = entries.filter(([, a]) => a.flight_category === "VFR");
+  const first = entries.filter(([, a]) => a.flight_category !== "VFR").sort((x, y) => rank(x[1]) - rank(y[1]));
+  const mvfr = first.filter(([, a]) => a.flight_category === "MVFR").length;
+  const lower = first.filter(([, a]) => a.flight_category === "IFR" || a.flight_category === "LIFR").length;
+  const parts: [number, string][] = [[vfr.length, "VFR"], [mvfr, "MVFR"], [lower, "IFR or lower"], [first.length - mvfr - lower, "no report"]];
+  return { first, vfr, summary: parts.filter(([n]) => n > 0).map(([n, label]) => `${n} ${label}`).join(", ") };
+}

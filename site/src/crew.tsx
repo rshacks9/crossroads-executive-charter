@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ApproachCard, Crew, CrewAirport, FuelPlan, Route, Snapshot } from "./data";
-import { componentText, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, windText } from "./data";
+import { componentText, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, weatherBoard, windText } from "./data";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -130,6 +130,40 @@ function Approach({ card, icao }: { card: ApproachCard; icao: string }) {
   );
 }
 
+/**
+ * Network weather: the counts by category, then the airports that are not VFR, worst first. The VFR
+ * ones, which a briefing rarely needs, come on request.
+ */
+export function WeatherBoard({ airports }: { airports: Crew["airports"] }) {
+  const [all, setAll] = useState(false);
+  const board = useMemo(() => weatherBoard(airports), [airports]);
+  const total = board.first.length + board.vfr.length;
+  const tiles = all ? [...board.first, ...board.vfr] : board.first;
+  return (
+    <section className="wx-board">
+      <h2>Network weather</h2>
+      <p className="muted wx-board__summary">{board.summary}</p>
+      <ul className="wx-tiles" id="wx-tiles">
+        {tiles.map(([icao, a]) => (
+          <li key={icao} className={`wx-tile wx-tile--${(a.flight_category ?? "none").toLowerCase()}`}>
+            <strong>{icao}</strong>
+            <Category value={a.flight_category} />
+            <span>{windText(a.metar?.wind)}</span>
+            <span className="muted">{a.preferred_runway ? `Runway ${a.preferred_runway}` : ""}</span>
+          </li>
+        ))}
+      </ul>
+      {board.vfr.length ? (
+        <p className="wx-board__more">
+          <button type="button" className="button button--quiet" aria-expanded={all} aria-controls="wx-tiles" onClick={() => setAll((open) => !open)}>
+            {all ? "Hide the VFR airports" : `Show all ${total} airports`}
+          </button>
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
   const [crew, setCrew] = useState<Crew | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -243,21 +277,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
         </article>
       ) : null}
 
-      {crew ? (
-        <section className="wx-board">
-          <h2>Network weather</h2>
-          <ul className="wx-tiles">
-            {Object.entries(crew.airports).map(([icao, a]) => (
-              <li key={icao} className={`wx-tile wx-tile--${(a.flight_category ?? "none").toLowerCase()}`}>
-                <strong>{icao}</strong>
-                <Category value={a.flight_category} />
-                <span>{windText(a.metar?.wind)}</span>
-                <span className="muted">{a.preferred_runway ? `Runway ${a.preferred_runway}` : ""}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      {crew ? <WeatherBoard airports={crew.airports} /> : null}
 
       <p className="fineprint crew__credit">Calculations by the Jumpseat crew modules (weather briefing, fuel planner and approach briefing) running in our update job.</p>
     </section>

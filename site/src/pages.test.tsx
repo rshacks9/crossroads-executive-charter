@@ -13,7 +13,8 @@ const { DivisionDot, FleetPage, LivePage, MapLegend, PageHeader, RoutesPage, Hom
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, destinationGroups, findRoute, onwardLegs, routeHref, servedAirports, suggestFleet } = await import("./explore");
-const { formatNumber, payloadTonnes, routeDivision } = await import("./data");
+const { formatNumber, payloadTonnes, routeDivision, weatherBoard } = await import("./data");
+const { WeatherBoard } = await import("./crew");
 const { FLEET_INFO, SERVICES } = await import("./content");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -355,5 +356,15 @@ describe("pages render from the snapshot", () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  it("crew weather board: the counts, the airports that are not VFR, and a button for the rest", () => {
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    const board = weatherBoard(crew.airports);
+    const html = renderToString(<WeatherBoard airports={crew.airports} />);
+    expect(html).toContain(`<p class="muted wx-board__summary">${board.summary}</p>`);
+    expect(html.match(/<li class="wx-tile /g) ?? []).toHaveLength(board.first.length);
+    for (const [icao] of board.vfr) expect(html).not.toContain(`<strong>${icao}</strong>`);
+    if (board.vfr.length) expect(html).toContain(`aria-expanded="false" aria-controls="wx-tiles">Show all ${board.first.length + board.vfr.length} airports</button>`);
   });
 });
