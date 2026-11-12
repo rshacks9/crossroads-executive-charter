@@ -77,7 +77,11 @@ class SimAircraftTests(unittest.TestCase):
         snapshot = build_snapshot(PREVIEW, SITE, now=NOW, source="preview")
         sim = snapshot["airline"]["sim_aircraft"]
         self.assertEqual(sorted(sim), sorted(f["code"] for f in snapshot["fleet"]))
-        self.assertEqual(sim["B77L"], "PMDG 777F")
+        self.assertEqual(sim["B77L"], "PMDG 777F (add-on)")
+        # Each label ends in what kind of model it is, such as "(add-on)". The A380's is still to be chosen.
+        for type_code, label in sim.items():
+            if type_code != "A388":
+                self.assertRegex(label, r" [(][^()]+[)]$", type_code)
 
     def test_bad_sim_entries_dropped(self):
         site = {**SITE, "sim_aircraft": {"not a code!": "x", "C510": "", "LJ35": "Learjet"}}

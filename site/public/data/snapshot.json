@@ -1,7 +1,7 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-12T04:21:58Z",
+ "generated_at": "2026-11-12T04:30:40Z",
  "unavailable": [],
  "airline": {
   "divisions": [
@@ -72,7 +72,7 @@
    "B752": "Bluebird Simulations 757-200 (add-on)",
    "A306": "iniBuilds A300-600 (add-on)",
    "MD11": "TFDi Design MD-11F (add-on)",
-   "B77L": "PMDG 777F"
+   "B77L": "PMDG 777F (add-on)"
   },
   "name": "Crossroads Executive & Charter",
   "short_name": "Crossroads",
