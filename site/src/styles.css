@@ -21,6 +21,8 @@
   --radius: 6px;
   --gutter: clamp(16px, 4vw, 40px);
   --max: 1200px;
+  /* Where sticky things start: the masthead height that App.tsx measures while the menu is closed. */
+  --sticky-top: var(--header-h, 65px);
   --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
   --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
   --shadow: 0 1px 2px rgba(27,35,40,.06), 0 8px 24px -16px rgba(27,35,40,.25);
@@ -67,6 +69,8 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+/* In-page jumps and focused controls stop clear of the sticky masthead. */
+html { scroll-padding-top: calc(var(--sticky-top) + 16px); }
 body { margin: 0; background: var(--paper); color: var(--text); font: 400 17px/1.55 var(--body); }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
@@ -406,12 +410,29 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 /* masthead tools + theme */
 .masthead__tools { display: flex; align-items: center; gap: 8px; order: 2; margin-left: auto; }
 .nav { order: 3; margin-left: 0; }
-@media (min-width: 1361px) { .masthead__tools { order: 4; margin-left: 4px; } .nav { margin-left: auto; } }
+/* One row from 1361 px: the tools stay before the nav, so the visual order is the tab order. */
+@media (min-width: 1361px) { .masthead__inner { gap: 0 16px; } .nav a { padding: 0 8px; } .masthead .search-button { width: 44px; padding: 0; justify-content: center; } .search-button__label, .search-button kbd { display: none; } .nav a.nav__extra { display: none; } }
 .theme-toggle { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius); border: 1px solid var(--ink-line); background: transparent; color: var(--on-ink-2); cursor: pointer; }
 .theme-toggle:hover { color: var(--on-ink); background: var(--ink-2); }
 .nav a { font-size: 17px; }
 @media (max-width: 1360px) {
   .nav a { font-size: 20px; }
+}
+/* One 64 px masthead row on phones: 10 + 44 + 10 px, with room for the full wordmark. */
+@media (max-width: 560px) {
+  .masthead__inner { column-gap: 12px; row-gap: 10px; padding-block: 10px; min-height: 0; }
+  .menu-button { padding: 0 12px; }
+  .wordmark__text small { letter-spacing: .1em; }
+}
+@media (max-width: 380px) {
+  .wordmark__text small { letter-spacing: .04em; }
+  .masthead__tools { gap: 6px; }
+}
+/* The open menu scrolls inside the header; a short screen gets a header that does not stick. */
+.masthead--open { max-height: 100vh; max-height: 100dvh; overflow-y: auto; overscroll-behavior: contain; }
+@media (max-height: 520px) {
+  .masthead { position: static; }
+  :root { --sticky-top: 0px; }
 }
 .map-tiles { transition: filter .2s; }
 :root[data-theme="dark"] .map-tiles { filter: grayscale(1) invert(1) brightness(.85) contrast(.9); }
@@ -534,7 +555,7 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 /* services */
 .subnav { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 0 !important; }
 .subnav .chip-button { text-decoration: none; }
-.service { border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.service { border-top: 1px solid var(--line); }
 .page + .service { padding-top: clamp(32px, 5vw, 56px); }
 .service__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
 @media (max-width: 900px) { .service__grid { grid-template-columns: 1fr; } }
@@ -579,13 +600,13 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 /* handbook */
 .handbook { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
 @media (max-width: 900px) { .handbook { grid-template-columns: 1fr; } }
-.toc { position: sticky; top: 84px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.toc { position: sticky; top: calc(var(--sticky-top) + 16px); background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
 @media (max-width: 900px) { .toc { position: static; } }
 .toc ol { margin: 0; padding-left: 20px; display: grid; gap: 2px; }
 .toc a { color: var(--text); text-decoration: none; display: inline-flex; min-height: 34px; align-items: center; }
 .toc a:hover { color: var(--signal-ink); }
 .handbook__body { display: grid; gap: 40px; min-width: 0; }
-.hb-section { scroll-margin-top: 84px; display: grid; gap: 12px; }
+.hb-section { display: grid; gap: 12px; }
 .hb-section > h2 { font-size: clamp(28px, 3.5vw, 36px); padding-bottom: 8px; border-bottom: 2px solid var(--text); }
 .hb-section > p { max-width: 72ch; }
 .hb-section .table-wrap { margin-top: 4px; }

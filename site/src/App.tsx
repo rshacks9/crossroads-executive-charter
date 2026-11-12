@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { type Snapshot, isStale, loadSnapshot, relativeAge } from "./data";
 import { CrewPage } from "./crew";
 import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./info";
@@ -114,6 +114,8 @@ export function App() {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const masthead = useRef<HTMLElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -157,9 +159,15 @@ export function App() {
     );
   }, [loc, snapshot]);
 
-  // "/" or Ctrl/Cmd+K opens search, unless the user is typing in a field.
+  // "/" or Ctrl/Cmd+K opens search, unless the user is typing in a field. Escape closes the menu and
+  // returns focus to the Menu button; while the search dialog is open, Escape is the dialog's.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && menuOpen && !searchOpen) {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+        return;
+      }
       const target = e.target as HTMLElement | null;
       const typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
       if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !typing)) {
@@ -169,15 +177,31 @@ export function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen, searchOpen]);
+
+  // Publish the masthead's height as --header-h on <html> for sticky offsets and scroll padding
+  // (styles.css --sticky-top). Measured only while the menu is closed: an open menu must not move
+  // sticky things.
+  useEffect(() => {
+    const el = masthead.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      if (el.classList.contains("masthead--open")) return;
+      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const airline = snapshot?.airline;
-  const navRoutes = ROUTES.filter((r) => r.nav);
+  // Every page but Home, in ROUTES order so "Fly with us" stays last. Pages without a place in the
+  // desktop bar (nav: false) are listed in the menu only: .nav__extra is hidden from 1361 px.
+  const navRoutes = ROUTES.filter((r) => r.path);
 
   return (
     <div className="shell">
       <a className="skip-link" href="#main">Skip to content</a>
-      <header className="masthead">
+      <header ref={masthead} className={"masthead" + (menuOpen ? " masthead--open" : "")}>
         <div className="masthead__inner">
           <a className="wordmark" href="#/" aria-label={`${airline?.name ?? "Crossroads Executive & Charter"} home`}>
             <Mark />
@@ -194,6 +218,7 @@ export function App() {
             </button>
             <ThemeToggle />
             <button
+              ref={menuButton}
               type="button"
               className="menu-button"
               aria-expanded={menuOpen}
@@ -208,8 +233,9 @@ export function App() {
               <a
                 key={route.path}
                 href={`#/${route.path}`}
-                className={route.path === "pilots" ? "nav__cta" : undefined}
+                className={route.path === "pilots" ? "nav__cta" : route.nav ? undefined : "nav__extra"}
                 aria-current={route.path === path ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
               >
                 {route.label}
                 {route.path === "live" && snapshot && snapshot.live.length > 0 ? (
