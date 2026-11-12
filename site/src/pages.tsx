@@ -373,6 +373,7 @@ export function HomePage({ snapshot }: PageProps) {
           <SectionHead eyebrow="Just landed" title={recent.length ? "Latest flights" : "Logbook firsts"} />
           {recent.length ? (
             <table className="table table--compact">
+              <caption className="visually-hidden">Latest flights</caption>
               <thead><tr><th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col" className="num">Landing</th></tr></thead>
               <tbody>
                 {recent.slice(0, 6).map((r, i) => (
@@ -468,24 +469,26 @@ export function LivePage({ snapshot }: PageProps) {
         {!live.length ? <MapLegend snapshot={snapshot} routes={snapshot.routes} /> : null}
         {live.length ? (
           <div className="table-wrap">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col">Phase</th>
-                  <th scope="col" className="num">Altitude</th><th scope="col" className="num">Speed</th><th scope="col">Progress</th><th scope="col">ETA</th>
+            {/* Stacked into cards on phones: the explicit roles keep it a table for assistive technology. */}
+            <table className="table" role="table">
+              <caption className="visually-hidden">Flights in progress</caption>
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th scope="col" role="columnheader">Flight</th><th scope="col" role="columnheader">Route</th><th scope="col" role="columnheader">Aircraft</th><th scope="col" role="columnheader">Phase</th>
+                  <th scope="col" className="num" role="columnheader">Altitude</th><th scope="col" className="num" role="columnheader">Speed</th><th scope="col" role="columnheader">Progress</th><th scope="col" role="columnheader">ETA</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody role="rowgroup">
                 {live.map((f, i) => (
-                  <tr key={`${f.callsign}-${i}`} className={selected === i ? "is-selected" : undefined}>
-                    <td data-label="Flight"><strong>{f.callsign ?? f.flight_number ?? "—"}</strong>{f.pilot ? <span className="sub">{f.rank ? `${f.rank} ` : ""}{f.pilot}</span> : null}</td>
-                    <td data-label="Route"><Leg from={f.from} to={f.to} snapshot={snapshot} /></td>
-                    <td data-label="Aircraft">{f.aircraft ?? "—"}{f.registration ? <span className="sub">{f.registration}</span> : null}</td>
-                    <td data-label="Phase">{f.phase ?? "—"}</td>
-                    <td data-label="Altitude" className="num">{formatFeet(f.altitude_ft)}</td>
-                    <td data-label="Speed" className="num">{f.groundspeed_kt != null ? `${f.groundspeed_kt} kt` : "—"}</td>
-                    <td data-label="Progress"><Progress flight={f} />{f.remaining_nm != null ? <span className="sub">{formatNumber(f.remaining_nm)} nm to go</span> : null}</td>
-                    <td data-label="ETA">{f.eta ? formatDate(f.eta, true) : "—"}</td>
+                  <tr key={`${f.callsign}-${i}`} role="row" className={selected === i ? "is-selected" : undefined}>
+                    <td data-label="Flight" role="cell"><strong>{f.callsign ?? f.flight_number ?? "—"}</strong>{f.pilot ? <span className="sub">{f.rank ? `${f.rank} ` : ""}{f.pilot}</span> : null}</td>
+                    <td data-label="Route" role="cell"><Leg from={f.from} to={f.to} snapshot={snapshot} /></td>
+                    <td data-label="Aircraft" role="cell">{f.aircraft ?? "—"}{f.registration ? <span className="sub">{f.registration}</span> : null}</td>
+                    <td data-label="Phase" role="cell">{f.phase ?? "—"}</td>
+                    <td data-label="Altitude" className="num" role="cell">{formatFeet(f.altitude_ft)}</td>
+                    <td data-label="Speed" className="num" role="cell">{f.groundspeed_kt != null ? `${f.groundspeed_kt} kt` : "—"}</td>
+                    <td data-label="Progress" role="cell"><Progress flight={f} />{f.remaining_nm != null ? <span className="sub">{formatNumber(f.remaining_nm)} nm to go</span> : null}</td>
+                    <td data-label="ETA" role="cell">{f.eta ? formatDate(f.eta, true) : "—"}</td>
                   </tr>
                 ))}
               </tbody>

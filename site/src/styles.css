@@ -251,9 +251,12 @@ main:focus { outline: none; }
   .table-wrap .table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .table-wrap .table, .table-wrap .table tbody, .table-wrap .table tr, .table-wrap .table td { display: block; width: 100%; }
   .table-wrap .table tr { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 12px; padding: 6px 0; }
-  .table-wrap .table td { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 12px; border: 0; padding: 6px 14px; text-align: left; }
+  .table-wrap .table td { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 0 12px; border: 0; padding: 6px 14px; text-align: left; }
   .table-wrap .table td > * { grid-column: 2; }
-  .table-wrap .table td::before { grid-row: 1 / span 2; content: attr(data-label); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); padding-top: 2px; }
+  .table-wrap .table td .sub { margin-top: 2px; }
+  .table-wrap .table td > .tag { justify-self: start; margin-left: 0; }
+  /* The label is drawn, not read: the column header already names the cell (empty alt text where supported). */
+  .table-wrap .table td::before { grid-row: 1 / span 2; content: attr(data-label); content: attr(data-label) / ""; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); padding-top: 2px; }
   .table-wrap .table .num { text-align: left; }
 }
 

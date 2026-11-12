@@ -254,9 +254,11 @@ export function HandbookPage({ snapshot }: PageProps) {
             <h2>2. Flight-number blocks</h2>
             <p>The first digit tells you what kind of flight it is. As a rule, odd numbers are outbound and even numbers are the return.</p>
             <div className="table-wrap">
-              <table className="table">
-                <thead><tr><th scope="col">Block</th><th scope="col">Used for</th><th scope="col">Base</th><th scope="col" className="num">Routes now</th></tr></thead>
-                <tbody>
+              {/* Stacked into cards on phones: the explicit roles keep it a table for assistive technology. */}
+              <table className="table" role="table">
+                <caption className="visually-hidden">Flight-number blocks</caption>
+                <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Block</th><th scope="col" role="columnheader">Used for</th><th scope="col" role="columnheader">Base</th><th scope="col" className="num" role="columnheader">Routes now</th></tr></thead>
+                <tbody role="rowgroup">
                   {FLIGHT_NUMBER_BLOCKS.map((b) => {
                     const lo = Number(b.block.slice(3, 6));
                     const count = snapshot.routes.filter((r) => {
@@ -264,11 +266,11 @@ export function HandbookPage({ snapshot }: PageProps) {
                       return n >= lo && n <= lo + 98;
                     }).length;
                     return (
-                      <tr key={b.block}>
-                        <td data-label="Block"><strong>{b.block}</strong></td>
-                        <td data-label="Used for">{b.use}</td>
-                        <td data-label="Base">{b.base}</td>
-                        <td data-label="Routes now" className="num">{count}</td>
+                      <tr key={b.block} role="row">
+                        <td data-label="Block" role="cell"><strong>{b.block}</strong></td>
+                        <td data-label="Used for" role="cell">{b.use}</td>
+                        <td data-label="Base" role="cell">{b.base}</td>
+                        <td data-label="Routes now" className="num" role="cell">{count}</td>
                       </tr>
                     );
                   })}
@@ -300,11 +302,12 @@ export function HandbookPage({ snapshot }: PageProps) {
           <section id="hb-ci" className="hb-section">
             <h2>5. Cost index and cruise</h2>
             <div className="table-wrap">
-              <table className="table">
-                <thead><tr><th scope="col">Group</th><th scope="col">Types</th><th scope="col">Guidance</th></tr></thead>
-                <tbody>
+              <table className="table" role="table">
+                <caption className="visually-hidden">Cost index guidance</caption>
+                <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Group</th><th scope="col" role="columnheader">Types</th><th scope="col" role="columnheader">Guidance</th></tr></thead>
+                <tbody role="rowgroup">
                   {COST_INDEX.map((c) => (
-                    <tr key={c.group}><td data-label="Group"><strong>{c.group}</strong></td><td data-label="Types">{c.types}</td><td data-label="Guidance">{c.guidance}</td></tr>
+                    <tr key={c.group} role="row"><td data-label="Group" role="cell"><strong>{c.group}</strong></td><td data-label="Types" role="cell">{c.types}</td><td data-label="Guidance" role="cell">{c.guidance}</td></tr>
                   ))}
                 </tbody>
               </table>

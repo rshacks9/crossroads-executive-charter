@@ -180,6 +180,27 @@ describe("pages render from the snapshot", () => {
     expect(html).not.toContain("suggestion--wrong-role");
   });
 
+  it("names every data table with a caption; the tables that stack on phones keep explicit table roles", () => {
+    const c25c = snapshot.fleet.find((f) => f.code === "C25C")!;
+    expect(renderToString(<TypePage snapshot={snapshot} code="C25C" />)).toContain(`<caption class="visually-hidden">${c25c.name} at a glance</caption>`);
+    expect(renderToString(<RoutePage snapshot={snapshot} route={findRoute(snapshot, "CRX524")} />)).toContain('<caption class="visually-hidden">CRX524 flight facts</caption>');
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    expect(renderToString(<RunwayTable icao="KIND" runways={crew.airports.KIND!.runways} />)).toContain('<caption class="visually-hidden">Runways at KIND</caption>');
+    const landed = { callsign: "CRX524", flight_number: "524", from: "CYYZ", to: "KIND", aircraft: "E175", landing_rate: -140, duration_min: 95, landed: snapshot.generated_at };
+    expect(renderToString(<HomePage snapshot={{ ...snapshot, recent_flights: [landed] }} />)).toContain('<caption class="visually-hidden">Latest flights</caption>');
+    const flight = { callsign: "CRX524", flight_number: "524", from: "CYYZ", to: "KIND", phase: "Cruise", aircraft: "E175", aircraft_name: null, registration: null, pilot: null, rank: null, network: null, lat: 42.5, lon: -82.1, altitude_ft: 35000, groundspeed_kt: 450, heading: 225, route_nm: 380, remaining_nm: 120, eta: null };
+    const live = renderToString(<LivePage snapshot={{ ...snapshot, live: [flight] }} />);
+    expect(live).toContain('<caption class="visually-hidden">Flights in progress</caption>');
+    const handbook = renderToString(<HandbookPage snapshot={snapshot} />);
+    expect(handbook).toContain('<caption class="visually-hidden">Flight-number blocks</caption>');
+    expect(handbook).toContain('<caption class="visually-hidden">Cost index guidance</caption>');
+    const roles: Record<string, string> = { thead: "rowgroup", tbody: "rowgroup", tr: "row", th: "columnheader", td: "cell" };
+    for (const [html, count] of [[handbook, 2], [live, 1]] as const) {
+      expect(html.match(/<table class="table" role="table">/g)).toHaveLength(count);
+      for (const [, tag, attrs] of html.matchAll(/<(thead|tbody|tr|th|td)( [^>]*)?>/g)) expect(attrs ?? "", tag).toContain(`role="${roles[tag!]}"`);
+    }
+  });
+
   it("pages route lists 25 at a time, in a named table with sortable columns", () => {
     const total = snapshot.routes.length;
     const html = renderToString(<RoutesPage snapshot={snapshot} />);

@@ -485,6 +485,7 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
         <div>
           <SectionHead eyebrow="Specifications" title="At a glance" />
           <table className="table table--compact spec-table">
+            <caption className="visually-hidden">{`${type.name} at a glance`}</caption>
             <tbody>
               <tr><th scope="row">ICAO type</th><td>{code}</td></tr>
               <tr><th scope="row">Role</th><td>{info?.role ?? "—"}</td></tr>
@@ -552,6 +553,7 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
         <div>
           <SectionHead eyebrow="Flight facts" title="The leg" />
           <table className="table table--compact spec-table">
+            <caption className="visually-hidden">{`${key} flight facts`}</caption>
             <tbody>
               <tr><th scope="row">Callsign</th><td>{route.callsign ?? "—"} <span className="muted">(flight {route.flight_number ?? "—"})</span></td></tr>
               <tr><th scope="row">Departure</th><td><a href={airportHref(route.from)}>{route.from} · {a?.name}</a>{longestRunway(route.from) ? <span className="sub">Longest runway {formatNumber(Math.round(longestRunway(route.from)))} ft</span> : null}</td></tr>

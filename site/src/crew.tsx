@@ -50,6 +50,7 @@ function AirportWeather({ icao, airport, snapshot, role, runwayHighlight }: { ic
       )}
       {airport.runways.length ? (
         <div className="table-scroll"><table className="table table--compact rwy-table">
+          <caption className="visually-hidden">{`Runways at ${icao} with wind components`}</caption>
           <thead><tr><th scope="col">Runway</th><th scope="col" className="num">Length</th><th scope="col">Wind component</th></tr></thead>
           <tbody>
             {airport.runways.map((r) => (
@@ -76,6 +77,7 @@ function FuelTable({ plan }: { plan: FuelPlan }) {
   const rows = Object.entries(plan.phases);
   return (
     <div className="table-scroll"><table className="table table--compact fuel-table">
+      <caption className="visually-hidden">Fuel estimate by phase</caption>
       <thead><tr><th scope="col">Phase</th><th scope="col" className="num">Time</th><th scope="col" className="num">Fuel (kg)</th><th scope="col" className="num">Fuel (lb)</th></tr></thead>
       <tbody>
         {rows.map(([name, p]) => (
@@ -110,6 +112,7 @@ function Approach({ card, icao }: { card: ApproachCard; icao: string }) {
       </dl>
       {card.target_gates.length ? (
         <div className="table-scroll"><table className="table table--compact">
+          <caption className="visually-hidden">{`Approach gates for runway ${rw.identifier ?? "—"}`}</caption>
           <thead><tr><th scope="col">From threshold</th><th scope="col" className="num">Height</th><th scope="col" className="num">Altitude</th><th scope="col" className="num">Speed</th></tr></thead>
           <tbody>
             {card.target_gates.map((g) => (
