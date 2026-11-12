@@ -327,7 +327,7 @@ export function HomePage({ snapshot }: PageProps) {
         <ul className="reasons">
           <li>
             <h3>Two airports, real logic</h3>
-            <p>Light and mid-size jets work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
+            <p>Light and mid-size aircraft, from the Piper M600 to the Citation X, work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
           </li>
           <li>
             <h3>Business jet to freighter</h3>
@@ -480,7 +480,7 @@ function routeKey(route: { callsign: string | null; flight_number: string | null
 
 function icaoNote(baseList: string[]): string {
   return baseList.includes("KTYQ") && baseList.includes("KIND")
-    ? "KTYQ takes jets up to Citation X size. KIND takes the Longitude, Gulfstreams, airliners and freighters."
+    ? "KTYQ takes light and mid-size aircraft, from the Piper M600 to the Citation X. KIND takes the Longitude, Gulfstreams, airliners and freighters."
     : "All operations from Indianapolis.";
 }
 
@@ -620,7 +620,7 @@ export function FleetPage({ snapshot }: PageProps) {
 
   return (
     <>
-      <PageHeader eyebrow="Fleet" title="From Mustang to 777F" lede={`${snapshot.fleet.length} aircraft types and ${formatNumber(total)} airframes, every one registered N…CR. Light and mid-size jets live at Indianapolis Executive, everything larger at Indianapolis International.`}>
+      <PageHeader eyebrow="Fleet" title="From Mustang to 777F" lede={`${snapshot.fleet.length} aircraft types and ${formatNumber(total)} airframes, every one registered N…CR. Light and mid-size aircraft live at Indianapolis Executive, everything larger at Indianapolis International.`}>
         <dl className="header-facts">
           <div><dt>Types</dt><dd>{snapshot.fleet.length}</dd></div>
           <div><dt>At KTYQ</dt><dd>{ktyq}</dd></div>

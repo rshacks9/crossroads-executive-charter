@@ -372,7 +372,7 @@ export function AboutPage({ snapshot }: PageProps) {
             <h2>The idea</h2>
             <p>Most virtual airlines copy a real carrier's schedule. We wanted something sim pilots rarely get: the variety of a charter operator. One week you're in a Citation Mustang taking a client to Teterboro. The next you're in a 757 with a team bound for a playoff game, or in a 777F heading for Leipzig overnight.</p>
             <h2>Why Indianapolis</h2>
-            <p>Indianapolis suits both halves of the operation. Indianapolis Executive (KTYQ), north of the city, is a business-aviation field sized for light and mid-size jets. Indianapolis International (KIND), south-west of downtown, has the long runways and the air-cargo heritage for widebodies and freighters. Splitting the fleet between them is how a real operator would do it, and it makes every flight start somewhere sensible.</p>
+            <p>Indianapolis suits both halves of the operation. Indianapolis Executive (KTYQ), north of the city, is a business-aviation field sized for light and mid-size aircraft. Indianapolis International (KIND), south-west of downtown, has the long runways and the air-cargo heritage for widebodies and freighters. Splitting the fleet between them is how a real operator would do it, and it makes every flight start somewhere sensible.</p>
             <h2>What we are, and aren't</h2>
             <p>Crossroads Executive & Charter is a <strong>fictional virtual airline</strong> for flight simulation. It opened on vAMSYS in November 2026. We don't sell flights, we aren't an air carrier or charter operator, and we have no connection to any real company. The aircraft types are named only so pilots know which simulator model to fly.</p>
             <h2>How the site works</h2>

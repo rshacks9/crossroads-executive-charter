@@ -15,7 +15,7 @@ const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
 const { WeatherBoard } = await import("./crew");
-const { FLEET_INFO, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
+const { FLEET_INFO, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -450,7 +450,7 @@ describe("pages render from the snapshot", () => {
 describe("texts follow the data", () => {
   it("counts the KTYQ types and the tours instead of typing them; the empty Events box points to the tours", () => {
     expect(snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ")).toHaveLength(KTYQ_TYPES.length);
-    expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Mustang`);
+    expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Piper M600 to the Citation`);
     const careers = renderToString(<CareersPage snapshot={snapshot} />);
     expect(careers).toContain(`<h2>${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} to fly</h2>`);
     // One name for where the tours are (Events in Phoenix), and no badges: the vAMSYS Badges module is off.
@@ -511,6 +511,68 @@ describe("texts follow the data", () => {
 
   it("says 'fictional' in the first screen", () => {
     expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
+  });
+});
+
+describe("the KTYQ base rule", () => {
+  // The Piper M600, a single-engine turboprop, is based at KTYQ. Copy that says what works from KTYQ
+  // says "light and mid-size aircraft" or names the M600; it never says "jets".
+  const JETS = /\bjets\b/i;
+  const KTYQ = /\b(KTYQ|Indianapolis Executive)\b/;
+  // How the site words the base rule: what KTYQ takes, what works, lives or starts there, and
+  // everything larger at KIND.
+  const RULE = /everything (larger|bigger)|larger aircraft|base rules?|right base|\btakes\b|sized for|\b(work|works|live|lives|start|starts)\b/i;
+  const ruleSentences = (page: string) => page.split(/(?<=[.!?])\s+/).filter((s) => KTYQ.test(s) && RULE.test(s));
+
+  it("is the base of the M600, which is not a jet", () => {
+    expect(baseFor("M600")).toBe("KTYQ");
+    expect(KTYQ_TYPES).toContain("M600");
+    expect(FLEET_INFO.M600!.role).toMatch(/turboprop/i);
+  });
+
+  it("never says jets where a page says what works from KTYQ", () => {
+    const pages: [string, string][] = [
+      ["home", renderToString(<HomePage snapshot={snapshot} />)],
+      ["fleet", renderToString(<FleetPage snapshot={snapshot} />)],
+      ["pilots", renderToString(<PilotsPage snapshot={snapshot} />)],
+      ["services", renderToString(<ServicesPage snapshot={snapshot} />)],
+      ["careers", renderToString(<CareersPage snapshot={snapshot} />)],
+      ["handbook", renderToString(<HandbookPage snapshot={snapshot} />)],
+      ["about", renderToString(<AboutPage snapshot={snapshot} />)],
+      ["news", renderToString(<NewsPage snapshot={snapshot} />)],
+      ["resources", renderToString(<ResourcesPage snapshot={snapshot} />)],
+      ["plan", renderToString(<PlanPage snapshot={snapshot} />)],
+      ["airport", renderToString(<AirportPage snapshot={snapshot} icao="KTYQ" />)],
+    ];
+    const stating: string[] = [];
+    for (const [name, html] of pages) {
+      for (const sentence of ruleSentences(text(html))) {
+        stating.push(name);
+        expect(sentence, name).not.toMatch(JETS);
+      }
+    }
+    // The scan finds the rule wherever the site states it, so a page cannot pass by saying it differently.
+    for (const name of ["home", "fleet", "pilots", "handbook", "about", "news", "resources", "plan"]) expect(stating, name).toContain(name);
+    // It catches the wording it replaced.
+    for (const old of [
+      "Light and mid-size jets (up to Citation X size) start and end at Indianapolis Executive, KTYQ.",
+      "KTYQ takes jets up to Citation X size.",
+      "Light and mid-size jets live at Indianapolis Executive, everything larger at Indianapolis International.",
+      "Base rules still apply when booking: light and mid jets from KTYQ, larger aircraft from KIND.",
+      "Indianapolis Executive (KTYQ), north of the city, is a business-aviation field sized for light and mid-size jets.",
+    ]) expect(ruleSentences(old).some((s) => JETS.test(s)), old).toBe(true);
+  });
+
+  it("names the M600 or says light and mid-size aircraft in the rule, its NOTAM and the Executive copy", () => {
+    const rule = SOP_RULES.find((r) => r.title === "Right base, right aircraft");
+    const notam = NEWS.find((n) => n.kind === "NOTAM" && n.title.startsWith("Base rule"));
+    const executive = snapshot.airline.divisions.find((d) => d.base === "KTYQ");
+    const service = SERVICES.find((s) => s.division === executive?.name);
+    if (!rule || !notam || !executive || !service) throw new Error("the base rule, its NOTAM or the Executive division is missing");
+    const copy = [rule.body, notam.title, notam.body, executive.summary ?? "", service.pitch, ...service.points.filter((p) => KTYQ.test(p))];
+    for (const line of copy) expect(line).not.toMatch(JETS);
+    for (const line of [rule.body, notam.title, notam.body]) expect(line).toMatch(/light and mid-size aircraft/i);
+    for (const line of [rule.body, notam.body, executive.summary ?? ""]) expect(line).toContain("Piper M600");
   });
 });
 

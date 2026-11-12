@@ -737,7 +737,7 @@ export function PlanPage({ snapshot }: PageProps) {
                 {!anyScheduled && pair.length ? <p className="fineprint">The scheduled routes above are flown by other types than the best match.</p> : null}
               </div>
             </div>
-            <p className="fineprint">Matches use rounded Crossroads planning ranges and the seat or payload figures in vAMSYS. Block estimates are still-air (cruise speed plus 25 minutes). Base rules still apply when booking: light and mid jets from KTYQ, larger aircraft from KIND. Always dispatch with SimBrief.</p>
+            <p className="fineprint">Matches use rounded Crossroads planning ranges and the seat or payload figures in vAMSYS. Block estimates are still-air (cruise speed plus 25 minutes). Base rules still apply when booking: light and mid-size aircraft from KTYQ, everything larger from KIND. Always dispatch with SimBrief.</p>
           </>
         )}
       </section>
@@ -837,7 +837,7 @@ export function ResourcesPage({ snapshot }: PageProps) {
       <section className="page">
         <SectionHead eyebrow="SOPs in brief" title="The six rules" action={{ href: "#/handbook", label: "Full handbook" }} />
         <ol className="sop-brief">
-          <li><strong>Right base, right aircraft.</strong> Light and mid jets at KTYQ, everything larger at KIND.</li>
+          <li><strong>Right base, right aircraft.</strong> Light and mid-size aircraft at KTYQ, everything larger at KIND.</li>
           <li><strong>Gate to gate with <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</strong> No slew, time acceleration or in-flight refuelling.</li>
           <li><strong>45 minutes final reserve</strong> on every flight. Dispatch with SimBrief.</li>
           <li><strong>Stabilised or go around:</strong> 1,000 ft in cloud, 500 ft visual.</li>

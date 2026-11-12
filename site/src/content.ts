@@ -168,9 +168,9 @@ export const SERVICES: Service[] = [
     division: "Executive",
     slug: "executive",
     headline: "Executive: the light-jet heart of the airline",
-    pitch: "Short-notice business flying from Indianapolis Executive, the way a Part 135 operator would run it: small jets, short taxis and a schedule built around meetings.",
+    pitch: "Short-notice business flying from Indianapolis Executive, the way a Part 135 operator would run it: light aircraft, short taxis and a schedule built around meetings.",
     points: [
-      `${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Mustang to the Citation\u00a0X`,
+      `${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Piper M600 to the Citation\u00a0X`,
       "Longitude, G650 and G700 at KIND for coast-to-coast and transatlantic trips",
       "Ski fields (Aspen, Vail) are off-limits to the Mustang and Premier",
       "Short hops under an hour for when you have one evening to fly",
@@ -295,7 +295,7 @@ export const LANDING_RATES: { band: string; label: string; tone: "good" | "ok" |
 ];
 
 export const SOP_RULES: { title: string; body: string; link?: { href: string; label: string } }[] = [
-  { title: "Right base, right aircraft", body: "Light and mid-size jets (up to Citation X size) start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. Book a route that matches the aircraft." },
+  { title: "Right base, right aircraft", body: "Light and mid-size aircraft, from the Piper M600 to the Citation X, start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. Book a route that matches the aircraft." },
   { title: "Gate to gate with Pegasus", link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" }, body: "Start Pegasus before engine start and leave it running until the engines are off at the gate. No slew, no time acceleration, no in-flight refuelling. If real life calls, pause and say so in your PIREP comments." },
   { title: "Stabilised or go around", body: "On speed, on path and configured by 1,000 ft above the airport in cloud and 500 ft in visual conditions. If you aren't, go around. Nobody is penalised for a go-around." },
   { title: "Speed and altitude discipline", body: "250 kt below 10,000 ft in the US unless ATC says otherwise. Respect published SID and STAR restrictions and any noise abatement procedure published for the airport." },
@@ -418,8 +418,8 @@ export const NEWS: NewsItem[] = [
   {
     date: "2026-11-10",
     kind: "NOTAM",
-    title: "Base rule: KTYQ for light and mid jets, KIND for everything larger",
-    body: "Aircraft up to Citation X size work from Indianapolis Executive (KTYQ). The Longitude, Gulfstreams, airliners and freighters work from Indianapolis International (KIND). Routes in vAMSYS only offer the aircraft that fit.",
+    title: "Base rule: KTYQ for light and mid-size aircraft, KIND for everything larger",
+    body: "Light and mid-size aircraft, from the Piper M600 to the Citation X, work from Indianapolis Executive (KTYQ). The Longitude, Gulfstreams, airliners and freighters work from Indianapolis International (KIND). Routes in vAMSYS only offer the aircraft that fit.",
     link: { href: "#/handbook", label: "Read the handbook" },
   },
   {
