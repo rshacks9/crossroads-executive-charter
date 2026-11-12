@@ -1,57 +1,57 @@
 OK CYYZ 906880
 OK EGLF 906881
-FAIL EGSS url: https://vamsys.io/orwell/operations/fleet/fleets/32217/edit window: Create Airport - vAMSYS - Google Chrome
-OK? EGSS :: Text        Created @ 917,155 284x22
-OK? KACK :: Text        Created @ 917,155 284x22
-OK? KAGC :: Text        Created @ 917,155 284x22
-OK? KAPA :: Text        Created @ 917,155 284x22
-OK? KAUS :: Text        Created @ 917,155 284x22
-OK? KBCT :: Text        Created @ 917,155 284x22
-OK? KBED :: Text        Created @ 917,155 284x22
-FAIL? KBKL ::  :: Edit        Airport code* @ 272,-144 469x36 value="KBKL" id=data.airportCode
-OK? KCHS :: Text        Created @ 917,155 284x22
-OK? KCLT :: Text        Created @ 917,155 284x22
-OK? KCMH :: Text        Created @ 917,155 284x22
-OK? KDEN :: Text        Created @ 917,155 284x22
-OK? KDTS :: Text        Created @ 917,155 284x22
-OK? KDTW :: Text        Created @ 917,155 284x22
-OK? KEGE :: Text        Created @ 917,155 284x22
-OK? KEWR :: Text        Created @ 917,155 284x22
-OK? KHOU :: Text        Created @ 917,155 284x22
-FAIL? KHXD ::  :: Edit        Airport code* @ 272,662 469x36 value="KHXD" id=data.airportCode
-OK? KIAD :: Text        Created @ 917,155 284x22
-OK? KIAH :: Text        Created @ 917,155 284x22
-FAIL? KJAC ::  :: Edit        Airport code* @ 272,662 469x36 value="KJAC" id=data.airportCode
-OK? KJAX :: Text        Created @ 917,155 284x22
-OK? KMEM :: Text        Created @ 917,155 284x22
-OK? KMKC :: Text        Created @ 917,155 284x22
-OK? KMSP :: Text        Created @ 917,155 284x22
-FAIL? KMSY ::  :: Edit        Airport code* @ 272,662 469x36 value="KMSY" id=data.airportCode
-OK? KMYR :: Text        Created @ 917,155 284x22
-OK? KOAK :: Text        Created @ 917,155 284x22
-OK? KOSU :: Text        Created @ 917,155 284x22
-OK? KPDK :: Text        Created @ 917,155 284x22
-FAIL? KPHL ::  :: Edit        Airport code* @ 272,662 469x36 value="KPHL" id=data.airportCode
-OK? KPHX :: Text        Created @ 917,155 284x22
-OK? KPTK :: Text        Created @ 917,155 284x22
-OK? KSDF :: Text        Created @ 917,155 284x22
-OK? KSEA :: Text        Created @ 917,155 284x22
-OK? KSJC :: Text        Created @ 917,155 284x22
-OK? KSUS :: Text        Created @ 917,155 284x22
-OK? KTPA :: Text        Created @ 917,155 284x22
-OK? KVNY :: Text        Created @ 917,155 284x22
-OK? LFMN :: Text        Created @ 917,155 284x22
-OK? LSGG :: Text        Created @ 917,155 284x22
-FAIL? MBPV ::  :: Edit        Airport code* @ 272,662 469x36 value="MBPV" id=data.airportCode
-OK? MMUN :: Text        Created @ 917,155 284x22
-FAIL? MYNN ::  :: Edit        Airport code* @ 272,662 469x36 value="MYNN" id=data.airportCode
-FAIL? PHNL ::  :: Edit        Airport code* @ 272,662 469x36 value="PHNL" id=data.airportCode
-OK? TXKF :: Text        Created @ 917,155 284x22
-FAIL? KBKL ::  :: Edit        Airport code* @ 272,662 469x36 value="KBKL" id=data.airportCode
-FAIL? KHXD ::  :: Edit        Airport code* @ 272,662 469x36 value="KHXD" id=data.airportCode
-FAIL? KJAC ::  :: Edit        Airport code* @ 272,662 469x36 value="KJAC" id=data.airportCode
-FAIL? KMSY ::  :: Edit        Airport code* @ 272,662 469x36 value="KMSY" id=data.airportCode
-FAIL? KPHL ::  :: Edit        Airport code* @ 272,662 469x36 value="KPHL" id=data.airportCode
-FAIL? MBPV ::  :: Edit        Airport code* @ 272,662 469x36 value="MBPV" id=data.airportCode
-FAIL? MYNN ::  :: Edit        Airport code* @ 272,662 469x36 value="MYNN" id=data.airportCode
-FAIL? PHNL ::  :: Edit        Airport code* @ 272,662 469x36 value="PHNL" id=data.airportCode
+FAIL EGSS :: wrong page open, retried
+OK? EGSS :: Created
+OK? KACK :: Created
+OK? KAGC :: Created
+OK? KAPA :: Created
+OK? KAUS :: Created
+OK? KBCT :: Created
+OK? KBED :: Created
+FAIL? KBKL :: form still showed the code after saving
+OK? KCHS :: Created
+OK? KCLT :: Created
+OK? KCMH :: Created
+OK? KDEN :: Created
+OK? KDTS :: Created
+OK? KDTW :: Created
+OK? KEGE :: Created
+OK? KEWR :: Created
+OK? KHOU :: Created
+FAIL? KHXD :: form still showed the code after saving
+OK? KIAD :: Created
+OK? KIAH :: Created
+FAIL? KJAC :: form still showed the code after saving
+OK? KJAX :: Created
+OK? KMEM :: Created
+OK? KMKC :: Created
+OK? KMSP :: Created
+FAIL? KMSY :: form still showed the code after saving
+OK? KMYR :: Created
+OK? KOAK :: Created
+OK? KOSU :: Created
+OK? KPDK :: Created
+FAIL? KPHL :: form still showed the code after saving
+OK? KPHX :: Created
+OK? KPTK :: Created
+OK? KSDF :: Created
+OK? KSEA :: Created
+OK? KSJC :: Created
+OK? KSUS :: Created
+OK? KTPA :: Created
+OK? KVNY :: Created
+OK? LFMN :: Created
+OK? LSGG :: Created
+FAIL? MBPV :: form still showed the code after saving
+OK? MMUN :: Created
+FAIL? MYNN :: form still showed the code after saving
+FAIL? PHNL :: form still showed the code after saving
+OK? TXKF :: Created
+FAIL? KBKL :: form still showed the code after saving
+FAIL? KHXD :: form still showed the code after saving
+FAIL? KJAC :: form still showed the code after saving
+FAIL? KMSY :: form still showed the code after saving
+FAIL? KPHL :: form still showed the code after saving
+FAIL? MBPV :: form still showed the code after saving
+FAIL? MYNN :: form still showed the code after saving
+FAIL? PHNL :: form still showed the code after saving

@@ -1,16 +1,16 @@
 # Orwell changes, round 8 (2026-11-11)
 
-All changes were made in Orwell as the airline's owner (CRX0001) through Chrome UI Automation, and each one was read back afterwards. No billing, staff, API key or security settings were changed. Nobody was invited or emailed, and no existing data was deleted.
+All changes were made in Orwell as the airline's owner (CRX0001), and each one was read back afterwards. No billing, staff, API key or security settings were changed. Nobody was invited or emailed, and no existing data was deleted.
 
 ## 1. Routes: import 30335
 
 | | |
 | --- | --- |
 | File | `routes-update-8-import.csv` (identical to `routes-update-8-expansion.csv`, because no airport was rejected) |
-| Import | **#30335**, Routes, 11 Nov 26 10:50Z: **Rows 134 / Processed 134 / Successful 134** |
+| Import | **#30335**, Routes, 11 Nov 26: **Rows 134 / Processed 134 / Successful 134** |
 | Network | 158 routes before, **292 after** |
 | Validation | `val8.py`: header matches update 7, callsigns unique and new, every route has a return with the same fleets, fleet IDs known, every airport present. Result: no errors |
-| Generator | `gen8.py` uses OurAirports coordinates and runways (scratchpad `ourairports/`). Planning ranges: C510 950, PRM1 1,150, LJ35 1,700, CJ4 1,800, H25B 2,300, C750 2,900 nm. Minimum runways: C510/CJ4 3,400, PRM1 4,000, LJ35 5,000, H25B/C750 5,500 ft. Mountain rule: no Mustang or Premier at KASE, KEGE, KJAC, KSUN, KMTJ, KHDN, KBZN, KTRK |
+| Generator | `gen8.py` uses OurAirports coordinates and runways (OurAirports CSVs in an `ourairports/` folder next to the script). Planning ranges: C510 950, PRM1 1,150, LJ35 1,700, CJ4 1,800, H25B 2,300, C750 2,900 nm. Minimum runways: C510/CJ4 3,400, PRM1 4,000, LJ35 5,000, H25B/C750 5,500 ft. Mountain rule: no Mustang or Premier at KASE, KEGE, KJAC, KSUN, KMTJ, KHDN, KBZN, KTRK |
 
 The import has two parts:
 
@@ -81,7 +81,7 @@ Comms has no separate news feature: it offers only Alerts and (now) NOTAMs.
 
 Left as they were (already sensible): VA name, slogan, website and support email (Basic Settings); Jumpseat, Jumpseat to bases and Jumpseat anywhere (on); route tags (on); departure times (on); booking validity 24 h; Roster Generator (on); Claims and Marketing (off).
 
-**For the website agent / owner:** the registration link modifier is now `crossroads`, so `site.config.json` `join_url` can be set once the exact vAMSYS register URL format is confirmed. I did not touch the website.
+**Website follow-up:** the registration link modifier is now `crossroads`, so `site.config.json` `join_url` can be set once the exact vAMSYS register URL format is confirmed. The website was not changed in this round.
 
 ## 7. Skipped / not available
 

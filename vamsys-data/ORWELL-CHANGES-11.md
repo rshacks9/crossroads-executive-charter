@@ -1,6 +1,6 @@
 # Orwell changes, round 11 (2026-11-11)
 
-Round 11 is a quality pass on the route network and the pilot-portal content. Phase 1 (offline audit, files, drafts) ran while a VATSIM flight was in progress, so Chrome was not touched until the flight ended. Phase 2 (Orwell) results are under **Phase 2 status**.
+Round 11 is a quality pass on the route network and the pilot-portal content. Phase 1 (offline audit, files, drafts) came first. Phase 2 (Orwell) results are under **Phase 2 status**.
 
 No billing, staff, API key or security settings were changed. Nobody was invited or emailed, and no data was deleted.
 
@@ -32,7 +32,7 @@ No billing, staff, API key or security settings were changed. Nobody was invited
 
 | File | Contents |
 | --- | --- |
-| `routes-update-11-edits.csv` | 142 edits by route ID: the Phenom (32220) added to 128 routes, the realism fixes in section 1, and the CJ4 on CRX415/416 KDAL-KVNY (owner's swap). 66 rows from updates 8/9 (and the 8 restored update-7 routes) had `NEEDID` until their Orwell IDs were read |
+| `routes-update-11-edits.csv` | 142 edits by route ID: the Phenom (32220) added to 128 routes, the realism fixes in section 1, and the CJ4 on CRX415/416 KDAL-KVNY (a requested swap). 66 rows from updates 8/9 (and the 8 restored update-7 routes) had `NEEDID` until their Orwell IDs were read |
 | `routes-update-11-new.csv` | 16 new routes (8 pairs, CRX733-748) |
 | `routes-update-11-import.csv` | edits plus new routes, written by `gen11.py` once every ID is known |
 | `airports-to-add-11.txt` | KMVY (Martha's Vineyard) |
@@ -74,13 +74,11 @@ Every page keeps the "fictional virtual airline for flight simulation" disclaime
 
 | | |
 | --- | --- |
-| File | `routes-update-11-import.csv` (142 edits by ID + 16 new routes; includes the owner's CJ4 on CRX415/416 KDAL-KVNY) |
-| Import | **#30348**, Routes, 11 Nov 26 18:13Z: **Rows 158 / Processed 158 / Successful 158** |
+| File | `routes-update-11-import.csv` (142 edits by ID + 16 new routes; includes the CJ4 swap on CRX415/416 KDAL-KVNY) |
+| Import | **#30348**, Routes, 11 Nov 26: **Rows 158 / Processed 158 / Successful 158** |
 | Network | 294 routes before, **310 after** (new CRX733-748 = route IDs 14215249-14215264) |
 | Route IDs | All 294 read from the Orwell routes list (`orwell-route-ids-2026-11-11.csv`). The derived update-7 IDs were partly wrong (for example CRX309 is 14214767, not 14214867), so the import uses only the IDs read from Orwell. Every edit ID was cross-checked against that list before import |
 | Read-back | CRX539 EINN-EGLC now has Mustang, CJ4 and Phenom (Gulfstreams off). CRX415 has CJ4, Phenom, G650 and G700. CRX739-748 are in the list |
-
-`IMPORT11_DONE` was created for the main session.
 
 ### Airports
 
@@ -99,7 +97,7 @@ Sources are in `pages-11/*.md`, converted with `md2html.py` and set through the 
 | 3119 | Ranks & Milestones | Crossroads Circuit tour, Phenom on the ski tour | "Crossroads Circuit" visible |
 | **3120** | **Featured Routes** (new, Documents, enabled, URL `/phoenix/documents/featured-routes`) | Charter of the Week (CRX113/114 Phenom launch) plus six picks and the tours | Page, table row CRX741/742 and disclaimer visible; it appears in the Documents menu |
 
-The editor shows no "Saved" toast to UI Automation, so the Phoenix read-back is the proof of each save.
+The editor gives no readable "Saved" confirmation, so the Phoenix read-back is the proof of each save.
 
 ### Activities
 
@@ -120,7 +118,7 @@ None is must-read. All three NOTAMs were read back at /phoenix/notams.
 
 ### FedEx Virtual Air Cargo look-and-feel study (read only)
 
-Looked at as a FedEx Virtual pilot through Phoenix (Select Virtual Airline), plus the public pages `vamsys.io/login/fedexvac`, `vamsys.io/register/fedexvac` and flyfdx-vac.org. Nothing was changed in FedEx's airline, and the browser was switched back to Crossroads afterwards (confirmed: CRX0001 dashboard).
+Looked at read-only: FedEx's Phoenix dashboard and the public pages `vamsys.io/login/fedexvac`, `vamsys.io/register/fedexvac` and flyfdx-vac.org. Nothing was changed in FedEx's airline.
 
 | What FedEx VAC does | Where it is set in vAMSYS | Crossroads now |
 | --- | --- | --- |

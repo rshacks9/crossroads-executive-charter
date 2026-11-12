@@ -1,5 +1,5 @@
 import csv, glob, os, sys
-D = r"C:\Users\gafft\Documents\kimi\tasks\2026-11-10\05-28-47-1ca902c1\crossroads-site\vamsys-data"
+D = os.path.dirname(os.path.abspath(__file__))
 HDR = "ID,Departure Airport (ICAO/IATA),Arrival Airport (ICAO/IATA),Type,Callsign,Flight Number,Fleet IDs,_delete,Service Days,Tags,Is Hidden"
 FLEETS = {str(i) for i in range(32199, 32218)} - {"32212"}
 name = sys.argv[1] if len(sys.argv) > 1 else "routes-update-8-import.csv"
