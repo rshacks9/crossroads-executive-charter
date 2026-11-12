@@ -167,7 +167,7 @@ describe("route lists", () => {
     const blocks = sortRoutesBy(sorted, "block", "asc").map((r) => r.duration_min ?? Infinity);
     for (let i = 1; i < blocks.length; i++) expect(blocks[i]).toBeGreaterThanOrEqual(blocks[i - 1]!);
     const byFrom = sortRoutesBy(sorted, "from", "asc");
-    for (let i = 1; i < byFrom.length; i++) expect(byFrom[i - 1]!.from.localeCompare(byFrom[i]!.from)).toBeLessThanOrEqual(0);
+    for (let i = 1; i < byFrom.length; i++) expect(byFrom[i - 1]!.from.localeCompare(byFrom[i]!.from, "en", { numeric: true })).toBeLessThanOrEqual(0);
     const fromKind = byFrom.filter((r) => r.from === "KIND");
     for (let i = 1; i < fromKind.length; i++) expect(nm(fromKind[i]!)).toBeGreaterThanOrEqual(nm(fromKind[i - 1]!));
     const flights = sortRoutesBy(sorted, "flight", "desc").map(routeKey);
