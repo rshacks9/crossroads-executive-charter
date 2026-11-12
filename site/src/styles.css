@@ -278,11 +278,19 @@ main:focus { outline: none; }
 @media (min-width: 1000px) {
   .table--routes .sub { display: inline; margin-left: 8px; }
   .table--routes td { padding: 10px 14px; vertical-align: middle; }
-  .table--routes td:is([data-label="From"], [data-label="To"]) .sub { display: inline-block; max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+  .table--routes td:is([data-label="From"], [data-label="To"]) .sub { display: inline-block; max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+  /* The division sits under the callsign, so every row is two even lines. */
+  .table--routes td[data-label="Flight"] .sub { display: block; margin-left: 0; }
 }
 @media (min-width: 1200px) {
   .table-wrap--routes { overflow: visible; }
   .table--routes thead th { position: sticky; top: var(--sticky-top); z-index: 1; }
+  /* In the full 1,120 px column these cells keep their lines: an auto-width table would otherwise
+     squeeze them, dropping the airport name under its code and splitting "Group & Sports Charter".
+     The aircraft chips take the rest of the width. */
+  .table--routes td:is([data-label="Flight"], [data-label="From"], [data-label="To"]) { white-space: nowrap; }
+  /* A link reached from below (Shift+Tab) stops clear of the stuck heading row as well as the masthead. */
+  .table--routes tbody :is(a, button) { scroll-margin-top: 3rem; }
 }
 
 /* ------------------------------------------------------------- filters */
@@ -1059,6 +1067,8 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
   .type-list, .explorer__types, .division__types { gap: 8px; }
   .type-list a, .explorer__types .chip, a.chip--link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 10px; }
   .suggestion__routes a, .home-numbers a, .tour__legs a { display: inline-flex; align-items: center; min-height: 44px; }
+  /* Labels and the "·" separators beside those links line up with the link text, not the top of the 44 px box. */
+  .home-numbers li, .suggestion__routes { align-items: baseline; }
   /* As a flex container the leg drops the space after its flight number; the gap stands in for it. */
   .tour__legs a { column-gap: .25em; }
   .toc a, .footer__cols a, .itinerary__leg .text-link, .button--small, .callout .button { min-height: 44px; }

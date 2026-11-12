@@ -324,16 +324,17 @@ export interface OnwardLeg<R> {
 /**
  * Legs onward from a route's arrival airport: the departures from there (other than `except`, the
  * return leg) that share an aircraft type with the route, most shared types first, then shortest.
- * With fewer than three such legs, the nearest departures instead. At most `limit` legs.
+ * At most `limit` legs. A leg the arriving aircraft cannot fly is never offered, however few qualify:
+ * the route page then also links to the airport's page, which lists every departure.
  */
 export function onwardLegs<R extends Pick<Route, "from" | "types" | "distance_nm">>(routes: readonly R[], route: Pick<Route, "to" | "types">, except?: R, limit = 7): OnwardLeg<R>[] {
   const nearest = (a: OnwardLeg<R>, b: OnwardLeg<R>) => orLast(a.route.distance_nm) - orLast(b.route.distance_nm);
-  const departures = routes
+  return routes
     .filter((r) => r.from === route.to && r !== except)
-    .map((r): OnwardLeg<R> => ({ route: r, shared: r.types.filter((t) => route.types.includes(t)) }));
-  const sharing = departures.filter((leg) => leg.shared.length > 0);
-  if (sharing.length < 3) return departures.sort(nearest).slice(0, limit);
-  return sharing.sort((a, b) => b.shared.length - a.shared.length || nearest(a, b)).slice(0, limit);
+    .map((r): OnwardLeg<R> => ({ route: r, shared: r.types.filter((t) => route.types.includes(t)) }))
+    .filter((leg) => leg.shared.length > 0)
+    .sort((a, b) => b.shared.length - a.shared.length || nearest(a, b))
+    .slice(0, limit);
 }
 
 // ------------------------------------------------------------------ charter planner

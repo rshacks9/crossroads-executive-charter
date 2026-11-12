@@ -122,7 +122,7 @@ describe("pages render from the snapshot", () => {
     expect(airport).not.toMatch(/click/i);
   });
 
-  it("announces only the explorer's route count, not the whole panel", () => {
+  it("announces only the explorer's route count, from a live region that is there before an airport is chosen", () => {
     const noop = () => undefined;
     const panel = renderToString(<ExplorerPanel snapshot={snapshot} routes={snapshot.routes} selected="KIND" onSelect={noop} selectedRoute={null} onRoute={noop} />);
     expect(panel).toContain('<aside class="explorer__panel" aria-label="Route explorer">');
@@ -130,7 +130,11 @@ describe("pages render from the snapshot", () => {
     expect(panel.match(/role="status"/g)).toHaveLength(1);
     const start = panel.indexOf('role="status">');
     expect(text(panel.slice(start, panel.indexOf("</p>", start)))).toMatch(/[0-9]+ routes in this view/);
-    const empty = text(renderToString(<ExplorerPanel snapshot={snapshot} routes={snapshot.routes} selected={null} onSelect={noop} selectedRoute={null} onRoute={noop} />));
+    // With no airport the same element is in place, empty: a region added along with its text is often not read out.
+    const emptyHtml = renderToString(<ExplorerPanel snapshot={snapshot} routes={snapshot.routes} selected={null} onSelect={noop} selectedRoute={null} onRoute={noop} />);
+    expect(emptyHtml.match(/role="status"/g)).toHaveLength(1);
+    expect(emptyHtml).toContain('<div class="explorer__airport"><p class="visually-hidden" role="status"></p><p class="explorer__hint">');
+    const empty = text(emptyHtml);
     expect(empty).toContain("Choose an airport");
     expect(empty).toContain("Pick an airport here or on the map");
     expect(empty).not.toMatch(/click/i);
@@ -160,6 +164,16 @@ describe("pages render from the snapshot", () => {
       expect(text(list)).toContain(`${leg.to} ${snapshot.airports[leg.to]!.name} · `);
       expect(text(list)).toContain(` nm · ${shared.join(", ")}`);
     }
+  });
+
+  it("links to every departure from the arrival airport when fewer than three legs share a type", () => {
+    const backOf = (r: (typeof snapshot.routes)[number]) => snapshot.routes.find((b) => b.from === r.to && b.to === r.from);
+    const few = snapshot.routes.find((r) => onwardLegs(snapshot.routes, r, backOf(r)).length < 3)!;
+    const html = renderToString(<RoutePage snapshot={snapshot} route={few} />);
+    expect(html).toMatch(new RegExp(`<a class="text-link" href="#/airport/${few.to}">All departures from ${few.to}`));
+    const full = findRoute(snapshot, "CRX524")!;
+    expect(onwardLegs(snapshot.routes, full, backOf(full)).length).toBeGreaterThanOrEqual(3);
+    expect(text(renderToString(<RoutePage snapshot={snapshot} route={full} />))).not.toContain("All departures from");
   });
 
   it("planner: radios in one box, an announced same-airport message, types that do not fit folded away", () => {

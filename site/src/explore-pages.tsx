@@ -198,8 +198,8 @@ export function RouteTable({ routes, snapshot, caption, focus, omitType }: { rou
                   <tr key={key}>
                     <td data-label="Flight">
                       <a className="row-link" href={routeHref(r)} data-row-link="">{d >= 0 ? <DivisionDot index={d} /> : null}{key}</a>
-                      <span className="sub">{d >= 0 ? divisions[d]!.name : ""}</span>
                       {r.kind === "cargo" ? <span className="tag tag--cargo">Cargo</span> : null}
+                      <span className="sub">{d >= 0 ? divisions[d]!.name : ""}</span>
                     </td>
                     {[r.from, r.to].map((icao, i) => {
                       const name = snapshot.airports[icao]?.name;
@@ -278,30 +278,37 @@ export function ExplorerPanel({ snapshot, routes, selected, onSelect, selectedRo
           </p>
         </div>
       ) : null}
-      {summary ? (
-        <div className="explorer__airport">
-          <p className="eyebrow">{summary.isBase ? "Crossroads base" : summary.airport?.country ?? "Destination"}</p>
-          <h3>{summary.icao} <span className="muted">{summary.airport?.name}</span></h3>
-          <p className="muted" role="status">{summary.routes.length} {summary.routes.length === 1 ? "route" : "routes"} in this view{summary.fromBase ? ` · ${formatNumber(summary.fromBase.nm)} nm from ${summary.fromBase.base}` : ""}</p>
-          <ul className="explorer__list">
-            {summary.routes.sort((a, b) => (a.distance_nm ?? 0) - (b.distance_nm ?? 0)).map((r) => {
-              const key = routeKey(r);
-              return (
-                <li key={key}>
-                  <button type="button" className="explorer__item" aria-pressed={key === selectedRoute} onClick={() => onRoute(key === selectedRoute ? null : key)}>
-                    <strong>{key}</strong>
-                    <span>{r.from} → {r.to}</span>
-                    <span className="muted">{formatNumber(r.distance_nm)} nm · {formatDuration(r.duration_min)}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          <a className="text-link" href={airportHref(summary.icao)}>{summary.icao} destination page →</a>
-        </div>
-      ) : (
-        <p className="explorer__hint">Pick an airport here or on the map to see every route from it, drawn as great circles. Choose a route for distance, block time, the types that fly it and a booking link.</p>
-      )}
+      <div className="explorer__airport">
+        {summary ? (
+          <>
+            <p className="eyebrow">{summary.isBase ? "Crossroads base" : summary.airport?.country ?? "Destination"}</p>
+            <h3>{summary.icao} <span className="muted">{summary.airport?.name}</span></h3>
+          </>
+        ) : null}
+        {/* The live region is in the page with or without an airport, so the first airport chosen is announced too. */}
+        <p className={summary ? "muted" : "visually-hidden"} role="status">{summary ? `${summary.routes.length} ${summary.routes.length === 1 ? "route" : "routes"} in this view${summary.fromBase ? ` · ${formatNumber(summary.fromBase.nm)} nm from ${summary.fromBase.base}` : ""}` : ""}</p>
+        {summary ? (
+          <>
+            <ul className="explorer__list">
+              {summary.routes.sort((a, b) => (a.distance_nm ?? 0) - (b.distance_nm ?? 0)).map((r) => {
+                const key = routeKey(r);
+                return (
+                  <li key={key}>
+                    <button type="button" className="explorer__item" aria-pressed={key === selectedRoute} onClick={() => onRoute(key === selectedRoute ? null : key)}>
+                      <strong>{key}</strong>
+                      <span>{r.from} → {r.to}</span>
+                      <span className="muted">{formatNumber(r.distance_nm)} nm · {formatDuration(r.duration_min)}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <a className="text-link" href={airportHref(summary.icao)}>{summary.icao} destination page →</a>
+          </>
+        ) : (
+          <p className="explorer__hint">Pick an airport here or on the map to see every route from it, drawn as great circles. Choose a route for distance, block time, the types that fly it and a booking link.</p>
+        )}
+      </div>
     </aside>
   );
 }
@@ -614,15 +621,18 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
       </section>
       <section className="page">
         <SectionHead eyebrow="Keep going" title="Onward from here" />
-        <ul className="onward">
-          {reverse ? <li><a href={routeHref(reverse)}><strong>{routeKey(reverse)}</strong> return leg {reverse.from} → {reverse.to}</a></li> : null}
-          {onward.map(({ route: r, shared }) => {
-            // The types this leg shares with the route just flown; a leg that shares none lists its own.
-            const types = shared.length ? shared : r.types;
-            const name = snapshot.airports[r.to]?.name;
-            return <li key={routeKey(r)}><a href={routeHref(r)}><strong>{routeKey(r)}</strong> {r.from} → {r.to}{name ? ` ${name}` : ""} · {formatNumber(r.distance_nm)} nm{types.length ? ` · ${types.join(", ")}` : ""}</a></li>;
-          })}
-        </ul>
+        {reverse || onward.length ? (
+          <ul className="onward">
+            {reverse ? <li><a href={routeHref(reverse)}><strong>{routeKey(reverse)}</strong> return leg {reverse.from} → {reverse.to}</a></li> : null}
+            {onward.map(({ route: r, shared }) => {
+              // Only legs the arriving aircraft can fly, each with the types it shares with the route just flown.
+              const name = snapshot.airports[r.to]?.name;
+              return <li key={routeKey(r)}><a href={routeHref(r)}><strong>{routeKey(r)}</strong> {r.from} → {r.to}{name ? ` ${name}` : ""} · {formatNumber(r.distance_nm)} nm · {shared.join(", ")}</a></li>;
+            })}
+          </ul>
+        ) : null}
+        {/* With few such legs, the airport page lists every departure, whatever the aircraft. */}
+        {onward.length < 3 ? <p><a className="text-link" href={airportHref(route.to)}>{`All departures from ${route.to}`} →</a></p> : null}
         <p className="fineprint">Distances are great-circle; block times are schedule estimates. Your SimBrief OFP has the real figures for the day's winds. Simulation use only.</p>
       </section>
     </>

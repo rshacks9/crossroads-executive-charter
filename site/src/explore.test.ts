@@ -220,20 +220,19 @@ describe("onward legs", () => {
     for (const route of snapshot.routes) {
       const key = routeKey(route);
       const back = snapshot.routes.find((r) => r.from === route.to && r.to === route.from);
-      const departures = snapshot.routes.filter((r) => r.from === route.to && r !== back);
-      const sharing = departures.filter((r) => r.types.some((t) => route.types.includes(t)));
+      const sharing = snapshot.routes.filter((r) => r.from === route.to && r !== back && r.types.some((t) => route.types.includes(t)));
       const legs = onwardLegs(snapshot.routes, route, back);
-      expect(legs.length, key).toBe(Math.min(7, sharing.length >= 3 ? sharing.length : departures.length));
+      expect(legs.length, key).toBe(Math.min(7, sharing.length));
       for (const leg of legs) {
         expect(leg.route.from, key).toBe(route.to);
         expect(leg.route, key).not.toBe(back);
         expect(leg.shared, key).toEqual(leg.route.types.filter((t) => route.types.includes(t)));
-        if (sharing.length >= 3) expect(leg.shared.length, key).toBeGreaterThan(0);
+        expect(leg.shared.length, key).toBeGreaterThan(0);
       }
       for (let i = 1; i < legs.length; i++) {
         const a = legs[i - 1]!;
         const b = legs[i]!;
-        if (sharing.length < 3 || b.shared.length === a.shared.length) expect(nm(b.route), key).toBeGreaterThanOrEqual(nm(a.route));
+        if (b.shared.length === a.shared.length) expect(nm(b.route), key).toBeGreaterThanOrEqual(nm(a.route));
         else expect(b.shared.length, key).toBeLessThan(a.shared.length);
       }
     }
@@ -247,14 +246,14 @@ describe("onward legs", () => {
     expect(legs.some((leg) => leg.route.types.every((t) => t === "B77L" || t === "MD11"))).toBe(false);
   });
 
-  it("falls back to the nearest departures when fewer than three share a type", () => {
+  it("never offers a leg the aircraft cannot fly, even when fewer than three share a type", () => {
     const mk = (callsign: string, from: string, to: string, types: string[], distance_nm: number | null): Route => ({ ...snapshot.routes[0]!, callsign, from, to, types, distance_nm });
     const inbound = mk("CRX901", "AAAA", "BBBB", ["E175", "C25C"], 300);
     const back = mk("CRX902", "BBBB", "AAAA", ["E175"], 300);
     const routes = [inbound, back, mk("CRX903", "BBBB", "CCCC", ["B77L"], 900), mk("CRX905", "BBBB", "DDDD", ["E175", "C25C", "B752"], 400), mk("CRX907", "BBBB", "EEEE", ["C25C"], null), mk("CRX909", "BBBB", "FFFF", ["MD11"], 120)];
-    const fallback = onwardLegs(routes, inbound, back);
-    expect(fallback.map((leg) => leg.route.callsign)).toEqual(["CRX909", "CRX905", "CRX903", "CRX907"]);
-    expect(fallback.map((leg) => leg.shared)).toEqual([[], ["E175", "C25C"], [], ["C25C"]]);
+    const few = onwardLegs(routes, inbound, back);
+    expect(few.map((leg) => leg.route.callsign)).toEqual(["CRX905", "CRX907"]);
+    expect(few.map((leg) => leg.shared)).toEqual([["E175", "C25C"], ["C25C"]]);
     const more = [...routes, mk("CRX911", "BBBB", "GGGG", ["E175"], 100), mk("CRX913", "BBBB", "HHHH", ["C25C", "E175"], 650)];
     expect(onwardLegs(more, inbound, back).map((leg) => leg.route.callsign)).toEqual(["CRX905", "CRX913", "CRX911", "CRX907"]);
     expect(onwardLegs(more, inbound, back, 2).map((leg) => leg.route.callsign)).toEqual(["CRX905", "CRX913"]);
