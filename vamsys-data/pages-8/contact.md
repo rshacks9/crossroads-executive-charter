@@ -4,7 +4,7 @@
 
 ## Staff
 
-- **Tom Gaff (CRX0001)** - Founder and Chief Pilot
+- **The founder (CRX0001)** - Founder and Chief Pilot
 
 ## Getting help
 

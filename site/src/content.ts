@@ -23,7 +23,7 @@ export interface FleetInfo {
 export const FLEET_INFO: Record<string, FleetInfo> = {
   M600: {
     role: "Single-engine turboprop",
-    range_nm: 1200,
+    range_nm: 1100,
     cruise_kt: 260,
     blurb: "The only turboprop on the line, flown single-pilot. It flies the short hop between Westfield-Barnes and Bradley International at Hartford.",
   },

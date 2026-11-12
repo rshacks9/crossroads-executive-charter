@@ -1,6 +1,6 @@
 # Orwell changes, round 12 (2026-11-11)
 
-Round 12 is the look-and-feel pass that round 11 left open: the Phoenix stylesheet, the dashboard arrangement, rank images, stale alerts and a few extras. The reference is FedEx Virtual Air Cargo's Phoenix dashboard, looked at read-only as pilot FDX2317 and left unchanged; the browser was switched back to Crossroads afterwards (CRX0001 confirmed).
+Round 12 is the look-and-feel pass that round 11 left open: the Phoenix stylesheet, the dashboard arrangement, rank images, stale alerts and a few extras. The reference is FedEx Virtual Air Cargo's Phoenix dashboard, looked at read-only from a pilot account and left unchanged; the browser was switched back to Crossroads afterwards (CRX0001 confirmed).
 
 No billing, plan, staff, API key or security settings were touched. Nothing was deleted: superseded dashboard components are hidden. Rank requirements were not changed.
 
@@ -101,7 +101,7 @@ All three were read back (alerts list and the dashboard). Left alone: alert 4542
 - **Event or other activity entries** were not created: there is nothing real to announce, and the three tours now fill the Events page.
 - **Plan-gated:** public registration (`vamsys.io/register/crossroads` still redirects to login during the trial, as in round 11). Nothing else attempted in this round was blocked by the trial.
 - **Discord button:** still none; Crossroads has no Discord.
-- **Not verified:** how the pages look on a phone or a wide monitor (this PC's screen is 1280x720); the stylesheet on Phoenix pages that were not opened (booking map, rosters, statistics, claims); whether the stylesheet also applies to the public login page.
+- **Not verified:** how the pages look on a phone or a wide monitor (the test screen is 1280x720); the stylesheet on Phoenix pages that were not opened (booking map, rosters, statistics, claims); whether the stylesheet also applies to the public login page.
 - **Repo:** the new brand files and this document were committed after the round, on 2026-11-11. They are records and source artwork: the site build reads none of them, so the public site did not change.
 
 ## vAMSYS quirks worth knowing

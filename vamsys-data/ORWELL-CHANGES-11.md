@@ -120,7 +120,7 @@ None is must-read. All three NOTAMs were read back at /phoenix/notams.
 
 ### FedEx Virtual Air Cargo look-and-feel study (read only)
 
-Looked at as pilot FDX2317 through Phoenix (Select Virtual Airline), plus the public pages `vamsys.io/login/fedexvac`, `vamsys.io/register/fedexvac` and flyfdx-vac.org. Nothing was changed in FedEx's airline, and the browser was switched back to Crossroads afterwards (confirmed: CRX0001 dashboard).
+Looked at as a FedEx Virtual pilot through Phoenix (Select Virtual Airline), plus the public pages `vamsys.io/login/fedexvac`, `vamsys.io/register/fedexvac` and flyfdx-vac.org. Nothing was changed in FedEx's airline, and the browser was switched back to Crossroads afterwards (confirmed: CRX0001 dashboard).
 
 | What FedEx VAC does | Where it is set in vAMSYS | Crossroads now |
 | --- | --- | --- |

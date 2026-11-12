@@ -1,6 +1,6 @@
 # Orwell changes, round 8 (2026-11-11)
 
-All changes were made in Orwell as Tom Gaff (CRX0001) through Chrome UI Automation, and each one was read back afterwards. No billing, staff, API key or security settings were changed. Nobody was invited or emailed, and no existing data was deleted.
+All changes were made in Orwell as the airline's owner (CRX0001) through Chrome UI Automation, and each one was read back afterwards. No billing, staff, API key or security settings were changed. Nobody was invited or emailed, and no existing data was deleted.
 
 ## 1. Routes: import 30335
 
@@ -43,7 +43,7 @@ The source text for each page is in `pages-8/*.md`. Pages were converted to HTML
 | 3115 | Fleet Guide | /phoenix/documents/fleet-guide | 18 fleets by division with registrations (incl. N390CR, N800CR, N750CR), planning ranges, cabins and payloads |
 | 3116 | Route Guide | /phoenix/documents/route-guide | Callsign blocks, destinations by theme, how to pick a flight, tags, Jumpseat |
 | 3117 | Booking & PIREP Guide | /phoenix/documents/booking-pirep-guide | Book, plan, fly and file, plus airline rules. **Set as the Rules Page shown at registration** |
-| 3118 | About & Contact | /phoenix/documents/about-contact | Airline summary, staff (Tom Gaff CRX0001), how to get help, full disclaimer |
+| 3118 | About & Contact | /phoenix/documents/about-contact | Airline summary, staff (the founder, CRX0001), how to get help, full disclaimer |
 | 3119 | Ranks & Milestones | /phoenix/documents/ranks-milestones | Rank table, which matches Orwell, plus the two tours with badges and informal milestones. The URL was changed from `ranks` because that clashed with the built-in Ranks document |
 
 ## 4. Rewards and badges
