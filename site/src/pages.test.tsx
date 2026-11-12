@@ -585,6 +585,15 @@ describe("flights flown by automation", () => {
     expect(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf(label)).toBeLessThan(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf("</tr>"));
   });
 
+  it("puts the label on its own line: its rule comes after the base tag rule it overrides", () => {
+    const css = readFileSync(new URL("./styles.css", import.meta.url), "utf-8").split("\n");
+    const base = css.findIndex((line) => line.startsWith(".tag {"));
+    const own = css.findIndex((line) => line.startsWith(".tag--automation {"));
+    expect(base).toBeGreaterThan(-1);
+    expect(own).toBeGreaterThan(base);
+    expect(css[own]).toContain("display: flex;");
+  });
+
   it("labels nothing that is not listed", () => {
     const quiet: Snapshot = { ...busy, live: busy.live.map((f) => ({ ...f, automation: false })), recent_flights: busy.recent_flights.map((f) => ({ ...f, automation: undefined })) };
     for (const html of [renderToString(<LivePage snapshot={quiet} />), renderToString(<HomePage snapshot={quiet} />)]) expect(html).not.toContain("tag--automation");

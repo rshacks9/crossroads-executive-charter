@@ -249,9 +249,6 @@ main:focus { outline: none; }
 .callsign { font: 700 22px/1 var(--display); letter-spacing: 0.03em; }
 .phase { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ok); }
 .flight-card__meta { color: var(--text-2); font-size: 15px; }
-/* "Flown by automation" on a listed flight: its own line, under the callsign. */
-.tag--automation { display: flex; width: fit-content; margin-top: 4px; }
-.flight-card .tag--automation { margin-top: 0; }
 .leg { font: 600 18px var(--display); letter-spacing: 0.04em; white-space: nowrap; }
 .leg__arrow { color: var(--signal-ink); margin: 0 6px; }
 .progress { display: block; height: 6px; background: var(--mist); border-radius: 3px; overflow: hidden; min-width: 80px; }
@@ -364,6 +361,9 @@ main:focus { outline: none; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag { display: inline-flex; align-items: center; font: 600 12px/1 var(--body); text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 8px; border-radius: 4px; background: var(--mist); color: var(--text); }
 .tag--accent { background: var(--signal); color: var(--ink); }
+/* "Flown by automation" on a listed flight: its own line, under the callsign (after .tag, so it wins). */
+.tag--automation { display: flex; width: fit-content; margin-top: 4px; }
+.flight-card .tag--automation { margin-top: 0; }
 
 /* ------------------------------------------------------------- footer */
 .footer { background: var(--ink); color: var(--on-ink-2); margin-top: 32px; }
