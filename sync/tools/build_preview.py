@@ -39,6 +39,10 @@ ROUTES_CSV = [
     # Update 11 (import #30348, 158/158 OK): Phenom on every light-jet route in range, airport-restriction
     # fixes, CJ4 on KDAL-KVNY, and 16 new routes (CRX733-748). Network 310 routes at 112 airports.
     (DATA / "routes-update-11-import.csv", 14218001),
+    # Round 13 (import #30364, 6/6 OK): CRX749/750 KTYQ-KBAF for the KTYQ jets, CRX751/752 KBAF-KBDL for
+    # the Piper M600 and CRX445/446 KBDL-KLAX for the A340-600, G650 and G700. Orwell numbered them
+    # 14217673-14217678 in file order (route-ids-13.csv). Network 316 routes at 113 airports.
+    (DATA / "routes-update-13-import.csv", 14217673),
 ]
 # The planning file (routes-update-7-expansion.csv) used a placeholder for the Hawker fleet; kept so it
 # still builds if anyone points ROUTES_CSV back at it.
@@ -162,6 +166,8 @@ AIRPORTS = [  # icao, iata, name, country, lat, lon, base
     ("TJSJ", "SJU", "Luis Munoz Marin International", "Puerto Rico", 18.4394, -66.0018, False),
     # Update 11.
     ("KMVY", "MVY", "Martha's Vineyard", "United States", 41.3931, -70.6143, False),
+    # Round 13 (Orwell airport 907144). IATA code and coordinates from OurAirports (public domain).
+    ("KBAF", "BAF", "Westfield-Barnes Regional", "United States", 42.1578, -72.7156, False),
 ]
 
 FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cruise_kt
@@ -184,6 +190,8 @@ FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cru
     (32216, "C750", "Cessna Citation X", "pax", 8, None, "lbs", ["N750CR"], 500),
     (32217, "H25B", "Hawker 800XP", "pax", 8, None, "lbs", ["N800CR"], 430),
     (32220, "E55P", "Embraer Phenom 300E", "pax", 9, None, "lbs", ["N300CR"], 450),
+    # Round 13: Orwell fleet 32230; N600CR is Orwell aircraft 304909.
+    (32230, "M600", "Piper M600", "pax", 5, None, "lbs", ["N600CR"], 260),
 ]
 
 RANKS = [  # level, name, abbr, hours, pireps, honorary

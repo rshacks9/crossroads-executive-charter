@@ -5,6 +5,7 @@
   "approach_speed_kt": null
  },
  "profiles": {
+  "M600": {"cruise": 110, "climb": 160, "descent": 55, "taxi": 20, "holding": 95, "reserve_minutes": 45, "vref_kt": 85},
   "C510": {"cruise": 300, "climb": 420, "descent": 150, "taxi": 60, "holding": 260, "reserve_minutes": 45, "vref_kt": 95},
   "C25C": {"cruise": 500, "climb": 700, "descent": 220, "taxi": 80, "holding": 420, "reserve_minutes": 45, "vref_kt": 115},
   "PRM1": {"cruise": 380, "climb": 540, "descent": 180, "taxi": 70, "holding": 320, "reserve_minutes": 45, "vref_kt": 110},

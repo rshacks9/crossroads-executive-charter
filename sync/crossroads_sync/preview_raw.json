@@ -1344,6 +1344,18 @@
    },
    "latitude": 41.3931,
    "longitude": -70.6143
+  },
+  {
+   "id": 113,
+   "icao": "KBAF",
+   "iata": "BAF",
+   "name": "Westfield-Barnes Regional",
+   "base": false,
+   "country": {
+    "name": "United States"
+   },
+   "latitude": 42.1578,
+   "longitude": -72.7156
   }
  ],
  "hubs": [
@@ -1568,6 +1580,17 @@
    "weight_unit": "lbs",
    "hide_in_phoenix": false,
    "image_url": null
+  },
+  {
+   "id": 32230,
+   "code": "M600",
+   "name": "Piper M600",
+   "type": "pax",
+   "max_pax": 5,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
   }
  ],
  "aircraft_by_fleet": {
@@ -1664,6 +1687,11 @@
   "32220": [
    {
     "registration": "N300CR"
+   }
+  ],
+  "32230": [
+   {
+    "registration": "N600CR"
    }
   ]
  },
@@ -8645,6 +8673,132 @@
     32220,
     32217,
     32216
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 311,
+   "type": "scheduled",
+   "departure_id": 2,
+   "arrival_id": 113,
+   "callsign": "CRX749",
+   "flight_number": "CX749",
+   "flight_distance": 625,
+   "flight_length": "02:15:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201,
+    32215,
+    32220,
+    32217,
+    32216
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 312,
+   "type": "scheduled",
+   "departure_id": 113,
+   "arrival_id": 2,
+   "callsign": "CRX750",
+   "flight_number": "CX750",
+   "flight_distance": 625,
+   "flight_length": "02:15:00",
+   "fleet_ids": [
+    32199,
+    32200,
+    32201,
+    32215,
+    32220,
+    32217,
+    32216
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 313,
+   "type": "scheduled",
+   "departure_id": 113,
+   "arrival_id": 32,
+   "callsign": "CRX751",
+   "flight_number": "CX751",
+   "flight_distance": 13,
+   "flight_length": "00:28:00",
+   "fleet_ids": [
+    32230
+   ],
+   "tag": [
+    "executive",
+    "short-hop"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 314,
+   "type": "scheduled",
+   "departure_id": 32,
+   "arrival_id": 113,
+   "callsign": "CRX752",
+   "flight_number": "CX752",
+   "flight_distance": 13,
+   "flight_length": "00:28:00",
+   "fleet_ids": [
+    32230
+   ],
+   "tag": [
+    "executive",
+    "short-hop"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 315,
+   "type": "scheduled",
+   "departure_id": 32,
+   "arrival_id": 15,
+   "callsign": "CRX445",
+   "flight_number": "CX445",
+   "flight_distance": 2191,
+   "flight_length": "04:59:00",
+   "fleet_ids": [
+    32208,
+    32205,
+    32206
+   ],
+   "tag": [
+    "executive"
+   ],
+   "service_days": [],
+   "hidden": false
+  },
+  {
+   "id": 316,
+   "type": "scheduled",
+   "departure_id": 15,
+   "arrival_id": 32,
+   "callsign": "CRX446",
+   "flight_number": "CX446",
+   "flight_distance": 2191,
+   "flight_length": "04:59:00",
+   "fleet_ids": [
+    32208,
+    32205,
+    32206
    ],
    "tag": [
     "executive"

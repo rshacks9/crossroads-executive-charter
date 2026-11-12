@@ -24,15 +24,16 @@ class PreviewTests(unittest.TestCase):
         self.assertIsNone(self.snapshot["stats"]["last_30_days"])
 
     def test_preview_mirrors_the_vamsys_setup(self):
-        # Updates 1-6 (58 routes), update 7 (100) and update 8 (134: 114 new, 20 restored) as imported 2026-11-11.
-        self.assertEqual(len(self.snapshot["routes"]), 310)
-        self.assertEqual(len(self.snapshot["fleet"]), 19)
-        self.assertEqual(len(self.snapshot["airports"]), 112)
+        # Updates 1-6 (58 routes), update 7 (100), update 8 (134: 114 new, 20 restored) and updates 9-11
+        # (18 new) as imported 2026-11-11, and round 13 (6 new routes, KBAF, the Piper M600) on 2026-11-12.
+        self.assertEqual(len(self.snapshot["routes"]), 316)
+        self.assertEqual(len(self.snapshot["fleet"]), 20)
+        self.assertEqual(len(self.snapshot["airports"]), 113)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
     def test_hub_rule_small_jets_ktyq_everything_else_kind(self):
-        # KTYQ takes light and mid jets up to Citation X size; KIND takes everything bigger.
-        small = {"C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"}
+        # KTYQ takes the M600 and light and mid jets up to Citation X size; KIND takes everything bigger.
+        small = {"M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"}
         for route in self.snapshot["routes"]:
             ends = {route["from"], route["to"]}
             if ends == {"KTYQ", "KIND"}:
@@ -52,6 +53,10 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(regs["E55P"], ["N300CR"])
         phenom = [r for r in self.snapshot["routes"] if "E55P" in r["types"]]
         self.assertGreater(len(phenom), 130)
+        # Round 13: the Piper M600 flies only Westfield-Barnes to Bradley and back.
+        self.assertEqual(regs["M600"], ["N600CR"])
+        m600 = sorted(r["callsign"] for r in self.snapshot["routes"] if "M600" in r["types"])
+        self.assertEqual(m600, ["CRX751", "CRX752"])
         hawker = [r for r in self.snapshot["routes"] if "H25B" in r["types"]]
         self.assertGreater(len(hawker), 50)
 

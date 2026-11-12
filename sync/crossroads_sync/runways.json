@@ -1151,6 +1151,80 @@
     "displaced_threshold_ft": null
    }
   ],
+  "KBAF": [
+   {
+    "id": "02",
+    "reciprocal": "20",
+    "heading_true_deg": 10.1,
+    "length_ft": 9000.0,
+    "width_ft": 150.0,
+    "surface": "ASP",
+    "threshold": {
+     "lat": 42.145301818847656,
+     "lon": -72.71880340576172
+    },
+    "end": {
+     "lat": 42.16960144042969,
+     "lon": -72.71289825439453
+    },
+    "elevation_ft": 261.0,
+    "displaced_threshold_ft": null
+   },
+   {
+    "id": "20",
+    "reciprocal": "02",
+    "heading_true_deg": 190.1,
+    "length_ft": 9000.0,
+    "width_ft": 150.0,
+    "surface": "ASP",
+    "threshold": {
+     "lat": 42.16960144042969,
+     "lon": -72.71289825439453
+    },
+    "end": {
+     "lat": 42.145301818847656,
+     "lon": -72.71880340576172
+    },
+    "elevation_ft": 267.0,
+    "displaced_threshold_ft": null
+   },
+   {
+    "id": "15",
+    "reciprocal": "33",
+    "heading_true_deg": 140.3,
+    "length_ft": 5000.0,
+    "width_ft": 75.0,
+    "surface": "ASP",
+    "threshold": {
+     "lat": 42.16350174,
+     "lon": -72.72109985
+    },
+    "end": {
+     "lat": 42.1529007,
+     "lon": -72.70929718
+    },
+    "elevation_ft": 262.0,
+    "displaced_threshold_ft": null
+   },
+   {
+    "id": "33",
+    "reciprocal": "15",
+    "heading_true_deg": 320.3,
+    "length_ft": 5000.0,
+    "width_ft": 75.0,
+    "surface": "ASP",
+    "threshold": {
+     "lat": 42.1529007,
+     "lon": -72.70929718
+    },
+    "end": {
+     "lat": 42.16350174,
+     "lon": -72.72109985
+    },
+    "elevation_ft": 247.0,
+    "displaced_threshold_ft": null
+   }
+  ],
   "KBCT": [
    {
     "id": "05",

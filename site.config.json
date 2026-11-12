@@ -13,6 +13,7 @@
    "base": "KTYQ",
    "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang and Phenom 300E to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
    "fleets": [
+    "M600",
     "C510",
     "PRM1",
     "C25C",
@@ -57,6 +58,7 @@
   }
  ],
  "sim_aircraft": {
+  "M600": "FSReborn Piper M600 (add-on)",
   "C510": "Cockspur Citation Mustang (add-on)",
   "PRM1": "Carenado B390 Premier IA (add-on)",
   "C25C": "Cessna Citation CJ4 (MSFS 2024 default)",
