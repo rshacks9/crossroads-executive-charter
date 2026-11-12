@@ -131,6 +131,8 @@ main:focus { outline: none; }
 .nav__count { background: var(--signal); color: var(--ink); font: 700 13px/1 var(--body); padding: 3px 7px; border-radius: 999px; }
 .nav .nav__cta { background: var(--signal); color: var(--ink); margin-left: 8px; }
 .nav .nav__cta:hover { background: #f08550; color: var(--ink); }
+/* "Fly with us" on its own page keeps ink text and its corners; the current-page bar is ink on orange. */
+.nav .nav__cta[aria-current="page"] { color: var(--ink); border-radius: var(--radius); box-shadow: inset 0 -3px 0 var(--ink); }
 
 @media (max-width: 1360px) {
   .menu-button { display: inline-flex; align-items: center; }
@@ -139,6 +141,7 @@ main:focus { outline: none; }
   .nav a { font-size: 20px; }
   .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--signal); }
   .nav .nav__cta { margin: 8px 0 0; justify-content: center; }
+  .nav .nav__cta[aria-current="page"] { box-shadow: inset 3px 0 0 var(--ink); }
 }
 
 /* ------------------------------------------------------------- notices */
