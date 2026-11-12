@@ -9,11 +9,11 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage } = await import("./pages");
+const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage, bases } = await import("./pages");
 const { HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, destinationGroups, findRoute, onwardLegs, routeHref, servedAirports, suggestFleet } = await import("./explore");
-const { formatNumber, payloadTonnes, routeDivision, weatherBoard } = await import("./data");
+const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
 const { WeatherBoard } = await import("./crew");
 const { FLEET_INFO, KTYQ_TYPES, SERVICES, TOURS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
@@ -27,7 +27,8 @@ describe("pages render from the snapshot", () => {
     const fleet = renderToString(<FleetPage snapshot={snapshot} />);
     expect(fleet).toContain('href="#/fleet/C750"');
     const routes = text(renderToString(<RoutesPage snapshot={snapshot} />));
-    expect(routes).toContain(`${snapshot.routes.length} routes from Indianapolis`);
+    const based = snapshot.routes.filter((r) => routeBase(r, bases(snapshot)) !== "").length;
+    expect(routes).toContain(`${snapshot.routes.length} routes, ${based} of them to or from Indianapolis`);
     expect(routes).toContain("Choose an airport");
   });
 
@@ -402,5 +403,21 @@ describe("texts follow the data", () => {
     expect(careers.match(/<li class="tour">/g)).toHaveLength(TOURS.length);
     const news = renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />);
     expect(news).toContain('<p class="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>');
+  });
+
+  it("counts a base's routes as its destinations card does, and the destinations apart from the bases", () => {
+    const baseList = bases(snapshot);
+    const list = servedAirports(snapshot);
+    const home = text(renderToString(<HomePage snapshot={snapshot} />));
+    for (const icao of baseList) {
+      const routes = snapshot.routes.filter((r) => r.from === icao || r.to === icao).length;
+      expect(list.find((a) => a.icao === icao)?.routes).toBe(routes);
+      expect(home).toContain(`${snapshot.fleet.filter((f) => baseFor(f.code) === icao).length} types based here · ${routes} routes`);
+    }
+    expect(home).toContain(`${snapshot.routes.length} routes, most of them from ${numberWord(baseList.length)} Indianapolis bases, and one career path.`);
+    const destinations = networkFacts(snapshot).destinations;
+    expect(destinations).toBe(list.length - baseList.length);
+    const page = text(renderToString(<DestinationsPage snapshot={snapshot} />));
+    expect(page).toContain(`${destinations} destinations plus our ${numberWord(baseList.length)} Indianapolis bases. Every airport Crossroads flies to`);
   });
 });

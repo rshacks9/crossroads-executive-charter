@@ -249,8 +249,8 @@ export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[
   { block: "CRX101–199", use: "Executive, light and mid-size jets (incl. point-to-point legs)", base: "KTYQ" },
   { block: "CRX201–299", use: "Group charter", base: "KIND" },
   { block: "CRX301–399", use: "Sports charter", base: "KIND" },
-  { block: "CRX401–499", use: "Executive, large-cabin jets", base: "KIND" },
-  { block: "CRX501–599", use: "International and long-range", base: "KIND" },
+  { block: "CRX401–499", use: "Executive, large-cabin jets (incl. point-to-point legs)", base: "KIND" },
+  { block: "CRX501–599", use: "International and long-range (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX601–699", use: "Cargo charter", base: "KIND" },
   { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs)", base: "KTYQ" },
 ];

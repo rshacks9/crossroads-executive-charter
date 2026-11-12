@@ -201,7 +201,12 @@ export function destinationBlurb(summary: AirportSummary, divisionNames: string[
   const a = summary.airport;
   const name = a?.name ?? summary.icao;
   if (summary.isBase) {
-    return `${name} is a Crossroads base. ${summary.routes.length} scheduled routes start or end here, flown by ${summary.types.length} aircraft types.`;
+    // The types based at this airport, and those that fly in from the other base.
+    const based = summary.types.filter((code) => baseFor(code) === summary.icao).length;
+    const visiting = summary.types.length - based;
+    const typeWord = (n: number) => (n === 1 ? "type" : "types");
+    const flown = `the ${based} ${typeWord(based)} based here${visiting ? ` and ${visiting} visiting ${typeWord(visiting)}` : ""}`;
+    return `${name} is a Crossroads base. ${summary.routes.length} scheduled routes start or end here, flown by ${flown}.`;
   }
   const where = a?.country ? ` in ${a.country}` : "";
   const dist = summary.fromBase ? ` It is ${summary.fromBase.nm.toLocaleString("en-US")} nm great-circle from ${summary.fromBase.base}.` : "";

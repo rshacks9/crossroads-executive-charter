@@ -38,6 +38,7 @@ import {
   suggestFleet,
   typeHref,
 } from "./explore";
+import { numberWord } from "./html-facts";
 import { DivisionDot, JoinButton, Leg, MapLegend, PageHeader, SectionHead, bases, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
@@ -319,6 +320,8 @@ export function DestinationsPage({ snapshot }: PageProps) {
   const usList = useRef<HTMLUListElement>(null);
   const focusAdded = useRef(false);
   const list = useMemo(() => servedAirports(snapshot), [snapshot]);
+  const baseList = bases(snapshot);
+  const baseCount = list.filter(({ icao }) => baseList.includes(icao)).length;
   const q = query.trim().toLowerCase();
   const shown = list.filter(({ icao, airport }) => !q || [icao, airport?.iata, airport?.name, airport?.country].some((v) => v?.toLowerCase().includes(q)));
   const groups = destinationGroups(list, shown);
@@ -331,7 +334,7 @@ export function DestinationsPage({ snapshot }: PageProps) {
   }, [usExpanded]);
   return (
     <>
-      <PageHeader eyebrow="Destinations" title={`${list.length} airports on the schedule`} lede="Every airport Crossroads flies to, built from the published schedule. Each one has a page with its runways, every route that serves it and the aircraft you can book." />
+      <PageHeader eyebrow="Destinations" title={`${list.length} airports on the schedule`} lede={`${list.length - baseCount} destinations plus our ${numberWord(baseCount)} Indianapolis bases. Every airport Crossroads flies to, built from the published schedule. Each one has a page with its runways, every route that serves it and the aircraft you can book.`} />
       <section className="page">
         <form className="filters filters--top" role="search" onSubmit={(e) => e.preventDefault()}>
           <label>
@@ -346,7 +349,7 @@ export function DestinationsPage({ snapshot }: PageProps) {
             {groups.map((g) => <button key={g.title} type="button" className="chip-button" onClick={() => jumpTo(document.getElementById(destGroupId(g.title)))}>{g.title}</button>)}
           </div>
         ) : null}
-        <ExploreMap routes={snapshot.routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={380} label="Map of destinations; select an airport to open its page" />
+        <ExploreMap routes={snapshot.routes} airports={snapshot.airports} bases={baseList} divisions={snapshot.airline.divisions} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={380} label="Map of destinations; select an airport to open its page" />
         <MapLegend snapshot={snapshot} routes={snapshot.routes} />
         {groups.length ? groups.map((group) => {
           const us = group.title === "United States";

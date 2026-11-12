@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Crew, CrewRunway, Route, Snapshot } from "./data";
 import { routeDivision, routeInDivision } from "./data";
-import { FLEET_INFO, PEGASUS_URL } from "./content";
+import { FLEET_INFO, PEGASUS_URL, baseFor } from "./content";
 import {
   COMFORT_SHARE,
   MORE_COUNTRIES,
@@ -129,6 +129,23 @@ describe("airports", () => {
     expect(text).toContain(`${s.routes.length} Crossroads`);
     expect(text).not.toMatch(/best|famous|popular|luxury/i);
     expect(listJoin(["a", "b", "c"])).toBe("a, b and c");
+  });
+
+  it("splits a base's types into those based there and visiting ones", () => {
+    const names = snapshot.airline.divisions.map((d) => d.name);
+    for (const icao of ["KIND", "KTYQ"]) {
+      const s = airportSummary(snapshot, icao);
+      const based = s.types.filter((c) => baseFor(c) === icao).length;
+      const visiting = s.types.length - based;
+      const text = destinationBlurb(s, names, (c) => c);
+      expect(based).toBeGreaterThan(0);
+      expect(text).toContain(`${s.routes.length} scheduled routes start or end here, flown by the ${based} types based here`);
+      expect(text).toContain(visiting ? ` and ${visiting} visiting type` : "based here.");
+    }
+    const kind = airportSummary(snapshot, "KIND");
+    expect(destinationBlurb({ ...kind, types: ["A388", "B77L"] }, names, (c) => c)).toMatch(/flown by the 2 types based here[.]$/);
+    expect(destinationBlurb({ ...kind, types: ["B77L", "C510"] }, names, (c) => c)).toMatch(/flown by the 1 type based here and 1 visiting type[.]$/);
+    expect(destinationBlurb({ ...kind, types: ["B77L", "C510", "E55P"] }, names, (c) => c)).toMatch(/and 2 visiting types[.]$/);
   });
 });
 

@@ -22,6 +22,7 @@ import { LiveMap, divisionColor } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
 import { ExplorerPanel, RouteTable } from "./explore-pages";
 import { airportHref, divisionBaseLabel, mapLegendKeys, networkStats, routeHref, typeHref } from "./explore";
+import { numberWord } from "./html-facts";
 
 export interface PageProps {
   snapshot: Snapshot;
@@ -240,7 +241,7 @@ export function HomePage({ snapshot }: PageProps) {
             <h1>{airline.name}</h1>
             {airline.tagline ? <p className="hero__lede">{airline.tagline}</p> : null}
             <p className="hero__pitch">
-              From the four-seat Citation Mustang to a 150-seat executive A380 and the 777F: {facts.aircraftTypes} aircraft types, {facts.routes} routes from two Indianapolis bases, and one career path.
+              From the four-seat Citation Mustang to a 150-seat executive A380 and the 777F: {facts.aircraftTypes} aircraft types, {facts.routes} routes, most of them from {numberWord(baseList.length)} Indianapolis bases, and one career path.
             </p>
             <div className="hero__actions">
               <JoinButton snapshot={snapshot} />
@@ -253,13 +254,14 @@ export function HomePage({ snapshot }: PageProps) {
             <p className="hero__panel-title">Two bases, one airline</p>
             {baseList.map((icao) => {
               const airport = snapshot.airports[icao];
-              const routes = snapshot.routes.filter((r) => routeBase(r, baseList) === icao).length;
+              // Every route that starts or ends here, as on the destinations card (the KTYQ-KIND legs count for both).
+              const routes = snapshot.routes.filter((r) => r.from === icao || r.to === icao).length;
               const types = fleet.filter((f) => baseFor(f.code) === icao).length;
               return (
                 <div key={icao} className="hero__base">
                   <strong>{icao}</strong>
                   <span>{airport?.name ?? icao}</span>
-                  <span className="hero__base-facts">{types} types · {routes} routes</span>
+                  <span className="hero__base-facts">{types} types based here · {routes} routes</span>
                 </div>
               );
             })}
@@ -631,6 +633,7 @@ export function FleetPage({ snapshot }: PageProps) {
 export function RoutesPage({ snapshot }: PageProps) {
   const divisions = snapshot.airline.divisions;
   const baseList = bases(snapshot);
+  const based = snapshot.routes.filter((r) => routeBase(r, baseList) !== "").length;
   const [query, setQuery] = useState("");
   const [type, setType] = useState(() => {
     const wanted = hashParam("type");
@@ -679,7 +682,7 @@ export function RoutesPage({ snapshot }: PageProps) {
 
   return (
     <>
-      <PageHeader eyebrow="Route explorer" title={`${snapshot.routes.length} routes from Indianapolis`} lede="Choose any airport on the map or in the list to see its routes as great circles, then pick a route for distance, block time, the aircraft that fly it and a booking link. Every route can be booked in the vAMSYS pilot portal and has a Crew Tools briefing." />
+      <PageHeader eyebrow="Route explorer" title={`${snapshot.routes.length} routes, ${based} of them to or from Indianapolis`} lede="Choose any airport on the map or in the list to see its routes as great circles, then pick a route for distance, block time, the aircraft that fly it and a booking link. Every route can be booked in the vAMSYS pilot portal and has a Crew Tools briefing." />
       <section className="page">
         {divisions.length ? (
           <div className="chips" role="group" aria-label="Filter by division">
