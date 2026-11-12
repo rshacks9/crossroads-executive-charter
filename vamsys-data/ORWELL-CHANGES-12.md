@@ -1,10 +1,10 @@
 # Orwell changes, round 12 (2026-11-11)
 
-Round 12 is the look-and-feel pass that round 11 left open: the Phoenix stylesheet, the dashboard arrangement, rank images, stale alerts and a few extras. The reference is FedEx Virtual Air Cargo's Phoenix dashboard, looked at read-only from a pilot account and left unchanged; the browser was switched back to Crossroads afterwards (CRX0001 confirmed).
+Round 12 is the look-and-feel pass that round 11 left open: the Phoenix stylesheet, the dashboard arrangement, rank images, stale alerts and a few extras. The reference is FedEx Virtual Air Cargo's Phoenix dashboard, looked at read-only and left unchanged.
 
 No billing, plan, staff, API key or security settings were touched. Nothing was deleted: superseded dashboard components are hidden. Rank requirements were not changed.
 
-Screenshots of the result were kept locally and are not in this repository (`final-light-1..7.jpg`, `final-dark-1..4.jpg`, plus `-profile`, `-events`, `-handbook`, `-utc`).
+Screenshots of the result are not in this repository.
 
 ## 1. CSS stylesheet (HQ > Settings > Style Settings > Stylesheet)
 
@@ -13,7 +13,7 @@ Screenshots of the result were kept locally and are not in this repository (`fin
 | CSS File | none | `brand/phoenix-crossroads.css` v1.1 (5 KB), stored by vAMSYS as `01M762J5NXCE3YT51VSQV234KQ.css` for v1.0 and replaced by v1.1 |
 | Colour overrides | round 11 values | unchanged (re-typed before each save, see quirks) |
 
-How the class names were obtained (nothing guessed): the page source of the Crossroads dashboard, handbook and profile pages (view-source, copied out of Chrome), the public vAMSYS app stylesheets on `assets.vamsys.io` (build b3c542f), and FedEx VAC's own uploaded stylesheet, which is public on `cdn.vamsys.xyz`. vAMSYS loads the uploaded file into a `custom-va-style` element after its own CSS.
+How the class names were obtained (nothing guessed): the page source of the Crossroads dashboard, handbook and profile pages (view-source), the public vAMSYS app stylesheets on `assets.vamsys.io` (build b3c542f), and FedEx VAC's own uploaded stylesheet, which is public on `cdn.vamsys.xyz`. vAMSYS loads the uploaded file into a `custom-va-style` element after its own CSS.
 
 What the stylesheet does:
 
@@ -57,7 +57,7 @@ FedEx's arrangement, read from its page source: full-width hero and one button; 
 
 **How it was done, and what is left in the builder:** the builder only drags within one list (rows among rows, blocks within a row, components within a block), so nothing can be dragged from the old two-thirds block into a full-width block. The new rows were therefore built with "Insert Between Rows" and every component of the old first row is now set to **Hide Component** (13 components: 12 switched in this round, the small map was already hidden; none deleted). The old row is still the first row in the builder and renders nothing. Two more hidden leftovers are in the new rows (an Alerts under the hero and a NOTAMs under the statistics, both moved to the full-width row).
 
-**Not done:** dragging the hidden old row to the bottom of the builder. It is cosmetic (builder tidiness and a few pixels of extra space above the hero). It needs a zoomed-out long drag with auto-scroll, and the Chrome hold came up as it was about to start, so it was dropped. No drag was performed at all in this round; the target layout did not need one.
+**Not done:** dragging the hidden old row to the bottom of the builder. It is cosmetic (builder tidiness and a few pixels of extra space above the hero). It needs a zoomed-out long drag with auto-scroll, so it was left for later. No drag was performed at all in this round; the target layout did not need one.
 
 **Not a setting:** icon size and map centre. With no flight in progress the globe shows Africa and Europe; with live flights it zooms to them, as on FedEx.
 
@@ -97,28 +97,22 @@ All three were read back (alerts list and the dashboard). Left alone: alert 4542
 
 ## Could not be done, or not verified
 
-- **Badge image for tour 66748.** The tour form has only a "View Activity Badge" button; clicking it (UI Automation and a real click) opened nothing visible, and there is no badge section under HQ > Rewards. The badge image was not changed.
+- **Badge image for tour 66748.** The tour form has only a "View Activity Badge" button; clicking it opened nothing visible, and there is no badge section under HQ > Rewards. The badge image was not changed.
 - **Event or other activity entries** were not created: there is nothing real to announce, and the three tours now fill the Events page.
 - **Plan-gated:** public registration (`vamsys.io/register/crossroads` still redirects to login during the trial, as in round 11). Nothing else attempted in this round was blocked by the trial.
 - **Discord button:** still none; Crossroads has no Discord.
-- **Not verified:** how the pages look on a phone or a wide monitor (the test screen is 1280x720); the stylesheet on Phoenix pages that were not opened (booking map, rosters, statistics, claims); whether the stylesheet also applies to the public login page.
+- **Not verified:** how the pages look on a phone or a wide monitor (only one desktop window size was checked); the stylesheet on Phoenix pages that were not opened (booking map, rosters, statistics, claims); whether the stylesheet also applies to the public login page.
 - **Repo:** the new brand files and this document were committed after the round, on 2026-11-11. They are records and source artwork: the site build reads none of them, so the public site did not change.
 
 ## vAMSYS quirks worth knowing
 
-- Style Settings shows only some saved colour values after a reload. Before every save, re-type: Menu Item Active `#b9501f` / `#f29a6c`, Menu Item Hover `#e8703a` / `#e8703a`, Body Background Light `#f7f9fa`. `style12.ps1` (a local helper script, not in this repository) does this and refuses to save unless all nine values and the upload are present.
+- Style Settings shows only some saved colour values after a reload. Before every save, re-type: Menu Item Active `#b9501f` / `#f29a6c`, Menu Item Hover `#e8703a` / `#e8703a`, Body Background Light `#f7f9fa`.
 - File fields (stylesheet, rank icon, images) only turn into an upload control once scrolled into view; before that they look empty even when a file is stored.
-- Leaving a form with unsaved changes raises Chrome's "Leave site?" dialog. `nav12.ps1` detects it and either cancels or leaves (`-Leave`).
-- The omnibox autocompletes `vamsys.io/phoenix` to `/phoenix/notams`; `nav12.ps1` types a space and a backspace to stop that.
+- Leaving a form with unsaved changes raises the browser's "Leave site?" dialog.
 - Date-time fields: type the digits segment by segment and press Right after the year (it accepts six digits).
 - Tour forms have three "Set to Now" buttons (start, show from, registration start) and per-leg "Show from" fields; use "Copy Start" next to Show From.
 
-## State left behind
-
-Chrome's first tab is on the Orwell dashboard builder with no unsaved changes, at normal zoom, Phoenix in light mode, airline Crossroads. The Chrome hold was still up when the round ended, so the tab was not moved back to Phoenix.
-
 ## For the owner
 
-- A bookmark named "vAMSYS" (vamsys.io/phoenix) appeared on the bookmarks bar at about 20:20Z. None of the scripts sends a bookmark shortcut, so it is probably yours; if not, remove it.
 - Decide whether the hidden old row should be dragged to the bottom of the dashboard builder or deleted.
 - Replace the Charter of the Week alert before 18 November.

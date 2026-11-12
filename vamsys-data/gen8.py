@@ -2,8 +2,10 @@
 Usage: python gen8.py [REJECTED_CODES_COMMA]  -> writes routes-update-8-expansion.csv (all), airports-to-add-8.txt,
 and routes-update-8-import.csv (pairs touching rejected airports removed), plus summary8.tsv."""
 import csv, glob, math, os, sys
-OUT = r"C:\Users\gafft\Documents\kimi\tasks\2026-11-10\05-28-47-1ca902c1\crossroads-site\vamsys-data"
-OA = r"C:\Users\gafft\AppData\Local\Temp\claude\C--Users-gafft\d5d5954c-857c-4da5-ba8d-0b22c087b576\scratchpad\ourairports"
+OUT = os.path.dirname(os.path.abspath(__file__))
+# OurAirports airports.csv and runways.csv (https://ourairports.com/data/): the ourairports folder next to this
+# script, or the folder named by the OURAIRPORTS_DIR environment variable.
+OA = os.environ.get("OURAIRPORTS_DIR") or os.path.join(OUT, "ourairports")
 HERE = os.path.dirname(os.path.abspath(__file__))
 HDR = "ID,Departure Airport (ICAO/IATA),Arrival Airport (ICAO/IATA),Type,Callsign,Flight Number,Fleet IDs,_delete,Service Days,Tags,Is Hidden"
 REJ = set(x for x in (sys.argv[1].split(",") if len(sys.argv) > 1 else []) if x)
@@ -123,7 +125,7 @@ for d, f in (("KAFW", ["32210", "32211", "32214"]), ("MMMX", ["32210", "32211", 
     cs = pair("Cargo charter (KIND)", cs, "KIND", d, f, "cargo-charter", typ="cargo")
 
 # 8. restore the 20 update-7 routes that were dropped because their airports looked rejected.
-# Orwell's airport list (read 2026-11-11 05:45) shows all eight airports exist (IDs 906907-906926), so these can go in.
+# Orwell's airport list (read 2026-11-11) shows all eight airports exist (IDs 906907-906926), so these can go in.
 RESTORE = {"KBKL", "KHXD", "KJAC", "KMSY", "KPHL", "MBPV", "MYNN", "PHNL"}
 imported7 = {r["Callsign"] for r in csv.DictReader(open(os.path.join(OUT, "routes-update-7-import.csv"), encoding="utf-8"))}
 restored = []

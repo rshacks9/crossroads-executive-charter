@@ -1,41 +1,41 @@
-﻿ADDED EBLG 2026-11-11 05:37:03 :: Liège Airport
-ADDED EDDM 2026-11-11 05:37:13 :: Munich Airport
-ADDED EGLC 2026-11-11 05:37:31 :: London City Airport
-ADDED EINN 2026-11-11 05:37:41 :: Shannon Airport
-ADDED KADS 2026-11-11 05:37:50 :: Addison Airport
-ADDED KAFW 2026-11-11 05:38:00 :: Perot Field/Fort Worth Alliance Airport
-ADDED KBFI 2026-11-11 05:38:09 :: King County International Airport - Boeing Field
-ADDED KBZN 2026-11-11 05:38:19 :: Bozeman Yellowstone International Airport
-ADDED KCMI 2026-11-11 05:38:29 :: University of Illinois Willard Airport
-ADDED KCRQ 2026-11-11 05:38:38 :: McClellan-Palomar Airport
-ADDED KFRG 2026-11-11 05:38:47 :: Republic Airport
-ADDED KHDN 2026-11-11 05:38:57 :: Yampa Valley Airport
-ADDED KLNK 2026-11-11 05:39:06 :: Lincoln Airport
-ADDED KMMU 2026-11-11 05:39:17 :: Morristown Municipal Airport
-ADDED KMSN 2026-11-11 05:39:27 :: Dane County Regional Truax Field
-ADDED KMTJ 2026-11-11 05:39:37 :: Montrose Regional Airport
-ADDED KOPF 2026-11-11 05:39:47 :: Miami-Opa Locka Executive Airport
-ADDED KPDX 2026-11-11 05:39:56 :: Portland International Airport
-ADDED KPVD 2026-11-11 05:40:06 :: Rhode Island T. F. Green International Airport
-ADDED KPWM 2026-11-11 05:40:15 :: Portland International Jetport
-ADDED KRNO 2026-11-11 05:40:25 :: Reno Tahoe International Airport
-ADDED KSAT 2026-11-11 05:40:35 :: San Antonio International Airport
-ADDED KSLC 2026-11-11 05:40:45 :: Salt Lake City International Airport
-ADDED KSMO 2026-11-11 05:40:56 :: Santa Monica Municipal Airport
-ADDED KSNA 2026-11-11 05:41:08 :: John Wayne Orange County International Airport
-ADDED KSRQ 2026-11-11 05:41:19 :: Sarasota Bradenton International Airport
-ADDED KSTL 2026-11-11 05:41:29 :: St. Louis Lambert International Airport
-ADDED KSUN 2026-11-11 05:41:40 :: Friedman Memorial Airport
-ADDED KTMB 2026-11-11 05:41:50 :: Miami Executive Airport
-ADDED KTRK 2026-11-11 05:42:00 :: Truckee Tahoe Airport
-ADDED KUNV 2026-11-11 05:42:10 :: State College Regional Airport
-ADDED LEMD 2026-11-11 05:42:20 :: Adolfo Suárez Madrid–Barajas Airport
-ADDED LIML 2026-11-11 05:42:30 :: Milano Linate Airport
-ADDED LSZH 2026-11-11 05:42:39 :: Zürich Airport
-ADDED MDPC 2026-11-11 05:42:49 :: Punta Cana International Airport
-ADDED MKJS 2026-11-11 05:42:59 :: Sangster International Airport
-ADDED MMMX 2026-11-11 05:43:09 :: Mexico City Benito Juárez International Airport
-ADDED TIST 2026-11-11 05:43:19 :: Cyril E. King Airport
-ADDED TJSJ 2026-11-11 05:43:28 :: Luis Munoz Marin International Airport
-NOTE 2026-11-11 05:45 Orwell airport list read back after this run: 111 airports, no duplicates. All 39 above are present.
+﻿ADDED EBLG 2026-11-11 :: Liège Airport
+ADDED EDDM 2026-11-11 :: Munich Airport
+ADDED EGLC 2026-11-11 :: London City Airport
+ADDED EINN 2026-11-11 :: Shannon Airport
+ADDED KADS 2026-11-11 :: Addison Airport
+ADDED KAFW 2026-11-11 :: Perot Field/Fort Worth Alliance Airport
+ADDED KBFI 2026-11-11 :: King County International Airport - Boeing Field
+ADDED KBZN 2026-11-11 :: Bozeman Yellowstone International Airport
+ADDED KCMI 2026-11-11 :: University of Illinois Willard Airport
+ADDED KCRQ 2026-11-11 :: McClellan-Palomar Airport
+ADDED KFRG 2026-11-11 :: Republic Airport
+ADDED KHDN 2026-11-11 :: Yampa Valley Airport
+ADDED KLNK 2026-11-11 :: Lincoln Airport
+ADDED KMMU 2026-11-11 :: Morristown Municipal Airport
+ADDED KMSN 2026-11-11 :: Dane County Regional Truax Field
+ADDED KMTJ 2026-11-11 :: Montrose Regional Airport
+ADDED KOPF 2026-11-11 :: Miami-Opa Locka Executive Airport
+ADDED KPDX 2026-11-11 :: Portland International Airport
+ADDED KPVD 2026-11-11 :: Rhode Island T. F. Green International Airport
+ADDED KPWM 2026-11-11 :: Portland International Jetport
+ADDED KRNO 2026-11-11 :: Reno Tahoe International Airport
+ADDED KSAT 2026-11-11 :: San Antonio International Airport
+ADDED KSLC 2026-11-11 :: Salt Lake City International Airport
+ADDED KSMO 2026-11-11 :: Santa Monica Municipal Airport
+ADDED KSNA 2026-11-11 :: John Wayne Orange County International Airport
+ADDED KSRQ 2026-11-11 :: Sarasota Bradenton International Airport
+ADDED KSTL 2026-11-11 :: St. Louis Lambert International Airport
+ADDED KSUN 2026-11-11 :: Friedman Memorial Airport
+ADDED KTMB 2026-11-11 :: Miami Executive Airport
+ADDED KTRK 2026-11-11 :: Truckee Tahoe Airport
+ADDED KUNV 2026-11-11 :: State College Regional Airport
+ADDED LEMD 2026-11-11 :: Adolfo Suárez Madrid–Barajas Airport
+ADDED LIML 2026-11-11 :: Milano Linate Airport
+ADDED LSZH 2026-11-11 :: Zürich Airport
+ADDED MDPC 2026-11-11 :: Punta Cana International Airport
+ADDED MKJS 2026-11-11 :: Sangster International Airport
+ADDED MMMX 2026-11-11 :: Mexico City Benito Juárez International Airport
+ADDED TIST 2026-11-11 :: Cyril E. King Airport
+ADDED TJSJ 2026-11-11 :: Luis Munoz Marin International Airport
+NOTE 2026-11-11 Orwell airport list read back after this run: 111 airports, no duplicates. All 39 above are present.
 NOTE The 8 codes recorded as rejected in airports-added-7.log (KBKL KHXD KJAC KMSY KPHL MBPV MYNN PHNL) are ALSO present (IDs 906907-906926, created 11 Nov during the update-7 run; the update-7 script misread the form). Their 20 dropped update-7 routes were restored in routes-update-8.

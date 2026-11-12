@@ -14,7 +14,9 @@ IDS_CSV (optional) is 'Callsign,ID' lines read from Orwell (Routes list / export
 import csv, math, os, sys
 
 D = os.path.dirname(os.path.abspath(__file__))
-OA = r"C:\Users\gafft\AppData\Local\Temp\claude\C--Users-gafft\d5d5954c-857c-4da5-ba8d-0b22c087b576\scratchpad\ourairports"
+# OurAirports airports.csv and runways.csv (https://ourairports.com/data/): the ourairports folder next to this
+# script, or the folder named by the OURAIRPORTS_DIR environment variable.
+OA = os.environ.get("OURAIRPORTS_DIR") or os.path.join(D, "ourairports")
 HDR = ["ID", "Departure Airport (ICAO/IATA)", "Arrival Airport (ICAO/IATA)", "Type", "Callsign", "Flight Number",
        "Fleet IDs", "_delete", "Service Days", "Tags", "Is Hidden"]
 DEP, ARR = HDR[1], HDR[2]
@@ -124,7 +126,7 @@ drop("CRX507", {"32208"}, "A340-600 into St Maarten (7,546 ft) is unrealistic; A
 replace("CRX539", ["32199", "32200", "32220"],
         "London City needs steep-approach approval; Gulfstreams removed. Mustang, CJ4 and Phenom 300 are LCY-approved types")
 
-replace("CRX415", ["32200", "32205", "32206", "32220"], "owner swapped the KDAL-KVNY leg to the CJ4 (2026-11-11); CJ4 added")
+replace("CRX415", ["32200", "32205", "32206", "32220"], "KDAL-KVNY leg swapped to the CJ4 on request (2026-11-11); CJ4 added")
 
 # ---- 2. add the Phenom 300E wherever the light jets fly and it is in range ----
 for cs in sorted(net, key=lambda c: int(c[3:])):

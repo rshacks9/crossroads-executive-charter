@@ -165,6 +165,6 @@ Mountain airports (KEGE, KJAC) follow the owner's existing KASE rule: no Mustang
 - **A380 at KIAH (sports) and LSGG/PHNL** is fine for the runways; the A380 isn't on LFMN.
 - **TXKF (Bermuda), MBPV and MYNN**: I believe OurAirports lists all three. They are the most likely ones for the vAMSYS lookup to reject.
   The same caveat applies to the smaller fields KBKL, KOSU, KHXD, KDTS, KMKC and KSUS. They are all real public airports.
-- **Coverage check:** only 5 of the 48 new codes (KIAD, KIAH, KDEN, KPHX, KMEM) also appear in the local
-  medium-cargo runway files (155 files). The rest were checked from general knowledge, not a database.
+- **Coverage check:** only 5 of the 48 new codes (KIAD, KIAH, KDEN, KPHX, KMEM) also appear in the
+  offline runway files on hand (155 files). The rest were checked from general knowledge, not a database.
 - Hawker isn't on any KIND (large-jet) route, since it's KTYQ-based.

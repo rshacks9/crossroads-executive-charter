@@ -25,7 +25,7 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 | --- | --- |
 | `site.config.json` | Airline name, tagline, join/login/Discord links, `show_pilot_names` |
 | `sync/crossroads_sync/` | Builds the snapshot. `snapshot.py` is the allowlist; `fetch.py` makes the GET calls |
-| `sync/vamsys/` | Kimi's read-only vAMSYS client, vendored unchanged from `../va-website/infrastructure/vamsys` |
+| `sync/vamsys/` | Kimi's read-only vAMSYS client, vendored unchanged from `va-website/infrastructure/vamsys` |
 | `site/` | Vite + React + TypeScript static site; Leaflet map on OpenStreetMap tiles |
 | `site/src/content.ts` | Editorial content vAMSYS doesn't hold: aircraft roles and planning figures, sample itineraries, SOPs, news. No statistics or member claims |
 | `sync/crossroads_sync/crew.py` | Builds `crew.json` for the Crew Tools page (see below) |

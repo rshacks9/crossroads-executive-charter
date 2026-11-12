@@ -8,5 +8,8 @@ __pycache__/
 # local import markers
 vamsys-data/IMPORT*_DONE
 
+# OurAirports CSVs read by the vamsys-data generators (downloaded, not committed)
+vamsys-data/ourairports/
+
 # TypeScript build cache
 *.tsbuildinfo
