@@ -1,13 +1,13 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-11T19:29:50Z",
+ "generated_at": "2026-11-12T04:21:58Z",
  "unavailable": [],
  "airline": {
   "divisions": [
    {
     "name": "Executive",
-    "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang and Phenom 300E to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Ge…",
+    "summary": "Light and mid-size jets from Indianapolis Executive, from the Mustang and Phenom 300E to the Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget.",
     "base": "KTYQ",
     "fleets": [
      "C510",

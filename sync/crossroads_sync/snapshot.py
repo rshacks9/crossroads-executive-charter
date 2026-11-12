@@ -35,12 +35,19 @@ SOURCES = ("vamsys", "preview", "sample")
 
 
 def text(value: Any, limit: int = 160) -> str | None:
+    """One line of plain text of at most ``limit`` characters. Longer text ends in "…" at a word boundary."""
     if not isinstance(value, str):
         return None
     cleaned = _SPACE.sub(" ", _CONTROL.sub("", value)).strip()
     if not cleaned:
         return None
-    return cleaned if len(cleaned) <= limit else cleaned[: limit - 1].rstrip() + "…"
+    if len(cleaned) <= limit:
+        return cleaned
+    cut = cleaned[: limit - 1]
+    # Never stop inside a word: drop a partial last word, unless the text is one long word.
+    if cleaned[limit - 1] != " " and " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.rstrip(" ,;:") + "…"
 
 
 def plain_text(value: Any, limit: int = MAX_TEXT) -> str | None:
@@ -419,7 +426,7 @@ def _divisions(value: Any) -> list[dict[str, Any]]:
         divisions.append(
             {
                 "name": name,
-                "summary": text(item.get("summary"), 240),
+                "summary": text(item.get("summary"), 320),
                 "base": code(item.get("base")),
                 "fleets": fleets,
             }

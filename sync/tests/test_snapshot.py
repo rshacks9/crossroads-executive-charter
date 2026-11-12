@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from crossroads_sync import SCHEMA
-from crossroads_sync.snapshot import build_snapshot, minutes_from_hms, plain_text, timestamp
+from crossroads_sync.snapshot import build_snapshot, minutes_from_hms, plain_text, text, timestamp
 
 SAMPLE = json.loads((Path(__file__).parents[1] / "crossroads_sync" / "sample_raw.json").read_text(encoding="utf-8"))
 NOW = datetime(2026, 11, 10, 18, 0, tzinfo=timezone.utc)
@@ -139,6 +139,39 @@ class HelperTests(unittest.TestCase):
     def test_plain_text(self):
         self.assertEqual(plain_text("<p>Hi &amp; <b>welcome</b></p>"), "Hi & welcome")
         self.assertTrue(plain_text("x" * 1000, 10).endswith("…"))
+
+    def test_text_within_the_limit_is_unchanged(self):
+        line = "Light jets to Teterboro, Aspen, Toronto, Geneva and Le Bourget."
+        self.assertEqual(text(line, len(line)), line)
+        self.assertEqual(text(line, 320), line)
+        self.assertEqual(text("  Teterboro,\n\tAspen  "), "Teterboro, Aspen")
+
+    def test_text_is_never_cut_inside_a_word(self):
+        line = "Light jets to Teterboro, Aspen, Toronto, Geneva and Le Bourget."
+        self.assertEqual(text(line, 42), "Light jets to Teterboro, Aspen, Toronto…")
+        self.assertEqual(text(line, 62), "Light jets to Teterboro, Aspen, Toronto, Geneva and Le…")
+        for limit in range(8, len(line)):
+            cut = text(line, limit)
+            kept = cut[:-1]
+            self.assertTrue(cut.endswith("…"), cut)
+            self.assertLessEqual(len(cut), limit, cut)
+            self.assertTrue(line.startswith(kept), cut)
+            # The kept text ends where a word ends: a space or a comma follows it in the original.
+            self.assertIn(line[len(kept)], " ,", cut)
+        # One long word has no boundary to cut at, so it is cut at the limit.
+        self.assertEqual(text("x" * 1000, 10), "x" * 9 + "…")
+
+    def test_division_summaries_kept_whole_up_to_320_characters(self):
+        sentence = "Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget."
+        whole, too_long = " ".join([sentence] * 4), " ".join([sentence] * 5)
+        site = {**SITE, "divisions": [{"name": "Executive", "summary": whole}, {"name": "Long", "summary": too_long}]}
+        divisions = build(site=site)["airline"]["divisions"]
+        self.assertGreater(len(whole), 240)
+        self.assertEqual(divisions[0]["summary"], whole)
+        cut = divisions[1]["summary"]
+        self.assertTrue(cut.endswith("…"))
+        self.assertLessEqual(len(cut), 320)
+        self.assertIn(too_long[len(cut) - 1], " ,")
 
 
 if __name__ == "__main__":
