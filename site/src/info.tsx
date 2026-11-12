@@ -188,7 +188,7 @@ export function CareersPage({ snapshot }: PageProps) {
             </ol>
           </div>
         </div>
-        <SectionHead eyebrow="Tours & badges" title={`${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} in vAMSYS Activities`} intro="Register for a tour under Events in Phoenix, the vAMSYS pilot portal, then book and fly the legs in order. Finishing a tour earns its badge and bonus points." />
+        <SectionHead eyebrow="Tours" title={`${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} to fly`} intro="Register for a tour under Events in Phoenix, the vAMSYS pilot portal, then book and fly the legs in order. Finishing a tour earns its bonus points." />
         <ul className="tour-list">
           {TOURS.map((tour) => (
             <li key={tour.name} className="tour">
@@ -208,7 +208,7 @@ export function CareersPage({ snapshot }: PageProps) {
             </li>
           ))}
         </ul>
-        {snapshot.airline.pilot_login_url ? <p className="fineprint">Activities are in the <a href={snapshot.airline.pilot_login_url} rel="noopener">vAMSYS pilot portal</a>. Tour dates and points are set in vAMSYS and may change there.</p> : null}
+        {snapshot.airline.pilot_login_url ? <p className="fineprint">Tours are under Events in Phoenix, the <a href={snapshot.airline.pilot_login_url} rel="noopener">vAMSYS pilot portal</a>. Tour dates and points are set in vAMSYS and may change there.</p> : null}
         <div className="hero__actions">
           <JoinButton snapshot={snapshot} />
           {registrationOpen(snapshot) ? <a className="button button--quiet" href="#/pilots">{HOW_TO_JOIN}</a> : null}

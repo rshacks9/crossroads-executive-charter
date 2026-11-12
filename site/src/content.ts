@@ -38,7 +38,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "Light jet, single pilot",
     range_nm: 1150,
     cruise_kt: 450,
-    blurb: "The Premier IA is quicker than the Mustang with a roomier cabin. It flew our first accepted PIREP, CRX115 to Chicago Midway.",
+    blurb: "The Premier IA is quicker than the Mustang with a roomier cabin. It flew the first setup test flight, CRX115 to Chicago Midway, while the airline was being built.",
   },
   C25C: {
     role: "Light jet workhorse",
@@ -68,7 +68,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "High-speed mid-size",
     range_nm: 2900,
     cruise_kt: 500,
-    blurb: "The fastest jet at KTYQ and the largest the field takes. It opened the Hartford route with CRX121.",
+    blurb: "The fastest jet at KTYQ and the largest the field takes. It flew CRX121 to Hartford on a setup test flight while the airline was being built.",
   },
   C700: {
     role: "Super-midsize",
@@ -255,6 +255,9 @@ export const PEGASUS_URL = "https://vamsys.co.uk/docs/pegasus/pegasus-acars";
  */
 export const RULES_URL = "https://vamsys.io/crossroads/rules";
 
+/** The one VATSIM flight plan remark for Crossroads flights, wherever the site tells pilots what to file. */
+export const VATSIM_REMARKS = "CALLSIGN/CROSSROADS";
+
 // ------------------------------------------------------------------ handbook
 
 export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[] = [
@@ -296,7 +299,7 @@ export const SOP_RULES: { title: string; body: string; link?: { href: string; la
   { title: "Gate to gate with Pegasus", link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" }, body: "Start Pegasus before engine start and leave it running until the engines are off at the gate. No slew, no time acceleration, no in-flight refuelling. If real life calls, pause and say so in your PIREP comments." },
   { title: "Stabilised or go around", body: "On speed, on path and configured by 1,000 ft above the airport in cloud and 500 ft in visual conditions. If you aren't, go around. Nobody is penalised for a go-around." },
   { title: "Speed and altitude discipline", body: "250 kt below 10,000 ft in the US unless ATC says otherwise. Respect published SID and STAR restrictions and any noise abatement procedure published for the airport." },
-  { title: "Online or offline", body: "Fly on VATSIM if you like. You don't have to. Online, use your CRX callsign, follow the network's rules and put CALLSIGN/CROSSROADS in your flight plan remarks." },
+  { title: "Online or offline", body: `Fly on VATSIM if you like. You don't have to. Online, use your CRX callsign, follow the network's rules and put ${VATSIM_REMARKS} in your flight plan remarks.` },
   { title: "Write it up", body: "PIREP comments are read. Diversions, go-arounds, technical issues and firm landings all belong there. Honest write-ups are part of the job." },
 ];
 
@@ -367,7 +370,7 @@ export const NEWS: NewsItem[] = [
     date: "2026-11-11",
     kind: "News",
     title: "New tour: Crossroads Circuit",
-    body: "Eight short legs from KTYQ to Louisville, Chicago Midway, Columbus and Nashville and back, in any KTYQ jet, for a badge and 300 points. It runs until 31 December 2027. Register under Activities in the vAMSYS pilot portal.",
+    body: "Eight short legs from KTYQ to Louisville, Chicago Midway, Columbus and Nashville and back, in any KTYQ jet, for 300 points. It runs until 31 December 2027. Register under Events in Phoenix, the vAMSYS pilot portal.",
     link: { href: "#/careers", label: "Tour legs and details" },
   },
   {
@@ -381,14 +384,14 @@ export const NEWS: NewsItem[] = [
     date: "2026-11-11",
     kind: "News",
     title: "Two tours open: Ski Season 2026-27 and Across the Pond",
-    body: "The Ski Season Tour 2026-27 (8 legs, KTYQ to Vail, Aspen, Jackson Hole and Sun Valley and back) runs until 15 April 2027. Across the Pond (6 legs, KIND to Paris Le Bourget, Geneva and Zurich and back) runs until 30 June 2027. Register for both under Activities in the vAMSYS pilot portal; finishing a tour earns a badge and bonus points.",
+    body: "The Ski Season Tour 2026-27 (8 legs, KTYQ to Vail, Aspen, Jackson Hole and Sun Valley and back) runs until 15 April 2027. Across the Pond (6 legs, KIND to Paris Le Bourget, Geneva and Zurich and back) runs until 30 June 2027. Register for both under Events in Phoenix, the vAMSYS pilot portal; finishing a tour earns bonus points.",
     link: { href: "#/careers", label: "Tour legs and details" },
   },
   {
     date: "2026-11-11",
     kind: "News",
-    title: "First PIREPs accepted",
-    body: "The first three Crossroads logbook entries were accepted today: CRX115 Indianapolis Executive to Chicago Midway in the Premier IA, CRX116 back to KTYQ in the Citation Mustang, and CRX121 KTYQ to Hartford Bradley in the Citation X.",
+    title: "Setup test flights",
+    body: "While the airline was being built, the founder's automation tools flew three setup test flights: CRX115 Indianapolis Executive to Chicago Midway in the Premier IA, CRX116 back to KTYQ in the Citation Mustang, and CRX121 KTYQ to Hartford Bradley in the Citation X. They were tests of the airline's setup, not pilot flights.",
     link: { href: "#/routes", label: "See the routes" },
   },
   {
@@ -431,6 +434,6 @@ export const NEWS: NewsItem[] = [
     kind: "News",
     title: "Crossroads Executive & Charter opens on vAMSYS",
     body: "The airline is set up on vAMSYS with one hub (Indianapolis, KTYQ and KIND), four divisions and a six-rank career ladder from Cadet to Chief Pilot. Live flight tracking on this site switches on once the vAMSYS data connection is enabled.",
-    link: { href: "#/pilots", label: "How to fly with us" },
+    link: { href: "#/pilots", label: "How to join" },
   },
 ];

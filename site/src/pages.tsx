@@ -17,7 +17,7 @@ import {
   routeBase,
   routeInDivision,
 } from "./data";
-import { FLEET_INFO, NEWS, PEGASUS_URL, RULES_URL, SERVICES, baseFor } from "./content";
+import { FLEET_INFO, NEWS, PEGASUS_URL, RULES_URL, SERVICES, VATSIM_REMARKS, baseFor } from "./content";
 import type { NewsItem } from "./content";
 import { LiveMap, divisionColor } from "./LiveMap";
 import { ExploreMap } from "./ExploreMap";
@@ -117,13 +117,20 @@ export function JoinButton({ snapshot, quiet = false }: { snapshot: Snapshot; qu
   );
 }
 
-/** The home page's closing line: a new airline, and the KTYQ type that comes with MSFS 2024 when there is one. */
+/** How the home page labels the setup flights: what they were, and that they are not pilot flights. */
+export const SETUP_NOTE =
+  "Flown by the founder's automation tools while the airline was being built. They are not pilot flights. The latest flights from the vAMSYS logbook replace this list once that data is connected.";
+
+/** The terms of joining, as the airline sets them, shown with the join copy on Home and Fly with us. */
+export const JOIN_TERMS = "Free to join; no activity requirement for the first 30 days.";
+
+/** The home page's closing line: a new airline, the join terms, and the KTYQ type that comes with MSFS 2024 when there is one. */
 export function foundingLine(snapshot: Pick<Snapshot, "airline" | "fleet">): string {
   const starters = defaultSimTypes(snapshot).filter((f) => baseFor(f.code) === "KTYQ").map((f) => shortName(f.name));
   const start = starters.length
     ? `Start as a Cadet at KTYQ in the ${listJoin(starters)}, which ${starters.length === 1 ? "comes" : "come"} with MSFS 2024.`
     : "Start as a Cadet at KTYQ.";
-  return `Crossroads opened on vAMSYS in November 2026 and is just getting started. ${start} Where you take it from there is up to you.`;
+  return `Crossroads opened on vAMSYS in November 2026 and is just getting started, so you could be one of the first. ${JOIN_TERMS} ${start}`;
 }
 
 function divisionFor(snapshot: Snapshot, code: string): { division: Division; index: number } | null {
@@ -236,8 +243,11 @@ function airframes(snapshot: Snapshot): number {
 
 // ------------------------------------------------------------------ home
 
-/** The first accepted PIREPs, from the launch announcement. Shown only until vAMSYS supplies recent flights. */
-const FIRST_FLIGHTS = [
+/**
+ * The three setup test flights, flown by the founder's automation tools while the airline was being
+ * built. Labelled as such, never as pilot activity. Shown only until vAMSYS supplies recent flights.
+ */
+const SETUP_FLIGHTS = [
   { callsign: "CRX115", from: "KTYQ", to: "KMDW", aircraft: "Premier IA" },
   { callsign: "CRX116", from: "KMDW", to: "KTYQ", aircraft: "Citation Mustang" },
   { callsign: "CRX121", from: "KTYQ", to: "KBDL", aircraft: "Citation X" },
@@ -394,7 +404,9 @@ export function HomePage({ snapshot }: PageProps) {
               </ul>
             </>
           ) : null}
-          <SectionHead eyebrow="Just landed" title={recent.length ? "Latest flights" : "Logbook firsts"} />
+          {recent.length
+            ? <SectionHead eyebrow="Just landed" title="Latest flights" />
+            : <SectionHead eyebrow="Airline setup" title="Setup test flights" />}
           {recent.length ? (
             <table className="table table--compact">
               <caption className="visually-hidden">Latest flights</caption>
@@ -413,7 +425,7 @@ export function HomePage({ snapshot }: PageProps) {
           ) : (
             <>
               <ul className="firsts">
-                {FIRST_FLIGHTS.map((f) => (
+                {SETUP_FLIGHTS.map((f) => (
                   <li key={f.callsign}>
                     <strong className="callsign">{f.callsign}</strong>
                     <Leg from={f.from} to={f.to} snapshot={snapshot} />
@@ -421,7 +433,7 @@ export function HomePage({ snapshot }: PageProps) {
                   </li>
                 ))}
               </ul>
-              <p className="fineprint">The first three PIREPs accepted on 11 November 2026. Live logbook entries replace this list once vAMSYS data is connected.</p>
+              <p className="fineprint">{SETUP_NOTE}</p>
             </>
           )}
         </div>
@@ -487,7 +499,7 @@ export function LivePage({ snapshot }: PageProps) {
         lede={live.length
           ? `${live.length} ${live.length === 1 ? "flight is" : "flights are"} in progress. Positions as of ${relativeAge(snapshot.generated_at)}; this page refreshes every minute.`
           : prelaunch
-            ? "Live tracking switches on once the vAMSYS data connection is enabled. Until then, here's the network our pilots fly."
+            ? "Live tracking switches on once the vAMSYS data connection is enabled. Until then, here's the network you can fly."
             : "No flights are in progress right now. Here's where we fly."}
       />
       <section className="page">
@@ -806,7 +818,7 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
   {
     title: "Book a route",
     tool: "vAMSYS Phoenix",
-    body: "In Phoenix, book a route that departs from your current airport and lists your aircraft. Light and mid-size jets fly from KTYQ, everything larger from KIND. To start somewhere else, use Jumpseat in Phoenix first. Never reposition the aircraft in the simulator.",
+    body: "In Phoenix, book a route that departs from your current airport and lists your aircraft. Light and mid-size aircraft fly from KTYQ, everything larger from KIND. To start somewhere else, use Jumpseat in Phoenix first. Never reposition the aircraft in the simulator.",
     tips: [
       "Book before you fly: without a booking, a flight can't be added to your logbook afterwards",
       "A booking stays valid for 24 hours",
@@ -837,9 +849,9 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
   },
 ];
 
-/** The honest note for visitors: a new airline, with no pilot counts claimed. */
+/** The honest note for visitors: a new airline. No pilot counts, and nothing that implies other pilots. */
 export const NEW_AIRLINE =
-  "Crossroads opened on vAMSYS in November 2026 and is just getting started, so the pilot roster is still short. Pilots who join early are its founding crew.";
+  "Crossroads opened on vAMSYS in November 2026 and is just getting started. Founding pilots welcome; you could be one of the first.";
 
 /** Shown until registration opens (registrationOpen). */
 export const REGISTRATION_CLOSED =
@@ -886,8 +898,8 @@ export function PilotsPage({ snapshot }: PageProps) {
     ...(defaults.length ? [{ q: "Do I need add-on aircraft?", a: addOnAnswer(snapshot, defaults) }] : []),
     { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, which works with MSFS 2020 and 2024, X-Plane 10, 11 and 12, Prepar3D, FSX and FS2004 (the vAMSYS Pegasus guide keeps the current list). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
     { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },
-    { q: "Where does each flight start?", a: "Light and mid-size jets (Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
-    { q: "Do I have to fly on VATSIM?", a: "Online or offline, your choice. If you fly online, use your CRX callsign and follow the network's rules: you stay at the controls, monitor the frequency and make every radio call yourself." },
+    { q: "Where does each flight start?", a: "Light and mid-size aircraft (Piper M600, Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X) work from Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND." },
+    { q: "Do I have to fly on VATSIM?", a: `Online or offline, your choice. If you fly online, use your CRX callsign, put ${VATSIM_REMARKS} in your flight plan remarks and follow the VATSIM Code of Conduct. Among other things it says “Pilots shall monitor their flights at all times” (B3(a)) and “Only unaltered speech is permitted to be transmitted” (A14(d)).` },
     { q: "Is this a real airline?", a: "No. Crossroads Executive & Charter is a fictional virtual airline for flight simulation. It doesn't sell flights and isn't connected to any real operator." },
   ];
 
@@ -909,8 +921,9 @@ export function PilotsPage({ snapshot }: PageProps) {
         )}
         <div className="two-up">
           <div className="mini-card">
-            <h2 className="h3">New airline, founding pilots welcome</h2>
+            <h2 className="h3">A new airline</h2>
             <p>{NEW_AIRLINE}</p>
+            <p><strong>{JOIN_TERMS}</strong></p>
           </div>
           {first ? <FirstFlightCard first={first} snapshot={snapshot} /> : null}
         </div>

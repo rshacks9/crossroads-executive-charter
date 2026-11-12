@@ -9,13 +9,13 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { DivisionDot, FleetPage, HOW_TO_JOIN, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, bases, joinHref, registrationOpen, shortName } = await import("./pages");
+const { DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
 const { WeatherBoard } = await import("./crew");
-const { FLEET_INFO, KTYQ_TYPES, RULES_URL, SERVICES, TOURS, baseFor } = await import("./content");
+const { FLEET_INFO, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
@@ -83,6 +83,17 @@ describe("pages render from the snapshot", () => {
     const html = renderToString(<HandbookPage snapshot={snapshot} />);
     expect(html).toMatch(/CALLSIGN[/]<wbr ?[/]?>CROSSROADS/);
     expect(html.replace(/<wbr ?[/]?>/g, "")).toContain("CALLSIGN/CROSSROADS");
+  });
+
+  it("gives one VATSIM remarks string, CALLSIGN/CROSSROADS, wherever it tells pilots what to file", () => {
+    expect(VATSIM_REMARKS).toBe("CALLSIGN/CROSSROADS");
+    const pages = [HandbookPage, PilotsPage, ResourcesPage, CareersPage, NewsPage].map((Page) => text(renderToString(<Page snapshot={snapshot} />).replace(/<wbr ?[/]?>/g, "")));
+    for (const page of pages) {
+      for (const remark of page.match(/[A-Z]+[/]CROSSROADS[A-Z]*/g) ?? []) expect(remark).toBe(VATSIM_REMARKS);
+      expect(page).not.toMatch(/RMK[/]|CROSSROADS VIRTUAL/);
+    }
+    expect(pages[0]).toContain(`put ${VATSIM_REMARKS} in your flight plan remarks`);
+    expect(pages[1]).toContain(`put ${VATSIM_REMARKS} in your flight plan remarks`);
   });
 
   it("keys map legends to the lines drawn and explains shared division counts", () => {
@@ -441,7 +452,11 @@ describe("texts follow the data", () => {
     expect(snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ")).toHaveLength(KTYQ_TYPES.length);
     expect(text(renderToString(<ServicesPage snapshot={snapshot} />))).toContain(`${capital(numberWord(KTYQ_TYPES.length))} light and mid-size types at KTYQ, from the Mustang`);
     const careers = renderToString(<CareersPage snapshot={snapshot} />);
-    expect(careers).toContain(`<h2>${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} in vAMSYS Activities</h2>`);
+    expect(careers).toContain(`<h2>${capital(numberWord(TOURS.length))} ${TOURS.length === 1 ? "tour" : "tours"} to fly</h2>`);
+    // One name for where the tours are (Events in Phoenix), and no badges: the vAMSYS Badges module is off.
+    expect(text(careers)).toContain("Register for a tour under Events in Phoenix");
+    expect(text(careers)).not.toMatch(/badge|Activities/i);
+    for (const item of NEWS) expect(`${item.title} ${item.body}`).not.toMatch(/badge|under Activities/i);
     expect(careers.match(/<li class="tour">/g)).toHaveLength(TOURS.length);
     const news = renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />);
     expect(news).toContain('<p class="empty">No group flights are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>');
@@ -516,12 +531,38 @@ describe("joining", () => {
     expect(page).not.toMatch(/Register link|username you're happy|Once staff approve|application to accepted/);
   });
 
-  it("says plainly that the airline is new, and claims no pilot numbers", () => {
+  it("says plainly that the airline is new, with the join terms; claims no pilot numbers and implies no other pilots", () => {
     const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
-    expect(page).toContain(`New airline, founding pilots welcome ${NEW_AIRLINE}`);
+    expect(NEW_AIRLINE).toContain("Founding pilots welcome; you could be one of the first.");
+    expect(JOIN_TERMS).toBe("Free to join; no activity requirement for the first 30 days.");
+    expect(page).toContain(`A new airline ${NEW_AIRLINE} ${JOIN_TERMS}`);
     // A date, yes; a head count, never.
     expect(NEW_AIRLINE).not.toMatch(/[0-9][0-9,]* (pilots|members)|hundreds|thousands|dozens|growing community/i);
-    expect(text(renderToString(<HomePage snapshot={snapshot} />))).toContain("Founding pilots welcome. Crossroads opened on vAMSYS in November 2026 and is just getting started.");
+    const home = text(renderToString(<HomePage snapshot={snapshot} />));
+    expect(home).toContain(`Founding pilots welcome. Crossroads opened on vAMSYS in November 2026 and is just getting started, so you could be one of the first. ${JOIN_TERMS}`);
+    // Nothing that sizes up a roster or speaks for pilots who may not exist yet.
+    for (const t of [page, home, text(renderToString(<LivePage snapshot={snapshot} />))]) expect(t).not.toMatch(/roster|very few|tiny|our pilots/i);
+  });
+
+  it("labels the three setup flights as setup test flights, not as pilot or logbook activity", () => {
+    const home = text(renderToString(<HomePage snapshot={{ ...snapshot, recent_flights: [] }} />));
+    expect(home).toContain("Airline setup Setup test flights");
+    expect(home).toContain(SETUP_NOTE);
+    expect(SETUP_NOTE).toContain("founder's automation tools while the airline was being built");
+    expect(home).not.toMatch(/Logbook firsts|PIREPs accepted|Just landed/);
+    const news = NEWS.filter((n) => n.body.includes("CRX115"));
+    expect(news.map((n) => n.title)).toEqual(["Setup test flights"]);
+    expect(news[0]!.body).toContain("They were tests of the airline's setup, not pilot flights.");
+    for (const item of NEWS) expect(`${item.title} ${item.body}`).not.toMatch(/PIREPs accepted|logbook entries were accepted/i);
+    expect(FLEET_INFO.PRM1!.blurb).toContain("setup test flight");
+    expect(FLEET_INFO.C750!.blurb).toContain("setup test flight");
+  });
+
+  it("quotes the VATSIM Code of Conduct instead of paraphrasing it", () => {
+    const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    expect(page).toContain("“Pilots shall monitor their flights at all times” (B3(a))");
+    expect(page).toContain("“Only unaltered speech is permitted to be transmitted” (A14(d))");
+    expect(page).not.toMatch(/stay at the controls|make every radio call yourself/);
   });
 
   it("suggests the starter tour's first leg as the first flight, in the KTYQ jet that comes with MSFS 2024", () => {
