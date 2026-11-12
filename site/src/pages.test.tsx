@@ -74,6 +74,12 @@ describe("pages render from the snapshot", () => {
     expect(renderToString(<ResourcesPage snapshot={snapshot} />)).not.toContain('href="https://vamsys.io/"');
   });
 
+  it("lets the VATSIM remarks value break after the slash without changing its text", () => {
+    const html = renderToString(<HandbookPage snapshot={snapshot} />);
+    expect(html).toMatch(/CALLSIGN[/]<wbr ?[/]?>CROSSROADS/);
+    expect(html.replace(/<wbr ?[/]?>/g, "")).toContain("CALLSIGN/CROSSROADS");
+  });
+
   it("explains the explorer's keyboard controls", () => {
     expect(text(renderToString(<RoutesPage snapshot={snapshot} />))).toContain("Escape to clear");
   });

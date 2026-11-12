@@ -32,9 +32,13 @@ const PAGES = [
 // The dark theme is checked on the pages with the most distinct components, at phone and desktop widths.
 const DARK = new Set(["home", "fleet", "type", "routes", "airport", "crew", "handbook"]);
 
-/** Runs in the page: layout facts that a screenshot review can miss. */
-function pageChecks() {
-  const vw = window.innerWidth;
+/**
+ * Runs in the page: layout facts that a screenshot review can miss. Overflow is measured against
+ * `expected`, the configured viewport width: a page that is too wide makes a mobile browser zoom out
+ * and widen window.innerWidth, which would hide the overflow it causes.
+ */
+function pageChecks(expected) {
+  const vw = expected;
   const doc = document.documentElement;
   const clipped = (el) => {
     for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
@@ -62,7 +66,8 @@ function pageChecks() {
     title: document.title,
     description: desc ? desc.getAttribute("content") : null,
     h1: [...document.querySelectorAll("h1")].map((h) => h.textContent.trim()),
-    innerWidth: vw,
+    innerWidth: window.innerWidth,
+    widthMismatch: window.innerWidth !== expected,
     overflowX: doc.scrollWidth - vw,
     pageHeight: doc.scrollHeight,
     wide,
@@ -112,7 +117,7 @@ async function capture(context, vp, theme, [name, hash]) {
   try {
     await page.goto(rec.url, { waitUntil: "load", timeout: 30000 });
     await settle(page, rec);
-    Object.assign(rec, await page.evaluate(pageChecks));
+    Object.assign(rec, await page.evaluate(pageChecks, vp.width));
     await page.addScriptTag({ path: AXE_PATH });
     rec.axe = await page.evaluate(runAxe, AXE_NODES);
     const needed = Math.ceil(rec.pageHeight / vp.height);
@@ -226,12 +231,15 @@ function summarize(results, head) {
   const count = (list) => (list || []).length;
   const by = (r, impact) => (r.axe || []).filter((v) => v.impact === impact).reduce((n, v) => n + v.count, 0);
   const sum = (f) => pages.reduce((n, r) => n + f(r), 0);
+  // Sideways overflow, or a window the browser widened to fit the page.
+  const sideways = (r) => r.overflowX > 1 || r.widthMismatch;
+  const overflowCell = (r) => `+${r.overflowX}px${r.widthMismatch ? `, window ${r.innerWidth}px` : ""}`;
   const rows = pages.map((r) =>
-    `| ${r.id} | ${r.error ? "ERROR" : r.overflowX > 1 ? `+${r.overflowX}px` : "ok"} | ${by(r, "critical")} | ${by(r, "serious")} | ${by(r, "moderate") + by(r, "minor")} | ${count(r.console)} | ${count(r.failed) + count(r.http)} | ${count(r.aborted)} | ${count(r.brokenImages)} | ${r.pageHeight ?? ""} | ${r.transferKb ?? ""} |`);
+    `| ${r.id} | ${r.error ? "ERROR" : sideways(r) ? overflowCell(r) : "ok"} | ${by(r, "critical")} | ${by(r, "serious")} | ${by(r, "moderate") + by(r, "minor")} | ${count(r.console)} | ${count(r.failed) + count(r.http)} | ${count(r.aborted)} | ${count(r.brokenImages)} | ${r.pageHeight ?? ""} | ${r.transferKb ?? ""} |`);
   const totals = [
     `${pages.length} captures`,
     `${pages.filter((r) => r.error).length} errors`,
-    `${pages.filter((r) => r.overflowX > 1).length} with sideways overflow`,
+    `${pages.filter(sideways).length} with sideways overflow`,
     `${sum((r) => by(r, "critical"))} critical and ${sum((r) => by(r, "serious"))} serious accessibility findings`,
     `${sum((r) => count(r.console))} console messages`,
     `${sum((r) => count(r.failed) + count(r.http))} failed requests`,

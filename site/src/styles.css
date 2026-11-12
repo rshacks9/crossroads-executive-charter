@@ -629,10 +629,10 @@ td.tailwind { color: var(--status-danger, #b3261e); font-weight: 600; }
 .hb-section > h2 { font-size: clamp(28px, 3.5vw, 36px); padding-bottom: 8px; border-bottom: 2px solid var(--text); }
 .hb-section > p { max-width: 72ch; }
 .hb-section .table-wrap { margin-top: 4px; }
-.callsign-card { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 0; }
+.callsign-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 0; }
 .callsign-card div { background: var(--ink); color: var(--on-ink); border-radius: var(--radius); padding: 12px 14px; border-bottom: 3px solid var(--signal); }
 .callsign-card dt { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--on-ink-2); }
-.callsign-card dd { margin: 4px 0 0; font: 700 22px/1.15 var(--display); letter-spacing: .03em; }
+.callsign-card dd { margin: 4px 0 0; font: 700 22px/1.15 var(--display); letter-spacing: .03em; overflow-wrap: anywhere; }
 .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 700px) { .two-up { grid-template-columns: 1fr; } }
 .mini-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }

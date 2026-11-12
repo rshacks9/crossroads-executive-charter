@@ -244,7 +244,8 @@ export function HandbookPage({ snapshot }: PageProps) {
               <div><dt>ICAO prefix</dt><dd>CRX</dd></div>
               <div><dt>Flight number</dt><dd>CX + 3 digits</dd></div>
               <div><dt>Radio</dt><dd>“Crossroads one-zero-one”</dd></div>
-              <div><dt>VATSIM remarks</dt><dd>CALLSIGN/CROSSROADS</dd></div>
+              {/* <wbr> lets the value break after the slash and adds nothing when a pilot copies it. */}
+              <div><dt>VATSIM remarks</dt><dd>CALLSIGN/<wbr />CROSSROADS</dd></div>
             </dl>
             <p className="fineprint">CRX and “Crossroads” are used inside this virtual airline for simulation only.</p>
           </section>
