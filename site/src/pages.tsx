@@ -237,7 +237,7 @@ export function HomePage({ snapshot }: PageProps) {
       <section className="hero">
         <div className="hero__inner">
           <div className="hero__copy">
-            <p className="eyebrow eyebrow--on-ink">Virtual airline · Indianapolis, Indiana</p>
+            <p className="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>
             <h1>{airline.name}</h1>
             {airline.tagline ? <p className="hero__lede">{airline.tagline}</p> : null}
             <p className="hero__pitch">

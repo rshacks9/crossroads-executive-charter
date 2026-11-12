@@ -73,7 +73,7 @@ describe("wording", () => {
       "A fictional flight-sim virtual airline from Indianapolis: 19 aircraft types, from the Citation Mustang to the A380 and 777F, and 310 routes. Join on vAMSYS.",
     );
     expect(socialDescription(counts)).toBe(
-      "Light jets to the A380 and 777F. Two Indianapolis bases, 310 routes, four divisions and one career path. A virtual airline for flight simulation on vAMSYS.",
+      "Light jets to the A380 and 777F. Two Indianapolis bases, 310 routes, four divisions and one career path. A fictional virtual airline for flight simulation on vAMSYS.",
     );
   });
 
@@ -146,6 +146,15 @@ describe("the real index.html", () => {
     const social = /<meta property="og:description" content="([^"]*)"/.exec(built)?.[1] ?? "";
     expect(social).toContain(`${snapshot.routes.length.toLocaleString("en-US")} route`);
     expect(social).toContain(`${numberWord(snapshot.airline.divisions.length)} division`);
+  });
+
+  it("calls the airline fictional in the link preview's title, description and image text", () => {
+    const built = fillHtmlFacts(indexHtml, facts);
+    for (const property of ["og:title", "og:description", "og:image:alt"]) {
+      const content = new RegExp(`<meta property="${property}" content="([^"]*)"`).exec(built)?.[1] ?? "";
+      expect(content, property).toMatch(/\bfictional\b/i);
+    }
+    expect(socialDescription(null)).toContain("A fictional virtual airline");
   });
 
   it("has no number typed by hand in front of something the snapshot counts", () => {

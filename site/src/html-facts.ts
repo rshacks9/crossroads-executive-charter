@@ -74,12 +74,12 @@ export function siteDescription(counts: SiteCounts | null): string {
 /** Shorter-sentence description for link previews (Open Graph: Discord, Reddit, Facebook). */
 export function socialDescription(counts: SiteCounts | null): string {
   if (!counts) {
-    return "Light jets to the A380 and 777F from Indianapolis: executive, charter, sports and cargo flying on one career path. A virtual airline for flight simulation on vAMSYS.";
+    return "Light jets to the A380 and 777F from Indianapolis: executive, charter, sports and cargo flying on one career path. A fictional virtual airline for flight simulation on vAMSYS.";
   }
   const bases = `${capital(numberWord(counts.bases))} Indianapolis ${plural(counts.bases, "base", "bases")}`;
   const routes = digits(counts.routes, "route", "routes");
   const divisions = `${numberWord(counts.divisions)} ${plural(counts.divisions, "division", "divisions")}`;
-  return `Light jets to the A380 and 777F. ${bases}, ${routes}, ${divisions} and one career path. A virtual airline for flight simulation on vAMSYS.`;
+  return `Light jets to the A380 and 777F. ${bases}, ${routes}, ${divisions} and one career path. A fictional virtual airline for flight simulation on vAMSYS.`;
 }
 
 /** Values for the {{placeholders}} in index.html. */

@@ -451,4 +451,8 @@ describe("texts follow the data", () => {
       expect(html).not.toContain("ICAO type");
     }
   });
+
+  it("says 'fictional' in the first screen", () => {
+    expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
+  });
 });
