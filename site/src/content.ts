@@ -56,7 +56,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "Mid-size cabin",
     range_nm: 2300,
     cruise_kt: 430,
-    blurb: "A stand-up cabin and transcontinental legs from KTYQ. The Hawker flies every light/mid executive route in the network expansion.",
+    blurb: "A stand-up cabin and transcontinental legs from KTYQ. The Hawker flies most light and mid-size executive routes.",
   },
   C750: {
     role: "High-speed mid-size",
@@ -117,7 +117,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "Charter heavy lifter",
     range_nm: 3500,
     cruise_kt: 460,
-    blurb: "One hundred and eighty seats and short-field performance. It flies every domestic sports and group leg.",
+    blurb: "One hundred and eighty seats and short-field performance. It flies almost all domestic sports and group legs.",
   },
   A306: {
     role: "Medium freighter",
@@ -186,7 +186,7 @@ export const SERVICES: Service[] = [
     pitch: "When the group outgrows a business jet. Executive-configured Airbus aircraft fly delegations, tours and private parties from Indianapolis International.",
     points: [
       "A220-300 with 48 seats, A340-600 with 100 and A380 with 150",
-      "Long-range legs to Le Bourget, Geneva, London Luton and Los Cabos",
+      "Long-range legs to Le Bourget, Geneva, Zurich and Los Cabos",
       "Business-jet flexibility, airliner procedures: full SimBrief OFPs and cost index",
       "Shares the KIND ramp with the Gulfstreams and freighters",
     ],
@@ -317,7 +317,7 @@ export const TOURS: Tour[] = [
     name: "Crossroads Circuit",
     window: "11 November 2026 to 31 December 2027",
     points: 300,
-    summary: "Eight short legs out of Indianapolis Executive, each under an hour, in any KTYQ light or mid-size jet. A good way to learn a new type.",
+    summary: "Eight short legs out of Indianapolis Executive, each about an hour or less, in any KTYQ light or mid-size jet. A good way to learn a new type.",
     legs: [["KTYQ", "KSDF"], ["KSDF", "KTYQ"], ["KTYQ", "KMDW"], ["KMDW", "KTYQ"], ["KTYQ", "KCMH"], ["KCMH", "KTYQ"], ["KTYQ", "KBNA"], ["KBNA", "KTYQ"]],
   },
 ];
@@ -344,7 +344,7 @@ export const NEWS: NewsItem[] = [
     date: "2026-11-11",
     kind: "Network",
     title: "Network now 310 routes; airport restrictions applied",
-    body: "Update 11 added 16 routes: a KTYQ-KIND positioning leg (CRX733/734), Martha's Vineyard from KTYQ and Teterboro, Van Nuys-Las Vegas, Denver Centennial-Aspen, Opa-locka-Nassau, White Plains-Boca Raton and Chicago Midway-Teterboro. Fleets were also tidied to match real airport limits: no Gulfstreams at Aspen (95 ft wingspan limit) or London City (steep approach), no A220 at Teterboro (weight limit), and no A340-600 at Van Nuys, Luton or St Maarten.",
+    body: "Sixteen routes are new: a KTYQ-KIND positioning leg (CRX733/734), Martha's Vineyard from KTYQ and Teterboro, Van Nuys-Las Vegas, Denver Centennial-Aspen, Opa-locka-Nassau, White Plains-Boca Raton and Chicago Midway-Teterboro. With them and the two Columbus legs flown in the Crossroads Circuit (CRX731/732), the schedule has 310 routes. Fleets were also tidied to match real airport limits: no Gulfstreams at Aspen (95 ft wingspan limit) or London City (steep approach), no A220 at Teterboro (weight limit), and no A340-600 at Van Nuys, Luton or St Maarten.",
     link: { href: "#/routes", label: "Explore the network" },
   },
   {
@@ -358,7 +358,7 @@ export const NEWS: NewsItem[] = [
     date: "2026-11-11",
     kind: "Network",
     title: "Network now 292 routes",
-    body: "Update 8 added 134 routes and 39 airports in vAMSYS, taking the schedule from 158 to 292 routes at 111 airports. New light-jet flying from KTYQ to Sun Valley, Montrose, Steamboat, Bozeman, Truckee, the Caribbean and the Northeast; Munich, Zurich, Madrid, Milan Linate and Shannon from KIND, plus a Liege cargo run; and a new CRX701 block for KTYQ and point-to-point legs. The routes to Honolulu, Jackson Hole, Nassau, Providenciales, New Orleans, Philadelphia, Hilton Head and Cleveland Burke Lakefront are back on the schedule too.",
+    body: "We added 134 routes and 39 airports, taking the schedule from 158 to 292 routes at 111 airports. New light-jet flying from KTYQ to Sun Valley, Montrose, Steamboat, Bozeman, Truckee, the Caribbean and the Northeast; Munich, Zurich, Madrid, Milan Linate and Shannon from KIND, plus a Liege cargo run; and a new CRX701 block for KTYQ and point-to-point legs. The routes to Honolulu, Jackson Hole, Nassau, Providenciales, New Orleans, Philadelphia, Hilton Head and Cleveland Burke Lakefront are back on the schedule too.",
     link: { href: "#/routes", label: "Explore the network" },
   },
   {
@@ -386,7 +386,7 @@ export const NEWS: NewsItem[] = [
     date: "2026-11-11",
     kind: "Fleet",
     title: "Premier IA, Citation X and Hawker 800XP join KTYQ",
-    body: "Three new jets at Indianapolis Executive: Beechcraft Premier IA N390CR, Cessna Citation X N750CR and Hawker 800XP N800CR. The Hawker and Citation X are now on every light/mid executive route within their range.",
+    body: "Three new jets at Indianapolis Executive: Beechcraft Premier IA N390CR, Cessna Citation X N750CR and Hawker 800XP N800CR. The Hawker and Citation X are now on most light/mid executive routes within their range.",
     link: { href: "#/fleet", label: "Meet the fleet" },
   },
   {

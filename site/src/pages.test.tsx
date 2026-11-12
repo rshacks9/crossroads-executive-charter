@@ -12,7 +12,7 @@ const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, Re
 const { DivisionDot, FleetPage, Leg, LivePage, MapLegend, PageHeader, RoutesPage, HomePage, PilotsPage, bases } = await import("./pages");
 const { HandbookPage, CareersPage, NewsPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
-const { MORE_COUNTRIES, destinationGroups, findRoute, onwardLegs, routeHref, servedAirports, suggestFleet } = await import("./explore");
+const { MORE_COUNTRIES, destinationGroups, findRoute, networkStats, onwardLegs, routeHref, routeKey, servedAirports, suggestFleet } = await import("./explore");
 const { formatNumber, networkFacts, payloadTonnes, routeBase, routeDivision, weatherBoard } = await import("./data");
 const { WeatherBoard } = await import("./crew");
 const { FLEET_INFO, KTYQ_TYPES, SERVICES, TOURS, baseFor } = await import("./content");
@@ -419,5 +419,13 @@ describe("texts follow the data", () => {
     expect(destinations).toBe(list.length - baseList.length);
     const page = text(renderToString(<DestinationsPage snapshot={snapshot} />));
     expect(page).toContain(`${destinations} destinations plus our ${numberWord(baseList.length)} Indianapolis bases. Every airport Crossroads flies to`);
+  });
+
+  it("names the longest leg's airports in the order it flies them", () => {
+    const { longest } = networkStats(snapshot);
+    if (!longest) throw new Error("the snapshot has no routes");
+    const name = (icao: string) => snapshot.airports[icao]?.name ?? icao;
+    const home = text(renderToString(<HomePage snapshot={snapshot} />));
+    expect(home).toContain(`Longest leg ${routeKey(longest)} ${name(longest.from)} to ${name(longest.to)} · ${formatNumber(longest.distance_nm)} nm`);
   });
 });

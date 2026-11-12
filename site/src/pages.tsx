@@ -431,9 +431,12 @@ export function HomePage({ snapshot }: PageProps) {
 
 function HomeNumbers({ snapshot }: PageProps) {
   const stats = networkStats(snapshot);
+  const { longest } = stats;
+  const place = (icao: string) => snapshot.airports[icao]?.name ?? icao;
   return (
     <ul className="home-numbers">
-      {stats.longest ? <li><span>Longest leg</span><a href={routeHref(stats.longest)}>{routeKey(stats.longest)} to {stats.longest.to === "KIND" || stats.longest.to === "KTYQ" ? stats.longest.from : stats.longest.to} · {formatNumber(stats.longest.distance_nm)} nm</a></li> : null}
+      {/* The stored route in its own direction, so the flight number matches the order of the airports. */}
+      {longest ? <li><span>Longest leg</span><a href={routeHref(longest)}>{routeKey(longest)} {place(longest.from)} to {place(longest.to)} · {formatNumber(longest.distance_nm)} nm</a></li> : null}
       {stats.topAirports[0] ? <li><span>Busiest destination</span><a href={airportHref(stats.topAirports[0].label.split(" ")[0]!)}>{stats.topAirports[0].label} · {stats.topAirports[0].value} routes</a></li> : null}
       <li><span>Explore</span><a href="#/stats">Network stats</a> · <a href="#/destinations">All destinations</a> · <a href="#/plan">Plan a charter</a></li>
     </ul>
