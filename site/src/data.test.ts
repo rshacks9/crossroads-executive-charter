@@ -12,6 +12,7 @@ import {
   isStale,
   loadSnapshot,
   networkFacts,
+  payloadTonnes,
   primaryDivision,
   routeBase,
   routeDivision,
@@ -73,6 +74,14 @@ describe("formatting", () => {
     expect(formatCompact(812400)).toBe("812.4K");
     expect(formatWeight(91000, "kg")).toBe("91,000 kg");
     expect(formatWeight(null, "kg")).toBe("—");
+  });
+
+  it("gives a payload in whole tonnes, from kg or lbs", () => {
+    expect(payloadTonnes(102000, "kg")).toBe(102);
+    expect(payloadTonnes(48000, "kg")).toBe(48);
+    expect(payloadTonnes(225000, "lbs")).toBe(102);
+    expect(payloadTonnes(91000, null)).toBe(91);
+    expect(payloadTonnes(null, "kg")).toBeNull();
   });
 
   it("computes progress and age", () => {

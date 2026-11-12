@@ -664,6 +664,21 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 @media (max-width: 420px) { .specs--4 { grid-template-columns: repeat(2, 1fr); } }
 .specs dd { font-size: 20px; }
 .fleet-card__row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+/* Cards in a row line up: the blurb takes the slack, so specs and links share a y. Every spec rule is
+   scoped to .fleet-card, because .specs is also the services facts row. */
+.fleet-card__body { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.fleet-card__blurb { flex: 1; }
+.fleet-card .specs dd { white-space: nowrap; }
+.specs__unit { font: 600 12px var(--body); color: var(--text-2); }
+/* From 421 px; at 420 and below the 2 x 2 rule above keeps its columns. */
+@media (min-width: 421px) { .fleet-card .specs--4 { grid-template-columns: repeat(4, auto); } }
+.fleet-card .specs--4 div { padding: 8px; }
+/* No livery and no photo: a 56 px strip with the code instead of a 16:6 panel. */
+.fleet-card__media--empty { aspect-ratio: auto; height: 56px; }
+.fleet-card__media--empty .fleet-card__code { font-size: 28px; }
+/* The livery renders are transparent; in dark they sit on the same slab as their neighbours. */
+:root[data-theme="dark"] .fleet-card__media--livery { background: linear-gradient(180deg, #2a3740, #141b20); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fleet-card__media--livery { background: linear-gradient(180deg, #2a3740, #141b20); } }
 .tag--ktyq { background: #2a6f97; color: #fff; }
 .tag--kind { background: var(--text); color: var(--paper); }
 .fleet-note { margin-top: 32px; max-width: 80ch; }

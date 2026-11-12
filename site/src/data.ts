@@ -312,6 +312,15 @@ export function formatWeight(value: number | null, unit: "lbs" | "kg" | null): s
   return `${integerFormat.format(value)} ${unit ?? ""}`.trim();
 }
 
+/** Kilograms in a pound (exact). */
+export const LB_TO_KG = 0.45359237;
+
+/** A payload in whole tonnes (1,000 kg), from a figure in kg, or in lbs when the unit says so. */
+export function payloadTonnes(value: number | null, unit: "lbs" | "kg" | null): number | null {
+  if (value === null) return null;
+  return Math.round((unit === "lbs" ? value * LB_TO_KG : value) / 1000);
+}
+
 /**
  * The division a route is sold under, for labels that name one division (row dots, map lines, the
  * route eyebrow, the schedule CSV). Route tags from vAMSYS decide first (cargo, then group and sports

@@ -8,9 +8,9 @@ import {
   formatDate,
   formatFeet,
   formatNumber,
-  formatWeight,
   hashParam,
   networkFacts,
+  payloadTonnes,
   progressPercent,
   relativeAge,
   routeBase,
@@ -520,9 +520,12 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
   const base = baseFor(type.code);
   const routes = snapshot.routes.filter((r) => r.types.includes(type.code)).length;
   const sim = snapshot.airline.sim_aircraft?.[type.code];
+  const tonnes = payloadTonnes(type.max_cargo, type.weight_unit);
+  // With neither a livery render nor a photo the media area is a slim strip with the code.
+  const media = info?.livery ? " fleet-card__media--livery" : type.image ? "" : " fleet-card__media--empty";
   return (
     <li className="fleet-card" id={`type-${type.code}`}>
-      <div className={`fleet-card__media${info?.livery ? " fleet-card__media--livery" : ""}`} style={{ ["--accent" as string]: accent }}>
+      <div className={`fleet-card__media${media}`} style={{ ["--accent" as string]: accent }}>
         {info?.livery ? (
           <img src={info.livery.src} alt={info.livery.alt} loading="lazy" />
         ) : type.image ? (
@@ -533,15 +536,16 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
         {info?.livery ? <span className="fleet-card__badge">Crossroads livery</span> : null}
       </div>
       <div className="fleet-card__body">
-        <p className="eyebrow">{type.code}{type.type ? ` · ${KIND[type.type] ?? type.type}` : ""}{info ? ` · ${info.role}` : ""}</p>
+        {/* The role already says what kind of aircraft it is; the kind word stands in when there is none. */}
+        <p className="eyebrow">{type.code}{info ? ` · ${info.role}` : type.type ? ` · ${KIND[type.type] ?? type.type}` : ""}</p>
         <h3><a className="card-link" href={typeHref(type.code)}>{type.name}</a></h3>
         {info ? <p className="fleet-card__blurb">{info.blurb}</p> : null}
         <dl className="specs specs--4">
           {isFreighter(type)
-            ? <div><dt>Payload</dt><dd>{formatWeight(type.max_cargo, type.weight_unit)}</dd></div>
+            ? <div><dt>Payload</dt><dd>{tonnes != null ? <>{formatNumber(tonnes)}<span className="specs__unit"> t</span></> : "—"}</dd></div>
             : <div><dt>Seats</dt><dd>{formatNumber(type.max_pax)}</dd></div>}
-          <div><dt>Range</dt><dd>{info ? `${formatNumber(info.range_nm)} nm` : "—"}</dd></div>
-          <div><dt>Cruise</dt><dd>{info ? `${info.cruise_kt} kt` : "—"}</dd></div>
+          <div><dt>Range</dt><dd>{info ? <>{formatNumber(info.range_nm)}<span className="specs__unit"> nm</span></> : "—"}</dd></div>
+          <div><dt>Cruise</dt><dd>{info ? <>{info.cruise_kt}<span className="specs__unit"> kt</span></> : "—"}</dd></div>
           <div><dt>Routes</dt><dd>{routes}</dd></div>
         </dl>
         <p className="fleet-card__row">
@@ -550,7 +554,7 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
         </p>
         {sim ? <p className="sim-aircraft"><span>Fly it in MSFS 2024</span>{sim}</p> : null}
         <p className="fleet-card__links">
-          <a className="text-link" href={typeHref(type.code)}>Specs, range ring and routes →</a>
+          <a className="text-link" href={typeHref(type.code)}>Specs and routes →</a>
           <a className="text-link" href={`#/routes?type=${encodeURIComponent(type.code)}`}>On the map →</a>
         </p>
         {type.image && type.image_attribution && !info?.livery ? (

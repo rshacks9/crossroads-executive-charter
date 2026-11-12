@@ -13,7 +13,8 @@ const { DivisionDot, FleetPage, LivePage, MapLegend, PageHeader, RoutesPage, Hom
 const { HandbookPage, CareersPage, ServicesPage } = await import("./info");
 const { divisionColor } = await import("./LiveMap");
 const { findRoute, onwardLegs, routeHref, suggestFleet } = await import("./explore");
-const { routeDivision } = await import("./data");
+const { formatNumber, payloadTonnes, routeDivision } = await import("./data");
+const { FLEET_INFO } = await import("./content");
 
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#x27;/g, "'").replace(/\s+/g, " ");
@@ -276,5 +277,26 @@ describe("pages render from the snapshot", () => {
       expect(html).toMatch(/<p class="page-header__lede">[^<]*<[/]p><[/]div><dl class="header-facts">/);
     }
     expect(renderToString(<PilotsPage snapshot={snapshot} />)).toMatch(/<p class="page-header__lede">[^<]*<[/]p><[/]div><div class="hero__actions">/);
+  });
+
+  it("fleet cards: figures with a small unit, payload in tonnes, the role as the only eyebrow word, a strip without art", () => {
+    const html = renderToString(<FleetPage snapshot={snapshot} />);
+    for (const f of snapshot.fleet) {
+      const info = FLEET_INFO[f.code];
+      if (info) {
+        expect(html).toContain(`${formatNumber(info.range_nm)}<span class="specs__unit"> nm</span>`);
+        expect(html).toContain(`${info.cruise_kt}<span class="specs__unit"> kt</span>`);
+        expect(text(html)).toContain(`${f.code} · ${info.role}`);
+      }
+      if ((f.type === "cargo" || f.type === "cargo-containers") && f.max_cargo != null) {
+        expect(html).toContain(`<dt>Payload</dt><dd>${formatNumber(payloadTonnes(f.max_cargo, f.weight_unit))}<span class="specs__unit"> t</span></dd>`);
+      }
+    }
+    expect(text(html)).not.toMatch(/· (Freighter|Passenger) ·/);
+    const bare = snapshot.fleet.filter((f) => !FLEET_INFO[f.code]?.livery && !f.image).length;
+    expect(bare).toBeGreaterThan(0);
+    expect(html.match(/fleet-card__media--empty/g)).toHaveLength(bare);
+    expect(html.match(/>Specs and routes/g)).toHaveLength(snapshot.fleet.length);
+    expect(html).not.toContain("Specs, range ring");
   });
 });
