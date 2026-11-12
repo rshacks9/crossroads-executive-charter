@@ -160,6 +160,18 @@ describe("fleet", () => {
   it("has planning figures for every fleet type", () => {
     for (const f of snapshot.fleet) expect(FLEET_INFO[f.code], f.code).toBeDefined();
   });
+
+  it("schedules no type on a route longer than its planning range", () => {
+    const over: string[] = [];
+    for (const route of snapshot.routes) {
+      if (route.distance_nm == null) continue;
+      for (const code of route.types) {
+        const range = FLEET_INFO[code]?.range_nm;
+        if (range != null && route.distance_nm > range) over.push(`${route.callsign ?? `${route.from}-${route.to}`} ${code} ${route.distance_nm}/${range} nm`);
+      }
+    }
+    expect(over).toEqual([]);
+  });
 });
 
 describe("route lists", () => {

@@ -127,7 +127,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
   },
   MD11: {
     role: "Tri-jet freighter",
-    range_nm: 3500,
+    range_nm: 4000,
     cruise_kt: 480,
     blurb: "A demanding tri-jet freighter for Anchorage, Leipzig and Stansted. Respect the landing.",
   },
