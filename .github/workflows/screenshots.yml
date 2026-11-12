@@ -3,9 +3,10 @@ name: Screenshots and page checks
 # Builds the site from the schedule preview (no vAMSYS credentials, no deploy), then captures every
 # page at phone, desktop and wide-monitor sizes and records layout, console, request and
 # accessibility findings. The result is the "screenshots" artifact and the run summary.
-# Layout and accessibility findings are reported, not failed on. The job fails only when a capture
-# errors or the page head is wrong: a placeholder left unfilled, a count that differs from the data,
-# or a title or description that changes once the app has loaded.
+# Layout and accessibility findings are reported, not failed on. The job fails when the site or sync
+# unit tests fail (the same tests the deploy workflow runs), when a capture errors, or when the page
+# head is wrong: a placeholder left unfilled, a count that differs from the data, or a title or
+# description that changes once the app has loaded.
 # A second job renders the link-preview card (artifact "share-image").
 # Run it by hand, or push a branch named shots/<anything>.
 
@@ -49,6 +50,16 @@ jobs:
           cd site
           npm ci --no-audit --no-fund
           npm run build
+
+      # The unit tests of sync-deploy.yml, so a shots/ branch is tested before it is merged. The site
+      # tests read the snapshot and crew.json that the build step above has just written.
+      - name: Test site
+        working-directory: site
+        run: npm test
+
+      - name: Test sync
+        working-directory: sync
+        run: python -B -m unittest discover -s tests -t .
 
       # Pinned, and installed without saving: the capture tools are not dependencies of the site.
       - name: Install the capture tools
