@@ -28,6 +28,10 @@ const PAGES = [
   ["live", "live"], ["careers", "careers"], ["handbook", "handbook"], ["resources", "resources"],
   ["stats", "stats"], ["crew", "crew"], ["news", "news"], ["about", "about"], ["pilots", "pilots"],
   ["notfound", "no-such-page"],
+  // The latest schedule round's new pages (round 13): its new airport, the route to it from KTYQ, the new
+  // point-to-point pair, the new type (Piper M600) and its short hop. Swap them for the next round's.
+  ["airport-new", "airport/KBAF"], ["route-new", "route/CRX749"], ["route-p2p", "route/CRX445"],
+  ["type-new", "fleet/M600"], ["route-short", "route/CRX751"],
 ];
 // The dark theme is checked on the pages with the most distinct components, at phone and desktop widths.
 const DARK = new Set(["home", "fleet", "type", "routes", "airport", "crew", "handbook"]);
