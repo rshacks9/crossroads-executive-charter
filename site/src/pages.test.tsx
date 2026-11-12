@@ -494,6 +494,17 @@ describe("texts follow the data", () => {
     ]) expect(all).toContain(phrase);
     expect(pages[0]).toContain('aria-label="Our three bases"');
     expect(all).not.toMatch(/\b(two bases|two airports|six ranks|four divisions|four kinds|both bases)\b/i);
+
+    // No bases at all: neutral wording, and no base panel, instead of "zero".
+    const baseless: Snapshot = { ...snapshot, hubs: [] };
+    const [homeHtml0, ...rest] = [HomePage, PilotsPage, DestinationsPage].map((Page) => renderToString(<Page snapshot={baseless} />));
+    const none = [homeHtml0!, ...rest].map(text).join(" ");
+    expect(none).not.toMatch(/\bzero\b/i);
+    expect(homeHtml0).not.toContain("hero__panel");
+    expect(none).toContain(`${snapshot.routes.length} routes, and one career path.`);
+    expect(none).toContain("Real airports, real logic");
+    expect(none).toMatch(/\d+ destinations[.] Every airport Crossroads flies to/);
+    expect(none).not.toMatch(/Indianapolis, \w+ airports?\b/);
   });
 
   it("counts the walkthrough steps and the SOP rules it lists", () => {

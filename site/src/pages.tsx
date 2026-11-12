@@ -301,7 +301,7 @@ export function HomePage({ snapshot }: PageProps) {
             <h1>{airline.name}</h1>
             {airline.tagline ? <p className="hero__lede">{airline.tagline}</p> : null}
             <p className="hero__pitch">
-              From the four-seat Citation Mustang to a 150-seat executive A380 and the 777F: {facts.aircraftTypes} aircraft types, {facts.routes} routes, most of them from {numberWord(baseList.length)} Indianapolis bases, and one career path.
+              {`From the four-seat Citation Mustang to a 150-seat executive A380 and the 777F: ${facts.aircraftTypes} aircraft types, ${facts.routes} routes${baseList.length ? `, most of them from ${countWords(baseList.length, "Indianapolis base", "Indianapolis bases")}` : ""}, and one career path.`}
             </p>
             <div className="hero__actions">
               <JoinButton snapshot={snapshot} />
@@ -310,23 +310,26 @@ export function HomePage({ snapshot }: PageProps) {
               </a>
             </div>
           </div>
-          <aside className="hero__panel" aria-label={baseList.length === 1 ? "Our base" : `Our ${countWords(baseList.length, "base", "bases")}`}>
-            <p className="hero__panel-title">{`${capital(countWords(baseList.length, "base", "bases"))}, one airline`}</p>
-            {baseList.map((icao) => {
-              const airport = snapshot.airports[icao];
-              // Every route that starts or ends here, as on the destinations card (the KTYQ-KIND legs count for both).
-              const routes = snapshot.routes.filter((r) => r.from === icao || r.to === icao).length;
-              const types = fleet.filter((f) => baseFor(f.code) === icao).length;
-              return (
-                <div key={icao} className="hero__base">
-                  <strong>{icao}</strong>
-                  <span>{airport?.name ?? icao}</span>
-                  <span className="hero__base-facts">{types} types based here · {routes} routes</span>
-                </div>
-              );
-            })}
-            <p className="hero__panel-note">{icaoNote(baseList)}</p>
-          </aside>
+          {/* Without bases there is nothing to list, and the panel would say "zero". */}
+          {baseList.length ? (
+            <aside className="hero__panel" aria-label={baseList.length === 1 ? "Our base" : `Our ${countWords(baseList.length, "base", "bases")}`}>
+              <p className="hero__panel-title">{`${capital(countWords(baseList.length, "base", "bases"))}, one airline`}</p>
+              {baseList.map((icao) => {
+                const airport = snapshot.airports[icao];
+                // Every route that starts or ends here, as on the destinations card (the KTYQ-KIND legs count for both).
+                const routes = snapshot.routes.filter((r) => r.from === icao || r.to === icao).length;
+                const types = fleet.filter((f) => baseFor(f.code) === icao).length;
+                return (
+                  <div key={icao} className="hero__base">
+                    <strong>{icao}</strong>
+                    <span>{airport?.name ?? icao}</span>
+                    <span className="hero__base-facts">{types} types based here · {routes} routes</span>
+                  </div>
+                );
+              })}
+              <p className="hero__panel-note">{icaoNote(baseList)}</p>
+            </aside>
+          ) : null}
         </div>
       </section>
 
@@ -357,7 +360,7 @@ export function HomePage({ snapshot }: PageProps) {
         <SectionHead eyebrow="Why Crossroads" title="An airline built like a real charter operator" />
         <ul className="reasons">
           <li>
-            <h3>{`${capital(countWords(baseList.length, "airport", "airports"))}, real logic`}</h3>
+            <h3>{baseList.length ? `${capital(countWords(baseList.length, "airport", "airports"))}, real logic` : "Real airports, real logic"}</h3>
             <p>Light and mid-size jets, from the Mustang to the Citation X, work from Indianapolis Executive. The Longitude and everything larger fly from Indianapolis International, the way a real operator would split it.</p>
           </li>
           <li>
@@ -983,7 +986,7 @@ export function PilotsPage({ snapshot }: PageProps) {
         </p>
       </section>
 
-      {snapshot.hubs.length ? (
+      {bases(snapshot).length ? (
         <section className="page">
           <SectionHead eyebrow="Home base" title={`Indianapolis, ${countWords(bases(snapshot).length, "airport", "airports")}`} />
           <ul className="hub-list">

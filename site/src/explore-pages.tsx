@@ -40,7 +40,7 @@ import {
   suggestFleet,
   typeHref,
 } from "./explore";
-import { numberWord } from "./html-facts";
+import { countWords, numberWord } from "./html-facts";
 import { DivisionDot, JoinButton, Leg, MapLegend, PageHeader, SectionHead, bases, registrationOpen, shortName } from "./pages";
 import type { PageProps } from "./pages";
 
@@ -345,7 +345,7 @@ export function DestinationsPage({ snapshot }: PageProps) {
   }, [usExpanded]);
   return (
     <>
-      <PageHeader eyebrow="Destinations" title={`${list.length} airports on the schedule`} lede={`${list.length - baseCount} destinations plus our ${numberWord(baseCount)} Indianapolis bases. Every airport Crossroads flies to, built from the published schedule. Each one has a page with its runways, every route that serves it and the aircraft you can book.`} />
+      <PageHeader eyebrow="Destinations" title={`${list.length} airports on the schedule`} lede={`${list.length - baseCount} destinations${baseCount ? ` plus our ${countWords(baseCount, "Indianapolis base", "Indianapolis bases")}` : ""}. Every airport Crossroads flies to, built from the published schedule. Each one has a page with its runways, every route that serves it and the aircraft you can book.`} />
       <section className="page">
         <form className="filters filters--top" role="search" onSubmit={(e) => e.preventDefault()}>
           <label>
