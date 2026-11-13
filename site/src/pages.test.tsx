@@ -217,7 +217,8 @@ describe("pages render from the snapshot", () => {
     const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
     expect(renderToString(<RunwayTable icao="KIND" runways={crew.airports.KIND!.runways} />)).toContain('<caption class="visually-hidden">Runways at KIND</caption>');
     const landed = { callsign: "CRX524", flight_number: "524", from: "CYYZ", to: "KIND", aircraft: "E175", landing_rate: -140, duration_min: 95, landed: snapshot.generated_at };
-    expect(renderToString(<HomePage snapshot={{ ...snapshot, recent_flights: [landed] }} />)).toContain('<caption class="visually-hidden">Latest flights</caption>');
+    const home = renderToString(<HomePage snapshot={{ ...snapshot, recent_flights: [landed] }} />);
+    expect(home).toContain('<caption class="visually-hidden">Latest flights</caption>');
     const flight = { callsign: "CRX524", flight_number: "524", from: "CYYZ", to: "KIND", phase: "Cruise", aircraft: "E175", aircraft_name: null, registration: null, pilot: null, rank: null, network: null, lat: 42.5, lon: -82.1, altitude_ft: 35000, groundspeed_kt: 450, heading: 225, route_nm: 380, remaining_nm: 120, eta: null };
     const live = renderToString(<LivePage snapshot={{ ...snapshot, live: [flight] }} />);
     expect(live).toContain('<caption class="visually-hidden">Flights in progress</caption>');
@@ -229,6 +230,13 @@ describe("pages render from the snapshot", () => {
       expect(html.match(/<table class="table" role="table">/g)).toHaveLength(count);
       for (const [, tag, attrs] of html.matchAll(/<(thead|tbody|tr|th|td)( [^>]*)?>/g)) expect(attrs ?? "", tag).toContain(`role="${roles[tag!]}"`);
     }
+    // The home page's latest flights stack on phones too: four columns and the automation label are wider than a phone.
+    const wrap = home.indexOf('<div class="table-wrap table-wrap--compact"><table class="table table--compact" role="table"><caption class="visually-hidden">Latest flights</caption>');
+    expect(wrap).toBeGreaterThan(-1);
+    const latest = home.slice(wrap, home.indexOf("</table>", wrap));
+    for (const [, tag, attrs] of latest.matchAll(/<(thead|tbody|tr|th|td)( [^>]*)?>/g)) expect(attrs ?? "", tag).toContain(`role="${roles[tag!]}"`);
+    expect([...latest.matchAll(/<td data-label="([^"]+)"/g)].map((m) => m[1])).toEqual(["Flight", "Route", "Aircraft", "Landing"]);
+    expect(latest.match(/<td[ >]/g)).toHaveLength(4);
   });
 
   it("pages route lists 25 at a time, in a named table with sortable columns", () => {

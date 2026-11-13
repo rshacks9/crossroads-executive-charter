@@ -442,20 +442,23 @@ export function HomePage({ snapshot }: PageProps) {
             ? <SectionHead eyebrow="Just landed" title="Latest flights" />
             : <SectionHead eyebrow="Airline setup" title="Setup test flights" />}
           {recent.length ? (
-            <table className="table table--compact">
-              <caption className="visually-hidden">Latest flights</caption>
-              <thead><tr><th scope="col">Flight</th><th scope="col">Route</th><th scope="col">Aircraft</th><th scope="col" className="num">Landing</th></tr></thead>
-              <tbody>
-                {recent.slice(0, 6).map((r, i) => (
-                  <tr key={`${r.callsign}-${i}`}>
-                    <td><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span>{r.automation ? <AutomationLabel /> : null}</td>
-                    <td><Leg from={r.from} to={r.to} snapshot={snapshot} /></td>
-                    <td>{r.aircraft ?? "—"}</td>
-                    <td className="num">{r.landing_rate != null ? `${r.landing_rate} fpm` : "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="table-wrap table-wrap--compact">
+              {/* Stacked into cards on phones, as on the Live page: four columns and the automation label are wider than a phone. The explicit roles keep it a table for assistive technology. */}
+              <table className="table table--compact" role="table">
+                <caption className="visually-hidden">Latest flights</caption>
+                <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Flight</th><th scope="col" role="columnheader">Route</th><th scope="col" role="columnheader">Aircraft</th><th scope="col" className="num" role="columnheader">Landing</th></tr></thead>
+                <tbody role="rowgroup">
+                  {recent.slice(0, 6).map((r, i) => (
+                    <tr key={`${r.callsign}-${i}`} role="row">
+                      <td data-label="Flight" role="cell"><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span>{r.automation ? <AutomationLabel /> : null}</td>
+                      <td data-label="Route" role="cell"><Leg from={r.from} to={r.to} snapshot={snapshot} /></td>
+                      <td data-label="Aircraft" role="cell">{r.aircraft ?? "—"}</td>
+                      <td data-label="Landing" className="num" role="cell">{r.landing_rate != null ? `${r.landing_rate} fpm` : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
             <>
               <ul className="firsts">

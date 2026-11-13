@@ -264,6 +264,10 @@ main:focus { outline: none; }
 .table tr.is-selected td { background: var(--warn-bg); }
 .table--compact { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); border-collapse: separate; border-spacing: 0; overflow: hidden; }
 .table--compact td, .table--compact th { padding: 10px 12px; }
+/* The home page's latest flights: the wrapper draws the compact table's frame, so a column too narrow
+   for it scrolls the table inside the frame, and phones stack it into cards like the other wrapped tables. */
+.table-wrap--compact { margin-top: 0; }
+.table-wrap--compact .table--compact { border: 0; border-radius: 0; background: transparent; overflow: visible; }
 
 /* Stack tables into labelled cards on phones instead of scrolling sideways. */
 @media (max-width: 700px) {
