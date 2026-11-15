@@ -1121,4 +1121,8 @@ describe("styles", () => {
     // Muted text inside a selected item takes the system text colour too.
     expect(block).toContain('.chip-button[aria-pressed="true"] *, .explorer__item[aria-pressed="true"] *, .search-results li.is-active * { color: inherit; }');
   });
+
+  it("gives the map zoom buttons the 44 px touch target the other controls have", () => {
+    expect(css).toContain("@media (pointer: coarse) { .live-map.leaflet-touch .leaflet-bar a { width: 44px; height: 44px; line-height: 44px; font-size: 24px; } }");
+  });
 });

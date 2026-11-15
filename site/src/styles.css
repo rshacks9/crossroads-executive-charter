@@ -390,6 +390,8 @@ main:focus { outline: none; }
 .live-map .leaflet-bar a:hover, .live-map .leaflet-bar a:focus { background-color: var(--mist); }
 .live-map .leaflet-bar a.leaflet-disabled { background-color: var(--mist); color: var(--text-2); }
 .live-map.leaflet-touch .leaflet-bar { border-color: var(--field-line); }
+/* Leaflet draws its touch zoom buttons at 30 px; the site's touch targets are 44 px (see the pointer: coarse rules below). */
+@media (pointer: coarse) { .live-map.leaflet-touch .leaflet-bar a { width: 44px; height: 44px; line-height: 44px; font-size: 24px; } }
 .live-map.leaflet-container .leaflet-control-attribution { background: var(--panel); background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--text-2); }
 .live-map.leaflet-container .leaflet-control-attribution a { color: var(--signal-ink); }
 .live-map .leaflet-tooltip { background-color: var(--panel); border-color: var(--line); color: var(--text); }
