@@ -492,7 +492,7 @@ const PAGE_ENTRIES: { title: string; subtitle: string; href: string; terms: stri
   { title: "Crew Tools", subtitle: "Weather, fuel and approach briefings", href: "#/crew", terms: "crew tools weather metar taf fuel approach" },
   { title: "Pilot handbook", subtitle: "SOPs, fuel policy, landing rates", href: "#/handbook", terms: "handbook sop rules fuel policy landing cost index" },
   { title: "Careers and ranks", subtitle: "Cadet to Chief Pilot", href: "#/careers", terms: "career ranks promotion hours" },
-  { title: "How to fly with us", subtitle: "Join on vAMSYS", href: "#/pilots", terms: "join apply fly with us vamsys pegasus" },
+  { title: "How to fly with us", subtitle: "Sign-up steps, first flight and FAQ", href: "#/pilots", terms: "join apply fly with us vamsys pegasus" },
   { title: "Divisions and services", subtitle: "Executive, charter and cargo", href: "#/services", terms: "divisions services executive charter cargo sports" },
   { title: "Live flights", subtitle: "Flights in progress", href: "#/live", terms: "live flights tracking map" },
   { title: "News and NOTAMs", subtitle: "From the ops desk", href: "#/news", terms: "news notam updates" },

@@ -403,6 +403,14 @@ describe("search", () => {
     expect(search(index, "   ")).toEqual([]);
   });
 
+  it("does not invite a visitor to join while sign-up is closed, but still finds the page by \"join\"", () => {
+    const pilots = index.find((e) => e.href === "#/pilots");
+    expect(pilots?.subtitle).toBe("Sign-up steps, first flight and FAQ");
+    expect(pilots?.subtitle).not.toMatch(/join/i);
+    expect(pilots?.terms).toContain("join");
+    expect(search(index, "join")[0]?.href).toBe("#/pilots");
+  });
+
   it("opens on Ctrl+K or Cmd+K, never on a key pressed alone", () => {
     const press = (key: string, ctrlKey = false, metaKey = false, altKey = false) => ({ key, ctrlKey, metaKey, altKey });
     expect(isSearchShortcut(press("k", true))).toBe(true);
