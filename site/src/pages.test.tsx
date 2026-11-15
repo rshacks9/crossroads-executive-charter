@@ -804,9 +804,9 @@ describe("the KTYQ base rule", () => {
   // so no sentence that says what works from KTYQ names it: the M600 gets a sentence of its own.
   const M600 = /\bM600\b/;
   const KTYQ = /\b(KTYQ|Indianapolis Executive)\b/;
-  // How the site words the base rule: what KTYQ takes, what works, lives or starts there, and
+  // How the site words the base rule: what KTYQ takes or suits, what works, lives or starts there, and
   // everything larger at KIND.
-  const RULE = /everything (larger|bigger)|larger aircraft|base rules?|right base|\btakes\b|sized for|\b(work|works|live|lives|start|starts)\b/i;
+  const RULE = /everything (larger|bigger)|larger aircraft|base rules?|right base|\btakes\b|sized for|suits our|\b(work|works|live|lives|start|starts)\b/i;
   // Sentences within each block (paragraph, list item, cell, heading), so neighbouring cards never run into one sentence.
   const BLOCK_END = /<\/(?:p|li|h[1-6]|dd|dt|td|th|caption|figcaption|summary|div|section|article|aside|header|footer|nav|ul|ol|dl|table|tr|blockquote)>/i;
   const ruleSentences = (html: string) =>

@@ -82,7 +82,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "High-speed mid-size",
     range_nm: 2900,
     cruise_kt: 500,
-    blurb: "The fastest jet at KTYQ and the largest the field takes. It flew CRX121 to Hartford on a setup test flight while the airline was being built.",
+    blurb: "The fastest and largest jet we base at KTYQ. It flew CRX121 to Hartford on a setup test flight while the airline was being built.",
   },
   C700: {
     role: "Super-midsize",
