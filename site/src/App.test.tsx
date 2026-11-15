@@ -12,7 +12,7 @@ afterAll(() => {
   vi.unstubAllGlobals();
 });
 
-const { App, leavesMenu } = await import("./App");
+const { App, NavCount, leavesMenu } = await import("./App");
 
 const shell = () => renderToString(<App />);
 const textOf = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&");
@@ -47,5 +47,12 @@ describe("site shell", () => {
     const html = shell();
     for (const label of ["The airline", "Pilots", "Elsewhere"]) expect(html).toContain(`<h2 class="footer__head">${label}</h2>`);
     expect(html).not.toContain('<p class="footer__head">');
+  });
+
+  it("names the Live count with hidden text, not aria-label on a plain span", () => {
+    const html = renderToString(<NavCount n={2} />);
+    expect(html).toContain('<span aria-hidden="true">2</span>');
+    expect(html).toContain('<span class="visually-hidden">, 2 in the air</span>');
+    expect(html).not.toContain("aria-label");
   });
 });

@@ -208,6 +208,19 @@ export function leavesMenu(container: Pick<Node, "contains">, next: EventTarget 
   return next !== null && !container.contains(next as Node);
 }
 
+/**
+ * The number of flights in the air on the "Live" menu item. Hidden text names it ("Live, 2 in the
+ * air"): aria-label is not allowed on a plain span, and screen readers handle it unevenly.
+ */
+export function NavCount({ n }: { n: number }) {
+  return (
+    <span className="nav__count">
+      <span aria-hidden="true">{n}</span>
+      <span className="visually-hidden">{`, ${n} in the air`}</span>
+    </span>
+  );
+}
+
 /** The banner under the masthead: sample or preview data, or a stale snapshot (checked once a minute). */
 export function DataNotice({ snapshot }: { snapshot: Snapshot | null }) {
   useMinute();
@@ -408,9 +421,7 @@ export function App() {
                 onClick={() => setMenuOpen(false)}
               >
                 {route.label}
-                {route.path === "live" && snapshot && snapshot.live.length > 0 ? (
-                  <span className="nav__count" aria-label={`${snapshot.live.length} in the air`}>{snapshot.live.length}</span>
-                ) : null}
+                {route.path === "live" && snapshot && snapshot.live.length > 0 ? <NavCount n={snapshot.live.length} /> : null}
               </a>
             ))}
           </nav>
