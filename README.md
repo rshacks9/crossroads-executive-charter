@@ -98,7 +98,7 @@ and the run summary.
    Credentials*, scope `ops:read` only.
 2. **Repository.** Push this folder to its own GitHub repository. A public repo gets unlimited free
    Actions minutes. A private one gets 2,000 free minutes a month, which runs every 20 min would
-   exceed, so change the cron to hourly (`0 * * * *`) there.
+   exceed, so change the cron to hourly (`7 * * * *`) there.
 3. **Secrets.** Repository → Settings → Secrets and variables → Actions: add `VAMSYS_CLIENT_ID` and
    `VAMSYS_CLIENT_SECRET`.
 4. **Pages.** Repository → Settings → Pages → Source: *GitHub Actions*. Run the workflow once from the

@@ -2,7 +2,9 @@ name: Sync vAMSYS and deploy site
 
 on:
   schedule:
-    - cron: "*/20 * * * *"   # GitHub may delay scheduled runs; the site flags data older than 45 min
+    # Off the top of the hour, when GitHub delays and drops scheduled runs most. GitHub may still delay
+    # or drop runs; with live data the site flags data older than 45 min.
+    - cron: "7,27,47 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
