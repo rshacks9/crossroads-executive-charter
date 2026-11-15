@@ -173,6 +173,16 @@ describe("pages render from the snapshot", () => {
     expect(html).toContain('<span class="sub">135°/315° true</span>');
   });
 
+  it("names each SimBrief link by its aircraft, so a list of links reads as distinct", () => {
+    const route = [...snapshot.routes].sort((a, b) => b.types.length - a.types.length)[0]!;
+    expect(route.types.length).toBeGreaterThan(1);
+    const html = renderToString(<RoutePage snapshot={snapshot} route={route} />);
+    const names = [...html.matchAll(/Plan in SimBrief<span class="visually-hidden">([^<]*)<[/]span>/g)].map((m) => m[1]!);
+    expect(names).toHaveLength(route.types.length);
+    expect(new Set(names).size).toBe(names.length);
+    for (const name of names) expect(name).toMatch(/^ for the .+ [(]opens in a new tab[)]$/);
+  });
+
   it("offers onward legs that share an aircraft type, with the airport name and the shared types", () => {
     const route = findRoute(snapshot, "CRX524")!;
     const back = snapshot.routes.find((r) => r.from === route.to && r.to === route.from);

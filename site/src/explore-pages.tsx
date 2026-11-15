@@ -648,7 +648,7 @@ export function RoutePage({ snapshot, route }: PageProps & { route: Route | unde
                 <li key={t}>
                   <a href={typeHref(t)}><strong>{shortName(names[t] ?? t)}</strong> <span className="muted">{t}</span></a>
                   <span className="sub">{margin != null ? `Uses ${margin}% of planning range` : ""}</span>
-                  <a className="text-link" href={simbriefUrl(route, t)} rel="noopener" target="_blank">Plan in SimBrief<span className="visually-hidden"> (opens in a new tab)</span></a>
+                  <a className="text-link" href={simbriefUrl(route, t)} rel="noopener" target="_blank">Plan in SimBrief<span className="visually-hidden">{` for the ${shortName(names[t] ?? t)} (opens in a new tab)`}</span></a>
                 </li>
               );
             })}
