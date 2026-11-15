@@ -106,9 +106,9 @@ describe("pages render from the snapshot", () => {
     expect(sources).toContain("explore-pages.tsx");
     for (const f of sources) expect(readFileSync(new URL(f, dir), "utf-8"), f).not.toMatch(stale);
     const pilots = text(renderToString(<PilotsPage snapshot={snapshot} />));
-    expect(pilots).toContain("Download it from the vAMSYS Pegasus ACARS guide linked below, and sign in with your vAMSYS account");
+    expect(pilots).toContain("The vAMSYS Pegasus ACARS guide linked below says where to download it. Sign in with your vAMSYS account");
     // "linked below": the guide link closes the same step, after its tips.
-    const tip = pilots.indexOf("Download it from the vAMSYS Pegasus ACARS guide linked below");
+    const tip = pilots.indexOf("The vAMSYS Pegasus ACARS guide linked below says where to download it");
     expect(pilots.slice(tip, pilots.indexOf("Book a route", tip))).toContain("Pegasus ACARS guide (vAMSYS docs)");
     const resources = text(renderToString(<ResourcesPage snapshot={snapshot} />));
     expect(resources).toContain("vAMSYS's flight tracker. The official guide covers downloading it, simulator setup, signing in, tracking your booking and filing the PIREP.");
