@@ -159,7 +159,9 @@ async function capture(context, vp, theme, [name, hash]) {
     rec.slices = Math.min(MAX_SLICES, needed);
     rec.truncated = needed > MAX_SLICES;
     for (let i = 0; i < rec.slices; i++) {
-      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), i * vp.height);
+      // A page longer than MAX_SLICES screens: the last slice shows its end and the footer instead of the next screen down.
+      const last = rec.truncated && i === rec.slices - 1;
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), last ? Math.max(0, rec.pageHeight - vp.height) : i * vp.height);
       await page.waitForTimeout(250);
       await page.screenshot({ path: path.join(OUT, `${id}-${String(i + 1).padStart(2, "0")}.jpg`), ...JPEG });
     }
