@@ -90,6 +90,17 @@ export function bases(snapshot: Snapshot): string[] {
   return [...new Set(snapshot.hubs.flatMap((hub) => hub.airports))];
 }
 
+const NO_ROUTES: Route[] = [];
+
+/**
+ * The routes a live map draws: none while flights are in the air, else the whole schedule. Always the
+ * same array for the same snapshot, so a re-render of the page (menu, search, a selected flight) does
+ * not redraw the map, close its tooltips and undo the visitor's zoom.
+ */
+export function liveMapRoutes(snapshot: Snapshot): Route[] {
+  return snapshot.live.length ? NO_ROUTES : snapshot.routes;
+}
+
 /**
  * Registration is open when join_url is set in site.config.json: the airline's vAMSYS sign-up page,
  * https://vamsys.io/register/crossroads. Leave it unset while that page takes no new pilots (on
@@ -288,7 +299,8 @@ export function HomePage({ snapshot }: PageProps) {
   const facts = networkFacts(snapshot);
   const all = stats.all_time;
   const month = stats.last_30_days;
-  const baseList = bases(snapshot);
+  // Memoised: a new array on every render would make the map redraw and refit (LiveMap's draw effect).
+  const baseList = useMemo(() => bases(snapshot), [snapshot]);
   const e190 = FLEET_INFO.E190?.livery;
   const divisionCount = airline.divisions.length;
 
@@ -425,7 +437,7 @@ export function HomePage({ snapshot }: PageProps) {
             action={{ href: live.length ? "#/live" : "#/routes", label: live.length ? "Full live board" : "All routes" }}
           />
           <LiveUnavailable snapshot={snapshot} />
-          <LiveMap flights={live} airports={snapshot.airports} bases={baseList} routes={live.length ? [] : snapshot.routes} divisions={airline.divisions} height={420} label={live.length ? "Live flights" : "Route network"} />
+          <LiveMap flights={live} airports={snapshot.airports} bases={baseList} routes={liveMapRoutes(snapshot)} divisions={airline.divisions} height={420} label={live.length ? "Live flights" : "Route network"} />
           {!live.length ? <MapLegend snapshot={snapshot} routes={snapshot.routes} /> : null}
           <HomeNumbers snapshot={snapshot} />
         </div>
@@ -528,6 +540,7 @@ export function LivePage({ snapshot }: PageProps) {
   const select = useCallback((index: number) => setSelected(index), []);
   const { live } = snapshot;
   const prelaunch = snapshot.source !== "vamsys";
+  const baseList = useMemo(() => bases(snapshot), [snapshot]);
   return (
     <>
       <PageHeader
@@ -541,7 +554,7 @@ export function LivePage({ snapshot }: PageProps) {
       />
       <section className="page">
         <LiveUnavailable snapshot={snapshot} />
-        <LiveMap flights={live} airports={snapshot.airports} bases={bases(snapshot)} routes={live.length ? [] : snapshot.routes} divisions={snapshot.airline.divisions} height={520} onSelect={select} />
+        <LiveMap flights={live} airports={snapshot.airports} bases={baseList} routes={liveMapRoutes(snapshot)} divisions={snapshot.airline.divisions} height={520} onSelect={select} />
         {!live.length ? <MapLegend snapshot={snapshot} routes={snapshot.routes} /> : null}
         {live.length ? (
           <div className="table-wrap">

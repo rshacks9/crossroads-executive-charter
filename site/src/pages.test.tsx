@@ -9,7 +9,7 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, routeDescription, RunwayTable, SearchDialog, StatsPage, TypePage, runwayNote, sharedCrew } = await import("./explore-pages");
-const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, fleetGroupId, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
+const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, fleetGroupId, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, liveMapRoutes, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
@@ -686,6 +686,13 @@ describe("flights flown by automation", () => {
     // One live card (CRX115) and one latest-flights row (CRX116).
     expect(count(home)).toBe(2);
     expect(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf(label)).toBeLessThan(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf("</tr>"));
+  });
+
+  it("hands the live maps the same routes array on every render, so a re-render does not redraw them", () => {
+    expect(liveMapRoutes(busy)).toBe(liveMapRoutes(busy));
+    expect(liveMapRoutes(busy)).toBe(liveMapRoutes({ ...busy }));
+    expect(liveMapRoutes(busy)).toHaveLength(0);
+    expect(liveMapRoutes(snapshot)).toBe(snapshot.routes);
   });
 
   it("gives the positions their age on the live board, and promises no refresh the data cannot keep", () => {
