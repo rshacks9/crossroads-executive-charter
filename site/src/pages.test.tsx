@@ -523,7 +523,10 @@ describe("texts follow the data", () => {
     for (const item of NEWS) expect(`${item.title} ${item.body}`).not.toMatch(/badge|under Activities/i);
     expect(careers.match(/<li class="tour">/g)).toHaveLength(TOURS.length);
     const news = text(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />));
-    expect(news).toContain("No vAMSYS events are scheduled yet. Open tours are on the Careers page");
+    expect(news).toContain("Events from vAMSYS will be listed here once the vAMSYS data connection is enabled. Until then, pilots find them under Events in Phoenix. Open tours are on the Careers page");
+    expect(news).not.toContain("scheduled yet");
+    const live = text(renderToString(<NewsPage snapshot={{ ...snapshot, source: "vamsys", events: [] }} />));
+    expect(live).toContain("No vAMSYS events are scheduled right now. Open tours are on the Careers page");
     expect(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />)).toContain('Open tours are on the <a href="#/careers">Careers page</a>.</p>');
   });
 
@@ -897,7 +900,7 @@ describe("the weekly group flight", () => {
     const events = page.indexOf("From vAMSYS Events");
     expect(events).toBeGreaterThan(page.indexOf("Every week Group flight"));
     expect(page.slice(events)).not.toMatch(/group flight/i);
-    expect(page.slice(events)).toContain("No vAMSYS events are scheduled yet. Open tours are on the Careers page");
+    expect(page.slice(events)).toContain("Events from vAMSYS will be listed here once the vAMSYS data connection is enabled. Until then, pilots find them under Events in Phoenix. Open tours are on the Careers page");
     // With no group flight set, nothing about one.
     const none = at(snapshot.generated_at, null);
     expect(groupFlightNote(none)).toBeNull();

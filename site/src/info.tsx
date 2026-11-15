@@ -465,7 +465,8 @@ export function NewsPage({ snapshot }: PageProps) {
           {snapshot.events.length ? (
             <ul className="event-list">{snapshot.events.map((e) => <EventItem key={e.name + e.start} event={e} />)}</ul>
           ) : (
-            <p className="empty">No vAMSYS events are scheduled yet. Open tours are on the <a href="#/careers">Careers page</a>.</p>
+            // The preview never carries events (build_preview.py writes none), so it says where they are meanwhile.
+            <p className="empty">{snapshot.source === "vamsys" ? "No vAMSYS events are scheduled right now." : "Events from vAMSYS will be listed here once the vAMSYS data connection is enabled. Until then, pilots find them under Events in Phoenix."} Open tours are on the <a href="#/careers">Careers page</a>.</p>
           )}
         </div>
       </section>
