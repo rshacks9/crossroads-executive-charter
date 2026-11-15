@@ -170,6 +170,27 @@ describe("the real index.html", () => {
     expect(notFound).not.toContain("{{");
     expect(notFound).not.toMatch(TYPED_COUNT);
   });
+
+  it("404: links from the site root, and sends a path-style page address on to its hash address", () => {
+    const notFound = read("../public/404.html");
+    // Served at any missing path (/fleet/C750), so a relative link would lead to another 404.
+    expect(notFound).not.toMatch(/href="[.][/]/);
+    for (const href of ["/", "/#/routes", "/#/fleet"]) expect(notFound).toContain(`href="${href}"`);
+    expect(notFound).toContain('<meta name="robots" content="noindex" />');
+    const script = /<script>([\s\S]*?)<[/]script>/.exec(notFound)?.[1] ?? "";
+    const forward = (pathname: string, search = ""): string | null => {
+      let target: string | null = null;
+      const location = { pathname, search, replace: (url: string) => { target = url; } };
+      new Function("location", script)(location);
+      return target;
+    };
+    expect(forward("/fleet/C750")).toBe("/#/fleet/C750");
+    expect(forward("/routes", "?division=Cargo")).toBe("/#/routes?division=Cargo");
+    expect(forward("/airport/KASE/")).toBe("/#/airport/KASE");
+    expect(forward("/wp-login.php")).toBeNull();
+    expect(forward("/assets/index-abc123.js")).toBeNull();
+    expect(forward("/")).toBeNull();
+  });
 });
 
 describe("counts in page copy", () => {

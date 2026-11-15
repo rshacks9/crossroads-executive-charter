@@ -20,26 +20,26 @@
   </style>
 </head>
 <body>
-  <header><a href="./">Crossroads Executive &amp; Charter</a></header>
+  <header><a href="/">Crossroads Executive &amp; Charter</a></header>
   <main>
     <p class="eyebrow">Error 404 · off the chart</p>
     <h1>We can't find that page</h1>
     <p>The link may be out of date. Everything on the site lives under the home page:</p>
     <p>
-      <a class="button" id="home" href="./">Home</a>
-      <a class="button" id="routes" href="./#/routes">Route network</a>
-      <a class="button" id="fleet" href="./#/fleet">Fleet</a>
+      <a class="button" id="home" href="/">Home</a>
+      <a class="button" id="routes" href="/#/routes">Route network</a>
+      <a class="button" id="fleet" href="/#/fleet">Fleet</a>
     </p>
     <p class="fine">Crossroads Executive &amp; Charter is a fictional virtual airline for flight simulation. It is not a real air carrier or charter operator and is not affiliated with any real company.</p>
   </main>
   <script>
-    // GitHub Pages serves this file for any missing path; point the links at the project root.
+    // GitHub Pages serves this page for any missing path. A path that names a page of the site, such as
+    // /fleet/C750 or /routes?division=Cargo, goes on to its address in the app (/#/fleet/C750); the app
+    // shows its own not-found page for the rest. A path with a dot in it (a missing file) stays here.
     (function () {
-      var base = "/crossroads-executive-charter/";
-      if (location.pathname.indexOf(base) === 0) {
-        document.getElementById("home").href = base;
-        document.getElementById("routes").href = base + "#/routes";
-        document.getElementById("fleet").href = base + "#/fleet";
+      var path = location.pathname;
+      if (/^[/][A-Za-z0-9][A-Za-z0-9/-]*[/]?$/.test(path)) {
+        location.replace("/#" + path.replace(/[/]+$/, "") + location.search);
       }
     })();
   </script>
