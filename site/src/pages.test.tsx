@@ -955,6 +955,9 @@ describe("joining", () => {
     // Two vAMSYS blockers from the Pegasus docs and the Phoenix Scores page.
     expect(page).toContain("If you hold two bookings, Pegasus always loads the older one");
     expect(page).toContain("If a PIREP shows Reply Needed, answer the staff comment in Phoenix first: until you do, you can't start another flight");
+    // Where to get help: the route the vAMSYS Getting help page names, after the VATSIM answer.
+    expect(page).toContain("Where do I get help once I'm flying? Questions about a booking, a PIREP or your rank: add a comment on your PIREP in Phoenix. A comment sends the PIREP to staff review");
+    expect(page.indexOf("Where do I get help")).toBeGreaterThan(page.indexOf("Do I have to fly on VATSIM?"));
   });
 
   it("says plainly that the airline is new, with the join terms; claims no pilot numbers and implies no other pilots", () => {
