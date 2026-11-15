@@ -1591,6 +1591,28 @@
    "weight_unit": "lbs",
    "hide_in_phoenix": false,
    "image_url": null
+  },
+  {
+   "id": 32324,
+   "code": "C680",
+   "name": "Cessna Citation Sovereign+",
+   "type": "pax",
+   "max_pax": 10,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
+  },
+  {
+   "id": 32325,
+   "code": "P46T",
+   "name": "Piper M500",
+   "type": "pax",
+   "max_pax": 5,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "hide_in_phoenix": false,
+   "image_url": null
   }
  ],
  "aircraft_by_fleet": {
@@ -1693,6 +1715,16 @@
    {
     "registration": "N600CR"
    }
+  ],
+  "32324": [
+   {
+    "registration": "N680CR"
+   }
+  ],
+  "32325": [
+   {
+    "registration": "N500CR"
+   }
   ]
  },
  "ranks": [
@@ -1778,7 +1810,7 @@
    "callsign": "CRX101",
    "flight_number": "CX101",
    "flight_distance": 559,
-   "flight_length": "02:04:00",
+   "flight_length": "02:39:00",
    "fleet_ids": [
     32199,
     32200,
@@ -1786,7 +1818,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -1802,7 +1836,7 @@
    "callsign": "CRX102",
    "flight_number": "CX102",
    "flight_distance": 559,
-   "flight_length": "02:04:00",
+   "flight_length": "02:39:00",
    "fleet_ids": [
     32199,
     32200,
@@ -1810,7 +1844,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -1826,7 +1862,7 @@
    "callsign": "CRX103",
    "flight_number": "CX103",
    "flight_distance": 575,
-   "flight_length": "02:06:00",
+   "flight_length": "02:43:00",
    "fleet_ids": [
     32199,
     32200,
@@ -1834,7 +1870,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -1850,7 +1888,7 @@
    "callsign": "CRX104",
    "flight_number": "CX104",
    "flight_distance": 575,
-   "flight_length": "02:06:00",
+   "flight_length": "02:43:00",
    "fleet_ids": [
     32199,
     32200,
@@ -1858,7 +1896,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -1882,7 +1922,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -1906,7 +1947,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -1928,7 +1970,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -1951,7 +1994,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -1974,7 +2018,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -1996,7 +2041,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -2018,7 +2064,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -2040,7 +2087,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -2056,7 +2104,7 @@
    "callsign": "CRX113",
    "flight_number": "CX113",
    "flight_distance": 669,
-   "flight_length": "02:23:00",
+   "flight_length": "03:06:00",
    "fleet_ids": [
     32199,
     32200,
@@ -2064,7 +2112,9 @@
     32215,
     32216,
     32217,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -2080,7 +2130,7 @@
    "callsign": "CRX114",
    "flight_number": "CX114",
    "flight_distance": 669,
-   "flight_length": "02:23:00",
+   "flight_length": "03:06:00",
    "fleet_ids": [
     32199,
     32200,
@@ -2088,7 +2138,9 @@
     32215,
     32216,
     32217,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -2104,7 +2156,7 @@
    "callsign": "CRX115",
    "flight_number": "CX115",
    "flight_distance": 126,
-   "flight_length": "00:47:00",
+   "flight_length": "00:55:00",
    "fleet_ids": [
     32199,
     32200,
@@ -2112,7 +2164,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -2129,7 +2183,7 @@
    "callsign": "CRX116",
    "flight_number": "CX116",
    "flight_distance": 126,
-   "flight_length": "00:47:00",
+   "flight_length": "00:55:00",
    "fleet_ids": [
     32199,
     32200,
@@ -2137,7 +2191,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -2154,7 +2210,7 @@
    "callsign": "CRX117",
    "flight_number": "CX117",
    "flight_distance": 235,
-   "flight_length": "01:06:00",
+   "flight_length": "01:21:00",
    "fleet_ids": [
     32199,
     32200,
@@ -2162,7 +2218,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -2179,7 +2237,7 @@
    "callsign": "CRX118",
    "flight_number": "CX118",
    "flight_distance": 235,
-   "flight_length": "01:06:00",
+   "flight_length": "01:21:00",
    "fleet_ids": [
     32199,
     32200,
@@ -2187,7 +2245,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -2209,7 +2269,8 @@
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324
    ],
    "tag": [
     "executive"
@@ -2230,7 +2291,8 @@
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324
    ],
    "tag": [
     "executive"
@@ -2988,12 +3050,14 @@
    "callsign": "CRX121",
    "flight_number": "CX121",
    "flight_distance": 625,
-   "flight_length": "02:15:00",
+   "flight_length": "02:55:00",
    "fleet_ids": [
     32199,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3009,12 +3073,14 @@
    "callsign": "CRX122",
    "flight_number": "CX122",
    "flight_distance": 625,
-   "flight_length": "02:15:00",
+   "flight_length": "02:55:00",
    "fleet_ids": [
     32199,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3036,7 +3102,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3058,7 +3125,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3082,7 +3150,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3106,7 +3175,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3128,7 +3198,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -3151,7 +3222,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -3168,7 +3240,7 @@
    "callsign": "CRX129",
    "flight_number": "CX129",
    "flight_distance": 381,
-   "flight_length": "01:32:00",
+   "flight_length": "01:56:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3176,7 +3248,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3192,7 +3266,7 @@
    "callsign": "CRX130",
    "flight_number": "CX130",
    "flight_distance": 381,
-   "flight_length": "01:32:00",
+   "flight_length": "01:56:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3200,7 +3274,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3216,7 +3292,7 @@
    "callsign": "CRX131",
    "flight_number": "CX131",
    "flight_distance": 203,
-   "flight_length": "01:01:00",
+   "flight_length": "01:14:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3224,7 +3300,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3241,7 +3319,7 @@
    "callsign": "CRX132",
    "flight_number": "CX132",
    "flight_distance": 203,
-   "flight_length": "01:01:00",
+   "flight_length": "01:14:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3249,7 +3327,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3266,7 +3346,7 @@
    "callsign": "CRX133",
    "flight_number": "CX133",
    "flight_distance": 413,
-   "flight_length": "01:38:00",
+   "flight_length": "02:04:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3274,7 +3354,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3290,7 +3372,7 @@
    "callsign": "CRX134",
    "flight_number": "CX134",
    "flight_distance": 413,
-   "flight_length": "01:38:00",
+   "flight_length": "02:04:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3298,7 +3380,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3314,7 +3398,7 @@
    "callsign": "CRX135",
    "flight_number": "CX135",
    "flight_distance": 690,
-   "flight_length": "02:27:00",
+   "flight_length": "03:11:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3322,7 +3406,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3338,7 +3424,7 @@
    "callsign": "CRX136",
    "flight_number": "CX136",
    "flight_distance": 690,
-   "flight_length": "02:27:00",
+   "flight_length": "03:11:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3346,7 +3432,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3362,13 +3450,15 @@
    "callsign": "CRX139",
    "flight_number": "CX139",
    "flight_distance": 578,
-   "flight_length": "02:07:00",
+   "flight_length": "02:44:00",
    "fleet_ids": [
     32199,
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3384,13 +3474,15 @@
    "callsign": "CRX140",
    "flight_number": "CX140",
    "flight_distance": 578,
-   "flight_length": "02:07:00",
+   "flight_length": "02:44:00",
    "fleet_ids": [
     32199,
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3414,7 +3506,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3438,7 +3531,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3454,7 +3548,7 @@
    "callsign": "CRX143",
    "flight_number": "CX143",
    "flight_distance": 765,
-   "flight_length": "02:40:00",
+   "flight_length": "03:29:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3462,7 +3556,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3478,7 +3574,7 @@
    "callsign": "CRX144",
    "flight_number": "CX144",
    "flight_distance": 765,
-   "flight_length": "02:40:00",
+   "flight_length": "03:29:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3486,7 +3582,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3510,7 +3608,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3534,7 +3633,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -3550,7 +3650,7 @@
    "callsign": "CRX147",
    "flight_number": "CX147",
    "flight_distance": 390,
-   "flight_length": "01:34:00",
+   "flight_length": "01:59:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3558,7 +3658,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3574,7 +3676,7 @@
    "callsign": "CRX148",
    "flight_number": "CX148",
    "flight_distance": 390,
-   "flight_length": "01:34:00",
+   "flight_length": "01:59:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3582,7 +3684,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3598,7 +3702,7 @@
    "callsign": "CRX149",
    "flight_number": "CX149",
    "flight_distance": 220,
-   "flight_length": "01:04:00",
+   "flight_length": "01:18:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3606,7 +3710,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3623,7 +3729,7 @@
    "callsign": "CRX150",
    "flight_number": "CX150",
    "flight_distance": 220,
-   "flight_length": "01:04:00",
+   "flight_length": "01:18:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3631,7 +3737,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3648,7 +3756,7 @@
    "callsign": "CRX151",
    "flight_number": "CX151",
    "flight_distance": 384,
-   "flight_length": "01:33:00",
+   "flight_length": "01:57:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3656,7 +3764,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3672,7 +3782,7 @@
    "callsign": "CRX152",
    "flight_number": "CX152",
    "flight_distance": 384,
-   "flight_length": "01:33:00",
+   "flight_length": "01:57:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3680,7 +3790,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3696,7 +3808,7 @@
    "callsign": "CRX153",
    "flight_number": "CX153",
    "flight_distance": 114,
-   "flight_length": "00:45:00",
+   "flight_length": "00:52:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3704,7 +3816,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3721,7 +3835,7 @@
    "callsign": "CRX154",
    "flight_number": "CX154",
    "flight_distance": 114,
-   "flight_length": "00:45:00",
+   "flight_length": "00:52:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3729,7 +3843,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3746,13 +3862,15 @@
    "callsign": "CRX155",
    "flight_number": "CX155",
    "flight_distance": 146,
-   "flight_length": "00:51:00",
+   "flight_length": "01:00:00",
    "fleet_ids": [
     32199,
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3769,13 +3887,15 @@
    "callsign": "CRX156",
    "flight_number": "CX156",
    "flight_distance": 146,
-   "flight_length": "00:51:00",
+   "flight_length": "01:00:00",
    "fleet_ids": [
     32199,
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3792,7 +3912,7 @@
    "callsign": "CRX159",
    "flight_number": "CX159",
    "flight_distance": 291,
-   "flight_length": "01:16:00",
+   "flight_length": "01:35:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3800,7 +3920,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3817,7 +3939,7 @@
    "callsign": "CRX160",
    "flight_number": "CX160",
    "flight_distance": 291,
-   "flight_length": "01:16:00",
+   "flight_length": "01:35:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3825,7 +3947,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -3842,7 +3966,7 @@
    "callsign": "CRX161",
    "flight_number": "CX161",
    "flight_distance": 518,
-   "flight_length": "01:56:00",
+   "flight_length": "02:29:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3850,7 +3974,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3866,7 +3992,7 @@
    "callsign": "CRX162",
    "flight_number": "CX162",
    "flight_distance": 518,
-   "flight_length": "01:56:00",
+   "flight_length": "02:29:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3874,7 +4000,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3890,7 +4018,7 @@
    "callsign": "CRX163",
    "flight_number": "CX163",
    "flight_distance": 523,
-   "flight_length": "01:57:00",
+   "flight_length": "02:31:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3898,7 +4026,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3914,7 +4044,7 @@
    "callsign": "CRX164",
    "flight_number": "CX164",
    "flight_distance": 523,
-   "flight_length": "01:57:00",
+   "flight_length": "02:31:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3922,7 +4052,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3938,7 +4070,7 @@
    "callsign": "CRX169",
    "flight_number": "CX169",
    "flight_distance": 740,
-   "flight_length": "02:36:00",
+   "flight_length": "03:23:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3946,7 +4078,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3962,7 +4096,7 @@
    "callsign": "CRX170",
    "flight_number": "CX170",
    "flight_distance": 740,
-   "flight_length": "02:36:00",
+   "flight_length": "03:23:00",
    "fleet_ids": [
     32199,
     32200,
@@ -3970,7 +4104,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -3994,7 +4130,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -4018,7 +4155,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -4034,7 +4172,7 @@
    "callsign": "CRX173",
    "flight_number": "CX173",
    "flight_distance": 91,
-   "flight_length": "00:41:00",
+   "flight_length": "00:47:00",
    "fleet_ids": [
     32199,
     32200,
@@ -4042,7 +4180,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -4059,7 +4199,7 @@
    "callsign": "CRX174",
    "flight_number": "CX174",
    "flight_distance": 91,
-   "flight_length": "00:41:00",
+   "flight_length": "00:47:00",
    "fleet_ids": [
     32199,
     32200,
@@ -4067,7 +4207,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -4127,7 +4269,8 @@
     32200,
     32205,
     32206,
-    32220
+    32220,
+    32324
    ],
    "tag": [
     "executive"
@@ -4148,7 +4291,8 @@
     32200,
     32205,
     32206,
-    32220
+    32220,
+    32324
    ],
    "tag": [
     "executive"
@@ -5274,7 +5418,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5297,7 +5442,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5320,7 +5466,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5343,7 +5490,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5366,7 +5514,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5389,7 +5538,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5412,7 +5562,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5435,7 +5586,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5452,7 +5604,7 @@
    "callsign": "CRX183",
    "flight_number": "CX183",
    "flight_distance": 781,
-   "flight_length": "02:43:00",
+   "flight_length": "03:32:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5460,7 +5612,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5476,7 +5630,7 @@
    "callsign": "CRX184",
    "flight_number": "CX184",
    "flight_distance": 781,
-   "flight_length": "02:43:00",
+   "flight_length": "03:32:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5484,7 +5638,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5508,7 +5664,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -5532,7 +5689,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -5554,7 +5712,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5577,7 +5736,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5599,7 +5759,8 @@
     32200,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5621,7 +5782,8 @@
     32200,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5644,7 +5806,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5667,7 +5830,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5690,7 +5854,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5713,7 +5878,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -5730,7 +5896,7 @@
    "callsign": "CRX195",
    "flight_number": "CX195",
    "flight_distance": 543,
-   "flight_length": "02:01:00",
+   "flight_length": "02:35:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5738,7 +5904,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5754,7 +5922,7 @@
    "callsign": "CRX196",
    "flight_number": "CX196",
    "flight_distance": 543,
-   "flight_length": "02:01:00",
+   "flight_length": "02:35:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5762,7 +5930,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5778,7 +5948,7 @@
    "callsign": "CRX197",
    "flight_number": "CX197",
    "flight_distance": 588,
-   "flight_length": "02:09:00",
+   "flight_length": "02:46:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5786,7 +5956,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5802,7 +5974,7 @@
    "callsign": "CRX198",
    "flight_number": "CX198",
    "flight_distance": 588,
-   "flight_length": "02:09:00",
+   "flight_length": "02:46:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5810,7 +5982,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5826,7 +6000,7 @@
    "callsign": "CRX701",
    "flight_number": "CX701",
    "flight_distance": 680,
-   "flight_length": "02:25:00",
+   "flight_length": "03:08:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5834,7 +6008,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5850,7 +6026,7 @@
    "callsign": "CRX702",
    "flight_number": "CX702",
    "flight_distance": 680,
-   "flight_length": "02:25:00",
+   "flight_length": "03:08:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5858,7 +6034,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5874,7 +6052,7 @@
    "callsign": "CRX703",
    "flight_number": "CX703",
    "flight_distance": 744,
-   "flight_length": "02:36:00",
+   "flight_length": "03:24:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5882,7 +6060,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5898,7 +6078,7 @@
    "callsign": "CRX704",
    "flight_number": "CX704",
    "flight_distance": 744,
-   "flight_length": "02:36:00",
+   "flight_length": "03:24:00",
    "fleet_ids": [
     32199,
     32200,
@@ -5906,7 +6086,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -5928,7 +6110,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -5950,7 +6133,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -5972,7 +6156,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -5994,7 +6179,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -6016,7 +6202,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6039,7 +6226,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6056,7 +6244,7 @@
    "callsign": "CRX711",
    "flight_number": "CX711",
    "flight_distance": 663,
-   "flight_length": "02:22:00",
+   "flight_length": "03:04:00",
    "fleet_ids": [
     32199,
     32200,
@@ -6064,7 +6252,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -6080,7 +6270,7 @@
    "callsign": "CRX712",
    "flight_number": "CX712",
    "flight_distance": 663,
-   "flight_length": "02:22:00",
+   "flight_length": "03:04:00",
    "fleet_ids": [
     32199,
     32200,
@@ -6088,7 +6278,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -6112,7 +6304,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -6136,7 +6329,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -6152,7 +6346,7 @@
    "callsign": "CRX715",
    "flight_number": "CX715",
    "flight_distance": 232,
-   "flight_length": "01:06:00",
+   "flight_length": "01:21:00",
    "fleet_ids": [
     32199,
     32200,
@@ -6160,7 +6354,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -6177,7 +6373,7 @@
    "callsign": "CRX716",
    "flight_number": "CX716",
    "flight_distance": 232,
-   "flight_length": "01:06:00",
+   "flight_length": "01:21:00",
    "fleet_ids": [
     32199,
     32200,
@@ -6185,7 +6381,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -6209,7 +6407,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -6232,7 +6431,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -6248,7 +6448,7 @@
    "callsign": "CRX719",
    "flight_number": "CX719",
    "flight_distance": 199,
-   "flight_length": "01:00:00",
+   "flight_length": "01:13:00",
    "fleet_ids": [
     32199,
     32200,
@@ -6256,7 +6456,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -6273,7 +6475,7 @@
    "callsign": "CRX720",
    "flight_number": "CX720",
    "flight_distance": 199,
-   "flight_length": "01:00:00",
+   "flight_length": "01:13:00",
    "fleet_ids": [
     32199,
     32200,
@@ -6281,7 +6483,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -6298,11 +6502,12 @@
    "callsign": "CRX721",
    "flight_number": "CX721",
    "flight_distance": 204,
-   "flight_length": "01:01:00",
+   "flight_length": "01:14:00",
    "fleet_ids": [
     32199,
     32200,
-    32220
+    32220,
+    32325
    ],
    "tag": [
     "executive",
@@ -6319,11 +6524,12 @@
    "callsign": "CRX722",
    "flight_number": "CX722",
    "flight_distance": 204,
-   "flight_length": "01:01:00",
+   "flight_length": "01:14:00",
    "fleet_ids": [
     32199,
     32200,
-    32220
+    32220,
+    32325
    ],
    "tag": [
     "executive",
@@ -6340,12 +6546,14 @@
    "callsign": "CRX723",
    "flight_number": "CX723",
    "flight_distance": 271,
-   "flight_length": "01:13:00",
+   "flight_length": "01:30:00",
    "fleet_ids": [
     32199,
     32200,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -6362,12 +6570,14 @@
    "callsign": "CRX724",
    "flight_number": "CX724",
    "flight_distance": 271,
-   "flight_length": "01:13:00",
+   "flight_length": "01:30:00",
    "fleet_ids": [
     32199,
     32200,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -6390,7 +6600,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6414,7 +6625,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6438,7 +6650,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6461,7 +6674,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6484,7 +6698,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -6507,7 +6722,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -7790,13 +8006,15 @@
    "callsign": "CRX137",
    "flight_number": "CX137",
    "flight_distance": 540,
-   "flight_length": "02:00:00",
+   "flight_length": "02:35:00",
    "fleet_ids": [
     32199,
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -7812,13 +8030,15 @@
    "callsign": "CRX138",
    "flight_number": "CX138",
    "flight_distance": 540,
-   "flight_length": "02:00:00",
+   "flight_length": "02:35:00",
    "fleet_ids": [
     32199,
     32200,
     32201,
     32215,
-    32220
+    32220,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -7834,7 +8054,7 @@
    "callsign": "CRX157",
    "flight_number": "CX157",
    "flight_distance": 226,
-   "flight_length": "01:05:00",
+   "flight_length": "01:19:00",
    "fleet_ids": [
     32199,
     32200,
@@ -7842,7 +8062,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -7859,7 +8081,7 @@
    "callsign": "CRX158",
    "flight_number": "CX158",
    "flight_distance": 226,
-   "flight_length": "01:05:00",
+   "flight_length": "01:19:00",
    "fleet_ids": [
     32199,
     32200,
@@ -7867,7 +8089,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -7891,7 +8115,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -7915,7 +8140,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -7938,7 +8164,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -7961,7 +8188,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -8242,7 +8470,7 @@
    "callsign": "CRX731",
    "flight_number": "CX731",
    "flight_distance": 154,
-   "flight_length": "00:52:00",
+   "flight_length": "01:02:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8250,7 +8478,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8267,7 +8497,7 @@
    "callsign": "CRX732",
    "flight_number": "CX732",
    "flight_distance": 154,
-   "flight_length": "00:52:00",
+   "flight_length": "01:02:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8275,7 +8505,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8292,7 +8524,7 @@
    "callsign": "CRX733",
    "flight_number": "CX733",
    "flight_distance": 19,
-   "flight_length": "00:28:00",
+   "flight_length": "00:30:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8300,7 +8532,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8318,7 +8552,7 @@
    "callsign": "CRX734",
    "flight_number": "CX734",
    "flight_distance": 19,
-   "flight_length": "00:28:00",
+   "flight_length": "00:30:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8326,7 +8560,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8344,7 +8580,7 @@
    "callsign": "CRX735",
    "flight_number": "CX735",
    "flight_distance": 715,
-   "flight_length": "02:31:00",
+   "flight_length": "03:17:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8352,7 +8588,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -8368,7 +8606,7 @@
    "callsign": "CRX736",
    "flight_number": "CX736",
    "flight_distance": 715,
-   "flight_length": "02:31:00",
+   "flight_length": "03:17:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8376,7 +8614,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -8392,7 +8632,7 @@
    "callsign": "CRX737",
    "flight_number": "CX737",
    "flight_distance": 159,
-   "flight_length": "00:53:00",
+   "flight_length": "01:03:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8400,7 +8640,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8417,7 +8659,7 @@
    "callsign": "CRX738",
    "flight_number": "CX738",
    "flight_distance": 159,
-   "flight_length": "00:53:00",
+   "flight_length": "01:03:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8425,7 +8667,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8442,7 +8686,7 @@
    "callsign": "CRX739",
    "flight_number": "CX739",
    "flight_distance": 199,
-   "flight_length": "01:00:00",
+   "flight_length": "01:13:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8450,7 +8694,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8467,7 +8713,7 @@
    "callsign": "CRX740",
    "flight_number": "CX740",
    "flight_distance": 199,
-   "flight_length": "01:00:00",
+   "flight_length": "01:13:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8475,7 +8721,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8498,7 +8746,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -8522,7 +8771,8 @@
     32201,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive",
@@ -8540,7 +8790,7 @@
    "callsign": "CRX743",
    "flight_number": "CX743",
    "flight_distance": 161,
-   "flight_length": "00:53:00",
+   "flight_length": "01:04:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8548,7 +8798,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8566,7 +8818,7 @@
    "callsign": "CRX744",
    "flight_number": "CX744",
    "flight_distance": 161,
-   "flight_length": "00:53:00",
+   "flight_length": "01:04:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8574,7 +8826,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive",
@@ -8600,7 +8854,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -8624,7 +8879,8 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324
    ],
    "tag": [
     "executive"
@@ -8640,7 +8896,7 @@
    "callsign": "CRX747",
    "flight_number": "CX747",
    "flight_distance": 619,
-   "flight_length": "02:14:00",
+   "flight_length": "02:54:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8648,7 +8904,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -8664,7 +8922,7 @@
    "callsign": "CRX748",
    "flight_number": "CX748",
    "flight_distance": 619,
-   "flight_length": "02:14:00",
+   "flight_length": "02:54:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8672,7 +8930,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -8688,7 +8948,7 @@
    "callsign": "CRX749",
    "flight_number": "CX749",
    "flight_distance": 625,
-   "flight_length": "02:15:00",
+   "flight_length": "02:55:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8696,7 +8956,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"
@@ -8712,7 +8974,7 @@
    "callsign": "CRX750",
    "flight_number": "CX750",
    "flight_distance": 625,
-   "flight_length": "02:15:00",
+   "flight_length": "02:55:00",
    "fleet_ids": [
     32199,
     32200,
@@ -8720,7 +8982,9 @@
     32215,
     32220,
     32217,
-    32216
+    32216,
+    32324,
+    32325
    ],
    "tag": [
     "executive"

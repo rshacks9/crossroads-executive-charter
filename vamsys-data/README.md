@@ -86,3 +86,12 @@ N600CR = aircraft 304909). The fleet form has no base field; the website puts th
 division at KTYQ. Also alert 4542 corrected and Charter of the Week alerts 4544 and 4545. The operator's step
 log stays private this round; the import file is `routes-update-13-import.csv`. Real Orwell route IDs of the six new
 routes, and of CRX739-748: `route-ids-13.csv`.
+
+## Round 14b (2026-11-15)
+
+Import #30497 (150/150): fleet edits only. Two new fleets join the Executive division: the Cessna Citation
+Sovereign+ (32324, C680, 10 seats, N680CR = aircraft 306143) on 148 light and mid-size routes, and the Piper
+M500 (32325, P46T, 5 seats, N500CR = aircraft 306144) on 84 of the shorter ones, up to 781 nm; 82 routes take
+both. No route, airport or page was created or deleted. Network still **316 routes, 113 airports**, now 22
+fleets. The website lists both types at KTYQ. The import file is `routes-update-14b-import.csv`. Real Orwell
+route IDs of CRX733-738, read this round, are appended to `route-ids-13.csv`.

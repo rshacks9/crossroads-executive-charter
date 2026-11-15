@@ -29,8 +29,9 @@
   {
    "name": "Executive",
    "base": "KTYQ",
-   "summary": "Light and mid-size jets from Indianapolis Executive, Mustang to Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget. The Piper M600 flies its own hop between Westfield-Barnes and Hartford.",
+   "summary": "Light and mid-size jets from Indianapolis Executive, Mustang to Citation X, plus the Longitude and Gulfstreams at KIND. Teterboro, Aspen, Vail, Toronto, Geneva and Le Bourget. The Piper M500 turboprop flies the shorter executive routes. The Piper M600 flies its own hop between Westfield-Barnes and Hartford.",
    "fleets": [
+    "P46T",
     "M600",
     "C510",
     "PRM1",
@@ -38,6 +39,7 @@
     "LJ35",
     "E55P",
     "H25B",
+    "C680",
     "C750",
     "C700",
     "GLF6",
@@ -76,6 +78,7 @@
   }
  ],
  "sim_aircraft": {
+  "P46T": "FSReborn FSR500 (add-on)",
   "M600": "FSReborn Piper M600 (add-on)",
   "C510": "Cockspur Citation Mustang (add-on)",
   "PRM1": "Carenado B390 Premier IA (add-on)",
@@ -83,6 +86,7 @@
   "LJ35": "Flysimware Learjet 35A (add-on)",
   "E55P": "FSReborn Phenom 300E (add-on)",
   "H25B": "FlightFX Hawker 800XP (add-on)",
+  "C680": "Skyward Simulations Citation Sovereign+ (add-on)",
   "C750": "FlightFX Citation X (add-on)",
   "C700": "Cessna Citation Longitude (MSFS 2024 Premium Deluxe/Aviator)",
   "GLF6": "Gulfstream G650 (community mod)",

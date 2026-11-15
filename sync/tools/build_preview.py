@@ -21,7 +21,7 @@ DATA = ROOT.parent / "vamsys-data"
 # without one create a route, and a file that creates routes must list a starting ID. That number is a
 # record only: it is Orwell's first new ID for the first import, updates 2 and 5 and round 13, and a
 # placeholder for updates 7, 8, 9 and 11. The preview numbers its routes by position (see build_raw); the
-# real Orwell IDs are in orwell-route-ids-2026-11-11.csv and route-ids-13.csv.
+# real Orwell IDs are in orwell-route-ids-2026-11-11.csv and route-ids-13.csv (which also lists CRX733-738).
 ROUTES_CSV = [
     (DATA / "routes-import.csv", 14214036),
     (DATA / "routes-update-2.csv", 14214095),
@@ -46,6 +46,10 @@ ROUTES_CSV = [
     # the Piper M600 and CRX445/446 KBDL-KLAX for the A340-600, G650 and G700. Orwell numbered them
     # 14217673-14217678 in file order (route-ids-13.csv). Network 316 routes at 113 airports.
     (DATA / "routes-update-13-import.csv", 14217673),
+    # Round 14b (import #30497, 150/150 OK): fleet edits only. The Citation Sovereign+ (fleet 32324) joins
+    # 148 light and mid-size routes and the Piper M500 (fleet 32325) 84 of the shorter ones, 82 routes taking
+    # both. No route was created or deleted, so the file has no starting ID. Network still 316 routes.
+    (DATA / "routes-update-14b-import.csv", None),
 ]
 # The planning file (routes-update-7-expansion.csv) used a placeholder for the Hawker fleet; kept so it
 # still builds if anyone points ROUTES_CSV back at it.
@@ -195,6 +199,10 @@ FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cru
     (32220, "E55P", "Embraer Phenom 300E", "pax", 9, None, "lbs", ["N300CR"], 450),
     # Round 13: Orwell fleet 32230; N600CR is Orwell aircraft 304909.
     (32230, "M600", "Piper M600", "pax", 5, None, "lbs", ["N600CR"], 260),
+    # Round 14b: Orwell fleet 32324; N680CR is Orwell aircraft 306143.
+    (32324, "C680", "Cessna Citation Sovereign+", "pax", 10, None, "lbs", ["N680CR"], 440),
+    # Round 14b: Orwell fleet 32325; N500CR is Orwell aircraft 306144.
+    (32325, "P46T", "Piper M500", "pax", 5, None, "lbs", ["N500CR"], 250),
 ]
 
 RANKS = [  # level, name, abbr, hours, pireps, honorary

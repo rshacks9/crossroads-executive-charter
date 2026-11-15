@@ -33,15 +33,17 @@ class PreviewTests(unittest.TestCase):
 
     def test_preview_mirrors_the_vamsys_setup(self):
         # Updates 1-6 (58 routes), update 7 (100), update 8 (134: 114 new, 20 restored) and updates 9-11
-        # (18 new) as imported 2026-11-11, and round 13 (6 new routes, KBAF, the Piper M600) on 2026-11-12.
+        # (18 new) as imported 2026-11-11, round 13 (6 new routes, KBAF, the Piper M600) on 2026-11-12, and
+        # round 14b (fleet edits only: the Citation Sovereign+ and the Piper M500) on 2026-11-15.
         self.assertEqual(len(self.snapshot["routes"]), 316)
-        self.assertEqual(len(self.snapshot["fleet"]), 20)
+        self.assertEqual(len(self.snapshot["fleet"]), 22)
         self.assertEqual(len(self.snapshot["airports"]), 113)
         self.assertEqual(self.snapshot["hubs"][0]["airports"], ["KTYQ", "KIND"])
 
     def test_hub_rule_small_jets_ktyq_everything_else_kind(self):
-        # KTYQ takes the M600 and light and mid jets up to Citation X size; KIND takes everything bigger.
-        small = {"M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"}
+        # KTYQ takes the two Piper turboprops (M500 and M600) and light and mid jets up to Citation X size;
+        # KIND takes everything bigger.
+        small = {"P46T", "M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C680", "C750"}
         for route in self.snapshot["routes"]:
             ends = {route["from"], route["to"]}
             if ends == {"KTYQ", "KIND"}:
@@ -71,6 +73,20 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(m600, ["CRX751", "CRX752"])
         hawker = [r for r in self.snapshot["routes"] if "H25B" in r["types"]]
         self.assertGreater(len(hawker), 50)
+        # Round 14b: the Citation Sovereign+ joins 148 light and mid-size routes and the Piper M500 84 of the
+        # shorter ones. The M500 stays off the mountain fields and London City; the Sovereign+ stays off
+        # London City and Santa Monica.
+        self.assertEqual(regs["C680"], ["N680CR"])
+        self.assertEqual(regs["P46T"], ["N500CR"])
+        sovereign = [r for r in self.snapshot["routes"] if "C680" in r["types"]]
+        m500 = [r for r in self.snapshot["routes"] if "P46T" in r["types"]]
+        self.assertEqual(len(sovereign), 148)
+        self.assertEqual(len(m500), 84)
+        mountain = {"KASE", "KEGE", "KJAC", "KSUN", "KMTJ", "KHDN", "KBZN", "KTRK", "EGLC"}
+        for route in m500:
+            self.assertTrue(mountain.isdisjoint({route["from"], route["to"]}), route)
+        for route in sovereign:
+            self.assertTrue({"EGLC", "KSMO"}.isdisjoint({route["from"], route["to"]}), route)
 
     def test_cargo_routes_flagged_and_freighters_only(self):
         cargo = [r for r in self.snapshot["routes"] if r["kind"] == "cargo"]
@@ -82,6 +98,13 @@ class PreviewTests(unittest.TestCase):
         assigned = [code for d in divisions for code in d["fleets"]]
         self.assertEqual(sorted(assigned), sorted(f["code"] for f in self.snapshot["fleet"]))
         self.assertEqual(len(assigned), len(set(assigned)))
+
+    def test_division_summaries_are_published_whole(self):
+        # snapshot.py cuts a summary longer than 320 characters at a word and adds an ellipsis; the config's
+        # own summaries must never be cut.
+        summaries = {d["name"]: d["summary"] for d in self.snapshot["airline"]["divisions"]}
+        for division in SITE["divisions"]:
+            self.assertEqual(summaries[division["name"]], division["summary"], division["name"])
 
     def test_bad_division_entries_are_dropped(self):
         site = {**SITE, "divisions": [{"name": ""}, {"name": "X", "fleets": ["bad code!", "C510"], "base": "nope!"}, "junk"]}
