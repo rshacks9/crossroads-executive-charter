@@ -696,6 +696,22 @@ describe("the Discord link", () => {
   });
 });
 
+describe("where the data comes from", () => {
+  it("says the preview schedule is a copy of vAMSYS, and claims a 20-minute vAMSYS read only once the data is live", () => {
+    expect(snapshot.source).toBe("preview");
+    const footer = text(renderToString(<Footer snapshot={snapshot} />));
+    expect(footer).toContain("Schedule copied from vAMSYS · weather refreshed");
+    expect(footer).not.toContain("Schedule as published");
+    const about = text(renderToString(<AboutPage snapshot={snapshot} />));
+    expect(about).not.toContain("every 20 minutes: schedule");
+    expect(about).toContain("a copy of what is published in vAMSYS, updated when it changes; weather refreshes every 20 minutes");
+    const live: Snapshot = { ...snapshot, source: "vamsys" };
+    expect(text(renderToString(<Footer snapshot={live} />))).toContain("Live data from vAMSYS · updated");
+    expect(text(renderToString(<AboutPage snapshot={live} />))).toContain("snapshot of our vAMSYS data every 20 minutes: schedule");
+    expect(text(renderToString(<Footer snapshot={{ ...snapshot, source: "sample" }} />))).toContain("Sample data only · updated");
+  });
+});
+
 describe("approach cards", () => {
   it("show London City's steep glide path, the descent rate it needs and a note to check the chart", () => {
     const steep: ApproachCard = {

@@ -186,7 +186,8 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
         <p className="footer__meta">
           {snapshot ? (
             <>
-              {snapshot.source === "vamsys" ? "Live data from vAMSYS" : snapshot.source === "preview" ? "Schedule as published in vAMSYS" : "Sample data only"} · updated{" "}
+              {/* The preview is a copy of the vAMSYS schedule; its build time is when the weather was last refreshed. */}
+              {snapshot.source === "preview" ? "Schedule copied from vAMSYS · weather refreshed" : `${snapshot.source === "vamsys" ? "Live data from vAMSYS" : "Sample data only"} · updated`}{" "}
               <time dateTime={snapshot.generated_at}>{relativeAge(snapshot.generated_at)}</time> ·{" "}
             </>
           ) : null}

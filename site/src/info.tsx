@@ -378,7 +378,11 @@ export function AboutPage({ snapshot }: PageProps) {
             <h2>What we are, and aren't</h2>
             <p>Crossroads Executive & Charter is a <strong>fictional virtual airline</strong> for flight simulation. It opened on vAMSYS in November 2026. We don't sell flights, we aren't an air carrier or charter operator, and we have no connection to any real company. The aircraft types are named only so pilots know which simulator model to fly.</p>
             <h2>How the site works</h2>
-            <p>This site reads a public, privacy-filtered snapshot of our vAMSYS data every 20 minutes: schedule, fleet, ranks and (once connected) live flights and statistics. Pilot names are never shown unless pilots agree. Booking, PIREPs and your logbook stay in vAMSYS.</p>
+            {snapshot.source === "vamsys" ? (
+              <p>This site reads a public, privacy-filtered snapshot of our vAMSYS data every 20 minutes: schedule, fleet, ranks and (once connected) live flights and statistics. Pilot names are never shown unless pilots agree. Booking, PIREPs and your logbook stay in vAMSYS.</p>
+            ) : (
+              <p>Until the vAMSYS data connection is enabled, the schedule, fleet and ranks here are a copy of what is published in vAMSYS, updated when it changes; weather refreshes every 20 minutes. Pilot names are never shown unless pilots agree. Booking, PIREPs and your logbook stay in vAMSYS.</p>
+            )}
           </div>
           <aside className="about__facts">
             <div className="fact-card">
