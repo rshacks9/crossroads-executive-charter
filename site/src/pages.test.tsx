@@ -1,6 +1,6 @@
 // Server-render every new page against the committed snapshot: catches render-time crashes and
 // checks the key content without a browser. Leaflet needs a DOM, so the map module is stubbed.
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import type { ApproachCard, Crew, CrewAirport, CrewRunway, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./data";
@@ -89,6 +89,30 @@ describe("pages render from the snapshot", () => {
       renderToString(<CareersPage snapshot={snapshot} />),
     ]) expect(html).toContain(`href="${url}"`);
     expect(renderToString(<ResourcesPage snapshot={snapshot} />)).not.toContain('href="https://vamsys.io/"');
+  });
+
+  it("never sends pilots to Phoenix for the Pegasus download: the vAMSYS guide says where to get it", () => {
+    // Crossroads' Phoenix Resources menu holds only Airports and Aircraft (15 Nov 2026): no Pegasus ACARS page.
+    const stale = /Resources\s*(→|->|>|&gt;|,)\s*Pegasus|under Resources|Download it in Phoenix|download Pegasus/i;
+    const pages = [HomePage, FleetPage, RoutesPage, DestinationsPage, ServicesPage, PlanPage, LivePage, CareersPage, HandbookPage, ResourcesPage, StatsPage, CrewPage, NewsPage, AboutPage, PilotsPage, NotFoundPage].map((Page) => text(renderToString(<Page snapshot={snapshot} />)));
+    for (const page of pages) {
+      expect(page).not.toContain("Resources → Pegasus ACARS");
+      expect(page).not.toMatch(stale);
+    }
+    // The source too, so copy that only some snapshots render can't bring the claim back.
+    const dir = new URL("./", import.meta.url);
+    const sources = readdirSync(dir).filter((f) => /[.]tsx?$/.test(f) && !/[.]test[.]/.test(f));
+    expect(sources).toContain("pages.tsx");
+    expect(sources).toContain("explore-pages.tsx");
+    for (const f of sources) expect(readFileSync(new URL(f, dir), "utf-8"), f).not.toMatch(stale);
+    const pilots = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    expect(pilots).toContain("Download it from the vAMSYS Pegasus ACARS guide linked below, and sign in with your vAMSYS account");
+    // "linked below": the guide link closes the same step, after its tips.
+    const tip = pilots.indexOf("Download it from the vAMSYS Pegasus ACARS guide linked below");
+    expect(pilots.slice(tip, pilots.indexOf("Book a route", tip))).toContain("Pegasus ACARS guide (vAMSYS docs)");
+    const resources = text(renderToString(<ResourcesPage snapshot={snapshot} />));
+    expect(resources).toContain("vAMSYS's flight tracker. The official guide covers downloading it, simulator setup, signing in, tracking your booking and filing the PIREP.");
+    expect(resources).toContain("book routes and see your logbook and rank.");
   });
 
   it("lets the VATSIM remarks value break after the slash without changing its text", () => {

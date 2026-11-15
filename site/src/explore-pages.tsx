@@ -794,9 +794,9 @@ export function PlanPage({ snapshot }: PageProps) {
 // ------------------------------------------------------------------ pilot resources
 
 const LINKS: { title: string; href: string; body: string }[] = [
-  { title: "vAMSYS pilot hub", href: "https://vamsys.io/login/crossroads", body: "The Crossroads sign-in page on vAMSYS, for pilots who have joined: book routes, see your logbook and rank, and download Pegasus. New pilots start on the Fly with us page." },
+  { title: "vAMSYS pilot hub", href: "https://vamsys.io/login/crossroads", body: "The Crossroads sign-in page on vAMSYS, for pilots who have joined: book routes and see your logbook and rank. New pilots start on the Fly with us page." },
   { title: "SimBrief", href: "https://www.simbrief.com/", body: "Free flight planning. Link your Navigraph account, which is your SimBrief login, in vAMSYS to dispatch from a booking. Every route page here has a pre-filled SimBrief link." },
-  { title: "Pegasus ACARS", href: PEGASUS_URL, body: "vAMSYS's flight tracker. The official guide covers simulator setup, signing in, tracking your booking and filing the PIREP. Download it in Phoenix under Resources → Pegasus ACARS." },
+  { title: "Pegasus ACARS", href: PEGASUS_URL, body: "vAMSYS's flight tracker. The official guide covers downloading it, simulator setup, signing in, tracking your booking and filing the PIREP." },
 ];
 
 const GENERIC_CHECKLIST = `CROSSROADS EXECUTIVE & CHARTER - GENERIC FLOW CARD
