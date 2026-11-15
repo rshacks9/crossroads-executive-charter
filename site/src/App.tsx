@@ -199,6 +199,15 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
   );
 }
 
+/**
+ * True when focus moves to an element outside the masthead (Tab or Shift+Tab out of the open menu),
+ * which closes the menu so focus is never hidden behind it. A tap on empty space moves focus nowhere
+ * (no related target) and keeps the menu open.
+ */
+export function leavesMenu(container: Pick<Node, "contains">, next: EventTarget | null): boolean {
+  return next !== null && !container.contains(next as Node);
+}
+
 /** The banner under the masthead: sample or preview data, or a stale snapshot (checked once a minute). */
 export function DataNotice({ snapshot }: { snapshot: Snapshot | null }) {
   useMinute();
@@ -351,7 +360,13 @@ export function App() {
     <div className="shell">
       {/* The hash router would read "#main" as a page and show the 404, so the link moves focus itself. */}
       <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>Skip to content</a>
-      <header ref={masthead} className={"masthead" + (menuOpen ? " masthead--open" : "")}>
+      {/* Focus that leaves the open menu (Tab past its last link, or Shift+Tab out) closes it: the menu
+          covers the page, so a focused link behind it would be hidden. Focus stays where it went. */}
+      <header
+        ref={masthead}
+        className={"masthead" + (menuOpen ? " masthead--open" : "")}
+        onBlur={(e) => { if (menuOpen && leavesMenu(e.currentTarget, e.relatedTarget)) setMenuOpen(false); }}
+      >
         <div className="masthead__inner">
           {/* Named by its visible text, with "home" for screen readers ("Crossroads Executive & Charter, home"). */}
           <a className="wordmark" href="#/">

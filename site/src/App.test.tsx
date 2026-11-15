@@ -12,7 +12,7 @@ afterAll(() => {
   vi.unstubAllGlobals();
 });
 
-const { App } = await import("./App");
+const { App, leavesMenu } = await import("./App");
 
 const shell = () => renderToString(<App />);
 const textOf = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&");
@@ -32,5 +32,14 @@ describe("site shell", () => {
     expect(html).toContain('aria-keyshortcuts="Control+K Meta+K"');
     expect(html).toContain('<kbd aria-hidden="true">Ctrl K</kbd>');
     expect(html).not.toContain("<kbd>/</kbd>");
+  });
+
+  it("closes the open menu when focus moves to an element outside it, but not on a tap that focuses nothing", () => {
+    const inside = {};
+    const outside = {};
+    const box = { contains: (n: unknown) => n === inside };
+    expect(leavesMenu(box, inside as EventTarget)).toBe(false);
+    expect(leavesMenu(box, outside as EventTarget)).toBe(true);
+    expect(leavesMenu(box, null)).toBe(false);
   });
 });
