@@ -1,6 +1,6 @@
 // The page head (title, search description, link-preview description) is filled from the snapshot when
 // the site is built. These tests pin the wording rules and prove that no number in the head is typed by hand.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import type { Snapshot } from "./data";
 import {
@@ -201,6 +201,15 @@ describe("the real index.html", () => {
     expect(forward("/wp-login.php")).toBeNull();
     expect(forward("/assets/index-abc123.js")).toBeNull();
     expect(forward("/")).toBeNull();
+  });
+
+  it("gives a square icon to home screens and the search card, and lets crawlers in", () => {
+    const icon = /<link rel="apple-touch-icon" href="[.][/]([^"]+)" [/]>/.exec(indexHtml)?.[1];
+    expect(icon).toBe("img/crossroads-icon-512.png");
+    expect(existsSync(new URL(`../public/${icon}`, import.meta.url))).toBe(true);
+    const ld = JSON.parse(/<script type="application[/]ld[+]json">([\s\S]*?)<[/]script>/.exec(indexHtml)?.[1] ?? "{}");
+    expect(ld.logo).toBe(`https://flycrossroads.com/${icon}`);
+    expect(read("../public/robots.txt").split(/\r?\n/).filter(Boolean)).toEqual(["User-agent: *", "Allow: /"]);
   });
 });
 
