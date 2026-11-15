@@ -149,7 +149,7 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
         </div>
         <nav className="footer__cols" aria-label="Footer">
           <div>
-            <p className="footer__head">The airline</p>
+            <h2 className="footer__head">The airline</h2>
             <ul>
               <li><a href="#/fleet">Fleet</a></li>
               <li><a href="#/routes">Route network</a></li>
@@ -162,7 +162,7 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
             </ul>
           </div>
           <div>
-            <p className="footer__head">Pilots</p>
+            <h2 className="footer__head">Pilots</h2>
             <ul>
               <li><a href="#/pilots">How to join</a></li>
               <li><a href="#/careers">Career &amp; ranks</a></li>
@@ -173,7 +173,7 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
             </ul>
           </div>
           <div>
-            <p className="footer__head">Elsewhere</p>
+            <h2 className="footer__head">Elsewhere</h2>
             <ul>
               {/* Only while registration is open (pages.tsx registrationOpen). */}
               {airline?.join_url ? <li><a href={airline.join_url} rel="noopener">Register on vAMSYS</a></li> : null}

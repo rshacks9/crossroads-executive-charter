@@ -42,4 +42,10 @@ describe("site shell", () => {
     expect(leavesMenu(box, outside as EventTarget)).toBe(true);
     expect(leavesMenu(box, null)).toBe(false);
   });
+
+  it("marks the footer column labels up as headings, so screen readers can jump between them", () => {
+    const html = shell();
+    for (const label of ["The airline", "Pilots", "Elsewhere"]) expect(html).toContain(`<h2 class="footer__head">${label}</h2>`);
+    expect(html).not.toContain('<p class="footer__head">');
+  });
 });
