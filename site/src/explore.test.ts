@@ -645,6 +645,21 @@ describe("tours", () => {
     expect(TOURS.map((t) => t.legs.length)).toEqual([8, 6, 8]);
     for (const tour of TOURS) for (const [from, to] of tour.legs) expect(snapshot.routes.some((r) => r.from === from && r.to === to), `${tour.name} ${from}-${to}`).toBe(true);
   });
+
+  it("words the ski tour's aircraft as a rule that stays true when a KTYQ jet joins the ski routes", async () => {
+    const { KTYQ_JETS, TOURS } = await import("./content");
+    const ski = TOURS.find((t) => t.name.startsWith("Ski Season"));
+    if (!ski) throw new Error("no ski tour");
+    expect(ski.summary).toContain("any KTYQ jet except the Citation Mustang and Premier IA");
+    for (const [from, to] of ski.legs) {
+      const route = snapshot.routes.find((r) => r.from === from && r.to === to);
+      expect(route?.types.length, `${from}-${to}`).toBeGreaterThan(0);
+      for (const t of route?.types ?? []) {
+        expect(KTYQ_JETS, `${from}-${to} ${t}`).toContain(t);
+        expect(["C510", "PRM1"], `${from}-${to} ${t}`).not.toContain(t);
+      }
+    }
+  });
 });
 
 describe("first flight", () => {

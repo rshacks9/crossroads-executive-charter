@@ -336,7 +336,7 @@ export const TOURS: Tour[] = [
     name: "Ski Season Tour 2026-27",
     window: "11 November 2026 to 15 April 2027",
     points: 500,
-    summary: "Four mountain fields from Indianapolis Executive in the CJ4, Phenom 300E, Learjet, Hawker or Citation X. Brief the terrain and the hot-and-high numbers on every leg.",
+    summary: "Four mountain fields from Indianapolis Executive in any KTYQ jet except the Citation Mustang and Premier IA. Brief the terrain and the hot-and-high numbers on every leg.",
     legs: [["KTYQ", "KEGE"], ["KEGE", "KTYQ"], ["KTYQ", "KASE"], ["KASE", "KTYQ"], ["KTYQ", "KJAC"], ["KJAC", "KTYQ"], ["KTYQ", "KSUN"], ["KSUN", "KTYQ"]],
   },
   {
