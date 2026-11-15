@@ -1053,6 +1053,8 @@ describe("joining", () => {
     expect(pegasus.body).toContain("express permission");
     expect(pegasus.body).not.toMatch(/tell ATC/);
     expect(online.body).toContain("No pausing or time acceleration while connected");
+    // The airline rule pilots accept on vAMSYS (handbook and rules pages); the Pilots page quotes VATSIM instead.
+    expect(online.body).toContain("Make every radio call yourself, by voice or text.");
     const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
     expect(page).toContain("No pausing while connected");
     expect(page).toContain("“If it becomes necessary to leave a pilot connection unattended, the account holder should disconnect from the network. When operating under active air traffic control, a pilot may step away for a short period of time with express permission from air traffic control” (B3(b))");
