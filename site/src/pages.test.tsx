@@ -971,6 +971,9 @@ describe("joining", () => {
     if (!pegasus || !online) throw new Error("an SOP rule is missing");
     expect(pegasus.body).toMatch(/offline flight, pause/);
     expect(pegasus.body).toMatch(/disconnect/);
+    expect(pegasus.body).toContain("never pause a connected aircraft");
+    expect(pegasus.body).toContain("express permission");
+    expect(pegasus.body).not.toMatch(/tell ATC/);
     expect(online.body).toContain("No pausing or time acceleration while connected");
     const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
     expect(page).toContain("“If it becomes necessary to leave a pilot connection unattended, the account holder should disconnect from the network” (B3(b))");
