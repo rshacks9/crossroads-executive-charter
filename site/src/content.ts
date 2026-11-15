@@ -70,7 +70,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "Light jet, long legs",
     range_nm: 1950,
     cruise_kt: 450,
-    blurb: "The Phenom 300E is the newest jet at KTYQ. It is flown single-pilot, is comfortable on short runways and is on every light-jet route within its range, including the mountain fields and London City.",
+    blurb: "The Phenom 300E is flown single-pilot, is comfortable on short runways and is on every light-jet route within its range, including the mountain fields and London City.",
   },
   H25B: {
     role: "Mid-size cabin",

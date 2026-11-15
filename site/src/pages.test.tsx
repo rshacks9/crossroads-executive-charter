@@ -404,6 +404,8 @@ describe("pages render from the snapshot", () => {
     expect(html.match(/fleet-card__media--empty/g)).toHaveLength(bare);
     expect(html.match(/>Specs and routes/g)).toHaveLength(snapshot.fleet.length);
     expect(html).not.toContain("Specs, range ring");
+    // No "newest jet": a claim that goes stale the day another type joins the fleet.
+    for (const [code, info] of Object.entries(FLEET_INFO)) expect(info.blurb, code).not.toMatch(/\bnewest\b/i);
   });
 
   it("services: each aircraft pill opens its own type page", () => {
