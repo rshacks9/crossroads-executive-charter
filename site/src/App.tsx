@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type Snapshot, isStale, keepSnapshot, loadSnapshot, relativeAge } from "./data";
 import { Ago, useMinute } from "./clock";
-import { CrewPage } from "./crew";
+import { CREW_DESCRIPTION, CrewPage } from "./crew";
 import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./info";
 import { DISCORD_LABEL, FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
 import { AirportPage, DestinationsPage, NotFoundPage, PlanPage, ResourcesPage, RoutePage, SearchDialog, StatsPage, TypePage } from "./explore-pages";
@@ -23,7 +23,7 @@ export const ROUTES = [
   { path: "handbook", label: "Handbook", nav: false, description: "Crossroads SOPs: callsigns, flight-number blocks, fuel policy, cost index and landing rates." },
   { path: "resources", label: "Resources", nav: true, description: "Pilot downloads and links." },
   { path: "stats", label: "Stats", nav: false, description: "Network statistics." },
-  { path: "crew", label: "Crew Tools", nav: true, description: "Route briefings with live METAR and TAF, runway winds, a fuel estimate and an approach card. For simulation only." },
+  { path: "crew", label: "Crew Tools", nav: true, description: CREW_DESCRIPTION },
   { path: "news", label: "News", nav: true, description: "Launch news, fleet and network changes and standing NOTAMs." },
   { path: "about", label: "About", nav: false, description: "Crossroads Executive & Charter, a fictional virtual airline built at the Crossroads of America, Indianapolis." },
   { path: "pilots", label: "Fly with us", nav: true, description: "How to join Crossroads on vAMSYS and fly your first flight, from sign-up to accepted PIREP." },
@@ -301,10 +301,11 @@ export function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  // Detail pages, the 404 and the tool pages set their own title and description.
+  // Detail pages, the 404, the tool pages and Crew Tools (which names the chosen flight) set their own
+  // title and description. React runs a page's effects before this one, so this one must skip them.
   useEffect(() => {
     const route = ROUTES.find((r) => r.path === loc.page);
-    if (!route || ["destinations", "plan", "resources", "stats"].includes(loc.page)) return;
+    if (!route || ["crew", "destinations", "plan", "resources", "stats"].includes(loc.page)) return;
     const name = snapshot?.airline.name ?? DEFAULT_AIRLINE_NAME;
     setMeta(
       route.path ? `${route.label} · ${name}` : homeTitle(name),

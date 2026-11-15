@@ -14,7 +14,7 @@ const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFligh
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { firstWeekly, formatFeet, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
-const { Approach, CrewError, CrewPage, WeatherBoard } = await import("./crew");
+const { Approach, CREW_DESCRIPTION, CrewError, CrewPage, WeatherBoard, crewTitle } = await import("./crew");
 const { DataError, Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
@@ -383,6 +383,13 @@ describe("pages render from the snapshot", () => {
     const css = readFileSync(new URL("./styles.css", import.meta.url), "utf-8");
     const print = css.slice(css.indexOf("@media print"));
     expect(print).toMatch(/[.]crew-header[^{]*[{] display: none !important; [}]/);
+  });
+
+  it("titles Crew Tools with the chosen flight", () => {
+    const route = snapshot.routes.find((r) => r.callsign === "CRX101")!;
+    expect(crewTitle(route, "Crossroads Executive & Charter")).toBe(`CRX101 ${route.from}–${route.to} briefing · Crew Tools · Crossroads Executive & Charter`);
+    expect(crewTitle(undefined, "Crossroads Executive & Charter")).toBe("Crew Tools · Crossroads Executive & Charter");
+    expect(CREW_DESCRIPTION).toMatch(/^Route briefings with live METAR and TAF/);
   });
 
   it("fleet cards: figures with a small unit, payload in tonnes, the role as the only eyebrow word, a strip without art", () => {

@@ -4,6 +4,7 @@ import { approachWindText, componentText, descentRateFpm, formatDuration, format
 import { Ago } from "./clock";
 import { PageHeader } from "./pages";
 import { sharedCrew } from "./explore-pages";
+import { setMeta } from "./explore";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -13,6 +14,13 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 const PHASE_LABEL: Record<string, string> = { taxi: "Taxi", climb: "Climb", cruise: "Cruise", descent: "Descent", holding: "Holding" };
+
+export const CREW_DESCRIPTION = "Route briefings with live METAR and TAF, runway winds, a fuel estimate and an approach card. For simulation only.";
+
+/** The page title: the chosen flight first, so a tab or a bookmark says which briefing it is. */
+export function crewTitle(route: Route | undefined, site: string): string {
+  return route ? `${routeKey(route)} ${route.from}–${route.to} briefing · Crew Tools · ${site}` : `Crew Tools · ${site}`;
+}
 
 function routeKey(route: Route): string {
   return route.callsign ?? route.flight_number ?? `${route.from}-${route.to}`;
@@ -192,6 +200,9 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
   const route = routes.find((r) => routeKey(r) === selected);
   const [aircraft, setAircraft] = useState(() => hashParam("aircraft"));
   const type = route && route.types.includes(aircraft) ? aircraft : route?.types[0] ?? "";
+
+  // App leaves the title of this page to it (App.tsx), so it is set here for every flight.
+  useEffect(() => setMeta(crewTitle(route, snapshot.airline.name), CREW_DESCRIPTION), [route, snapshot.airline.name]);
 
   useEffect(() => {
     let alive = true;
