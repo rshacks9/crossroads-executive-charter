@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ApproachCard, Crew, CrewAirport, CrewMetar, FuelPlan, Route, Snapshot } from "./data";
-import { approachWindText, componentText, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, weatherBoard, windText } from "./data";
+import { approachWindText, componentText, descentRateFpm, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, weatherBoard, windText } from "./data";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -92,8 +92,9 @@ function FuelTable({ plan }: { plan: FuelPlan }) {
   );
 }
 
-function Approach({ card, icao, wind }: { card: ApproachCard; icao: string; wind?: CrewMetar["wind"] | null }) {
+export function Approach({ card, icao, wind }: { card: ApproachCard; icao: string; wind?: CrewMetar["wind"] | null }) {
   const rw = card.runway;
+  const steep = (card.warnings ?? []).filter((w) => w.code === "approach.steep");
   return (
     <section className="approach">
       <div className="approach__head">
@@ -108,8 +109,9 @@ function Approach({ card, icao, wind }: { card: ApproachCard; icao: string; wind
       <dl className="wx-facts">
         <div><dt>Approach speed</dt><dd>{card.aircraft.approach_speed_kt ? `${card.aircraft.approach_speed_kt} kt` : "—"}</dd></div>
         <div><dt>Wind on runway</dt><dd>{approachWindText(card, wind)}</dd></div>
-        <div><dt>Descent rate</dt><dd>{card.aircraft.approach_speed_kt ? `≈${formatNumber(Math.round(card.aircraft.approach_speed_kt * 5.3 / 10) * 10)} fpm (no wind)` : "—"}</dd></div>
+        <div><dt>Descent rate</dt><dd>{card.aircraft.approach_speed_kt ? `≈${formatNumber(descentRateFpm(card.aircraft.approach_speed_kt, rw.glide_path_deg ?? 3))} fpm (no wind)` : "—"}</dd></div>
       </dl>
+      {steep.map((w) => <p key={w.code} className="callout">{w.message}</p>)}
       {card.target_gates.length ? (
         <div className="table-scroll"><table className="table table--compact">
           <caption className="visually-hidden">{`Approach gates for runway ${rw.identifier ?? "—"}`}</caption>

@@ -68,6 +68,27 @@ class CrewBuildTests(unittest.TestCase):
         self.assertAlmostEqual(card["target_gates"][-1]["height_above_threshold_ft"], 50 + 6076.1 * 0.0524, delta=3)
         self.assertEqual(card["aircraft"]["approach_speed_kt"], 120.0)  # CJ4 Vref 115 + 5
 
+    def test_london_city_uses_its_steep_glide_path_and_other_airports_stay_at_3_degrees(self):
+        eglc = self.crew["approaches"]["EGLC"]
+        self.assertTrue(eglc)
+        for card in eglc.values():
+            self.assertEqual(card["runway"]["glide_path_deg"], 5.5)
+            self.assertEqual([g["distance_to_threshold_nm"] for g in card["target_gates"]], [5.0, 3.0, 1.0])
+            # 50 ft threshold crossing + 5 nm x 6,076.12 ft x tan 5.5 degrees, about 2,975 ft.
+            self.assertAlmostEqual(card["target_gates"][0]["height_above_threshold_ft"], 2975, delta=2)
+            self.assertIn("approach.steep", [w["code"] for w in card["warnings"]])
+            steep = next(w for w in card["warnings"] if w["code"] == "approach.steep")
+            self.assertEqual(steep["message"], "Steep approach: 5.5° glide path. Check the chart for the intercept altitude.")
+        for icao, cards in self.crew["approaches"].items():
+            if icao == "EGLC":
+                continue
+            for card in cards.values():
+                self.assertEqual(card["runway"]["glide_path_deg"], 3.0, icao)
+                self.assertEqual(len(card["target_gates"]), 4, icao)
+                self.assertNotIn("approach.steep", [w["code"] for w in card["warnings"]], icao)
+        self.assertIn("London City 5.5°", self.crew["notes"]["approach"])
+        self.assertTrue(self.crew["notes"]["approach"].startswith("3° glide path unless the card shows another"))
+
     def test_airport_without_weather_still_lists_runways(self):
         kmia = self.crew["airports"]["KMIA"]
         self.assertIsNone(kmia["metar"])

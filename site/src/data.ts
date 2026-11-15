@@ -486,6 +486,8 @@ export interface ApproachCard {
   wind?: { wind_direction_true_deg?: number; wind_speed_kt?: number; components: WindComponents | { status: string } };
   aircraft: { approach_speed_kt?: number; threshold_crossing_height_ft?: number };
   target_gates: { distance_to_threshold_nm: number; target_speed_kt?: number; height_above_threshold_ft?: number; altitude_ft_msl?: number }[];
+  /** "approach.steep" marks an airport whose published glide path is not 3 degrees (London City). */
+  warnings?: { code: string; message: string }[];
 }
 
 export interface Crew {
@@ -516,6 +518,12 @@ export const KG_TO_LB = 2.20462262;
 
 export function kgToLb(kg: number): number {
   return Math.round(kg * KG_TO_LB);
+}
+
+/** Still-air descent rate in fpm on a glide path (3 degrees unless the card gives another), to the nearest 10 fpm. */
+export function descentRateFpm(speedKt: number, glidePathDeg = 3): number {
+  // 101.27 ft per minute for each knot: 6,076.12 ft per nm over 60 minutes.
+  return Math.round((speedKt * 101.27 * Math.tan((glidePathDeg * Math.PI) / 180)) / 10) * 10;
 }
 
 export function windText(wind: CrewMetar["wind"] | undefined): string {

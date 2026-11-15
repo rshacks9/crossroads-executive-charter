@@ -48,7 +48,8 @@ A ready-made briefing for every route and aircraft type, rebuilt by the same 20-
 - **Fuel estimate**: phase-by-phase fuel from Kimi's `fuel_core.calculate_trip` with the planning
   profiles in `fuel_profiles.json`. These are estimates; pilots dispatch with SimBrief.
 - **Approach card**: 3° glide path gates at 10/5/3/1 nm, Vapp and descent rate from Kimi's
-  `approach.build_briefing`.
+  `approach.build_briefing`. London City (EGLC) uses its published 5.5° path with gates at 5/3/1 nm
+  and a steep-approach note (`STEEP_APPROACH` in `crew.py`; add an airport only after checking its chart).
 
 If the weather service is down the job still deploys (`crew=no-weather` in the log) and the page
 shows briefings without weather. Set `CROSSROADS_NO_WEATHER=1` to skip the fetch. For flight

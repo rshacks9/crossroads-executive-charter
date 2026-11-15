@@ -22,6 +22,7 @@ import {
   relativeAge,
   approachWindText,
   componentText,
+  descentRateFpm,
   isCrew,
   kgToLb,
   loadCrew,
@@ -229,6 +230,12 @@ describe("crew briefings", () => {
     expect(componentText(left)).toBe("7.3 kt head, 6.8 kt cross from left");
     expect(approachWindText({ wind: { wind_direction_true_deg: 300, wind_speed_kt: 10, components: left } }, undefined))
       .toBe("7.3 kt head, 6.8 kt cross from left");
+  });
+
+  it("works the approach descent rate out from the card's glide path", () => {
+    expect(descentRateFpm(120)).toBe(640);
+    expect(descentRateFpm(120, 3)).toBe(640);
+    expect(descentRateFpm(120, 5.5)).toBe(1170);
   });
 
   it("words the approach wind when crew.json has no runway components, never NaN", () => {

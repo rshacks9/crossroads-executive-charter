@@ -29,6 +29,9 @@ GATE_DISTANCES_NM = [10, 5, 3, 1]
 THRESHOLD_CROSSING_FT = 50
 GLIDE_PATH_DEG = 3.0
 CALM_KT = 3
+# Airports whose published glide path is not 3 degrees, each checked against its chart. London City's
+# ILS is 5.5 degrees; its 10 nm gate (about 5,900 ft) is dropped because nobody flies it.
+STEEP_APPROACH: dict[str, dict[str, Any]] = {"EGLC": {"glide_path_deg": 5.5, "gate_distances_nm": [5, 3, 1]}}
 
 Fetcher = Callable[[str], Any]
 
@@ -150,11 +153,14 @@ def _runway_winds(runways: list[dict[str, Any]], wind: Mapping[str, Any] | None)
     return rows, preferred["id"]
 
 
-def _approach_card(runway: Mapping[str, Any], wind: Mapping[str, Any] | None, vref: float | None) -> dict[str, Any]:
+def _approach_card(runway: Mapping[str, Any], wind: Mapping[str, Any] | None, vref: float | None, icao: str | None = None) -> dict[str, Any]:
+    steep = STEEP_APPROACH.get(icao or "")
+    glide_path = float(steep["glide_path_deg"]) if steep else GLIDE_PATH_DEG
+    gates = list(steep["gate_distances_nm"]) if steep else GATE_DISTANCES_NM
     weather_in: dict[str, Any] = {}
     if wind and not wind.get("variable") and wind.get("direction_deg") is not None:
         weather_in = {"wind_direction_true_deg": wind["direction_deg"], "wind_speed_kt": wind["speed_kt"]}
-    aircraft: dict[str, Any] = {"threshold_crossing_height_ft": THRESHOLD_CROSSING_FT, "gate_distances_nm": GATE_DISTANCES_NM}
+    aircraft: dict[str, Any] = {"threshold_crossing_height_ft": THRESHOLD_CROSSING_FT, "gate_distances_nm": gates}
     if vref:
         aircraft["approach_speed_kt"] = vref + 5  # Vref + 5 kt as a generic Vapp
     runway_in = {
@@ -165,10 +171,15 @@ def _approach_card(runway: Mapping[str, Any], wind: Mapping[str, Any] | None, vr
         "end": runway.get("end"),
         "threshold_elevation_ft": runway.get("elevation_ft"),
         "length_ft": runway.get("length_ft"),
-        "glide_path_deg": GLIDE_PATH_DEG,
+        "glide_path_deg": glide_path,
     }
     runway_in = {k: v for k, v in runway_in.items() if v is not None}
     card = kimi_approach.build_briefing(runway_in, weather_in, aircraft)
+    if steep:
+        card.setdefault("warnings", []).append({
+            "code": "approach.steep",
+            "message": f"Steep approach: {glide_path:g}° glide path. Check the chart for the intercept altitude.",
+        })
     return {k: card[k] for k in ("runway", "wind", "aircraft", "target_gates", "warnings") if k in card}
 
 
@@ -230,7 +241,7 @@ def build_crew(
             arrival = route.get("to")
             if arrival in preferred_runway and code not in approaches.get(arrival, {}):
                 wind = (airports[arrival]["metar"] or {}).get("wind")
-                approaches.setdefault(arrival, {})[code] = _approach_card(preferred_runway[arrival], wind, raw.get("vref_kt"))
+                approaches.setdefault(arrival, {})[code] = _approach_card(preferred_runway[arrival], wind, raw.get("vref_kt"), arrival)
         if per_type:
             plans[key] = per_type
 
@@ -242,7 +253,7 @@ def build_crew(
         "approaches": approaches,
         "notes": {
             "fuel": "Quick-look estimate from the Crossroads planning profiles. Dispatch with SimBrief for real figures.",
-            "approach": f"{GLIDE_PATH_DEG:.0f}° glide path, {THRESHOLD_CROSSING_FT} ft threshold crossing, Vref + 5 kt. Simulation use only.",
+            "approach": f"{GLIDE_PATH_DEG:.0f}° glide path unless the card shows another (London City {STEEP_APPROACH['EGLC']['glide_path_deg']:g}°), {THRESHOLD_CROSSING_FT} ft threshold crossing, Vref + 5 kt. Simulation use only.",
             "runways": "Runway data from OurAirports (public domain). Preferred runway = most headwind, avoiding tailwind; longest runway when calm.",
         },
     }

@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import type { Crew, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./data";
+import type { ApproachCard, Crew, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./data";
 
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
@@ -14,7 +14,7 @@ const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFligh
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { firstWeekly, formatFeet, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
-const { CrewPage, WeatherBoard } = await import("./crew");
+const { Approach, CrewPage, WeatherBoard } = await import("./crew");
 const { Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
@@ -681,6 +681,24 @@ describe("the Discord link", () => {
     expect(renderToString(<Footer snapshot={withDiscord} />)).toContain(`<li><a ${link}</li>`);
     // Only those two places link it.
     expect(everyPage(withDiscord).filter((html) => html.includes(invite))).toHaveLength(2);
+  });
+});
+
+describe("approach cards", () => {
+  it("show London City's steep glide path, the descent rate it needs and a note to check the chart", () => {
+    const steep: ApproachCard = {
+      runway: { identifier: "09", glide_path_deg: 5.5 },
+      aircraft: { approach_speed_kt: 120 },
+      target_gates: [{ distance_to_threshold_nm: 5, height_above_threshold_ft: 2975.3 }],
+      warnings: [{ code: "approach.steep", message: "Steep approach: 5.5° glide path. Check the chart for the intercept altitude." }],
+    };
+    const html = text(renderToString(<Approach card={steep} icao="EGLC" />));
+    expect(html).toContain("5.5° glide path");
+    expect(html).toContain("≈1,170 fpm (no wind)");
+    expect(html).toContain("Steep approach: 5.5° glide path. Check the chart for the intercept altitude.");
+    const usual = text(renderToString(<Approach card={{ ...steep, runway: { identifier: "24", glide_path_deg: 3 }, warnings: [] }} icao="KTEB" />));
+    expect(usual).toContain("≈640 fpm (no wind)");
+    expect(usual).not.toContain("Steep approach");
   });
 });
 
