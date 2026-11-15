@@ -640,6 +640,9 @@ function FleetCard({ type, snapshot, accent }: { type: FleetType; snapshot: Snap
   );
 }
 
+/** The id of a fleet division heading, for the page's Jump to buttons. */
+export const fleetGroupId = (title: string) => `fleet-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
 export function FleetPage({ snapshot }: PageProps) {
   const [baseFilter, setBaseFilter] = useState<"" | "KTYQ" | "KIND">("");
   const total = airframes(snapshot);
@@ -655,6 +658,10 @@ export function FleetPage({ snapshot }: PageProps) {
   if (unassigned.length) groups.push({ title: "Other aircraft", summary: null, index: groups.length, types: unassigned });
   const ktyq = snapshot.fleet.filter((f) => baseFor(f.code) === "KTYQ").length;
   const seats = snapshot.fleet.filter((f) => !isFreighter(f)).reduce((s, f) => s + (f.max_pax ?? 0) * f.aircraft_count, 0);
+  // The groups that have types after the base filter, each with the types it shows.
+  const shown = groups
+    .map((group) => ({ ...group, types: group.types.filter((t) => !baseFilter || baseFor(t.code) === baseFilter) }))
+    .filter((group) => group.types.length > 0);
 
   return (
     <>
@@ -675,14 +682,19 @@ export function FleetPage({ snapshot }: PageProps) {
             </button>
           ))}
         </div>
-        {groups.map((group) => {
-          const types = group.types.filter((t) => !baseFilter || baseFor(t.code) === baseFilter);
-          if (!types.length) return null;
+        {/* Jumps to the division headings: buttons, not #id links, which the hash router would read as pages. */}
+        {shown.length > 1 ? (
+          <div className="chips" role="group" aria-label="Jump to">
+            {shown.map((group) => <button key={group.title} type="button" className="chip-button" onClick={() => jumpTo(document.getElementById(fleetGroupId(group.title)))}>{group.title}</button>)}
+          </div>
+        ) : null}
+        {shown.map((group) => {
+          const types = group.types;
           const accent = divisionColor(group.index);
           return (
             <div key={group.title} className="fleet-group">
               <div className="fleet-group__head">
-                <h2><DivisionDot index={group.index} />{group.title}</h2>
+                <h2 id={fleetGroupId(group.title)} tabIndex={-1}><DivisionDot index={group.index} />{group.title}</h2>
                 <span className="tag">{types.length} {types.length === 1 ? "type" : "types"}</span>
               </div>
               {group.summary ? <p className="muted fleet-group__summary">{group.summary}</p> : null}

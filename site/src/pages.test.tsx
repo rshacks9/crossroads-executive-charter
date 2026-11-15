@@ -9,7 +9,7 @@ vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, routeDescription, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
-const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
+const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, fleetGroupId, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
@@ -402,6 +402,18 @@ describe("pages render from the snapshot", () => {
     expect(more?.items.length).toBeGreaterThan(0);
     const page = text(html);
     for (const a of more?.items ?? []) expect(page).toContain(` ${a.airport?.country ?? "Other"} · ${a.routes} ${a.routes === 1 ? "route" : "routes"} `);
+  });
+
+  it("fleet: a Jump to button for each division, each leading to that division's heading", () => {
+    const html = renderToString(<FleetPage snapshot={snapshot} />);
+    const divisions = snapshot.airline.divisions.filter((d) => snapshot.fleet.some((f) => d.fleets.includes(f.code))).map((d) => d.name);
+    expect(divisions.length).toBeGreaterThan(1);
+    const group = html.match(/<div class="chips" role="group" aria-label="Jump to">(.*?)<[/]div>/)?.[1] ?? "";
+    const buttons = [...group.matchAll(/<button type="button" class="chip-button">([^<]*)<[/]button>/g)].map((m) => m[1]);
+    expect(buttons).toEqual(divisions.map((name) => name.replace(/&/g, "&amp;")));
+    for (const name of divisions) expect(html).toContain(`<h2 id="${fleetGroupId(name)}" tabindex="-1">`);
+    expect(new Set(divisions.map(fleetGroupId)).size).toBe(divisions.length);
+    expect(html).not.toMatch(/href="#[^/]/);
   });
 
   it("destinations on phones: the United States opens with its 12 busiest airports and a Show all button", () => {
