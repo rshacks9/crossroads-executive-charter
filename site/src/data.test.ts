@@ -224,6 +224,11 @@ describe("crew briefings", () => {
       .toBe("9 kt head, 3 kt cross from left");
     expect(componentText({ headwind_kt: -5, tailwind_kt: 5, crosswind_kt: 0, crosswind_from: null } as unknown as WindComponents))
       .toBe("5 kt tail, no crosswind");
+    // Approach cards sign the crosswind (negative = from the left): a left crosswind is still a crosswind.
+    const left = { headwind_kt: 7.3, tailwind_kt: 0, crosswind_kt: -6.8, crosswind_from: "left" } as WindComponents;
+    expect(componentText(left)).toBe("7.3 kt head, 6.8 kt cross from left");
+    expect(approachWindText({ wind: { wind_direction_true_deg: 300, wind_speed_kt: 10, components: left } }, undefined))
+      .toBe("7.3 kt head, 6.8 kt cross from left");
   });
 
   it("words the approach wind when crew.json has no runway components, never NaN", () => {

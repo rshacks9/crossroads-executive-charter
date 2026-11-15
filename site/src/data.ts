@@ -535,7 +535,9 @@ export function hasComponents(c: unknown): c is WindComponents {
 export function componentText(c: WindComponents | { status: string } | null | undefined): string {
   if (!hasComponents(c)) return "—";
   const along = c.tailwind_kt > 0 ? `${c.tailwind_kt} kt tail` : `${Math.max(0, c.headwind_kt)} kt head`;
-  const across = c.crosswind_kt > 0 ? `${c.crosswind_kt} kt cross from ${c.crosswind_from}` : "no crosswind";
+  // Approach cards sign the crosswind (negative = from the left); runway tables give it unsigned.
+  const x = Math.abs(c.crosswind_kt);
+  const across = x > 0 ? `${x} kt cross from ${c.crosswind_from}` : "no crosswind";
   return `${along}, ${across}`;
 }
 
