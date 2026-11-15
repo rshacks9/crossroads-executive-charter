@@ -273,6 +273,30 @@ export function routesForType(snapshot: Pick<Snapshot, "routes">, code: string):
   return snapshot.routes.filter((r) => r.types.includes(code)).sort((a, b) => (b.distance_nm ?? 0) - (a.distance_nm ?? 0));
 }
 
+/** The airport these routes touch most often, the first alphabetically on a tie; null when there are none. */
+export function busiestAirport(routes: readonly Pick<Route, "from" | "to">[]): string | null {
+  const counts = new Map<string, number>();
+  for (const r of routes) for (const icao of [r.from, r.to]) counts.set(icao, (counts.get(icao) ?? 0) + 1);
+  let best: string | null = null;
+  let most = 0;
+  for (const [icao, n] of counts) {
+    if (n > most || (n === most && best !== null && icao < best)) {
+      best = icao;
+      most = n;
+    }
+  }
+  return best;
+}
+
+/**
+ * Where a type's planning-range ring is centred: its base when any of its routes touch the base,
+ * otherwise the airport its routes touch most (the Piper M600, listed at KTYQ, flies only KBAF-KBDL).
+ */
+export function ringCentre(base: string, routes: readonly Pick<Route, "from" | "to">[]): string {
+  if (!routes.length || routes.some((r) => r.from === base || r.to === base)) return base;
+  return busiestAirport(routes) ?? base;
+}
+
 export const isFreighterType = (t: Pick<FleetType, "type">) => t.type === "cargo" || t.type === "cargo-containers";
 
 /**

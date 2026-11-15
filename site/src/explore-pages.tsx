@@ -28,6 +28,7 @@ import {
   routeKey,
   routeOtherEnd,
   routesForType,
+  ringCentre,
   runwayStrips,
   scheduleCsv,
   search,
@@ -501,6 +502,8 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
   const idx = fleetOrder.indexOf(code);
   const prev = snapshot.fleet[(idx - 1 + fleetOrder.length) % fleetOrder.length]!;
   const next = snapshot.fleet[(idx + 1) % fleetOrder.length]!;
+  // The ring sits where the type flies: its base, unless none of its routes touch the base.
+  const ringAt = ringCentre(base, routes);
   return (
     <>
       <PageHeader eyebrow={`Fleet · ${code}${divisionIndex >= 0 ? ` · ${snapshot.airline.divisions[divisionIndex]!.name}` : ""}`} title={type.name} lede={info?.blurb}>
@@ -521,10 +524,10 @@ export function TypePage({ snapshot, code }: PageProps & { code: string }) {
       ) : null}
       <section className="page page--split page--split-wide">
         <div className="split__aside">
-          <SectionHead eyebrow="Reach" title={info ? `${formatNumber(info.range_nm)} nm from ${base}` : "Routes flown"} />
-          <ExploreMap routes={routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} ring={info ? { icao: base, nm: info.range_nm, label: `${shortName(type.name)} planning range from ${base}: ${formatNumber(info.range_nm)} nm` } : null} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={440} label={`Planning range ring and routes for the ${type.name}`} />
+          <SectionHead eyebrow="Reach" title={info ? `${formatNumber(info.range_nm)} nm from ${ringAt}` : "Routes flown"} />
+          <ExploreMap routes={routes} airports={snapshot.airports} bases={bases(snapshot)} divisions={snapshot.airline.divisions} ring={info ? { icao: ringAt, nm: info.range_nm, label: `${shortName(type.name)} planning range from ${ringAt}: ${formatNumber(info.range_nm)} nm` } : null} selectedRoute={selectedRoute} onRouteClick={setSelectedRoute} onAirportClick={(icao) => { window.location.hash = airportHref(icao); }} height={440} label={`Planning range ring and routes for the ${type.name}`} />
           <MapLegend snapshot={snapshot} routes={routes} />
-          <p className="fineprint">The dashed ring is the rounded Crossroads planning range from {base}, still air, for simulation planning only. Winds, weights and reserves change it on the day.</p>
+          <p className="fineprint">The dashed ring is the rounded Crossroads planning range from {ringAt}, still air, for simulation planning only. Winds, weights and reserves change it on the day.</p>
         </div>
         <div>
           <SectionHead eyebrow="Specifications" title="At a glance" />

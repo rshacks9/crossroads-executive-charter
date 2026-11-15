@@ -50,6 +50,17 @@ describe("pages render from the snapshot", () => {
     }
   });
 
+  it("draws the M600's range ring at Westfield-Barnes, where it flies, and keeps the base as KTYQ", () => {
+    const m600 = text(renderToString(<TypePage snapshot={snapshot} code="M600" />));
+    expect(m600).toContain("1,100 nm from KBAF");
+    expect(m600).toContain("planning range from KBAF");
+    expect(m600).not.toContain("nm from KTYQ");
+    expect(m600).toContain("Base KTYQ");
+    const c750 = text(renderToString(<TypePage snapshot={snapshot} code="C750" />));
+    expect(c750).toContain("2,900 nm from KTYQ");
+    expect(c750).toContain("planning range from KTYQ");
+  });
+
   it("every route page", () => {
     for (const r of snapshot.routes) {
       const html = renderToString(<RoutePage snapshot={snapshot} route={findRoute(snapshot, r.callsign!)} />);

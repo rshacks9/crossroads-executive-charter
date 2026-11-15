@@ -10,6 +10,8 @@ import {
   briefingCard,
   briefingRunways,
   buildSearchIndex,
+  busiestAirport,
+  ringCentre,
   defaultSimTypes,
   destinationBlurb,
   destinationGroups,
@@ -191,6 +193,21 @@ describe("fleet", () => {
       }
     }
     expect(over).toEqual([]);
+  });
+
+  it("centres the range ring on the base unless no route touches it, then on the busiest airport", () => {
+    const leg = (from: string, to: string) => ({ from, to });
+    expect(busiestAirport([])).toBeNull();
+    expect(busiestAirport([leg("KBDL", "KBAF"), leg("KBAF", "KBDL")])).toBe("KBAF");
+    expect(busiestAirport([leg("KIND", "KLAX"), leg("KLAX", "KSFO")])).toBe("KLAX");
+    expect(ringCentre("KTYQ", routesForType(snapshot, "M600"))).toBe("KBAF");
+    expect(ringCentre("KTYQ", routesForType(snapshot, "C750"))).toBe("KTYQ");
+    expect(ringCentre("KTYQ", [])).toBe("KTYQ");
+    // A type whose routes touch its base keeps its ring there.
+    for (const f of snapshot.fleet) {
+      const routes = routesForType(snapshot, f.code);
+      if (routes.some((r) => r.from === baseFor(f.code) || r.to === baseFor(f.code))) expect(ringCentre(baseFor(f.code), routes), f.code).toBe(baseFor(f.code));
+    }
   });
 });
 
