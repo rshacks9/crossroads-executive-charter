@@ -896,7 +896,7 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
   {
     title: "File the PIREP",
     tool: "Pegasus → vAMSYS",
-    body: "Pegasus files the PIREP when you shut down at the gate. Add comments for anything unusual. Staff review it, and accepted flights count toward your hours, your rank and the airline's statistics on this site.",
+    body: "Pegasus files the PIREP when you shut down at the gate. Phoenix checks every PIREP automatically, and staff review any PIREP that is flagged or carries a comment, so add one for anything unusual. Your hours and accepted PIREPs count toward your rank and the airline's statistics on this site.",
     tips: ["Target a 60–250 fpm touchdown", "Diversions and go-arounds belong in the comments"],
   },
 ];

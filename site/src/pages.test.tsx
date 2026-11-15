@@ -506,6 +506,13 @@ describe("texts follow the data", () => {
     expect(renderToString(<NewsPage snapshot={{ ...snapshot, events: [] }} />)).toContain('Open tours are on the <a href="#/careers">Careers page</a>.</p>');
   });
 
+  it("says how Phoenix counts PIREPs as the airline's Scores page does: automatic checks, and a rejected PIREP keeps its hours", () => {
+    const careers = text(renderToString(<CareersPage snapshot={snapshot} />));
+    expect(careers).toContain("Phoenix checks every PIREP filed through Pegasus automatically, and staff review any PIREP that is flagged or carries a comment.");
+    expect(careers).toContain("A rejected PIREP keeps its hours but earns no points");
+    expect(careers).not.toMatch(/Staff review every PIREP|accepted flights only/);
+  });
+
   it("counts the bases, ranks and divisions it names from the data, and words them as the copy did", () => {
     const ladder = snapshot.ranks.filter((r) => !r.honorary);
     // The airline as it is: the words the copy used to type by hand.
@@ -928,7 +935,9 @@ describe("joining", () => {
     expect(page).toContain("use Jumpseat in Phoenix first");
     expect(page).toContain("under My vAMSYS Account → Social, Online & 3rd Party");
     // Retired copy that did not match vAMSYS: a "Register link", a username you choose, staff approval as a given.
-    expect(page).not.toMatch(/Register link|username you're happy|Once staff approve|application to accepted/);
+    expect(page).not.toMatch(/Register link|username you're happy|Once staff approve|application to accepted|Staff review it|Staff review every PIREP/);
+    // Phoenix processes PIREPs automatically; staff see the flagged ones and the ones with a comment.
+    expect(page).toContain("staff review any PIREP that is flagged or carries a comment");
   });
 
   it("says plainly that the airline is new, with the join terms; claims no pilot numbers and implies no other pilots", () => {

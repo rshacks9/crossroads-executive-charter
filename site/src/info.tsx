@@ -173,9 +173,9 @@ export function CareersPage({ snapshot }: PageProps) {
           <div>
             <SectionHead eyebrow="How it counts" title="What moves you up" />
             <ul className="ticks">
-              <li>Hours and PIREPs come from accepted flights only, filed through <a href={PEGASUS_URL} rel="noopener">Pegasus</a>.</li>
+              <li>Phoenix checks every PIREP filed through <a href={PEGASUS_URL} rel="noopener">Pegasus</a> automatically, and staff review any PIREP that is flagged or carries a comment.</li>
               <li>Every division counts the same. A Mustang hop and a 777F crossing both add to your logbook.</li>
-              <li>Staff review every PIREP. Rejected flights don't count toward a promotion.</li>
+              <li>Only accepted PIREPs count toward the PIREP total a rank needs. A rejected PIREP keeps its hours but earns no points; an invalidated one earns neither.</li>
             </ul>
           </div>
           <div>
