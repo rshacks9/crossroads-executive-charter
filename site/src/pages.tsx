@@ -685,6 +685,8 @@ export function FleetPage({ snapshot }: PageProps) {
         {/* Jumps to the division headings: buttons, not #id links, which the hash router would read as pages. */}
         {shown.length > 1 ? (
           <div className="chips" role="group" aria-label="Jump to">
+            {/* Seen only: the group's name says it. It tells these buttons apart from the base filter above. */}
+            <span className="chips__label" aria-hidden="true">Jump to</span>
             {shown.map((group) => <button key={group.title} type="button" className="chip-button" onClick={() => jumpTo(document.getElementById(fleetGroupId(group.title)))}>{group.title}</button>)}
           </div>
         ) : null}

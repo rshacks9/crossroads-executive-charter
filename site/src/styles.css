@@ -456,6 +456,7 @@ main:has(> .cta-band:last-child) ~ .footer { margin-top: 0; }
 .chip-button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--field-line); background: var(--panel); font: 600 15px var(--body); color: var(--text); cursor: pointer; }
 .chip-button[aria-pressed="true"] { background: var(--text); color: var(--paper); border-color: var(--text); }
 .chip-button:hover { border-color: var(--text); }
+.chips__label { align-self: center; margin-right: 4px; font: 600 12px/1.3 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
 .page .filters { margin-top: 18px; }
 
 .fleet-group + .fleet-group { margin-top: 40px; }

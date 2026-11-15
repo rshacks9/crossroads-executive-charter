@@ -431,6 +431,8 @@ describe("pages render from the snapshot", () => {
     const group = html.match(/<div class="chips" role="group" aria-label="Jump to">(.*?)<[/]div>/)?.[1] ?? "";
     const buttons = [...group.matchAll(/<button type="button" class="chip-button">([^<]*)<[/]button>/g)].map((m) => m[1]);
     expect(buttons).toEqual(divisions.map((name) => name.replace(/&/g, "&amp;")));
+    // A visible label tells the jumps apart from the base filter; screen readers get the group's name instead.
+    expect(group).toContain('<span class="chips__label" aria-hidden="true">Jump to</span>');
     for (const name of divisions) expect(html).toContain(`<h2 id="${fleetGroupId(name)}" tabindex="-1">`);
     expect(new Set(divisions.map(fleetGroupId)).size).toBe(divisions.length);
     expect(html).not.toMatch(/href="#[^/]/);
