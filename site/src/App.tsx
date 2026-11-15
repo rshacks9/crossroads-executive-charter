@@ -284,7 +284,7 @@ export function App() {
     const name = snapshot?.airline.name ?? DEFAULT_AIRLINE_NAME;
     setMeta(
       route.path ? `${route.label} · ${name}` : homeTitle(name),
-      route.description || siteDescription(countsFromSnapshot(snapshot)),
+      route.description || siteDescription(countsFromSnapshot(snapshot), Boolean(snapshot?.airline.join_url)),
     );
   }, [loc, snapshot]);
 

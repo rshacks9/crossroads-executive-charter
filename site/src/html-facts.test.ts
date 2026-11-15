@@ -69,9 +69,20 @@ describe("wording", () => {
 
   it("describes the site with the numbers it is given", () => {
     const counts = { types: 19, routes: 310, bases: 2, divisions: 4 };
+    // While registration is closed (join_url unset) the description doesn't invite pilots to join.
     expect(siteDescription(counts)).toBe(
+      "A fictional flight-sim virtual airline from Indianapolis: 19 aircraft types, from the Citation Mustang to the A380 and 777F, and 310 routes. Flies on vAMSYS.",
+    );
+    expect(siteDescription(counts, true)).toBe(
       "A fictional flight-sim virtual airline from Indianapolis: 19 aircraft types, from the Citation Mustang to the A380 and 777F, and 310 routes. Join on vAMSYS.",
     );
+    expect(siteDescription(null)).toMatch(/divisions[.] Flies on vAMSYS[.]$/);
+    expect(siteDescription(null, true)).toMatch(/divisions[.] Join on vAMSYS[.]$/);
+    // The build reads registration from the snapshot, as the join buttons do.
+    expect(snapshot.airline.join_url).toBeNull();
+    expect(htmlFacts(snapshot).site_description).toMatch(/Flies on vAMSYS[.]$/);
+    const open = { ...snapshot, airline: { ...snapshot.airline, join_url: "https://vamsys.io/register/crossroads" } };
+    expect(htmlFacts(open).site_description).toMatch(/Join on vAMSYS[.]$/);
     expect(socialDescription(counts)).toBe(
       "Light jets to the A380 and 777F. Two Indianapolis bases, 310 routes, four divisions and one career path. A fictional virtual airline for flight simulation on vAMSYS.",
     );
@@ -80,7 +91,7 @@ describe("wording", () => {
   it("uses the singular for one of anything", () => {
     const one = { types: 1, routes: 1, bases: 1, divisions: 1 };
     expect(siteDescription(one)).toContain(": 1 aircraft type, from");
-    expect(siteDescription(one)).toContain(", and 1 route. Join");
+    expect(siteDescription(one)).toContain(", and 1 route. Flies");
     expect(socialDescription(one)).toContain("One Indianapolis base, 1 route, one division and one career path.");
   });
 
@@ -92,7 +103,7 @@ describe("wording", () => {
 
   it("keeps the search description within 160 characters and the link preview within 200", () => {
     const counts = countsFromSnapshot(snapshot);
-    for (const text of [siteDescription(counts), siteDescription(null)]) expect(text.length, text).toBeLessThanOrEqual(160);
+    for (const text of [siteDescription(counts), siteDescription(null), siteDescription(counts, true), siteDescription(null, true)]) expect(text.length, text).toBeLessThanOrEqual(160);
     for (const text of [socialDescription(counts), socialDescription(null)]) expect(text.length, text).toBeLessThanOrEqual(200);
   });
 

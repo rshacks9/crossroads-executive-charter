@@ -7,7 +7,7 @@ export const DEFAULT_AIRLINE_NAME = "Crossroads Executive & Charter";
 
 /** The parts of a snapshot the head facts are built from. Every field is optional: the build reads raw JSON. */
 export interface FactsSource {
-  airline?: { name?: string | null; divisions?: readonly unknown[] | null } | null;
+  airline?: { name?: string | null; divisions?: readonly unknown[] | null; join_url?: string | null } | null;
   fleet?: readonly unknown[] | null;
   routes?: readonly unknown[] | null;
   hubs?: readonly ({ airports?: readonly string[] | null } | null)[] | null;
@@ -66,14 +66,18 @@ export function homeTitle(name?: string | null): string {
   return `${shown} · Virtual airline from Indianapolis`;
 }
 
-/** Search-result description of the site (the meta description of the home page). Kept within 160 characters. */
-export function siteDescription(counts: SiteCounts | null): string {
+/**
+ * Search-result description of the site (the meta description of the home page). Kept within 160
+ * characters. It invites pilots to join only while registration is open (join_url set).
+ */
+export function siteDescription(counts: SiteCounts | null, open = false): string {
+  const end = open ? "Join on vAMSYS." : "Flies on vAMSYS.";
   if (!counts) {
-    return "A fictional flight-sim virtual airline from Indianapolis: light jets to the A380 and 777F across executive, charter, sports and cargo divisions. Join on vAMSYS.";
+    return `A fictional flight-sim virtual airline from Indianapolis: light jets to the A380 and 777F across executive, charter, sports and cargo divisions. ${end}`;
   }
   const types = digits(counts.types, "aircraft type", "aircraft types");
   const routes = digits(counts.routes, "route", "routes");
-  return `A fictional flight-sim virtual airline from Indianapolis: ${types}, from the Citation Mustang to the A380 and 777F, and ${routes}. Join on vAMSYS.`;
+  return `A fictional flight-sim virtual airline from Indianapolis: ${types}, from the Citation Mustang to the A380 and 777F, and ${routes}. ${end}`;
 }
 
 /** Shorter-sentence description for link previews (Open Graph: Discord, Reddit, Facebook). */
@@ -92,7 +96,7 @@ export function htmlFacts(source: FactsSource | null | undefined): Record<string
   const counts = countsFromSnapshot(source);
   return {
     site_title: homeTitle(source?.airline?.name),
-    site_description: siteDescription(counts),
+    site_description: siteDescription(counts, Boolean(source?.airline?.join_url)),
     social_description: socialDescription(counts),
   };
 }
