@@ -143,12 +143,13 @@ export function RouteRows({ routes, snapshot, focus }: { routes: Route[]; snapsh
         const d = routeDivision(r, divisions);
         const key = routeKey(r);
         const other = routeOtherEnd(r, focus, baseList);
+        const name = snapshot.airports[other]?.name ?? other;
         return (
           <li key={key}>
             <a className="route-row" href={routeHref(r)} data-row-link="">
               <span>{d >= 0 ? <DivisionDot index={d} /> : null}<strong>{key}</strong> {r.from} <span aria-hidden="true">→</span> <span className="visually-hidden">to </span>{r.to}</span>
               <span className="route-row__facts">{r.distance_nm != null ? `${formatNumber(r.distance_nm)} nm` : "—"} · {formatDuration(r.duration_min)}</span>
-              <span className="route-row__name">{snapshot.airports[other]?.name ?? other}</span>
+              <span className="route-row__name" title={name}>{name}</span>
               <span className="route-row__division">{d >= 0 ? divisions[d]!.name : ""}</span>
             </a>
           </li>

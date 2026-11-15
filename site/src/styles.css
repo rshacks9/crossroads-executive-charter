@@ -290,7 +290,8 @@ main:focus { outline: none; }
 .route-rows li + li { border-top: 1px solid var(--line); }
 .route-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; min-height: 64px; padding: 10px 14px; text-decoration: none; }
 .route-row__name, .route-row__division { font-size: 14px; color: var(--text-2); }
-.route-row__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Up to two lines, so a long airport name ("Charles B. Wheeler Downtown (Kansas City)") is not cut off mid-word. */
+.route-row__name { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .route-row__facts, .route-row__division { text-align: right; white-space: nowrap; }
 .route-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; }
 @media (min-width: 1000px) {

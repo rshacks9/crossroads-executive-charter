@@ -287,6 +287,17 @@ describe("pages render from the snapshot", () => {
     for (const r of routes) expect(html).toContain(`href="${routeHref(r)}"`);
     expect(text(html)).toContain(divisions[routeDivision(routes[0]!, divisions)]!.name);
     expect(html).toContain('<span class="visually-hidden">to </span>');
+    // The other airport's full name, in up to two lines and in the title for a pointer.
+    const titles = [...html.matchAll(/<span class="route-row__name" title="([^"]*)">([^<]*)<[/]span>/g)];
+    expect(titles).toHaveLength(routes.length);
+    for (const [, title, name] of titles) {
+      expect(title).toBe(name);
+      expect(title!.length).toBeGreaterThan(4);
+    }
+    const css = readFileSync(new URL("./styles.css", import.meta.url), "utf-8");
+    const rule = css.split("\n").find((line) => line.startsWith(".route-row__name {")) ?? "";
+    expect(rule).toContain("-webkit-line-clamp: 2");
+    expect(rule).not.toContain("white-space: nowrap");
   });
 
   it("search announces its count in one status line, and the 404 offers a search button", () => {
