@@ -965,7 +965,7 @@ describe("joining", () => {
     expect(page).not.toMatch(/stay at the controls|make every radio call yourself/);
   });
 
-  it("allows a pause only offline: a connected VATSIM aircraft is never left paused or unattended", () => {
+  it("allows a pause only offline: no pausing while connected, and stepping away follows B3(b)", () => {
     const pegasus = SOP_RULES.find((r) => r.title === "Gate to gate with Pegasus");
     const online = SOP_RULES.find((r) => r.title === "Online or offline");
     if (!pegasus || !online) throw new Error("an SOP rule is missing");
@@ -976,7 +976,9 @@ describe("joining", () => {
     expect(pegasus.body).not.toMatch(/tell ATC/);
     expect(online.body).toContain("No pausing or time acceleration while connected");
     const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
-    expect(page).toContain("“If it becomes necessary to leave a pilot connection unattended, the account holder should disconnect from the network” (B3(b))");
+    expect(page).toContain("No pausing while connected");
+    expect(page).toContain("“If it becomes necessary to leave a pilot connection unattended, the account holder should disconnect from the network. When operating under active air traffic control, a pilot may step away for a short period of time with express permission from air traffic control” (B3(b))");
+    expect(page).not.toContain("Never leave a connected aircraft paused or unattended");
   });
 
   it("suggests the starter tour's first leg as the first flight, in the KTYQ jet that comes with MSFS 2024", () => {
