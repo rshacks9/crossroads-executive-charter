@@ -355,6 +355,15 @@ describe("pages render from the snapshot", () => {
     expect(renderToString(<PilotsPage snapshot={snapshot} />)).toMatch(/<p class="page-header__lede">[^<]*<[/]p><[/]div><div class="hero__actions">/);
   });
 
+  it("gives Crew Tools the same page header as every other page, hidden on the printed briefing", () => {
+    const html = renderToString(<CrewPage snapshot={snapshot} />);
+    expect(html).toMatch(/^<header class="page-header crew-header"><div class="page-header__inner"><div class="page-header__text"><p class="eyebrow eyebrow--on-ink">Simulation briefing tool<[/]p><h1 class="page-title">Crew Tools<[/]h1><p class="page-header__lede">Pick a flight and an aircraft/);
+    expect(html).not.toContain("crew__intro");
+    const css = readFileSync(new URL("./styles.css", import.meta.url), "utf-8");
+    const print = css.slice(css.indexOf("@media print"));
+    expect(print).toMatch(/[.]crew-header[^{]*[{] display: none !important; [}]/);
+  });
+
   it("fleet cards: figures with a small unit, payload in tonnes, the role as the only eyebrow word, a strip without art", () => {
     const html = renderToString(<FleetPage snapshot={snapshot} />);
     for (const f of snapshot.fleet) {

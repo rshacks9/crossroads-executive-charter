@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ApproachCard, Crew, CrewAirport, CrewMetar, FuelPlan, Route, Snapshot } from "./data";
 import { approachWindText, componentText, descentRateFpm, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, weatherBoard, windText } from "./data";
 import { Ago } from "./clock";
+import { PageHeader } from "./pages";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -207,11 +208,10 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
   const sim = snapshot.airline.sim_aircraft?.[type];
 
   return (
+    <>
+    {/* crew-header: hidden on the printed briefing (styles.css @media print). */}
+    <PageHeader className="crew-header" eyebrow="Simulation briefing tool" title="Crew Tools" lede="Pick a flight and an aircraft for a ready-made briefing: fuel by phase, live weather and runway winds at both ends, and an approach card. Briefings refresh with the latest weather every 20 minutes." />
     <section className="page crew">
-      <div className="crew__intro">
-        <h1 className="page-title">Crew Tools</h1>
-        <p className="lede">Pick a flight and an aircraft for a ready-made briefing: fuel by phase, live weather and runway winds at both ends, and an approach card. Briefings refresh with the latest weather every 20 minutes.</p>
-      </div>
 
       <form className="filters crew__pick" onSubmit={(e) => e.preventDefault()}>
         <label>
@@ -284,5 +284,6 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
 
       <p className="fineprint crew__credit">Calculations by the Jumpseat crew modules (weather briefing, fuel planner and approach briefing) running in our update job.</p>
     </section>
+    </>
   );
 }

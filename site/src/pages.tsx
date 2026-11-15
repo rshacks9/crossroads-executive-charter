@@ -48,9 +48,9 @@ export function SectionHead({ eyebrow, title, action, intro }: { eyebrow: string
   );
 }
 
-export function PageHeader({ eyebrow, title, lede, children }: { eyebrow: string; title: string; lede?: ReactNode; children?: ReactNode }) {
+export function PageHeader({ eyebrow, title, lede, children, className }: { eyebrow: string; title: string; lede?: ReactNode; children?: ReactNode; className?: string }) {
   return (
-    <header className="page-header">
+    <header className={className ? `page-header ${className}` : "page-header"}>
       <div className="page-header__inner">
         {/* One block for the text, so from 1000 px the header facts can sit beside it (styles.css). */}
         <div className="page-header__text">
