@@ -574,6 +574,15 @@ describe("texts follow the data", () => {
     }
   });
 
+  it("leads the news with the current network size, so Home never shows an older count under the hero", () => {
+    const network = NEWS.find((n) => n.kind === "Network");
+    if (!network) throw new Error("no Network news item");
+    expect(network.title).toContain(String(snapshot.routes.length));
+    const home = text(renderToString(<HomePage snapshot={snapshot} />));
+    expect(home).toContain("Network now 316 routes");
+    expect(home).not.toContain("Network now 310 routes");
+  });
+
   it("says 'fictional' in the first screen", () => {
     expect(renderToString(<HomePage snapshot={snapshot} />)).toContain('<p class="eyebrow eyebrow--on-ink">Fictional virtual airline for flight simulation · Indianapolis, Indiana</p>');
   });

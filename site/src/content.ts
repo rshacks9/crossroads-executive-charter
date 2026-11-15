@@ -368,6 +368,20 @@ export interface NewsItem {
 
 export const NEWS: NewsItem[] = [
   {
+    date: "2026-11-12",
+    kind: "Network",
+    title: "Network now 316 routes",
+    body: "Six routes are new: CRX749/750 between KTYQ and Westfield-Barnes for the seven KTYQ jets, CRX751/752 between Westfield-Barnes and Hartford for the Piper M600, and CRX445/446, Hartford to Los Angeles coast to coast in the A340-600, G650 or G700. Westfield-Barnes is the network's 113th airport.",
+    link: { href: "#/routes", label: "Explore the network" },
+  },
+  {
+    date: "2026-11-12",
+    kind: "Fleet",
+    title: "Piper M600 joins the fleet",
+    body: "Piper M600 N600CR, our only turboprop, is listed with the Executive division at KTYQ. It flies one pair, CRX751/752, the 13 nm hop between Westfield-Barnes (KBAF) and Bradley International at Hartford (KBDL). Reach Westfield-Barnes on CRX749 from KTYQ, or by Jumpseat in Phoenix.",
+    link: { href: "#/fleet/M600", label: "Piper M600" },
+  },
+  {
     date: "2026-11-11",
     kind: "Fleet",
     title: "Phenom 300E joins KTYQ",
