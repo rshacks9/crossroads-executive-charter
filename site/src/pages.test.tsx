@@ -14,7 +14,7 @@ const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFligh
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { firstWeekly, formatFeet, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
-const { Approach, CrewPage, WeatherBoard } = await import("./crew");
+const { Approach, CrewError, CrewPage, WeatherBoard } = await import("./crew");
 const { DataError, Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
@@ -775,6 +775,29 @@ describe("when data cannot be loaded", () => {
     expect(runwayNote(null, true)).toBe("Runway data is unavailable right now. Try again later.");
     expect(runwayNote(null, false)).toBe("Loading runway data…");
     expect(runwayNote(crew, false)).toBe("No runway data on file for this airport.");
+  });
+
+  it("shares crew.json between the pages for 20 minutes, then asks again", async () => {
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    let calls = 0;
+    const loader = async () => { calls += 1; return crew; };
+    // A day ahead, so the request the test above left behind has expired.
+    const t0 = Date.now() + 86_400_000;
+    await expect(sharedCrew(loader, () => t0)).resolves.toBe(crew);
+    await sharedCrew(loader, () => t0 + 60_000);
+    expect(calls).toBe(1);
+    await sharedCrew(loader, () => t0 + 21 * 60_000);
+    expect(calls).toBe(2);
+    // Leave nothing cached for later tests: an expired slot, then a failure that is forgotten.
+    await expect(sharedCrew(() => Promise.reject(new Error("gone")), () => t0 + 42 * 60_000)).rejects.toThrow("gone");
+  });
+
+  it("Crew Tools says briefings are unavailable in plain words, with a retry and the technical reason folded away", () => {
+    const html = renderToString(<CrewError error="crew briefing request failed (503)" onRetry={() => undefined} />);
+    expect(text(html)).toContain("Briefings are unavailable right now. The route and fleet pages still work.");
+    expect(html).toContain(">Try again</button>");
+    expect(html).toContain('<details class="error-detail"><summary>Technical detail</summary>');
+    expect(html).not.toMatch(/<p>Briefings[^<]*503/);
   });
 
   it("tells visitors in plain words, with the technical reason folded away", () => {

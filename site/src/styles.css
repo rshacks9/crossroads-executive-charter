@@ -1053,6 +1053,7 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .resource__pick { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-2); }
 .sop-brief { margin: 0 0 20px; padding-left: 22px; display: grid; gap: 8px; }
 .callout .button { margin-left: 8px; min-height: 40px; color: var(--text); }
+.crew__error .error-detail { margin-top: 8px; }
 
 /* stats dashboard */
 .stat-tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }

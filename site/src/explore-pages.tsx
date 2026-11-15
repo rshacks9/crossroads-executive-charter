@@ -49,14 +49,25 @@ const SITE = "Crossroads Executive & Charter";
 
 // ------------------------------------------------------------------ shared
 
+const CREW_TTL_MS = 20 * 60_000;
 let crewPromise: Promise<Crew> | null = null;
+let crewAt = 0;
 
-/** The one crew.json request the pages share. A failed request is forgotten, so the next page tries again. */
-export function sharedCrew(loader: () => Promise<Crew> = loadCrew): Promise<Crew> {
-  crewPromise ??= loader().catch((e) => {
-    crewPromise = null;
-    throw e;
-  });
+/**
+ * The one crew.json request the pages share (route, airport and resources pages and Crew Tools), kept
+ * for 20 minutes so a page left open picks up newer weather. A failed request is forgotten, so the next
+ * page, or Try again, asks again.
+ */
+export function sharedCrew(loader: () => Promise<Crew> = loadCrew, now: () => number = Date.now): Promise<Crew> {
+  if (crewPromise && now() - crewAt > CREW_TTL_MS) crewPromise = null;
+  if (!crewPromise) {
+    crewAt = now();
+    const request: Promise<Crew> = loader().catch((e) => {
+      if (crewPromise === request) crewPromise = null;
+      throw e;
+    });
+    crewPromise = request;
+  }
   return crewPromise;
 }
 

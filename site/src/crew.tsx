@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ApproachCard, Crew, CrewAirport, CrewMetar, FuelPlan, Route, Snapshot } from "./data";
-import { approachWindText, componentText, descentRateFpm, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, weatherBoard, windText } from "./data";
+import { approachWindText, componentText, descentRateFpm, formatDuration, formatNumber, hashParam, kgToLb, primaryDivision, weatherBoard, windText } from "./data";
 import { Ago } from "./clock";
 import { PageHeader } from "./pages";
+import { sharedCrew } from "./explore-pages";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -168,9 +169,20 @@ export function WeatherBoard({ airports }: { airports: Crew["airports"] }) {
   );
 }
 
+/** Shown when crew.json cannot be loaded: plain words and a retry, with the technical reason folded away. */
+export function CrewError({ error, onRetry }: { error: string; onRetry: () => void }) {
+  return (
+    <div className="callout crew__error" role="status">
+      <p>Briefings are unavailable right now. The route and fleet pages still work. <button type="button" className="button button--small" onClick={onRetry}>Try again</button></p>
+      <details className="error-detail"><summary>Technical detail</summary><p className="muted">{error}</p></details>
+    </div>
+  );
+}
+
 export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
   const [crew, setCrew] = useState<Crew | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const divisions = snapshot.airline.divisions;
   const routes = useMemo(() => [...snapshot.routes].sort((a, b) => routeKey(a).localeCompare(routeKey(b), undefined, { numeric: true })), [snapshot.routes]);
   const [selected, setSelected] = useState(() => {
@@ -183,9 +195,13 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
 
   useEffect(() => {
     let alive = true;
-    loadCrew().then((c) => alive && setCrew(c)).catch((e) => alive && setError(e instanceof Error ? e.message : "unavailable"));
+    // The request the route and airport pages share, so coming here from one of them needs no second download.
+    sharedCrew().then(
+      (c) => { if (alive) setCrew(c); },
+      (e: unknown) => { if (alive) setError(e instanceof Error ? e.message : "unavailable"); },
+    );
     return () => { alive = false; };
-  }, []);
+  }, [attempt]);
 
   useEffect(() => {
     if (!route) return;
@@ -233,7 +249,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
         <button type="button" className="button button--quiet crew__print" onClick={() => window.print()}>Print briefing</button>
       </form>
 
-      {error && !crew ? <p className="callout">Briefings are temporarily unavailable ({error}). The route and fleet pages still work.</p> : null}
+      {error && !crew ? <CrewError error={error} onRetry={() => { setError(null); setAttempt((n) => n + 1); }} /> : null}
       {!crew && !error ? <p className="lede" aria-busy="true">Loading briefings…</p> : null}
 
       {route && crew ? (
