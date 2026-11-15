@@ -306,7 +306,7 @@ export function HandbookPage({ snapshot }: PageProps) {
             <div className="two-up">
               <div className="mini-card">
                 <h3>KTYQ · Indianapolis Executive</h3>
-                <p>Light and mid-size jets up to Citation X size: {ktyq.join(", ")}.</p>
+                <p>Light and mid-size jets up to Citation X size: {ktyq.join(", ")}. The Piper M500 turboprop flies the shorter executive routes, up to about 800 nm.</p>
               </div>
               <div className="mini-card">
                 <h3>KIND · Indianapolis International</h3>

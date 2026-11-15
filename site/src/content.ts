@@ -12,14 +12,18 @@ export const AUTOMATION_DETAIL = "one of the founder's own flights, flown with h
 export const AUTOMATION_DISCLOSURE = "Some of the founder's own flights are flown with his automation tools, which he monitors.";
 
 /**
- * The types based at Indianapolis Executive (KTYQ): the light and mid-size jets that fly from it, and
- * the Piper M600, listed there with the Executive division although its only routes are its own hop
- * between Westfield-Barnes (KBAF) and Hartford (KBDL), CRX751/752. Everything else is based at KIND.
+ * The types based at Indianapolis Executive (KTYQ): the light and mid-size jets that fly from it; the
+ * Piper M500 turboprop, which flies the shorter KTYQ routes; and the Piper M600, listed there with the
+ * Executive division although its only routes are its own hop between Westfield-Barnes (KBAF) and
+ * Hartford (KBDL), CRX751/752. Everything else is based at KIND.
  */
-export const KTYQ_TYPES = ["M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C750"] as const;
+export const KTYQ_TYPES = ["P46T", "M600", "C510", "PRM1", "C25C", "LJ35", "E55P", "H25B", "C680", "C750"] as const;
 
-/** The KTYQ types that fly from KTYQ: all but the Piper M600. Copy that says what works from KTYQ means these. */
-export const KTYQ_JETS: readonly string[] = KTYQ_TYPES.filter((code) => code !== "M600");
+/** The two Piper turboprops based at KTYQ. Each gets its own sentence wherever the base rule is set out. */
+export const KTYQ_TURBOPROPS: readonly string[] = ["P46T", "M600"];
+
+/** The KTYQ jets: all KTYQ types but the turboprops. Copy that says which jets work from KTYQ means these. */
+export const KTYQ_JETS: readonly string[] = KTYQ_TYPES.filter((code) => !KTYQ_TURBOPROPS.includes(code));
 
 export function baseFor(code: string): "KTYQ" | "KIND" {
   return (KTYQ_TYPES as readonly string[]).includes(code) ? "KTYQ" : "KIND";
@@ -35,11 +39,17 @@ export interface FleetInfo {
 }
 
 export const FLEET_INFO: Record<string, FleetInfo> = {
+  P46T: {
+    role: "Single-engine turboprop",
+    range_nm: 800,
+    cruise_kt: 250,
+    blurb: "The smaller of our two Piper turboprops, flown single-pilot. It flies the shorter executive routes, up to about 800 nm, but not the mountain fields.",
+  },
   M600: {
     role: "Single-engine turboprop",
     range_nm: 1100,
     cruise_kt: 260,
-    blurb: "The only turboprop on the line, flown single-pilot. It flies the short hop between Westfield-Barnes and Bradley International at Hartford.",
+    blurb: "The larger of our two Piper turboprops, flown single-pilot. It flies the short hop between Westfield-Barnes and Bradley International at Hartford.",
   },
   C510: {
     role: "Entry light jet",
@@ -77,6 +87,12 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     range_nm: 2300,
     cruise_kt: 430,
     blurb: "A stand-up cabin and transcontinental legs from KTYQ. The Hawker flies most light and mid-size executive routes.",
+  },
+  C680: {
+    role: "Mid-size cabin, short-field",
+    range_nm: 2400,
+    cruise_kt: 440,
+    blurb: "A mid-size cabin with the short-field manners of a much smaller jet, so Key West, Hilton Head and Palomar are on its list as well as the mountain fields. It flies almost every light and mid-size route from KTYQ.",
   },
   C750: {
     role: "High-speed mid-size",
@@ -186,8 +202,9 @@ export const SERVICES: Service[] = [
     points: [
       `${capital(numberWord(KTYQ_JETS.length))} light and mid-size jets at KTYQ, from the Mustang to the Citation\u00a0X`,
       "Longitude, G650 and G700 at KIND for coast-to-coast and transatlantic trips",
+      "The Piper M500 turboprop on the shorter executive routes, up to about 800 nm",
       "The Piper M600 turboprop on its own hop between Westfield-Barnes and Hartford",
-      "Ski fields (Aspen, Vail) are off-limits to the Mustang and Premier",
+      "Ski fields (Aspen, Vail) are off-limits to the Mustang, the Premier and the M500",
       "Short hops under an hour for when you have one evening to fly",
     ],
     itinerary: {
@@ -276,18 +293,18 @@ export const VATSIM_REMARKS = "CALLSIGN/CROSSROADS";
 // ------------------------------------------------------------------ handbook
 
 export const FLIGHT_NUMBER_BLOCKS: { block: string; use: string; base: string }[] = [
-  { block: "CRX101–199", use: "Executive, light and mid-size jets (incl. point-to-point legs)", base: "KTYQ" },
+  { block: "CRX101–199", use: "Executive, light and mid-size jets and the Piper M500 (incl. point-to-point legs)", base: "KTYQ" },
   { block: "CRX201–299", use: "Group charter", base: "KIND" },
   { block: "CRX301–399", use: "Sports charter", base: "KIND" },
   { block: "CRX401–499", use: "Executive, large-cabin jets (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX501–599", use: "International and long-range (incl. point-to-point legs)", base: "KIND" },
   { block: "CRX601–699", use: "Cargo charter", base: "KIND" },
-  { block: "CRX701–799", use: "Executive, light and mid-size jets (overflow block, incl. point-to-point legs), and CRX751/752, the Piper M600's own hop between Westfield-Barnes and Hartford", base: "KTYQ" },
+  { block: "CRX701–799", use: "Executive, light and mid-size jets and the Piper M500 (overflow block, incl. point-to-point legs), and CRX751/752, the Piper M600's own hop between Westfield-Barnes and Hartford", base: "KTYQ" },
 ];
 
 export const COST_INDEX: { group: string; types: string; guidance: string }[] = [
-  { group: "Light and mid-size jets", types: "Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation X", guidance: "No cost index. Fly the type's normal (long-range) cruise schedule. High-speed cruise is fine on short hops." },
-  { group: "Turboprop", types: "Piper M600", guidance: "No cost index. Fly the normal cruise power setting; it is a 13 nm hop, so expect to level off low." },
+  { group: "Light and mid-size jets", types: "Mustang, Premier IA, CJ4, Learjet 35A, Phenom 300E, Hawker 800XP, Citation Sovereign+, Citation X", guidance: "No cost index. Fly the type's normal (long-range) cruise schedule. High-speed cruise is fine on short hops." },
+  { group: "Turboprops", types: "Piper M500, Piper M600", guidance: "No cost index. Fly the normal cruise power setting. On the 13 nm M600 hop between Westfield-Barnes and Hartford, expect to level off low." },
   { group: "Large-cabin business jets", types: "Longitude, G650, G700", guidance: "Normal cruise Mach. Long-range cruise on transatlantic legs." },
   { group: "Passenger airliners", types: "E175, E190, A220, 757, A340, A380", guidance: "CI 30–50. Up to CI 80 to make up a late departure on a group or sports charter." },
   { group: "Freighters", types: "A300-600F, MD-11F, 777F", guidance: "CI 20–40. Lower on long overwater legs." },
@@ -310,7 +327,7 @@ export const LANDING_RATES: { band: string; label: string; tone: "good" | "ok" |
 ];
 
 export const SOP_RULES: { title: string; body: string; link?: { href: string; label: string } }[] = [
-  { title: "Right base, right aircraft", body: "Light and mid-size jets, from the Mustang to the Citation X, start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. The Piper M600 turboprop flies only its own hop, between Westfield-Barnes and Hartford. Book a route that matches the aircraft." },
+  { title: "Right base, right aircraft", body: "Light and mid-size jets, from the Mustang to the Citation X, start and end at Indianapolis Executive, KTYQ. Everything larger works from Indianapolis International, KIND. The Piper M500 turboprop flies the shorter executive routes, up to about 800 nm, but not the mountain fields. The Piper M600 turboprop flies only its own hop, between Westfield-Barnes and Hartford. Book a route that matches the aircraft." },
   { title: "Gate to gate with Pegasus", link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" }, body: "Start Pegasus before engine start and leave it running until the engines are off at the gate. No slew, no time acceleration, no in-flight refuelling. If real life calls on an offline flight, pause and say so in your PIREP comments. On VATSIM, never pause a connected aircraft. If you must step away, disconnect first; under active ATC, a short break needs the controller's express permission." },
   { title: "Stabilised or go around", body: "On speed, on path and configured by 1,000 ft above the airport in cloud and 500 ft in visual conditions. If you aren't, go around. Nobody is penalised for a go-around." },
   { title: "Speed and altitude discipline", body: "250 kt below 10,000 ft in the US unless ATC says otherwise. Respect published SID and STAR restrictions and any noise abatement procedure published for the airport." },
@@ -367,6 +384,13 @@ export interface NewsItem {
 }
 
 export const NEWS: NewsItem[] = [
+  {
+    date: "2026-11-15",
+    kind: "Fleet",
+    title: "Citation Sovereign+ and Piper M500 join KTYQ",
+    body: "Cessna Citation Sovereign+ N680CR and Piper M500 N500CR are now listed with the Executive division at Indianapolis Executive. The Sovereign+ flies almost every light and mid-size route from KTYQ, including Key West, Hilton Head, Palomar and the mountain fields. The M500 turboprop flies the shorter executive routes, up to about 800 nm, but not the mountain fields.",
+    link: { href: "#/fleet/C680", label: "Citation Sovereign+" },
+  },
   {
     date: "2026-11-12",
     kind: "Network",
@@ -448,7 +472,7 @@ export const NEWS: NewsItem[] = [
     date: "2026-11-10",
     kind: "NOTAM",
     title: "Base rule: KTYQ for light and mid-size jets, KIND for everything larger",
-    body: "Light and mid-size jets, from the Mustang to the Citation X, work from Indianapolis Executive (KTYQ). The Longitude, Gulfstreams, airliners and freighters work from Indianapolis International (KIND). The Piper M600 turboprop flies only its own hop, between Westfield-Barnes and Hartford. Routes in vAMSYS only offer the aircraft that fit.",
+    body: "Light and mid-size jets, from the Mustang to the Citation X, work from Indianapolis Executive (KTYQ). The Longitude, Gulfstreams, airliners and freighters work from Indianapolis International (KIND). The Piper M500 turboprop flies the shorter executive routes, up to about 800 nm, but not the mountain fields. The Piper M600 turboprop flies only its own hop, between Westfield-Barnes and Hartford. Routes in vAMSYS only offer the aircraft that fit.",
     link: { href: "#/handbook", label: "Read the handbook" },
   },
   {

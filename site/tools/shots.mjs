@@ -28,10 +28,10 @@ const PAGES = [
   ["live", "live"], ["careers", "careers"], ["handbook", "handbook"], ["resources", "resources"],
   ["stats", "stats"], ["crew", "crew"], ["news", "news"], ["about", "about"], ["pilots", "pilots"],
   ["notfound", "no-such-page"],
-  // The latest schedule round's new pages (round 13): its new airport, the route to it from KTYQ, the new
-  // point-to-point pair, the new type (Piper M600) and its short hop. Swap them for the next round's.
-  ["airport-new", "airport/KBAF"], ["route-new", "route/CRX749"], ["route-p2p", "route/CRX445"],
-  ["type-new", "fleet/M600"], ["route-short", "route/CRX751"],
+  // The latest schedule round's new pages (round 14b, fleet edits only, so no new airport or route): the two
+  // new types (Citation Sovereign+, Piper M500) and the longest route each now flies, CRX189 KTYQ-St Thomas
+  // and CRX183 KTYQ-Sarasota. Swap them for the next round's.
+  ["type-new", "fleet/C680"], ["type-new-2", "fleet/P46T"], ["route-new", "route/CRX189"], ["route-new-2", "route/CRX183"],
 ];
 // The dark theme is checked on the pages with the most distinct components, at phone and desktop widths,
 // including News (the NOTAM and news kind chips) and Plan (the fit chips).

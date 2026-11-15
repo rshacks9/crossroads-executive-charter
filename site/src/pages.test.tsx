@@ -984,7 +984,12 @@ describe("the KTYQ base rule", () => {
 
   it("is where the jets fly from; the M600 listed there flies only its own hop", () => {
     expect(baseFor("M600")).toBe("KTYQ");
-    expect([...KTYQ_JETS]).toEqual(KTYQ_TYPES.filter((code) => code !== "M600"));
+    expect([...KTYQ_JETS]).toEqual(KTYQ_TYPES.filter((code) => !["M600", "P46T"].includes(code)));
+    // The Piper M500 turboprop is a KTYQ type that does fly from KTYQ, but it is not one of the jets.
+    expect(touchesKtyq("P46T").length).toBeGreaterThan(0);
+    expect(FLEET_INFO.P46T!.role).toMatch(/turboprop/i);
+    expect(KTYQ_JETS).toContain("C680");
+    expect(baseFor("C680")).toBe("KTYQ");
     for (const code of KTYQ_JETS) {
       expect(touchesKtyq(code).length, code).toBeGreaterThan(0);
       expect(FLEET_INFO[code]?.role, code).not.toMatch(/turboprop/i);
@@ -1035,6 +1040,8 @@ describe("the KTYQ base rule", () => {
     const handbook = text(renderToString(<HandbookPage snapshot={snapshot} />));
     for (const copy of [rule.body, notam.body, executive.summary ?? "", service.points.join(" | "), faq, handbook]) {
       expect(copy).toMatch(/Piper M600[^.|]* between Westfield-Barnes and Hartford/);
+      // The Piper M500 gets its own sentence too, after the jets and before the M600.
+      expect(copy).toMatch(/Piper M500 turboprop[^.|]* shorter executive routes/);
     }
     expect(handbook).toContain("The Piper M600 flies only its own pair, CRX751/752 between Westfield-Barnes and Hartford");
     for (const line of [notam.title, service.pitch]) expect(line).toMatch(/\bjets\b/);

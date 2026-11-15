@@ -1,15 +1,16 @@
 {
  "schema": "crossroads-public/1",
  "source": "preview",
- "generated_at": "2026-11-12T19:14:15Z",
+ "generated_at": "2026-11-15T21:11:56Z",
  "unavailable": [],
  "airline": {
   "divisions": [
    {
     "name": "Executive",
-    "summary": "Light and mid-size jets from Indianapolis Executive, Mustang to Citation X, plus the Longitude and Gulfstreams at KIND for coast-to-coast and transatlantic trips. Teterboro, Aspen, Boca Raton, Vail, Toronto, Geneva and Le Bourget. The Piper M600 flies its own hop between Westfield-Barnes and Hartford.",
+    "summary": "Light and mid-size jets from Indianapolis Executive, Mustang to Citation X, plus the Longitude and Gulfstreams at KIND. Teterboro, Aspen, Vail, Toronto, Geneva and Le Bourget. The Piper M500 turboprop flies the shorter executive routes. The Piper M600 flies its own hop between Westfield-Barnes and Hartford.",
     "base": "KTYQ",
     "fleets": [
+     "P46T",
      "M600",
      "C510",
      "PRM1",
@@ -17,6 +18,7 @@
      "LJ35",
      "E55P",
      "H25B",
+     "C680",
      "C750",
      "C700",
      "GLF6",
@@ -55,6 +57,7 @@
    }
   ],
   "sim_aircraft": {
+   "P46T": "FSReborn FSR500 (add-on)",
    "M600": "FSReborn Piper M600 (add-on)",
    "C510": "Cockspur Citation Mustang (add-on)",
    "PRM1": "Carenado B390 Premier IA (add-on)",
@@ -62,6 +65,7 @@
    "LJ35": "Flysimware Learjet 35A (add-on)",
    "E55P": "FSReborn Phenom 300E (add-on)",
    "H25B": "FlightFX Hawker 800XP (add-on)",
+   "C680": "Skyward Simulations Citation Sovereign+ (add-on)",
    "C750": "FlightFX Citation X (add-on)",
    "C700": "Cessna Citation Longitude (MSFS 2024 Premium Deluxe/Aviator)",
    "GLF6": "Gulfstream G650 (community mod)",
@@ -245,6 +249,21 @@
    "image_link": null
   },
   {
+   "code": "C680",
+   "name": "Cessna Citation Sovereign+",
+   "type": "pax",
+   "max_pax": 10,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "aircraft_count": 1,
+   "registrations": [
+    "N680CR"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
    "code": "C750",
    "name": "Cessna Citation X",
    "type": "pax",
@@ -374,6 +393,21 @@
    "aircraft_count": 1,
    "registrations": [
     "N611CR"
+   ],
+   "image": null,
+   "image_attribution": null,
+   "image_link": null
+  },
+  {
+   "code": "P46T",
+   "name": "Piper M500",
+   "type": "pax",
+   "max_pax": 5,
+   "max_cargo": null,
+   "weight_unit": "lbs",
+   "aircraft_count": 1,
+   "registrations": [
+    "N500CR"
    ],
    "image": null,
    "image_attribution": null,
@@ -622,15 +656,17 @@
    "from": "KACK",
    "to": "KBED",
    "distance_nm": 91,
-   "duration_min": 41,
+   "duration_min": 47,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -646,15 +682,17 @@
    "from": "KACK",
    "to": "KMMU",
    "distance_nm": 199,
-   "duration_min": 60,
+   "duration_min": 73,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -669,15 +707,17 @@
    "from": "KACK",
    "to": "KTYQ",
    "distance_nm": 740,
-   "duration_min": 156,
+   "duration_min": 203,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -697,6 +737,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -714,15 +755,17 @@
    "from": "KADS",
    "to": "KTYQ",
    "distance_nm": 663,
-   "duration_min": 142,
+   "duration_min": 184,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -757,15 +800,17 @@
    "from": "KAGC",
    "to": "KTYQ",
    "distance_nm": 291,
-   "duration_min": 76,
+   "duration_min": 95,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -786,6 +831,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -828,6 +874,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -870,6 +917,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -893,6 +941,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -916,6 +965,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -956,6 +1006,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -978,6 +1029,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1014,15 +1066,17 @@
    "from": "KBAF",
    "to": "KTYQ",
    "distance_nm": 625,
-   "duration_min": 135,
+   "duration_min": 175,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1042,6 +1096,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1084,6 +1139,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1107,6 +1163,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1162,13 +1219,15 @@
    "from": "KBDL",
    "to": "KTYQ",
    "distance_nm": 625,
-   "duration_min": 135,
+   "duration_min": 175,
    "departure_time": null,
    "types": [
     "C510",
+    "C680",
     "C750",
     "E55P",
-    "H25B"
+    "H25B",
+    "P46T"
    ],
    "days": []
   },
@@ -1183,15 +1242,17 @@
    "from": "KBED",
    "to": "KACK",
    "distance_nm": 91,
-   "duration_min": 41,
+   "duration_min": 47,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1225,15 +1286,17 @@
    "from": "KBED",
    "to": "KTYQ",
    "distance_nm": 690,
-   "duration_min": 147,
+   "duration_min": 191,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1269,15 +1332,17 @@
    "from": "KBKL",
    "to": "KTYQ",
    "distance_nm": 226,
-   "duration_min": 65,
+   "duration_min": 79,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1293,15 +1358,17 @@
    "from": "KBNA",
    "to": "KTYQ",
    "distance_nm": 235,
-   "duration_min": 66,
+   "duration_min": 81,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1362,6 +1429,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1379,15 +1447,17 @@
    "from": "KCHS",
    "to": "KTYQ",
    "distance_nm": 523,
-   "duration_min": 117,
+   "duration_min": 151,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1402,15 +1472,17 @@
    "from": "KCLT",
    "to": "KTYQ",
    "distance_nm": 384,
-   "duration_min": 93,
+   "duration_min": 117,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1446,15 +1518,17 @@
    "from": "KCMH",
    "to": "KTYQ",
    "distance_nm": 154,
-   "duration_min": 52,
+   "duration_min": 62,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1491,12 +1565,14 @@
    "from": "KCRQ",
    "to": "KSDL",
    "distance_nm": 271,
-   "duration_min": 73,
+   "duration_min": 90,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1511,15 +1587,17 @@
    "from": "KDAL",
    "to": "KTYQ",
    "distance_nm": 669,
-   "duration_min": 143,
+   "duration_min": 186,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1538,6 +1616,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "E55P",
     "GA7C",
     "GLF6"
@@ -1575,13 +1654,15 @@
    "from": "KDTS",
    "to": "KTYQ",
    "distance_nm": 578,
-   "duration_min": 127,
+   "duration_min": 164,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1641,6 +1722,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1681,6 +1763,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "E55P",
     "LJ35",
     "PRM1"
@@ -1697,15 +1780,17 @@
    "from": "KFRG",
    "to": "KTYQ",
    "distance_nm": 588,
-   "duration_min": 129,
+   "duration_min": 166,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1747,6 +1832,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1764,15 +1850,17 @@
    "from": "KHOU",
    "to": "KTYQ",
    "distance_nm": 765,
-   "duration_min": 160,
+   "duration_min": 209,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1792,6 +1880,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -1829,15 +1918,17 @@
    "from": "KHPN",
    "to": "KTYQ",
    "distance_nm": 575,
-   "duration_min": 126,
+   "duration_min": 163,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1852,13 +1943,15 @@
    "from": "KHXD",
    "to": "KTYQ",
    "distance_nm": 540,
-   "duration_min": 120,
+   "duration_min": 155,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -1893,15 +1986,17 @@
    "from": "KIAD",
    "to": "KTYQ",
    "distance_nm": 413,
-   "duration_min": 98,
+   "duration_min": 124,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3074,15 +3169,17 @@
    "from": "KIND",
    "to": "KTYQ",
    "distance_nm": 19,
-   "duration_min": 28,
+   "duration_min": 30,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3536,6 +3633,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -3616,12 +3714,13 @@
    "from": "KLAS",
    "to": "KSMO",
    "distance_nm": 204,
-   "duration_min": 61,
+   "duration_min": 74,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
-    "E55P"
+    "E55P",
+    "P46T"
    ],
    "days": []
   },
@@ -3639,6 +3738,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -3657,15 +3757,17 @@
    "from": "KLAS",
    "to": "KVNY",
    "distance_nm": 199,
-   "duration_min": 60,
+   "duration_min": 73,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3760,15 +3862,17 @@
    "from": "KMDW",
    "to": "KTEB",
    "distance_nm": 619,
-   "duration_min": 134,
+   "duration_min": 174,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3784,15 +3888,17 @@
    "from": "KMDW",
    "to": "KTYQ",
    "distance_nm": 126,
-   "duration_min": 47,
+   "duration_min": 55,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3846,15 +3952,17 @@
    "from": "KMKC",
    "to": "KTYQ",
    "distance_nm": 390,
-   "duration_min": 94,
+   "duration_min": 119,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3870,15 +3978,17 @@
    "from": "KMMU",
    "to": "KACK",
    "distance_nm": 199,
-   "duration_min": 60,
+   "duration_min": 73,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3893,15 +4003,17 @@
    "from": "KMMU",
    "to": "KTYQ",
    "distance_nm": 543,
-   "duration_min": 121,
+   "duration_min": 155,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -3938,15 +4050,17 @@
    "from": "KMSN",
    "to": "KTYQ",
    "distance_nm": 232,
-   "duration_min": 66,
+   "duration_min": 81,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4006,6 +4120,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4024,15 +4139,17 @@
    "from": "KMVY",
    "to": "KTEB",
    "distance_nm": 159,
-   "duration_min": 53,
+   "duration_min": 63,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4047,15 +4164,17 @@
    "from": "KMVY",
    "to": "KTYQ",
    "distance_nm": 715,
-   "duration_min": 151,
+   "duration_min": 197,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4070,15 +4189,17 @@
    "from": "KMYR",
    "to": "KTYQ",
    "distance_nm": 518,
-   "duration_min": 116,
+   "duration_min": 149,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4155,6 +4276,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4175,15 +4297,17 @@
    "from": "KOPF",
    "to": "MYNN",
    "distance_nm": 161,
-   "duration_min": 53,
+   "duration_min": 64,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4199,13 +4323,15 @@
    "from": "KOSU",
    "to": "KTYQ",
    "distance_nm": 146,
-   "duration_min": 51,
+   "duration_min": 60,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4220,15 +4346,17 @@
    "from": "KPDK",
    "to": "KTYQ",
    "distance_nm": 381,
-   "duration_min": 92,
+   "duration_min": 116,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4306,15 +4434,17 @@
    "from": "KPTK",
    "to": "KTYQ",
    "distance_nm": 203,
-   "duration_min": 61,
+   "duration_min": 74,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4329,15 +4459,17 @@
    "from": "KPVD",
    "to": "KTYQ",
    "distance_nm": 680,
-   "duration_min": 145,
+   "duration_min": 188,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4352,15 +4484,17 @@
    "from": "KPWM",
    "to": "KTYQ",
    "distance_nm": 744,
-   "duration_min": 156,
+   "duration_min": 204,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4398,6 +4532,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4440,6 +4575,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4459,15 +4595,17 @@
    "from": "KSDF",
    "to": "KTYQ",
    "distance_nm": 114,
-   "duration_min": 45,
+   "duration_min": 52,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4483,12 +4621,14 @@
    "from": "KSDL",
    "to": "KCRQ",
    "distance_nm": 271,
-   "duration_min": 73,
+   "duration_min": 90,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4526,6 +4666,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4605,12 +4746,13 @@
    "from": "KSMO",
    "to": "KLAS",
    "distance_nm": 204,
-   "duration_min": 61,
+   "duration_min": 74,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
-    "E55P"
+    "E55P",
+    "P46T"
    ],
    "days": []
   },
@@ -4648,6 +4790,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4669,6 +4812,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4686,15 +4830,17 @@
    "from": "KSRQ",
    "to": "KTYQ",
    "distance_nm": 781,
-   "duration_min": 163,
+   "duration_min": 212,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4754,6 +4900,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4776,6 +4923,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4794,15 +4942,17 @@
    "from": "KSUS",
    "to": "KTYQ",
    "distance_nm": 220,
-   "duration_min": 64,
+   "duration_min": 78,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4841,6 +4991,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4878,15 +5029,17 @@
    "from": "KTEB",
    "to": "KMDW",
    "distance_nm": 619,
-   "duration_min": 134,
+   "duration_min": 174,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4902,15 +5055,17 @@
    "from": "KTEB",
    "to": "KMVY",
    "distance_nm": 159,
-   "duration_min": 53,
+   "duration_min": 63,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4929,6 +5084,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -4947,15 +5103,17 @@
    "from": "KTEB",
    "to": "KTYQ",
    "distance_nm": 559,
-   "duration_min": 124,
+   "duration_min": 159,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -4993,6 +5151,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5056,6 +5215,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5079,6 +5239,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5096,15 +5257,17 @@
    "from": "KTYQ",
    "to": "KACK",
    "distance_nm": 740,
-   "duration_min": 156,
+   "duration_min": 203,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5119,15 +5282,17 @@
    "from": "KTYQ",
    "to": "KADS",
    "distance_nm": 663,
-   "duration_min": 142,
+   "duration_min": 184,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5143,15 +5308,17 @@
    "from": "KTYQ",
    "to": "KAGC",
    "distance_nm": 291,
-   "duration_min": 76,
+   "duration_min": 95,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5171,6 +5338,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5194,6 +5362,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5217,6 +5386,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5239,6 +5409,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5257,15 +5428,17 @@
    "from": "KTYQ",
    "to": "KBAF",
    "distance_nm": 625,
-   "duration_min": 135,
+   "duration_min": 175,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5285,6 +5458,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5303,13 +5477,15 @@
    "from": "KTYQ",
    "to": "KBDL",
    "distance_nm": 625,
-   "duration_min": 135,
+   "duration_min": 175,
    "departure_time": null,
    "types": [
     "C510",
+    "C680",
     "C750",
     "E55P",
-    "H25B"
+    "H25B",
+    "P46T"
    ],
    "days": []
   },
@@ -5323,15 +5499,17 @@
    "from": "KTYQ",
    "to": "KBED",
    "distance_nm": 690,
-   "duration_min": 147,
+   "duration_min": 191,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5347,15 +5525,17 @@
    "from": "KTYQ",
    "to": "KBKL",
    "distance_nm": 226,
-   "duration_min": 65,
+   "duration_min": 79,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5371,15 +5551,17 @@
    "from": "KTYQ",
    "to": "KBNA",
    "distance_nm": 235,
-   "duration_min": 66,
+   "duration_min": 81,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5399,6 +5581,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5416,15 +5599,17 @@
    "from": "KTYQ",
    "to": "KCHS",
    "distance_nm": 523,
-   "duration_min": 117,
+   "duration_min": 151,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5439,15 +5624,17 @@
    "from": "KTYQ",
    "to": "KCLT",
    "distance_nm": 384,
-   "duration_min": 93,
+   "duration_min": 117,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5463,15 +5650,17 @@
    "from": "KTYQ",
    "to": "KCMH",
    "distance_nm": 154,
-   "duration_min": 52,
+   "duration_min": 62,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5486,15 +5675,17 @@
    "from": "KTYQ",
    "to": "KDAL",
    "distance_nm": 669,
-   "duration_min": 143,
+   "duration_min": 186,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5509,13 +5700,15 @@
    "from": "KTYQ",
    "to": "KDTS",
    "distance_nm": 578,
-   "duration_min": 127,
+   "duration_min": 164,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5535,6 +5728,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5556,6 +5750,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "E55P",
     "LJ35",
     "PRM1"
@@ -5572,15 +5767,17 @@
    "from": "KTYQ",
    "to": "KFRG",
    "distance_nm": 588,
-   "duration_min": 129,
+   "duration_min": 166,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5600,6 +5797,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5617,15 +5815,17 @@
    "from": "KTYQ",
    "to": "KHOU",
    "distance_nm": 765,
-   "duration_min": 160,
+   "duration_min": 209,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5640,15 +5840,17 @@
    "from": "KTYQ",
    "to": "KHPN",
    "distance_nm": 575,
-   "duration_min": 126,
+   "duration_min": 163,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5663,13 +5865,15 @@
    "from": "KTYQ",
    "to": "KHXD",
    "distance_nm": 540,
-   "duration_min": 120,
+   "duration_min": 155,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5684,15 +5888,17 @@
    "from": "KTYQ",
    "to": "KIAD",
    "distance_nm": 413,
-   "duration_min": 98,
+   "duration_min": 124,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5709,15 +5915,17 @@
    "from": "KTYQ",
    "to": "KIND",
    "distance_nm": 19,
-   "duration_min": 28,
+   "duration_min": 30,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5737,6 +5945,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5758,6 +5967,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5776,15 +5986,17 @@
    "from": "KTYQ",
    "to": "KMDW",
    "distance_nm": 126,
-   "duration_min": 47,
+   "duration_min": 55,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5799,15 +6011,17 @@
    "from": "KTYQ",
    "to": "KMKC",
    "distance_nm": 390,
-   "duration_min": 94,
+   "duration_min": 119,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5822,15 +6036,17 @@
    "from": "KTYQ",
    "to": "KMMU",
    "distance_nm": 543,
-   "duration_min": 121,
+   "duration_min": 155,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5846,15 +6062,17 @@
    "from": "KTYQ",
    "to": "KMSN",
    "distance_nm": 232,
-   "duration_min": 66,
+   "duration_min": 81,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5874,6 +6092,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5891,15 +6110,17 @@
    "from": "KTYQ",
    "to": "KMVY",
    "distance_nm": 715,
-   "duration_min": 151,
+   "duration_min": 197,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5914,15 +6135,17 @@
    "from": "KTYQ",
    "to": "KMYR",
    "distance_nm": 518,
-   "duration_min": 116,
+   "duration_min": 149,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5942,6 +6165,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -5961,13 +6185,15 @@
    "from": "KTYQ",
    "to": "KOSU",
    "distance_nm": 146,
-   "duration_min": 51,
+   "duration_min": 60,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "E55P",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -5982,15 +6208,17 @@
    "from": "KTYQ",
    "to": "KPDK",
    "distance_nm": 381,
-   "duration_min": 92,
+   "duration_min": 116,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6006,15 +6234,17 @@
    "from": "KTYQ",
    "to": "KPTK",
    "distance_nm": 203,
-   "duration_min": 61,
+   "duration_min": 74,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6029,15 +6259,17 @@
    "from": "KTYQ",
    "to": "KPVD",
    "distance_nm": 680,
-   "duration_min": 145,
+   "duration_min": 188,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6052,15 +6284,17 @@
    "from": "KTYQ",
    "to": "KPWM",
    "distance_nm": 744,
-   "duration_min": 156,
+   "duration_min": 204,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6079,6 +6313,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6101,6 +6336,7 @@
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6120,15 +6356,17 @@
    "from": "KTYQ",
    "to": "KSDF",
    "distance_nm": 114,
-   "duration_min": 45,
+   "duration_min": 52,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6147,6 +6385,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6168,6 +6407,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6185,15 +6425,17 @@
    "from": "KTYQ",
    "to": "KSRQ",
    "distance_nm": 781,
-   "duration_min": 163,
+   "duration_min": 212,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6213,6 +6455,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6231,15 +6474,17 @@
    "from": "KTYQ",
    "to": "KSUS",
    "distance_nm": 220,
-   "duration_min": 64,
+   "duration_min": 78,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6254,15 +6499,17 @@
    "from": "KTYQ",
    "to": "KTEB",
    "distance_nm": 559,
-   "duration_min": 124,
+   "duration_min": 159,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6282,6 +6529,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6303,6 +6551,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6325,6 +6574,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6347,6 +6597,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6369,6 +6620,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6392,6 +6644,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B"
@@ -6413,6 +6666,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6454,6 +6708,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "E55P",
     "GA7C",
     "GLF6"
@@ -6489,15 +6744,17 @@
    "from": "KVNY",
    "to": "KLAS",
    "distance_nm": 199,
-   "duration_min": 60,
+   "duration_min": 73,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6518,6 +6775,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6539,6 +6797,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6767,6 +7026,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6810,6 +7070,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -6894,15 +7155,17 @@
    "from": "MYNN",
    "to": "KOPF",
    "distance_nm": 161,
-   "duration_min": 53,
+   "duration_min": 64,
    "departure_time": null,
    "types": [
     "C25C",
     "C510",
+    "C680",
     "C750",
     "E55P",
     "H25B",
     "LJ35",
+    "P46T",
     "PRM1"
    ],
    "days": []
@@ -6922,6 +7185,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
@@ -7025,6 +7289,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B"
@@ -7066,6 +7331,7 @@
    "departure_time": null,
    "types": [
     "C25C",
+    "C680",
     "C750",
     "E55P",
     "H25B",
