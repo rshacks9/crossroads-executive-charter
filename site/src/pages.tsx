@@ -875,6 +875,7 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
       "Book before you fly: without a booking, a flight can't be added to your logbook afterwards",
       "A booking stays valid for 24 hours",
       "Use the Network page here to plan by division, base or aircraft",
+      "If you hold two bookings, Pegasus always loads the older one, so fly them in the order you booked them",
     ],
   },
   {
@@ -897,7 +898,11 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
     title: "File the PIREP",
     tool: "Pegasus → vAMSYS",
     body: "Pegasus files the PIREP when you shut down at the gate. Phoenix checks every PIREP automatically, and staff review any PIREP that is flagged or carries a comment, so add one for anything unusual. Your hours and accepted PIREPs count toward your rank and the airline's statistics on this site.",
-    tips: ["Target a 60–250 fpm touchdown", "Diversions and go-arounds belong in the comments"],
+    tips: [
+      "Target a 60–250 fpm touchdown",
+      "Diversions and go-arounds belong in the comments",
+      "If a PIREP shows Reply Needed, answer the staff comment in Phoenix first: until you do, you can't start another flight",
+    ],
   },
 ];
 

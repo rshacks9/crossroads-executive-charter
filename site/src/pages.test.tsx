@@ -952,6 +952,9 @@ describe("joining", () => {
     expect(page).not.toMatch(/Register link|username you're happy|Once staff approve|application to accepted|Staff review it|Staff review every PIREP/);
     // Phoenix processes PIREPs automatically; staff see the flagged ones and the ones with a comment.
     expect(page).toContain("staff review any PIREP that is flagged or carries a comment");
+    // Two vAMSYS blockers from the Pegasus docs and the Phoenix Scores page.
+    expect(page).toContain("If you hold two bookings, Pegasus always loads the older one");
+    expect(page).toContain("If a PIREP shows Reply Needed, answer the staff comment in Phoenix first: until you do, you can't start another flight");
   });
 
   it("says plainly that the airline is new, with the join terms; claims no pilot numbers and implies no other pilots", () => {
