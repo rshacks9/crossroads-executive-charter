@@ -51,21 +51,41 @@ const SITE = "Crossroads Executive & Charter";
 
 let crewPromise: Promise<Crew> | null = null;
 
+/** The one crew.json request the pages share. A failed request is forgotten, so the next page tries again. */
+export function sharedCrew(loader: () => Promise<Crew> = loadCrew): Promise<Crew> {
+  crewPromise ??= loader().catch((e) => {
+    crewPromise = null;
+    throw e;
+  });
+  return crewPromise;
+}
+
+export interface CrewState {
+  crew: Crew | null;
+  /** True once the request has failed, so a page can say so instead of loading for ever. */
+  failed: boolean;
+}
+
 /** crew.json (runways + weather) loads once, only on pages that need it. */
-export function useCrew(): Crew | null {
-  const [crew, setCrew] = useState<Crew | null>(null);
+export function useCrew(): CrewState {
+  const [state, setState] = useState<CrewState>({ crew: null, failed: false });
   useEffect(() => {
     let alive = true;
-    crewPromise ??= loadCrew().catch((e) => {
-      crewPromise = null;
-      throw e;
-    });
-    crewPromise.then((c) => alive && setCrew(c)).catch(() => undefined);
+    sharedCrew().then(
+      (crew) => { if (alive) setState({ crew, failed: false }); },
+      () => { if (alive) setState({ crew: null, failed: true }); },
+    );
     return () => {
       alive = false;
     };
   }, []);
-  return crew;
+  return state;
+}
+
+/** What the airport page says where its runway table would be, when it has no runways to list. */
+export function runwayNote(crew: Crew | null, failed: boolean): string {
+  if (crew) return "No runway data on file for this airport.";
+  return failed ? "Runway data is unavailable right now. Try again later." : "Loading runway data…";
 }
 
 /**
@@ -397,7 +417,7 @@ export function DestinationsPage({ snapshot }: PageProps) {
 // ------------------------------------------------------------------ one airport
 
 export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
-  const crew = useCrew();
+  const { crew, failed } = useCrew();
   const summary = airportSummary(snapshot, icao);
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const names = typeNames(snapshot);
@@ -428,7 +448,7 @@ export function AirportPage({ snapshot, icao }: PageProps & { icao: string }) {
         </div>
         <div>
           <SectionHead eyebrow="Airfield" title="Runways" />
-          {runways.length ? <RunwayTable icao={icao} runways={runways} /> : <p className="muted">{crew ? "No runway data on file for this airport." : "Loading runway data…"}</p>}
+          {runways.length ? <RunwayTable icao={icao} runways={runways} /> : <p className="muted">{runwayNote(crew, failed)}</p>}
           {runways[0]?.elevation_ft != null ? <p className="fineprint">Field elevation about {formatNumber(Math.round(runways[0].elevation_ft))} ft. Runway data from OurAirports (public domain); always use current charts in the simulator.</p> : null}
           {wx?.metar ? (
             <>
@@ -575,7 +595,7 @@ export function routeDescription(route: Route, snapshot: Pick<Snapshot, "airport
 }
 
 export function RoutePage({ snapshot, route }: PageProps & { route: Route | undefined }) {
-  const crew = useCrew();
+  const { crew } = useCrew();
   const key = route ? routeKey(route) : "";
   const a = route ? snapshot.airports[route.from] : undefined;
   const b = route ? snapshot.airports[route.to] : undefined;
@@ -810,7 +830,7 @@ const SOP_BRIEF: ReactNode[] = [
 ];
 
 export function ResourcesPage({ snapshot }: PageProps) {
-  const crew = useCrew();
+  const { crew } = useCrew();
   const [pick, setPick] = useState(() => snapshot.routes[0] ? routeKey(snapshot.routes[0]) : "");
   useEffect(() => setMeta(`Pilot resources · ${SITE}`, "Downloads for Crossroads pilots: route briefing cards, a generic flow card, the full schedule as CSV and links to vAMSYS, Pegasus and SimBrief."), []);
   const route = snapshot.routes.find((r) => routeKey(r) === pick);

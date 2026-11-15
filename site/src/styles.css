@@ -520,6 +520,9 @@ td.tailwind { color: var(--status-danger); font-weight: 600; }
 .taf summary::-webkit-details-marker { display: none; }
 .taf summary::after { content: "+"; content: "+" / ""; margin-left: 12px; font: 700 22px var(--display); color: var(--signal-ink); }
 .taf[open] summary::after { content: "–"; content: "–" / ""; }
+/* The snapshot error page's technical reason, folded away under the plain sentence. */
+.error-detail { margin-top: 24px; color: var(--text-2); }
+.error-detail summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
 .cat { font: 700 12px/1 var(--body); letter-spacing: .06em; padding: 6px 8px; border-radius: 4px; white-space: nowrap; text-transform: uppercase; }
 .cat--vfr { background: var(--cat-vfr-bg); color: var(--cat-vfr); }
 .cat--mvfr { background: var(--cat-mvfr-bg); color: var(--cat-mvfr); }

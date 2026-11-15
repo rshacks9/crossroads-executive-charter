@@ -226,6 +226,21 @@ export function DataNotice({ snapshot }: { snapshot: Snapshot | null }) {
   return null;
 }
 
+/** The page shown when the snapshot cannot be loaded: plain words, with the technical reason folded away. */
+export function DataError({ error, onRetry }: { error: string; onRetry: () => void }) {
+  return (
+    <section className="page page--narrow">
+      <h1 className="page-title">Flight data is unavailable</h1>
+      <p className="lede">We couldn't load the latest airline data. Please try again shortly.</p>
+      <button type="button" className="button" onClick={onRetry}>Try again</button>
+      <details className="error-detail">
+        <summary>Technical detail</summary>
+        <p className="muted">{error}</p>
+      </details>
+    </section>
+  );
+}
+
 const REFRESH_MS = 60_000;
 
 export function App() {
@@ -390,11 +405,7 @@ export function App() {
 
       <main id="main" tabIndex={-1}>
         {error && !snapshot ? (
-          <section className="page page--narrow">
-            <h1 className="page-title">Flight data is unavailable</h1>
-            <p className="lede">We couldn't load the latest airline data ({error}). Please try again shortly.</p>
-            <button type="button" className="button" onClick={() => void refresh()}>Try again</button>
-          </section>
+          <DataError error={error} onRetry={() => void refresh()} />
         ) : !snapshot ? (
           <section className="page page--narrow" aria-busy="true">
             <p className="lede">Loading the board…</p>

@@ -8,14 +8,14 @@ import type { ApproachCard, Crew, GroupFlight, LiveFlight, RecentFlight, Snapsho
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, routeDescription, RunwayTable, SearchDialog, StatsPage, TypePage } = await import("./explore-pages");
+const { AirportPage, DestinationsPage, ExplorerPanel, NotFoundPage, PlanPage, ResourcesPage, RoutePage, RouteRows, routeDescription, RunwayTable, SearchDialog, StatsPage, TypePage, runwayNote, sharedCrew } = await import("./explore-pages");
 const { AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, DISCORD_LABEL, DivisionDot, FleetPage, fleetGroupId, HOW_TO_JOIN, JOIN_TERMS, SETUP_FLIGHTS, Leg, LivePage, MapLegend, NEW_AIRLINE, NewsCard, PageHeader, REGISTER_LABEL, RoutesPage, HomePage, PilotsPage, SETUP_NOTE, bases, joinHref, registrationOpen, shortName } = await import("./pages");
 const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFlightNote } = await import("./info");
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { firstWeekly, formatFeet, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
 const { Approach, CrewPage, WeatherBoard } = await import("./crew");
-const { Footer } = await import("./App");
+const { DataError, Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
 
@@ -720,6 +720,26 @@ describe("where the data comes from", () => {
     expect(text(renderToString(<Footer snapshot={live} />))).toContain("Live data from vAMSYS · updated");
     expect(text(renderToString(<AboutPage snapshot={live} />))).toContain("snapshot of our vAMSYS data every 20 minutes: schedule");
     expect(text(renderToString(<Footer snapshot={{ ...snapshot, source: "sample" }} />))).toContain("Sample data only · updated");
+  });
+});
+
+describe("when data cannot be loaded", () => {
+  it("says runway data is unavailable once crew.json fails, instead of loading for ever, and tries again next time", async () => {
+    const crew: Crew = JSON.parse(readFileSync(new URL("../public/data/crew.json", import.meta.url), "utf-8"));
+    const failing = () => Promise.reject(new Error("crew briefing request failed (503)"));
+    await expect(sharedCrew(failing)).rejects.toThrow("503");
+    // The failed request is forgotten, so the next page asks again.
+    await expect(sharedCrew(async () => crew)).resolves.toBe(crew);
+    expect(runwayNote(null, true)).toBe("Runway data is unavailable right now. Try again later.");
+    expect(runwayNote(null, false)).toBe("Loading runway data…");
+    expect(runwayNote(crew, false)).toBe("No runway data on file for this airport.");
+  });
+
+  it("tells visitors in plain words, with the technical reason folded away", () => {
+    const html = renderToString(<DataError error="snapshot request failed (503)" onRetry={() => undefined} />);
+    expect(text(html)).toContain("We couldn't load the latest airline data. Please try again shortly.");
+    expect(html).toContain('<details class="error-detail"><summary>Technical detail</summary>');
+    expect(html).not.toMatch(/<p class="lede">[^<]*503/);
   });
 });
 
