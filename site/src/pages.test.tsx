@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import type { ApproachCard, Crew, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./data";
+import type { ApproachCard, Crew, CrewAirport, CrewRunway, GroupFlight, LiveFlight, RecentFlight, Snapshot } from "./data";
 
 vi.mock("leaflet", () => ({ default: {} }));
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
@@ -14,7 +14,7 @@ const { AboutPage, HandbookPage, CareersPage, NewsPage, ServicesPage, groupFligh
 const { divisionColor, flightTitle, flightTooltip } = await import("./LiveMap");
 const { MORE_COUNTRIES, defaultSimTypes, destinationGroups, findRoute, firstFlight, networkStats, onwardLegs, routeHref, routeKey, routesForTypes, servedAirports, suggestFleet } = await import("./explore");
 const { firstWeekly, formatFeet, formatNumber, networkFacts, nextWeekly, payloadTonnes, routeBase, routeDivision, utcDayMonth, weatherBoard, weeklyTime } = await import("./data");
-const { Approach, CREW_DESCRIPTION, CrewError, CrewPage, WeatherBoard, crewTitle } = await import("./crew");
+const { AirportWeather, Approach, CREW_DESCRIPTION, CrewError, CrewPage, NoWeather, WeatherBoard, crewTitle } = await import("./crew");
 const { DataError, Footer } = await import("./App");
 const { FLEET_INFO, KTYQ_JETS, KTYQ_TYPES, NEWS, RULES_URL, SERVICES, SOP_RULES, TOURS, VATSIM_REMARKS, baseFor } = await import("./content");
 const { capital, numberWord } = await import("./html-facts");
@@ -494,6 +494,23 @@ describe("pages render from the snapshot", () => {
     expect(html.match(/<li class="wx-tile /g) ?? []).toHaveLength(board.first.length);
     for (const [icao] of board.vfr) expect(html).not.toContain(`<strong>${icao}</strong>`);
     if (board.vfr.length) expect(html).toContain(`aria-expanded="false" aria-controls="wx-tiles">Show all ${board.first.length + board.vfr.length} airports</button>`);
+  });
+
+  it("crew weather: when the refresh fetched no weather, says so once, blames no airport and calls the runway the longest", () => {
+    expect(text(renderToString(<NoWeather />))).toContain("Live weather couldn't be fetched on the last refresh.");
+    const runway: CrewRunway = { id: "18", reciprocal: "36", heading_true_deg: 180, length_ft: 5500, width_ft: 100, surface: "ASP", elevation_ft: 860, wind: null };
+    const calm: CrewAirport = { flight_category: null, clouds: [], metar: null, taf: null, runways: [runway, { ...runway, id: "36", reciprocal: "18", heading_true_deg: 0 }], preferred_runway: "18" };
+    const none = renderToString(<AirportWeather icao="KTYQ" airport={calm} snapshot={snapshot} role="Departure" weatherOk={false} />);
+    expect(text(none)).toContain("Weather unavailable on the last refresh");
+    expect(text(none)).not.toContain("No current METAR");
+    expect(none).not.toContain(">Favoured<");
+    expect(none).toContain(">Longest<");
+    // With weather in general but no report here, the airport's own report is missing.
+    expect(text(renderToString(<AirportWeather icao="KTYQ" airport={calm} snapshot={snapshot} role="Departure" weatherOk />))).toContain("No current METAR for this airport");
+    const reported: CrewAirport = { ...calm, flight_category: "VFR", metar: { raw: "KTYQ 151753Z 18008KT 10SM CLR 12/02 A3012", wind: { direction_deg: 180, speed_kt: 8, variable: false } } };
+    const html = renderToString(<AirportWeather icao="KTYQ" airport={reported} snapshot={snapshot} role="Departure" weatherOk />);
+    expect(html).toContain(">Favoured<");
+    expect(html).not.toContain(">Longest<");
   });
 
   it("names repeated links by where they go, hides the arrows, and reads a leg as 'to'", () => {

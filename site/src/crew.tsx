@@ -31,7 +31,12 @@ function Category({ value }: { value: CrewAirport["flight_category"] }) {
   return <span className={`cat cat--${value.toLowerCase()}`}>{CATEGORY_LABEL[value] ?? value}</span>;
 }
 
-function AirportWeather({ icao, airport, snapshot, role, runwayHighlight }: { icao: string; airport: CrewAirport | undefined; snapshot: Snapshot; role: string; runwayHighlight?: string | null }) {
+/**
+ * One end of the briefing. weatherOk is false when the last refresh fetched no weather at all
+ * (crew.weather_source is null): then a missing METAR is not this airport's fault, and the preferred
+ * runway is only the longest one.
+ */
+export function AirportWeather({ icao, airport, snapshot, role, runwayHighlight, weatherOk }: { icao: string; airport: CrewAirport | undefined; snapshot: Snapshot; role: string; runwayHighlight?: string | null; weatherOk: boolean }) {
   const name = snapshot.airports[icao]?.name ?? icao;
   if (!airport) return null;
   const m = airport.metar;
@@ -57,7 +62,7 @@ function AirportWeather({ icao, airport, snapshot, role, runwayHighlight }: { ic
           </dl>
         </>
       ) : (
-        <p className="muted">No current METAR for this airport. Check your simulator's weather or another source.</p>
+        <p className="muted">{weatherOk ? "No current METAR for this airport. Check your simulator's weather or another source." : "Weather unavailable on the last refresh. Check your simulator's weather."}</p>
       )}
       {airport.runways.length ? (
         <div className="table-scroll"><table className="table table--compact rwy-table">
@@ -66,7 +71,7 @@ function AirportWeather({ icao, airport, snapshot, role, runwayHighlight }: { ic
           <tbody>
             {airport.runways.map((r) => (
               <tr key={r.id} className={r.id === (runwayHighlight ?? airport.preferred_runway) ? "is-preferred" : undefined}>
-                <td><strong>{r.id}</strong>{r.id === airport.preferred_runway ? <span className="tag tag--accent">Favoured</span> : null}</td>
+                <td><strong>{r.id}</strong>{r.id === airport.preferred_runway ? <span className="tag tag--accent">{m ? "Favoured" : "Longest"}</span> : null}</td>
                 <td className="num">{r.length_ft ? `${formatNumber(r.length_ft)} ft` : "—"}</td>
                 <td className={r.wind && r.wind.tailwind_kt > 0 ? "tailwind" : undefined}>{componentText(r.wind)}</td>
               </tr>
@@ -139,6 +144,16 @@ export function Approach({ card, icao, wind }: { card: ApproachCard; icao: strin
           </tbody>
         </table></div>
       ) : null}
+    </section>
+  );
+}
+
+/** In place of the network weather board when the last refresh fetched no weather at all. */
+export function NoWeather() {
+  return (
+    <section className="wx-board">
+      <h2>Network weather</h2>
+      <p className="callout">Live weather couldn't be fetched on the last refresh. Runways, fuel and approach cards are still here; use your simulator's weather.</p>
     </section>
   );
 }
@@ -292,8 +307,8 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
           </div>
 
           <div className="briefing__grid">
-            <AirportWeather icao={route.from} airport={crew.airports[route.from]} snapshot={snapshot} role="Departure" />
-            <AirportWeather icao={route.to} airport={crew.airports[route.to]} snapshot={snapshot} role="Arrival" runwayHighlight={approach?.runway.identifier ?? null} />
+            <AirportWeather icao={route.from} airport={crew.airports[route.from]} snapshot={snapshot} role="Departure" weatherOk={Boolean(crew.weather_source)} />
+            <AirportWeather icao={route.to} airport={crew.airports[route.to]} snapshot={snapshot} role="Arrival" runwayHighlight={approach?.runway.identifier ?? null} weatherOk={Boolean(crew.weather_source)} />
           </div>
 
           <footer className="briefing__foot">
@@ -307,7 +322,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
         </article>
       ) : null}
 
-      {crew ? <WeatherBoard airports={crew.airports} /> : null}
+      {crew ? (crew.weather_source ? <WeatherBoard airports={crew.airports} /> : <NoWeather />) : null}
 
       <p className="fineprint crew__credit">Calculations by the Jumpseat crew modules (weather briefing, fuel planner and approach briefing) running in our update job.</p>
     </section>
