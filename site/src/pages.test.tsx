@@ -1087,3 +1087,17 @@ describe("joining", () => {
     expect(text(renderToString(<PilotsPage snapshot={none} />))).not.toContain("Do I need add-on aircraft?");
   });
 });
+
+describe("styles", () => {
+  const css = readFileSync(new URL("./styles.css", import.meta.url), "utf-8");
+
+  it("keeps selected and current states visible in forced colours (Windows high contrast)", () => {
+    const start = css.indexOf("@media (forced-colors: active) {\n");
+    expect(start).toBeGreaterThan(-1);
+    const block = css.slice(start, css.indexOf("\n}\n", start));
+    for (const selector of ['.chip-button[aria-pressed="true"]', '.explorer__item[aria-pressed="true"]', ".search-results li.is-active", '.nav a[aria-current="page"]']) expect(block, selector).toContain(selector);
+    expect(block).toContain("background: Highlight; color: HighlightText;");
+    // Muted text inside a selected item takes the system text colour too.
+    expect(block).toContain('.chip-button[aria-pressed="true"] *, .explorer__item[aria-pressed="true"] *, .search-results li.is-active * { color: inherit; }');
+  });
+});

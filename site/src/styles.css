@@ -1096,6 +1096,12 @@ a.stat-tiles__value:hover { text-decoration: underline; text-decoration-color: v
 .leaflet-container path.airport-marker:focus { outline: none; }
 .leaflet-container path.airport-marker:focus-visible { stroke: #e8703a; stroke-width: 5px; stroke-opacity: 1; paint-order: stroke; filter: drop-shadow(0 0 2px #1b2328) drop-shadow(0 0 4px #e8703a); }
 @media (forced-colors: active) { .leaflet-container path.airport-marker:focus-visible { stroke: Highlight; filter: none; } }
+/* Forced colours (Windows high contrast) replace backgrounds and drop box shadows, so selected and current states use system colours or a line. */
+@media (forced-colors: active) {
+  .chip-button[aria-pressed="true"], .explorer__item[aria-pressed="true"], .search-results li.is-active { forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight; }
+  .chip-button[aria-pressed="true"] *, .explorer__item[aria-pressed="true"] *, .search-results li.is-active * { color: inherit; }
+  .nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+}
 /* Keyboard help is left out on touch-only screens: by input type, not width, so a desktop zoomed to 400% keeps it. */
 @media (hover: none) and (pointer: coarse) { .kbd-hint { display: none; } }
 
