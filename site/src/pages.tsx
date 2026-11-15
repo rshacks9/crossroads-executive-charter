@@ -534,7 +534,7 @@ export function LivePage({ snapshot }: PageProps) {
         eyebrow="Operations"
         title="Live flights"
         lede={live.length
-          ? <>{`${live.length} ${live.length === 1 ? "flight is" : "flights are"} in progress. Positions as of `}<Ago iso={snapshot.generated_at} />; this page refreshes every minute.</>
+          ? <>{`${live.length} ${live.length === 1 ? "flight is" : "flights are"} in progress. Positions as of `}<Ago iso={snapshot.generated_at} />.</>
           : prelaunch
             ? "Live tracking switches on once the vAMSYS data connection is enabled. Until then, here's the network you can fly."
             : "No flights are in progress right now. Here's where we fly."}

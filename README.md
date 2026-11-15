@@ -15,7 +15,7 @@ Cmd+K) and a 404 page. Its data comes from vAMSYS, so the site updates itself as
 fly. Joining, booking and PIREPs stay in vAMSYS. This site links there and never duplicates them.
 
 ```
-vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/public/data/snapshot.json ──> static site
+vAMSYS Operations API ──(ops:read, scheduled job)──> sync/ ──> site/public/data/snapshot.json ──> static site
         secrets stay here ┘                       allowlisted public fields only
 ```
 
@@ -38,7 +38,9 @@ vAMSYS Operations API ──(ops:read, every 20 min)──> sync/ ──> site/p
 
 ## Crew Tools (`#/crew`)
 
-A ready-made briefing for every route and aircraft type, rebuilt by the same 20-minute job:
+A ready-made briefing for every route and aircraft type, rebuilt by the same scheduled job. Its cron
+asks for every 20 minutes, but GitHub delays and drops scheduled runs; in November 2026 they came
+about every 6 hours, plus one per push to main:
 
 - **Weather**: live METAR and TAF from aviationweather.gov for every airport in the network, parsed
   with Kimi's `weather.parse_metar`, plus flight category.

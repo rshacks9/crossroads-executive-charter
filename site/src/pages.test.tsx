@@ -655,6 +655,13 @@ describe("flights flown by automation", () => {
     expect(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf(label)).toBeLessThan(home.slice(home.indexOf("<strong>CRX116</strong>")).indexOf("</tr>"));
   });
 
+  it("gives the positions their age on the live board, and promises no refresh the data cannot keep", () => {
+    const live = text(renderToString(<LivePage snapshot={busy} />));
+    expect(live).toContain("3 flights are in progress. Positions as of");
+    // The page re-reads the snapshot every minute, but positions change only when the scheduled job runs.
+    expect(live).not.toContain("refreshes every minute");
+  });
+
   it("puts the label on its own line: its rule comes after the base tag rule it overrides", () => {
     const css = readFileSync(new URL("./styles.css", import.meta.url), "utf-8").split("\n");
     const base = css.findIndex((line) => line.startsWith(".tag {"));
@@ -726,17 +733,24 @@ describe("the Discord link", () => {
 });
 
 describe("where the data comes from", () => {
-  it("says the preview schedule is a copy of vAMSYS, and claims a 20-minute vAMSYS read only once the data is live", () => {
+  it("says the preview schedule is a copy of vAMSYS, and claims no refresh cadence it cannot keep", () => {
     expect(snapshot.source).toBe("preview");
     const footer = text(renderToString(<Footer snapshot={snapshot} />));
     expect(footer).toContain("Schedule copied from vAMSYS · weather refreshed");
     expect(footer).not.toContain("Schedule as published");
     const about = text(renderToString(<AboutPage snapshot={snapshot} />));
-    expect(about).not.toContain("every 20 minutes: schedule");
-    expect(about).toContain("a copy of what is published in vAMSYS, updated when it changes; weather refreshes every 20 minutes");
+    expect(about).not.toContain("snapshot of our vAMSYS data");
+    expect(about).toContain("a copy of what is published in vAMSYS, updated when it changes; the weather is refreshed several times a day");
+    // GitHub runs the scheduled job hours apart, not every 20 minutes as its cron asks.
+    expect(about).not.toContain("every 20 minutes");
     const live: Snapshot = { ...snapshot, source: "vamsys" };
     expect(text(renderToString(<Footer snapshot={live} />))).toContain("Live data from vAMSYS · updated");
-    expect(text(renderToString(<AboutPage snapshot={live} />))).toContain("snapshot of our vAMSYS data every 20 minutes: schedule");
+    const liveAbout = text(renderToString(<AboutPage snapshot={live} />));
+    expect(liveAbout).toContain("snapshot of our vAMSYS data several times a day: schedule");
+    expect(liveAbout).not.toContain("every 20 minutes");
+    const crew = text(renderToString(<CrewPage snapshot={snapshot} />));
+    expect(crew).toContain("Briefings are rebuilt with the latest weather several times a day, and each one shows when it was built.");
+    expect(crew).not.toContain("every 20 minutes");
     expect(text(renderToString(<Footer snapshot={{ ...snapshot, source: "sample" }} />))).toContain("Sample data only · updated");
   });
 });

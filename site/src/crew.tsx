@@ -210,7 +210,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
   return (
     <>
     {/* crew-header: hidden on the printed briefing (styles.css @media print). */}
-    <PageHeader className="crew-header" eyebrow="Simulation briefing tool" title="Crew Tools" lede="Pick a flight and an aircraft for a ready-made briefing: fuel by phase, live weather and runway winds at both ends, and an approach card. Briefings refresh with the latest weather every 20 minutes." />
+    <PageHeader className="crew-header" eyebrow="Simulation briefing tool" title="Crew Tools" lede="Pick a flight and an aircraft for a ready-made briefing: fuel by phase, live weather and runway winds at both ends, and an approach card. Briefings are rebuilt with the latest weather several times a day, and each one shows when it was built." />
     <section className="page crew">
 
       <form className="filters crew__pick" onSubmit={(e) => e.preventDefault()}>
