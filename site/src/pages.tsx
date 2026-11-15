@@ -13,10 +13,10 @@ import {
   networkFacts,
   payloadTonnes,
   progressPercent,
-  relativeAge,
   routeBase,
   routeInDivision,
 } from "./data";
+import { Ago } from "./clock";
 import { AUTOMATION_DETAIL, AUTOMATION_DISCLOSURE, AUTOMATION_LABEL, FLEET_INFO, NEWS, PEGASUS_URL, RULES_URL, SERVICES, VATSIM_REMARKS, baseFor } from "./content";
 import type { NewsItem } from "./content";
 import { LiveMap, divisionColor } from "./LiveMap";
@@ -48,7 +48,7 @@ export function SectionHead({ eyebrow, title, action, intro }: { eyebrow: string
   );
 }
 
-export function PageHeader({ eyebrow, title, lede, children }: { eyebrow: string; title: string; lede?: string; children?: ReactNode }) {
+export function PageHeader({ eyebrow, title, lede, children }: { eyebrow: string; title: string; lede?: ReactNode; children?: ReactNode }) {
   return (
     <header className="page-header">
       <div className="page-header__inner">
@@ -450,7 +450,7 @@ export function HomePage({ snapshot }: PageProps) {
                 <tbody role="rowgroup">
                   {recent.slice(0, 6).map((r, i) => (
                     <tr key={`${r.callsign}-${i}`} role="row">
-                      <td data-label="Flight" role="cell"><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? relativeAge(r.landed) : ""}</span>{r.automation ? <AutomationLabel /> : null}</td>
+                      <td data-label="Flight" role="cell"><strong>{r.callsign ?? r.flight_number ?? "—"}</strong><span className="sub">{r.landed ? <Ago iso={r.landed} /> : ""}</span>{r.automation ? <AutomationLabel /> : null}</td>
                       <td data-label="Route" role="cell"><Leg from={r.from} to={r.to} snapshot={snapshot} /></td>
                       <td data-label="Aircraft" role="cell">{r.aircraft ?? "—"}</td>
                       <td data-label="Landing" className="num" role="cell">{r.landing_rate != null ? `${r.landing_rate} fpm` : "—"}</td>
@@ -534,7 +534,7 @@ export function LivePage({ snapshot }: PageProps) {
         eyebrow="Operations"
         title="Live flights"
         lede={live.length
-          ? `${live.length} ${live.length === 1 ? "flight is" : "flights are"} in progress. Positions as of ${relativeAge(snapshot.generated_at)}; this page refreshes every minute.`
+          ? <>{`${live.length} ${live.length === 1 ? "flight is" : "flights are"} in progress. Positions as of `}<Ago iso={snapshot.generated_at} />; this page refreshes every minute.</>
           : prelaunch
             ? "Live tracking switches on once the vAMSYS data connection is enabled. Until then, here's the network you can fly."
             : "No flights are in progress right now. Here's where we fly."}

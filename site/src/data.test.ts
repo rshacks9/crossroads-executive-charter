@@ -11,6 +11,7 @@ import {
   hashParam,
   isSnapshot,
   isStale,
+  keepSnapshot,
   loadSnapshot,
   networkFacts,
   payloadTonnes,
@@ -41,6 +42,16 @@ import {
 const snapshot: Snapshot = JSON.parse(readFileSync(new URL("../public/data/snapshot.json", import.meta.url), "utf-8"));
 
 describe("snapshot contract", () => {
+  it("keeps the snapshot already shown when a refresh brings the same build, and takes a new build", () => {
+    const again: Snapshot = { ...snapshot };
+    expect(keepSnapshot(snapshot, again)).toBe(snapshot);
+    const newer: Snapshot = { ...snapshot, generated_at: "2099-01-01T00:00:00Z" };
+    expect(keepSnapshot(snapshot, newer)).toBe(newer);
+    const live: Snapshot = { ...snapshot, source: "vamsys" };
+    expect(keepSnapshot(snapshot, live)).toBe(live);
+    expect(keepSnapshot(null, again)).toBe(again);
+  });
+
   it("accepts the snapshot the Python sync writes", () => {
     expect(isSnapshot(snapshot)).toBe(true);
     expect(snapshot.source).toBe("preview");

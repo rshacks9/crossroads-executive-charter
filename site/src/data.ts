@@ -296,6 +296,14 @@ export function progressPercent(flight: Pick<LiveFlight, "route_nm" | "remaining
 /** Snapshots older than this are flagged as stale on the page. */
 export const STALE_AFTER_MINUTES = 45;
 
+/**
+ * The snapshot to show after a refresh: the one already shown when the new one is the same build (same
+ * generated_at and source), so the page does not re-render; otherwise the new one.
+ */
+export function keepSnapshot<T extends Pick<Snapshot, "generated_at" | "source">>(prev: T | null, next: T): T {
+  return prev && prev.generated_at === next.generated_at && prev.source === next.source ? prev : next;
+}
+
 export function isStale(snapshot: Pick<Snapshot, "generated_at">, now: Date = new Date()): boolean {
   const then = Date.parse(snapshot.generated_at);
   return Number.isNaN(then) || now.getTime() - then > STALE_AFTER_MINUTES * 60000;

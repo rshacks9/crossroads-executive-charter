@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ApproachCard, Crew, CrewAirport, CrewMetar, FuelPlan, Route, Snapshot } from "./data";
-import { approachWindText, componentText, descentRateFpm, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, relativeAge, weatherBoard, windText } from "./data";
+import { approachWindText, componentText, descentRateFpm, formatDuration, formatNumber, hashParam, kgToLb, loadCrew, primaryDivision, weatherBoard, windText } from "./data";
+import { Ago } from "./clock";
 
 const CATEGORY_LABEL: Record<string, string> = {
   VFR: "VFR",
@@ -42,7 +43,7 @@ function AirportWeather({ icao, airport, snapshot, role, runwayHighlight }: { ic
             <div><dt>Temp / dew</dt><dd>{m.temperature_c != null ? `${m.temperature_c}° / ${m.dewpoint_c}° C` : "—"}</dd></div>
             <div><dt>Altimeter</dt><dd>{m.altimeter ? `${m.altimeter.value} ${m.altimeter.unit}` : "—"}</dd></div>
             <div><dt>Clouds</dt><dd>{airport.clouds.length ? airport.clouds.map((c) => `${c.cover}${c.base_ft != null ? ` ${formatNumber(c.base_ft)}` : ""}`).join(", ") : "Clear"}</dd></div>
-            <div><dt>Observed</dt><dd>{m.observed_at ? relativeAge(m.observed_at) : "—"}{m.stale ? " (stale)" : ""}</dd></div>
+            <div><dt>Observed</dt><dd>{m.observed_at ? <Ago iso={m.observed_at} /> : "—"}{m.stale ? " (stale)" : ""}</dd></div>
           </dl>
         </>
       ) : (
@@ -270,7 +271,7 @@ export function CrewPage({ snapshot }: { snapshot: Snapshot }) {
 
           <footer className="briefing__foot">
             <p className="fineprint">
-              Briefing built {relativeAge(crew.generated_at)}{crew.weather_source ? ` with weather from ${crew.weather_source}` : " without live weather"}. {crew.notes.runways} For flight simulation only, never for real-world navigation.
+              Briefing built <Ago iso={crew.generated_at} />{crew.weather_source ? ` with weather from ${crew.weather_source}` : " without live weather"}. {crew.notes.runways} For flight simulation only, never for real-world navigation.
             </p>
             <div className="hero__actions">
               {snapshot.airline.pilot_login_url ? <a className="button" href={snapshot.airline.pilot_login_url} rel="noopener">Book on vAMSYS</a> : null}

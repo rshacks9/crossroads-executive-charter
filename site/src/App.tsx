@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { type Snapshot, isStale, loadSnapshot, relativeAge } from "./data";
+import { type Snapshot, isStale, keepSnapshot, loadSnapshot, relativeAge } from "./data";
+import { Ago, useMinute } from "./clock";
 import { CrewPage } from "./crew";
 import { AboutPage, CareersPage, HandbookPage, NewsPage, ServicesPage } from "./info";
 import { DISCORD_LABEL, FleetPage, HomePage, LivePage, PilotsPage, RoutesPage } from "./pages";
@@ -188,7 +189,7 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
             <>
               {/* The preview is a copy of the vAMSYS schedule; its build time is when the weather was last refreshed. */}
               {snapshot.source === "preview" ? "Schedule copied from vAMSYS · weather refreshed" : `${snapshot.source === "vamsys" ? "Live data from vAMSYS" : "Sample data only"} · updated`}{" "}
-              <time dateTime={snapshot.generated_at}>{relativeAge(snapshot.generated_at)}</time> ·{" "}
+              <time dateTime={snapshot.generated_at}><Ago iso={snapshot.generated_at} /></time> ·{" "}
             </>
           ) : null}
           Map data © OpenStreetMap contributors · Weather from aviationweather.gov · For flight simulation only, never for real-world navigation.
@@ -196,6 +197,33 @@ export function Footer({ snapshot }: { snapshot: Snapshot | null }) {
       </div>
     </footer>
   );
+}
+
+/** The banner under the masthead: sample or preview data, or a stale snapshot (checked once a minute). */
+export function DataNotice({ snapshot }: { snapshot: Snapshot | null }) {
+  useMinute();
+  if (snapshot?.source === "sample") {
+    return (
+      <div className="notice notice--sample" role="status">
+        Showing fictional sample data. Live vAMSYS data appears once the sync job has credentials.
+      </div>
+    );
+  }
+  if (snapshot?.source === "preview") {
+    return (
+      <div className="notice notice--preview" role="status">
+        <strong>Now forming.</strong> Fleet and schedule are published. Live tracking and statistics switch on once the vAMSYS data connection is enabled.
+      </div>
+    );
+  }
+  if (snapshot && isStale(snapshot)) {
+    return (
+      <div className="notice notice--stale" role="status">
+        Flight data last refreshed {relativeAge(snapshot.generated_at)}. Live positions may be out of date.
+      </div>
+    );
+  }
+  return null;
 }
 
 const REFRESH_MS = 60_000;
@@ -212,7 +240,9 @@ export function App() {
 
   const refresh = useCallback(async () => {
     try {
-      setSnapshot(await loadSnapshot());
+      const next = await loadSnapshot();
+      // The same build again keeps the object already shown, so nothing re-renders and the maps keep their tooltips.
+      setSnapshot((prev) => keepSnapshot(prev, next));
       setError(null);
     } catch (problem) {
       setError(problem instanceof Error ? problem.message : "could not load data");
@@ -221,8 +251,14 @@ export function App() {
 
   useEffect(() => {
     void refresh();
-    const timer = window.setInterval(() => void refresh(), REFRESH_MS);
-    return () => window.clearInterval(timer);
+    // No polling while the tab is in the background; catch up as soon as it is shown again.
+    const timer = window.setInterval(() => { if (!document.hidden) void refresh(); }, REFRESH_MS);
+    const onVisibility = () => { if (!document.hidden) void refresh(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [refresh]);
 
   useEffect(() => {
@@ -350,19 +386,7 @@ export function App() {
         </div>
       </header>
 
-      {snapshot?.source === "sample" ? (
-        <div className="notice notice--sample" role="status">
-          Showing fictional sample data. Live vAMSYS data appears once the sync job has credentials.
-        </div>
-      ) : snapshot?.source === "preview" ? (
-        <div className="notice notice--preview" role="status">
-          <strong>Now forming.</strong> Fleet and schedule are published. Live tracking and statistics switch on once the vAMSYS data connection is enabled.
-        </div>
-      ) : snapshot && isStale(snapshot) ? (
-        <div className="notice notice--stale" role="status">
-          Flight data last refreshed {relativeAge(snapshot.generated_at)}. Live positions may be out of date.
-        </div>
-      ) : null}
+      <DataNotice snapshot={snapshot} />
 
       <main id="main" tabIndex={-1}>
         {error && !snapshot ? (
