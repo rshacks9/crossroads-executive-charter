@@ -73,7 +73,7 @@ export function homeTitle(name?: string | null): string {
 export function siteDescription(counts: SiteCounts | null, open = false): string {
   const end = open ? "Join on vAMSYS." : "Flies on vAMSYS.";
   if (!counts) {
-    return `A fictional flight-sim virtual airline from Indianapolis: light jets to the A380 and 777F across executive, charter, sports and cargo divisions. ${end}`;
+    return `A fictional flight-sim virtual airline from Indianapolis: light jets to the A380 and 777F in executive, charter, sports and cargo divisions. ${end}`;
   }
   const types = digits(counts.types, "aircraft type", "aircraft types");
   const routes = digits(counts.routes, "route", "routes");
