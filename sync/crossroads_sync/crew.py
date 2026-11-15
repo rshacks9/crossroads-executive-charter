@@ -230,13 +230,16 @@ def build_crew(
             if not raw:
                 continue
             trip = kimi_fuel.calculate_trip(_kimi_profile(code, raw), phases)
+            # The total is the sum of the rounded parts, so the card's figures always add up (rounding the
+            # unrounded total on its own can differ from that sum by 1 kg).
+            trip_kg, contingency_kg, reserve_kg = (round(trip[k]) for k in ("trip_fuel", "contingency_fuel", "reserve_fuel"))
             per_type[code] = {
                 "phases": {p["phase"]: {"minutes": p["minutes"], "fuel_kg": round(p["fuel"])} for p in trip["phases"]},
-                "trip_kg": round(trip["trip_fuel"]),
-                "contingency_kg": round(trip["contingency_fuel"]),
+                "trip_kg": trip_kg,
+                "contingency_kg": contingency_kg,
                 "reserve_minutes": trip["reserve_minutes"],
-                "reserve_kg": round(trip["reserve_fuel"]),
-                "total_kg": round(trip["total_fuel"]),
+                "reserve_kg": reserve_kg,
+                "total_kg": trip_kg + contingency_kg + reserve_kg,
             }
             arrival = route.get("to")
             if arrival in preferred_runway and code not in approaches.get(arrival, {}):

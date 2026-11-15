@@ -45,6 +45,12 @@ class CrewBuildTests(unittest.TestCase):
         self.assertEqual(plan["reserve_kg"], 315)  # 45 min at the CJ4's 420 kg/h holding flow
         self.assertEqual(plan["total_kg"], plan["trip_kg"] + plan["contingency_kg"] + plan["reserve_kg"])
 
+    def test_every_fuel_total_is_the_sum_of_its_parts(self):
+        # Each part is rounded on its own, so the published total must be their sum, not a rounded total.
+        for callsign, per_type in self.crew["plans"].items():
+            for code, plan in per_type.items():
+                self.assertEqual(plan["total_kg"], plan["trip_kg"] + plan["contingency_kg"] + plan["reserve_kg"], f"{callsign} {code}")
+
     def test_preferred_runway_maximises_headwind(self):
         self.assertEqual(self.crew["airports"]["KIND"]["preferred_runway"], "32")
         self.assertEqual(self.crew["airports"]["KTEB"]["preferred_runway"], "24")
