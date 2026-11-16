@@ -118,7 +118,7 @@ const RANK_ICON: Record<string, string> = {
 const RANK_NOTES: Record<string, string> = {
   Cadet: "Day one. Fly the Crossroads Circuit from KTYQ (CRX153 to Louisville first) in the CJ4 or any KTYQ jet, and get your first PIREPs accepted.",
   "First Officer": "Comfortable with the KTYQ routine. Try the longer legs to Aspen, Scottsdale and Las Vegas.",
-  Captain: "A steady logbook. Step up to the Hawker and Citation X, or cross to KIND for your first E-Jet charter.",
+  Captain: "A steady logbook. Take the Hawker or Citation X to the Caribbean and the West Coast, or cross to KIND for an E-Jet charter.",
   "Senior Captain": "Experienced across divisions. The Gulfstreams, the 757 and the freighters suit you.",
   "Charter Captain": "The airline's backbone: long-range executive trips, A380 charters and transatlantic cargo.",
   "Chief Pilot": "The top of the ladder. Every type and every route, flown to the standard the handbook sets.",

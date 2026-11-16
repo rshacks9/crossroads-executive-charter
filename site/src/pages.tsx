@@ -965,7 +965,7 @@ export function PilotsPage({ snapshot }: PageProps) {
   const first = firstFlight(snapshot);
   const defaults = defaultSimTypes(snapshot);
   const faqs: { q: string; a: string }[] = [
-    { q: "Do I need real-world flying experience?", a: "No. Bring your simulator and a willingness to fly by the book. Every route is open from day one, and ranks recognise your hours and accepted PIREPs." },
+    { q: "Do I need real-world flying experience?", a: "No. Bring your simulator and a willingness to fly by the book." },
     ...(defaults.length ? [{ q: "Do I need add-on aircraft?", a: addOnAnswer(snapshot, defaults) }] : []),
     { q: "Which simulators and aircraft can I use?", a: "Flights are tracked with vAMSYS's Pegasus ACARS, which works with MSFS 2020 and 2024, X-Plane 10, 11 and 12, Prepar3D, FSX and FS2004 (the vAMSYS Pegasus guide keeps the current list). The fleet page lists the MSFS 2024 model we use for each type. Use any model of the same type you own." },
     { q: "Can I fly the big jets straight away?", a: "Yes. Every route is open to every pilot. Ranks recognise experience by hours and accepted PIREPs. They don't lock you out of aircraft." },

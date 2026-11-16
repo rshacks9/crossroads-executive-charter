@@ -1153,7 +1153,8 @@ describe("joining", () => {
 
   it("opens every route from day one, as vAMSYS Ranks & Milestones says: no answer, rank note or blurb starts careers in the Mustang or holds the CJ4 back", () => {
     const pilots = text(renderToString(<PilotsPage snapshot={snapshot} />));
-    expect(pilots).toContain("Do I need real-world flying experience? No. Bring your simulator and a willingness to fly by the book. Every route is open from day one, and ranks recognise your hours and accepted PIREPs.");
+    expect(pilots).toContain("Do I need real-world flying experience? No. Bring your simulator and a willingness to fly by the book.");
+    expect(pilots).toContain("Every route is open to every pilot.");
     const starter = TOURS.find((t) => t.starter);
     const first = firstFlight(snapshot);
     if (!starter || !first) throw new Error("no starter tour or first flight");
@@ -1165,11 +1166,18 @@ describe("joining", () => {
     const careers = text(renderToString(<CareersPage snapshot={blank} />));
     expect(careers).toContain(`Day one. Fly the ${starter.name} from KTYQ (${first.route.callsign} to Louisville first) in the CJ4 or any KTYQ jet, and get your first PIREPs accepted.`);
     expect(careers).toContain("Comfortable with the KTYQ routine. Try the longer legs to Aspen, Scottsdale and Las Vegas.");
+    expect(careers).toContain("A steady logbook. Take the Hawker or Citation X to the Caribbean and the West Coast, or cross to KIND for an E-Jet charter.");
+    // The Captain note names real KTYQ routes the Hawker and Citation X fly.
+    for (const cs of ["CRX189", "CRX187", "CRX193", "CRX191", "CRX123", "CRX705"]) {
+      const r = snapshot.routes.find((x) => x.callsign === cs);
+      expect(r?.from, cs).toBe("KTYQ");
+      expect(r?.types, cs).toEqual(expect.arrayContaining(["H25B", "C750"]));
+    }
     const mustang = text(renderToString(<TypePage snapshot={snapshot} code="C510" />));
     expect(mustang).toContain("Four seats, simple systems and short hops to Chicago, Nashville and Louisville: a good way to learn the KTYQ routine.");
     expect(FLEET_INFO.C510!.blurb).not.toMatch(/career/i);
     const pages = [pilots, careers, mustang, text(renderToString(<FleetPage snapshot={snapshot} />)), text(renderToString(<HomePage snapshot={snapshot} />)), text(renderToString(<HandbookPage snapshot={snapshot} />))];
-    for (const page of pages) expect(page).not.toMatch(/career ladder starts|starts you in light jets|work up from there|every Crossroads career starts|Time to try the CJ4|routine on short hops in the Mustang/i);
+    for (const page of pages) expect(page).not.toMatch(/career ladder starts|starts you in light jets|work up from there|every Crossroads career starts|Time to try the CJ4|routine on short hops in the Mustang|Step up to the Hawker|your first E-Jet/i);
   });
 
   it("counts hours and accepted PIREPs toward a rank only: the walkthrough promises no airline statistics from PIREPs", () => {
