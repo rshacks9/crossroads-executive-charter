@@ -1150,6 +1150,37 @@ describe("joining", () => {
     const none: Snapshot = { ...snapshot, airline: { ...snapshot.airline, sim_aircraft: {} } };
     expect(text(renderToString(<PilotsPage snapshot={none} />))).not.toContain("Do I need add-on aircraft?");
   });
+
+  it("opens every route from day one, as vAMSYS Ranks & Milestones says: no answer, rank note or blurb starts careers in the Mustang or holds the CJ4 back", () => {
+    const pilots = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    expect(pilots).toContain("Do I need real-world flying experience? No. Bring your simulator and a willingness to fly by the book. Every route is open from day one, and ranks recognise your hours and accepted PIREPs.");
+    const starter = TOURS.find((t) => t.starter);
+    const first = firstFlight(snapshot);
+    if (!starter || !first) throw new Error("no starter tour or first flight");
+    // The Cadet note names the first flight the Pilots page suggests (the handbook's CRX153, KTYQ-KSDF) and the CJ4.
+    expect([first.route.callsign, first.route.from, first.route.to]).toEqual(["CRX153", "KTYQ", "KSDF"]);
+    expect(first.route.types).toContain("C25C");
+    // The rank notes stand in for the rank descriptions, which vAMSYS leaves empty in the snapshot.
+    const blank: Snapshot = { ...snapshot, ranks: snapshot.ranks.map((r) => ({ ...r, description: null })) };
+    const careers = text(renderToString(<CareersPage snapshot={blank} />));
+    expect(careers).toContain(`Day one. Fly the ${starter.name} from KTYQ (${first.route.callsign} to Louisville first) in the CJ4 or any KTYQ jet, and get your first PIREPs accepted.`);
+    expect(careers).toContain("Comfortable with the KTYQ routine. Try the longer legs to Aspen, Scottsdale and Las Vegas.");
+    const mustang = text(renderToString(<TypePage snapshot={snapshot} code="C510" />));
+    expect(mustang).toContain("Four seats, simple systems and short hops to Chicago, Nashville and Louisville: a good way to learn the KTYQ routine.");
+    expect(FLEET_INFO.C510!.blurb).not.toMatch(/career/i);
+    const pages = [pilots, careers, mustang, text(renderToString(<FleetPage snapshot={snapshot} />)), text(renderToString(<HomePage snapshot={snapshot} />)), text(renderToString(<HandbookPage snapshot={snapshot} />))];
+    for (const page of pages) expect(page).not.toMatch(/career ladder starts|starts you in light jets|work up from there|every Crossroads career starts|Time to try the CJ4|routine on short hops in the Mustang/i);
+  });
+
+  it("counts hours and accepted PIREPs toward a rank only: the walkthrough promises no airline statistics from PIREPs", () => {
+    const page = text(renderToString(<PilotsPage snapshot={snapshot} />));
+    // The wording of the vAMSYS Pilot Handbook and booking pages.
+    expect(page).toContain("Your hours and accepted PIREPs count toward your rank.");
+    expect(page).not.toMatch(/statistics on this site/i);
+    // Without vAMSYS flight statistics (the schedule preview), Home says when they will appear.
+    const preview: Snapshot = { ...snapshot, stats: { all_time: null, last_30_days: null } };
+    expect(text(renderToString(<HomePage snapshot={preview} />))).toContain("Flight statistics appear once live vAMSYS data is connected.");
+  });
 });
 
 describe("styles", () => {

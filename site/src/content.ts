@@ -45,7 +45,7 @@ export const FLEET_INFO: Record<string, FleetInfo> = {
     role: "Entry light jet",
     range_nm: 950,
     cruise_kt: 340,
-    blurb: "Where every Crossroads career starts. Four seats, simple systems and the short hops to Chicago, Nashville and Louisville that teach the KTYQ routine.",
+    blurb: "Four seats, simple systems and short hops to Chicago, Nashville and Louisville: a good way to learn the KTYQ routine.",
     livery: { src: "img/livery/c510.webp", alt: "Citation Mustang in the Crossroads livery: white with a charcoal and orange cheatline and the crossroads mark on the tail" },
   },
   PRM1: {
