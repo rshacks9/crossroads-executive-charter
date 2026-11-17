@@ -91,30 +91,39 @@ describe("pages render from the snapshot", () => {
     expect(renderToString(<ResourcesPage snapshot={snapshot} />)).not.toContain('href="https://vamsys.io/"');
   });
 
-  it("never sends pilots to Phoenix for the Pegasus download: the vAMSYS guide says where to get it", () => {
-    // Crossroads' Phoenix Resources menu holds only Airports and Aircraft (15 Nov 2026): no Pegasus ACARS page.
-    const stale = /Resources\s*(→|->|>|&gt;|,)\s*Pegasus|under Resources|Download it in Phoenix|download Pegasus/i;
+  it("sends pilots to Phoenix Resources for the Pegasus download and to the vAMSYS guide for setup help", () => {
+    // Crossroads' Phoenix sidebar lists Resources → Pegasus ACARS, and that page offers the download
+    // (17 Nov 2026). The vAMSYS guide stays linked for setup help, but nothing may call it the download place.
+    const download = "In Phoenix, open Resources → Pegasus ACARS to download it";
+    const stale = /guide[^.]*says where to (download|get)|guide covers downloading/i;
     const pages = [HomePage, FleetPage, RoutesPage, DestinationsPage, ServicesPage, PlanPage, LivePage, CareersPage, HandbookPage, ResourcesPage, StatsPage, CrewPage, NewsPage, AboutPage, PilotsPage, NotFoundPage].map((Page) => text(renderToString(<Page snapshot={snapshot} />)));
-    for (const page of pages) {
-      expect(page).not.toContain("Resources → Pegasus ACARS");
-      expect(page).not.toMatch(stale);
-    }
-    // The source too, so copy that only some snapshots render can't bring the claim back.
+    for (const page of pages) expect(page).not.toMatch(stale);
+    // The source too, so copy that only some snapshots render can't bring the old wording back.
     const dir = new URL("./", import.meta.url);
     const sources = readdirSync(dir).filter((f) => /[.]tsx?$/.test(f) && !/[.]test[.]/.test(f));
     expect(sources).toContain("pages.tsx");
     expect(sources).toContain("explore-pages.tsx");
     for (const f of sources) expect(readFileSync(new URL(f, dir), "utf-8"), f).not.toMatch(stale);
+    // The Pilots page: the Install Pegasus step opens with the Phoenix path, then the sign-in, FSUIPC and booking tips.
     const pilots = text(renderToString(<PilotsPage snapshot={snapshot} />));
-    expect(pilots).toContain("The vAMSYS Pegasus ACARS guide linked below says where to download it");
-    expect(pilots).toContain("Sign in to Pegasus with your vAMSYS email address and password");
+    const start = pilots.indexOf("Install Pegasus");
+    expect(start).toBeGreaterThan(-1);
+    const step = pilots.slice(start, pilots.indexOf("Book a route", start));
+    expect(step).toContain(download);
+    expect(step).toContain("Sign in to Pegasus with your vAMSYS email address and password");
+    expect(step.indexOf(download)).toBeLessThan(step.indexOf("Sign in to Pegasus"));
+    expect(step).toContain("Pegasus reads the simulator through FSUIPC");
+    expect(step).toContain("Pegasus lists Crossroads only once you hold a booking");
     // "linked below": the guide link closes the same step, after its tips.
-    const tip = pilots.indexOf("The vAMSYS Pegasus ACARS guide linked below says where to download it");
-    expect(pilots.indexOf("Book a route", tip)).toBeGreaterThan(tip);
-    expect(pilots.slice(tip, pilots.indexOf("Book a route", tip))).toContain("Pegasus ACARS guide (vAMSYS docs)");
-    const resources = text(renderToString(<ResourcesPage snapshot={snapshot} />));
-    expect(resources).toContain("vAMSYS's flight tracker. The official guide covers downloading it, simulator setup, signing in, tracking your booking and filing the PIREP.");
-    expect(resources).toContain("book routes and see your logbook and rank.");
+    const help = "For setup help, see the vAMSYS Pegasus ACARS guide linked below";
+    expect(step).toContain(help);
+    expect(step.indexOf("Pegasus ACARS guide (vAMSYS docs)")).toBeGreaterThan(step.indexOf(help));
+    // The Resources page: the Pegasus ACARS card names the Phoenix path and still links the guide.
+    const resourcesHtml = renderToString(<ResourcesPage snapshot={snapshot} />);
+    expect(resourcesHtml).toContain('href="https://vamsys.co.uk/docs/pegasus/pegasus-acars" rel="noopener" target="_blank">Pegasus ACARS<');
+    const resources = text(resourcesHtml);
+    expect(resources).toContain(`vAMSYS's flight tracker. ${download}. The official guide covers simulator setup, signing in, tracking your booking and filing the PIREP.`);
+    expect(resources).toContain("book routes, download Pegasus and see your logbook and rank.");
   });
 
   it("lets the VATSIM remarks value break after the slash without changing its text", () => {

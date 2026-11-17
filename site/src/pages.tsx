@@ -874,10 +874,11 @@ const WALKTHROUGH: { title: string; tool: string; body: string; tips: string[]; 
     tool: "Pegasus ACARS",
     body: "Pegasus is vAMSYS's flight tracker. It runs next to your simulator, records the flight from the gate to the gate, and files your PIREP when you're done.",
     tips: [
-      "The vAMSYS Pegasus ACARS guide linked below says where to download it",
+      "In Phoenix, open Resources → Pegasus ACARS to download it",
       "Sign in to Pegasus with your vAMSYS email address and password",
       "On MSFS 2020 and 2024 Pegasus reads the simulator through FSUIPC, so install FSUIPC as well and keep it up to date",
       "Pegasus lists Crossroads only once you hold a booking, so book first, then open it",
+      "For setup help, see the vAMSYS Pegasus ACARS guide linked below",
     ],
     link: { href: PEGASUS_URL, label: "Pegasus ACARS guide (vAMSYS docs)" },
   },
