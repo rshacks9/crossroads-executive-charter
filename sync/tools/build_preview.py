@@ -196,7 +196,8 @@ FLEETS = [  # id, code, name, type, max_pax, max_cargo, unit, registrations, cru
     (32215, "PRM1", "Beechcraft Premier IA", "pax", 6, None, "lbs", ["N390CR"], 450),
     (32216, "C750", "Cessna Citation X", "pax", 8, None, "lbs", ["N750CR"], 500),
     (32217, "H25B", "Hawker 800XP", "pax", 8, None, "lbs", ["N800CR"], 430),
-    (32220, "E55P", "Embraer Phenom 300E", "pax", 9, None, "lbs", ["N300CR"], 450),
+    # Orwell fleet 32220 has Max Passengers 7 (fleet form read 2026-11-17); the preview said 9 until then.
+    (32220, "E55P", "Embraer Phenom 300E", "pax", 7, None, "lbs", ["N300CR"], 450),
     # Round 13: Orwell fleet 32230; N600CR is Orwell aircraft 304909.
     (32230, "M600", "Piper M600", "pax", 5, None, "lbs", ["N600CR"], 260),
     # Round 14b: Orwell fleet 32324; N680CR is Orwell aircraft 306143.

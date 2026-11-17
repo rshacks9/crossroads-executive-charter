@@ -88,6 +88,36 @@ class PreviewTests(unittest.TestCase):
         for route in sovereign:
             self.assertTrue({"EGLC", "KSMO"}.isdisjoint({route["from"], route["to"]}), route)
 
+    def test_fleet_capacity_matches_the_orwell_fleet_forms(self):
+        # Type and Max Passengers (or Max Freight, kg) of all 22 Orwell fleet forms, read 2026-11-17. The
+        # Phenom 300E has 7 seats in Orwell; the preview said 9 until then.
+        orwell = {
+            "C510": ("pax", 4), "C25C": ("pax", 9), "LJ35": ("pax", 8), "C700": ("pax", 12),
+            "E175": ("pax", 76), "E190": ("pax", 100), "GLF6": ("pax", 16), "GA7C": ("pax", 19),
+            "B752": ("pax", 180), "A346": ("pax", 100), "BCS3": ("pax", 48), "MD11": ("cargo", 91000),
+            "A306": ("cargo", 48000), "A388": ("pax", 150), "B77L": ("cargo", 102000), "PRM1": ("pax", 6),
+            "C750": ("pax", 8), "H25B": ("pax", 8), "E55P": ("pax", 7), "M600": ("pax", 5),
+            "C680": ("pax", 10), "P46T": ("pax", 5),
+        }
+        shown = {f["code"]: (f["type"], f["max_pax"] if f["type"] == "pax" else f["max_cargo"])
+                 for f in self.snapshot["fleet"]}
+        self.assertEqual(shown, orwell)
+        for fleet in self.snapshot["fleet"]:
+            unused = fleet["max_cargo"] if fleet["type"] == "pax" else fleet["max_pax"]
+            self.assertIsNone(unused, fleet["code"])
+
+    def test_committed_site_snapshot_shows_the_preview_fleet(self):
+        # site/public/data/snapshot.json is committed (the deploy rebuilds it); its fleet figures must be
+        # the preview's, so a seat change here is never left behind there.
+        path = ROOT.parent / "site" / "public" / "data" / "snapshot.json"
+        committed = json.loads(path.read_text(encoding="utf-8"))
+        keys = ("code", "name", "type", "max_pax", "max_cargo", "weight_unit", "registrations")
+
+        def pick(fleet):
+            return [{k: f[k] for k in keys} for f in fleet]
+
+        self.assertEqual(pick(committed["fleet"]), pick(self.snapshot["fleet"]))
+
     def test_cargo_routes_flagged_and_freighters_only(self):
         cargo = [r for r in self.snapshot["routes"] if r["kind"] == "cargo"]
         self.assertEqual(len(cargo), 20)

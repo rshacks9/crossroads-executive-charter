@@ -312,7 +312,7 @@
    "code": "E55P",
    "name": "Embraer Phenom 300E",
    "type": "pax",
-   "max_pax": 9,
+   "max_pax": 7,
    "max_cargo": null,
    "weight_unit": "lbs",
    "aircraft_count": 1,
