@@ -796,7 +796,7 @@ describe("flights flown by automation", () => {
 });
 
 describe("the Discord link", () => {
-  // A stand-in address for the test only: site.config.json keeps discord_url null until the Discord exists.
+  // A stand-in address for the test only: the tests do not depend on the real invite in site.config.json.
   const invite = "https://discord.example/crossroads";
   const withDiscord: Snapshot = { ...snapshot, airline: { ...snapshot.airline, discord_url: invite } };
   const everyPage = (s: Snapshot) => [
@@ -809,9 +809,9 @@ describe("the Discord link", () => {
 
   it("shows nothing about Discord while discord_url is null", () => {
     const config = JSON.parse(readFileSync(new URL("../../site.config.json", import.meta.url), "utf-8"));
-    expect(config.discord_url).toBeNull();
-    expect(snapshot.airline.discord_url).toBeNull();
-    for (const html of [...everyPage(snapshot), renderToString(<Footer snapshot={null} />)]) expect(html).not.toMatch(/discord/i);
+    expect(config.discord_url).toMatch(/^https:\/\/discord\.gg\/\w+$/);
+    const withoutDiscord: Snapshot = { ...snapshot, airline: { ...snapshot.airline, discord_url: null } };
+    for (const html of [...everyPage(withoutDiscord), renderToString(<Footer snapshot={null} />)]) expect(html).not.toMatch(/discord/i);
   });
 
   it("links Join the Discord on the join page and in the footer once discord_url is set", () => {
